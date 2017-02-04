@@ -1,4 +1,8 @@
 pragma solidity ^0.4.2;
+import "./Activity.sol";
+import "./Property.sol";
+
+
 contract owned {
     address public owner;
 
@@ -104,7 +108,7 @@ contract Congress is owned, tokenRecipient {
     }
 
     /*make Stakeholder*/
-    function addMember(bytes32 _name, uint256 _threshold, uint256 _fund, uint256 _id, uint _rate) onlyOwner {
+    function addMember(address targetStakeholder, bytes32 _name, uint256 _threshold, uint256 _fund, uint256 _id, uint _rate) onlyOwner {
         uint id;
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
