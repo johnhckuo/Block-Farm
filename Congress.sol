@@ -78,6 +78,7 @@ contract Congress is owned, tokenRecipient {
         uint rate;
         address addr;
         uint since;
+        string character;
     }
 
     struct Vote {
@@ -108,7 +109,7 @@ contract Congress is owned, tokenRecipient {
     }
 
     /*make Stakeholder*/
-    function addMember(address targetStakeholder, bytes32 _name, uint256 _threshold, uint256 _fund, uint256 _id, uint _rate) onlyOwner {
+    function addMember(address targetStakeholder, bytes32 _name, uint256 _threshold, uint256 _fund, uint256 _id, uint _rate, string _character) onlyOwner {
         uint id;
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
@@ -120,7 +121,8 @@ contract Congress is owned, tokenRecipient {
                id:_id,
                rate:_rate,
                addr:msg.sender,
-               since:now
+               since:now,
+               character: _character
            });
         } else {
             id = stakeholderId[targetStakeholder];
