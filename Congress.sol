@@ -1,7 +1,6 @@
 pragma solidity ^0.4.2;
-import "./Activity.sol";
-import "./Property.sol";
 
+import "./ActivityInterface.sol";
 
 contract owned {
     address public owner;
