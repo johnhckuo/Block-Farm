@@ -3,8 +3,6 @@ pragma solidity ^0.4.2;
 import "./usingProperty.sol";
 
 contract ActivityInterface {
-    //function balanceOf(address _owner) constant returns (uint256 balance);
-    //function transfer(address _to, uint256 _amount) returns (bool success);
 
     event biddingAdded(bool);
     address owner;
@@ -30,7 +28,6 @@ contract ActivityInterface {
 
     function addBidding(uint _propertyId, bytes32 _name, uint256 _startingPrice, uint256 _currentPrice, uint _closeDate) returns(bool success, uint _id){
         uint _id = biddingList.length++;
-        // a little issue here, I can't create an identifier for each biddingList, therefore repeating biddingList issue might emerge
 
         biddingList[_id] = Bidding({
             id: _id,
