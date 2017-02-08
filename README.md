@@ -1,2 +1,2 @@
 # D3-Accelerator
-An Ehtereum DApp for academic research
+An Ethereum DApp for academic research
