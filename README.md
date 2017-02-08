@@ -1,2 +1,2 @@
 # D3-Accelerator
-A project for academic research
+An Ehtereum DApp for academic research
