@@ -75,9 +75,6 @@ contract BuyerInterface is ActivityInterface, usingProperty{
 
     }
 
-
-    function getTicket(uint _id) returns (bool);
-
     function bid(uint id, uint256 bidPrice, address buyAddress) returns (bool success){
         if (bidPrice <= biddingList[_id].currrentPrice || now > biddingList[_id].closeDate || msg.sender == biddingList[_id].bidOwner) throw;
         biddingList[_id].currentPrice = bidPrice;
@@ -88,7 +85,6 @@ contract BuyerInterface is ActivityInterface, usingProperty{
 }
 
 contract SellerInterface is ActivityInterface, usingProperty{
-
 
     function SellerInterface(){
 
