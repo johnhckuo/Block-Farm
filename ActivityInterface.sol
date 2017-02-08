@@ -11,12 +11,15 @@ contract ActivityInterface {
 
     struct Bidding{
         uint id;
+        address bidOwner;
         uint propertyId;
         bytes32 name;
         uint256 startingPrice;
+        uint256 currentPrice;
         uint startDate;
         uint closeDate;
-
+        uint lastUpdateDate;
+        address lastBidder;
     }
 
     Bidding[] biddingList;
@@ -25,16 +28,21 @@ contract ActivityInterface {
         owner = msg.sender;
     }
 
-    function addBidding(uint _propertyId, bytes32 _name, uint256 _startingPrice, uint _closeDate) returns(bool success, uint _id){
+    function addBidding(uint _propertyId, bytes32 _name, uint256 _startingPrice, uint256 _currentPrice, uint _closeDate) returns(bool success, uint _id){
         uint _id = biddingList.length++;
         // a little issue here, I can't create an identifier for each biddingList, therefore repeating biddingList issue might emerge
 
         biddingList[_id] = Bidding({
+            id: _id,
+            bidOwner : msg.sender,
             propertyId: _propertyId,
             name: _name,
             startingPrice: _startingPrice,
+            currentPrice: _startingPrice,
             startDate: now,
-            closeDate: _closeDate
+            closeDate: _closeDate,
+            lastUpdateDate: now,
+            lastBidder: 0
         });
 
 
@@ -52,9 +60,9 @@ contract ActivityInterface {
 
     }
 
-    function queryBidding(uint _id) returns (uint, bytes32, uint256, uint, uint){
+    function queryBidding(uint _id) returns (uint, bytes32, uint256, uint256, uint, uint){
         Bidding temp = biddingList[_id];
-        return (temp.propertyId, temp.name, temp.startingPrice, temp.startDate, temp.closeDate);
+        return (temp.id, temp.bidOwner, temp.propertyId, temp.name, temp.startingPrice, temp.currentPrice, temp.startDate, temp.closeDate, temp.lastUpdateDate, temp.lastBidder);
     }
 
 
@@ -69,7 +77,13 @@ contract BuyerInterface is ActivityInterface, usingProperty{
 
 
     function getTicket(uint _id) returns (bool);
-    function bid(uint256 input, address buyAddress) returns (bool success);
+
+    function bid(uint id, uint256 bidPrice, address buyAddress) returns (bool success){
+        if (bidPrice <= biddingList[_id].currrentPrice || now > biddingList[_id].closeDate || msg.sender == biddingList[_id].bidOwner) throw;
+        biddingList[_id].currentPrice = bidPrice;
+        biddingList[_id].lastBidder = msg.sender;
+        biddingList[_id].lastUpdateDate = now;
+    }
 
 }
 
