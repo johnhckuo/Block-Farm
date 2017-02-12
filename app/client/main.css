@@ -1,5 +1,10 @@
 /* CSS declarations go here */
+body{
 
+  background: url(/img/concert2.jpg);
+  background-size: 100% 100%;
+  background-attachment: fixed;
+}
 .layout{
   display:flex;
   flex-wrap: row;
@@ -30,12 +35,17 @@
 #title{
   justify-content: flex-start;
   align-items: center;
+  background: url(/img/concert.jpg);
+  background-size: 100% 100%;
+
 }
 
 h1{
-  font-size: 25px;
+  font-size: 45px;
+  color:white;
 }
 h3{
+  font-size: 25px;
   color:gray;
 }
 .titleContainer{
@@ -52,11 +62,27 @@ h3{
 
 
 }
+
+#arrow-down {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    z-index: 11;
+    height: 100px;
+    width: 70px;
+    margin-left: -35px;
+    background: url(/img/bg-arrow-down.png) no-repeat 21px 26px rgba(255, 103, 95, .8);
+    background-size: 28px 16px;
+    text-indent: -9999px;
+    display: block;
+}
+
 #intro{
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
+  color:white;
+  background: #000;
 }
 
 #intro div{
@@ -64,14 +90,17 @@ h3{
   border:1px solid #000;
   height:600px;
   width:500px;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 #advantage{
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-
+  background: rgba(0,0,0,0.5);
+  color:#fff;
 }
+
 #advantageContainer{
   position: relative;
   display:flex;
@@ -86,11 +115,40 @@ h3{
   text-align: center;
   border:1px solid #000;
   margin-right: 10px;
+  background: rgba(255, 255, 255, 0.5);
 }
+
+#advantage2{
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(255,0,0,0.5);
+  color:#fff;
+}
+
+#advantageContainer2{
+  position: relative;
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  top:-60px;
+}
+#advantageContainer2 div{
+  width:300px;
+  height:400px;
+  text-align: center;
+  border:1px solid #000;
+  margin-right: 10px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
 #tutorial{
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  background: rgba(255,255,255,1);
+  color:black;
 }
 #tutorial div{
   margin-right: 10px;
