@@ -3,21 +3,36 @@
 </head>
 
 <body>
-
-  <div id="title" class="flexbox layout">
-    <div class="titleContainer">
-      <h1>Welcome to D3 Project !</h1>
-      <h3>An academic research</h3>
-      <span class="joinUs">
-          Join Us!
-      </span>
-      <span class="learnMore">
-        Learn More!
-      </span>
-    </div>
+  <div id="header" class="flexbox">
+      <ul class="flexbox">
+        <li>Home</li>
+        <li>About Us</li>
+        <li>Contact Us</li>
+        <li>lala</li>
+        <li>lala</li>
+        <li>lala</li>
+      </ul>
   </div>
+  <div id="title" class="flexbox layout">
+      <div class="titleContainer">
+        <h1>Welcome to D3 Project !</h1>
+        <h3>An academic research</h3>
+        <span class="joinUs">
+            Join Us!
+        </span>
+        <span class="learnMore">
+          Learn More!
+        </span>
+      </div>
+  </div>
+
   <div id="intro" class="flexbox layout">
-      Intro
+      <div class="">
+        <h1>Intro</h1>
+      </div>
+      <div class="">
+        yo
+      </div>
   </div>
   <div id="advantage" class="flexbox layout">
       <h1>Why xxxxx</h1>
@@ -31,11 +46,20 @@
       </div>
   </div>
   <div id="tutorial" class="flexbox layout">
-      Tutorial
+
+      <div class="">
+        {{> hello}}
+        {{> info}}
+      </div>
+      <div class="">
+        <h1>Get Started</h1>
+      </div>
+  </div>
+  <div id="footer" class="flexbox">
+      <h2>Copyrights</h2>
   </div>
 
-  {{> hello}}
-  {{> info}}
+
 </body>
 
 <template name="test">
