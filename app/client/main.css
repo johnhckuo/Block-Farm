@@ -122,7 +122,7 @@ h3{
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  background: rgba(255,0,0,0.5);
+  background: rgba(0,100,0,0.5);
   color:#fff;
 }
 
@@ -144,13 +144,14 @@ h3{
 }
 
 #tutorial{
+  display:flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   background: rgba(255,255,255,1);
   color:black;
 }
-#tutorial div{
+#tutorial > div{
   margin-right: 10px;
   border:1px solid #000;
   height:600px;
@@ -165,4 +166,62 @@ h3{
   height:50px;
   color:#fff;
   background: rgb(0,0,0);
+}
+#form{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#stakeholderInfo label{
+  width:100px;
+  margin-bottom: 20px;
+}
+#next{
+  float:right;
+}
+#characters button:click{
+  background: #fff;
+}
+
+/* entire container, keeps perspective */
+.flip-container {
+	perspective: 1000px;
+}
+	/* flip the pane when hovered */
+.flipperClicked {
+	transform: rotateY(180deg);
+}
+
+
+
+/* flip speed goes here */
+.flipper {
+	transition: 0.6s;
+	transform-style: preserve-3d;
+  width: 100%;
+  height: 100%;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+	backface-visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+  border:1px solid #000;
+  width: 100%;
+  height: 100%;
+}
+
+/* front pane, placed above back */
+.front {
+	z-index: 2;
+	/* for firefox 31 */
+	transform: rotateY(0deg);
+}
+
+/* back, initially hidden pane */
+.back {
+	transform: rotateY(180deg);
 }

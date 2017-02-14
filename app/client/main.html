@@ -63,9 +63,50 @@
         {{> hello}}
         {{> info}}
       </div>
-      <div class="">
-        <h1>Get Started</h1>
-      </div>
+      <div id="form" class="flexbox flip-container">
+          <div class="flipper" id="flipper">
+              <div class="front">
+                  <h1>Get Started</h1>
+                  <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
+
+                      <label for="stakeholder">Characters</label>
+                      {{> chooseCharacters}}
+                      <br>
+                      <label for="address">Address</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                        <input type="text" class="form-control" placeholder="Node Address">
+                      </div>
+                      <br>
+                      <label for="username">Username</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-user" id="address"></span>
+                        <input type="text" class="form-control" placeholder="">
+                      </div>
+                      <br>
+                      <label for="fund">Fund</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                        <input type="text" class="form-control" placeholder="USD dollars">
+                      </div>
+                      <br>
+                      {{> next}}
+                  </form>
+            </div>
+            <div class="back">
+                <div id="sellerInfo">
+                    <form class="navbar-form navbar-left" role="search">
+                        seller
+                    </form>
+                </div>
+                <div id="buyerInfo">
+                    <form class="navbar-form navbar-left" role="search">
+                      buyer
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
   <div id="footer" class="flexbox">
       <h2>Copyrights</h2>
@@ -74,8 +115,23 @@
 
 </body>
 
-<template name="test">
+<template name="chooseCharacters">
+  <div class="btn-group" role="group" id="characters">
+    <button type="button" class="btn btn-default" id="seller" value='seller'>Seller</button>
+    <button type="button" class="btn btn-default" id="buyer" value='buyer'>Buyer</button>
+  </div>
+</template>
 
+<template name="previous">
+  <button type="submit" class="btn btn-danger" id='next'>Back</button>
+</template>
+
+<template name="submit">
+  <button type="submit" class="btn btn-primary" id='next'>Register</button>
+</template>
+
+<template name="next">
+  <button type="submit" class="btn btn-success" id='next'>Next</button>
 </template>
 
 <template name="hello">
