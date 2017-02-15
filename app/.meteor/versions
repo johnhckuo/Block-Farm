@@ -47,6 +47,7 @@ modules@0.7.7
 modules-runtime@0.7.8
 mongo@1.1.14
 mongo-id@1.0.6
+natestrauser:jquery-scrollto@1.4.7
 npm-mongo@2.2.16_1
 observe-sequence@1.0.14
 ordered-dict@1.0.9

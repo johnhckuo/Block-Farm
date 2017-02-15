@@ -3,7 +3,7 @@
 </head>
 
 <body>
-  <div id="header" class="flexbox">
+  <div class="header flexbox">
       <ul class="flexbox">
         <li>Home</li>
         <li>About Us</li>
@@ -24,7 +24,7 @@
           Learn More!
         </span>
       </div>
-      <a href="#section2" data-title="" id="arrow-down">Get started</a>
+      {{> arrowDown}}
   </div>
 
   <div id="intro" class="flexbox layout">
@@ -144,8 +144,15 @@
       <h2>Copyrights</h2>
   </div>
 
-
+  {{> init}}
 </body>
+
+<template name="init">
+</template>
+
+<template name="arrowDown">
+  <a href="#section2" data-title="" id="arrow-down">Get started</a>
+</template>
 
 <template name="chooseCharacters">
   <div class="btn-group" role="group" id="characters">

@@ -64,3 +64,31 @@ Template.chooseCharacters.events({
       character = event.target.value;
   },
 });
+
+Template.arrowDown.events({
+  'click a'(event, instance) {
+      var height = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
+        scrollDuration = 1000;
+      $(window).scrollTo(height, scrollDuration);
+  },
+});
+
+Template.init.rendered = function() {
+    if(!this._rendered) {
+      this._rendered = true;
+      console.log('Template render complete');
+      var height = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
+      $(window).scroll(function(){
+          if (window.pageYOffset >= height){
+              $(".header").addClass("fixed");
+          }else{
+              $(".header").removeClass("fixed");
+          }
+
+      });
+    }
+}

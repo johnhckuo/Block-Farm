@@ -12,7 +12,7 @@ body{
   height:100vh;
   align-items: center;
 }
-#header{
+.header{
   position: absolute;
   display:flex;
   align-items: center;
@@ -22,13 +22,17 @@ body{
   top:100vh;
   background: rgba(0,0,0,0.5);
 }
-#header ul{
+.header ul{
   display:flex;
   justify-content: space-around;
   width:100%;
 }
-#header ul li{
+.header ul li{
   display: inline;
+  cursor: pointer;
+}
+.header ul li:hover{
+  color:rgb(150,150,255);
 }
 
 #title{
@@ -36,7 +40,6 @@ body{
   align-items: center;
   background: url(/img/concert.jpg);
   background-size: 100% 100%;
-
 }
 
 h1{
@@ -270,4 +273,10 @@ h3{
 
 .glyphicon{
   top:0px;
+}
+
+.fixed{
+  position: fixed;
+  z-index: 99;
+  top: 0px;
 }
