@@ -28,47 +28,49 @@
   </div>
 
   <div id="intro" class="flexbox layout">
-      <div class="">
-        <h1>Intro</h1>
-      </div>
-      <div class="">
-        yo
+      <h1>What is D3 ?</h1>
+
+      <div class="flexbox">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <img src="/img/ethereum.jpg" alt="">
       </div>
   </div>
   <div id="advantage" class="flexbox layout">
-      <h1>Why xxxxx</h1>
-      <div id="advantageContainer" class="flexbox">
+      <div id="advantageContainer" class="flexbox advantageContainer">
           <div class="">
-              hihi
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
           </div>
           <div class="">
-              yoyo
+            <h1>Why D3 ?</h1>
           </div>
       </div>
   </div>
-  <div id="advantage2" class="flexbox layout">
-      <h1>Why xxxxx</h1>
-      <div id="advantageContainer2" class="flexbox">
+  <div id="advantage2" class="flexbox layout advantage">
+      <div id="advantageContainer2" class="flexbox advantageContainer">
           <div class="">
-              hihi
+            <h1>Why D3 ?</h1>
+
           </div>
           <div class="">
-              yoyo
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
           </div>
       </div>
   </div>
   <div id="tutorial" class="flexbox layout">
 
       <div class="">
-        {{> hello}}
-        {{> info}}
+        <!-- {{> hello}}
+        {{> info}} -->
+        <img src="/img/rocket.png" alt="">
+        <h1>Get Started</h1>
       </div>
       <div id="form" class="flexbox flip-container">
           <div class="flipper" id="flipper">
-              <div class="front">
-                  <h1>Get Started</h1>
-                  <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
+              <div class="front flexbox">
 
+                  <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
+                      <h2>Stakeholder Registry</h2>
+                      <br>
                       <label for="stakeholder">Characters</label>
                       {{> chooseCharacters}}
                       <br>
@@ -93,16 +95,46 @@
                       {{> next}}
                   </form>
             </div>
-            <div class="back">
+            <div class="back flexbox">
                 <div id="sellerInfo">
                     <form class="navbar-form navbar-left" role="search">
-                        seller
+                        <h2>Add Property</h2>
+                        <br>
+                        <label for="name">Name</label>
+                        <div class="input-group">
+                          <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                          <input type="text" class="form-control" placeholder="Property Name">
+                        </div>
+                        <br>
+                        <label for="count">Property Count</label>
+                        <div class="input-group">
+                          <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                          <input type="text" class="form-control" placeholder="">
+                        </div>
+                        <br>
+                        <label for="data">Additional Data</label>
+                        <div class="input-group">
+                          <span class="input-group-addon glyphicon glyphicon-eth" id="data"></span>
+                          <input type="text" class="form-control" placeholder="Further Info">
+                        </div>
+                        <br>
                     </form>
                 </div>
                 <div id="buyerInfo">
                     <form class="navbar-form navbar-left" role="search">
-                      buyer
+                        <h2>Current Bidding Query</h2>
+                        <br>
+                        <label for="bidId">Bidding ID</label>
+                        <div class="input-group">
+                          <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                          <input type="text" class="form-control" placeholder="ID">
+                        </div>
+                        <br>
                     </form>
+                </div>
+                <div class="submitButtons flexbox">
+                  {{> previous}}
+                  {{> submit}}
                 </div>
             </div>
         </div>

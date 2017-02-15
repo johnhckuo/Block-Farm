@@ -10,7 +10,6 @@ body{
   flex-wrap: row;
   width: 100%;
   height:100vh;
-  border: 1px solid #000;
   align-items: center;
 }
 #header{
@@ -44,6 +43,11 @@ h1{
   font-size: 45px;
   color:white;
 }
+
+h2{
+  text-align: center;
+}
+
 h3{
   font-size: 25px;
   color:gray;
@@ -78,22 +82,35 @@ h3{
 }
 
 #intro{
-  flex-direction: row;
+  display: flex;
   justify-content: center;
   align-items: center;
   color:white;
-  background: #000;
+  background: #112027;
+}
+
+#intro h1{
+  margin-right: 150px;
+}
+
+#intro img{
+  display: block;
+  width:700px;
+  height: auto;
 }
 
 #intro div{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin-right: 10px;
-  border:1px solid #000;
   height:600px;
   width:500px;
-  background: rgba(0, 0, 0, 0.5);
 }
 
 #advantage{
+  display:flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
@@ -109,20 +126,13 @@ h3{
   align-items: center;
   top:-60px;
 }
-#advantageContainer div{
-  width:300px;
-  height:400px;
-  text-align: center;
-  border:1px solid #000;
-  margin-right: 10px;
-  background: rgba(255, 255, 255, 0.5);
-}
 
 #advantage2{
+  display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  background: rgba(0,100,0,0.5);
+  background: rgba(0,50,0,0.5);
   color:#fff;
 }
 
@@ -134,13 +144,15 @@ h3{
   align-items: center;
   top:-60px;
 }
-#advantageContainer2 div{
+.advantageContainer div{
   width:300px;
   height:400px;
   text-align: center;
-  border:1px solid #000;
   margin-right: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 #tutorial{
@@ -148,14 +160,31 @@ h3{
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background: rgba(255,255,255,1);
-  color:black;
+  background: #112027;
+  color:white;
 }
 #tutorial > div{
   margin-right: 10px;
-  border:1px solid #000;
   height:600px;
   width:500px;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#tutorial img{
+  display: block;
+  width:300px;
+  height: auto;
+  margin-bottom: 50px;
+}
+#tutorial h2{
+  font-size: 25px;
+  margin-bottom: 50px;
+}
+#form button{
+  margin-left:30px;
 }
 
 #footer{
@@ -173,7 +202,7 @@ h3{
   justify-content: center;
   align-items: center;
 }
-#stakeholderInfo label{
+#form label{
   width:100px;
   margin-bottom: 20px;
 }
@@ -209,7 +238,6 @@ h3{
 	position: absolute;
 	top: 0;
 	left: 0;
-  border:1px solid #000;
   width: 100%;
   height: 100%;
 }
@@ -219,9 +247,27 @@ h3{
 	z-index: 2;
 	/* for firefox 31 */
 	transform: rotateY(0deg);
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 /* back, initially hidden pane */
 .back {
 	transform: rotateY(180deg);
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.submitButtons{
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.glyphicon{
+  top:0px;
 }
