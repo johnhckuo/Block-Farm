@@ -27,22 +27,21 @@ Template.next.events({
     document.getElementById("buyerInfo").style.display = "inline";
     document.getElementById("sellerInfo").style.display = "inline";
 
-    var temp = document.getElementById("flipper");
-    temp.className += " flipperClicked";
     if (character == "seller"){
         document.getElementById("buyerInfo").style.display = "none";
     }else{
         document.getElementById("sellerInfo").style.display = "none";
     }
 
+    var temp = document.getElementById("flipper");
+    temp.className += " flipperClicked";
+
+
   },
 });
 
 Template.previous.events({
   'click button'(event, instance) {
-
-    document.getElementById("buyerInfo").style.display = "inline";
-    document.getElementById("sellerInfo").style.display = "inline";
 
     var temp = document.getElementById("flipper");
     temp.className = " flipper";
