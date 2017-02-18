@@ -2,7 +2,7 @@ pragma solidity ^0.4.2;
 
 import "./usingProperty.sol";
 
-contract ActivityInterface {
+contract ActivityInterface is usingProperty{
 
     event biddingAdded(bool);
     address owner;
@@ -77,6 +77,11 @@ contract BuyerInterface is ActivityInterface, usingProperty{
         biddingList[_id].currentPrice = bidPrice;
         biddingList[_id].lastBidder = msg.sender;
         biddingList[_id].lastUpdateDate = now;
+    }
+
+    function resourceRating(uint _id, uint rating){
+        uint s_id = stakeholderId[msg.sender];
+        propertyList[_id].rating[s_id] = rating;
     }
 
 }

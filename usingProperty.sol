@@ -15,6 +15,8 @@ contract usingProperty{
 
         address owner;
         bytes32 extraData;
+
+        uint[] rating;
     }
 
     Property[] public propertyList;
