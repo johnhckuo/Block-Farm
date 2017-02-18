@@ -7,10 +7,14 @@ contract usingProperty{
         uint id;
         mapping (address => bool) accessStakeholders;
         uint since;
+
         uint256 propertyCount;
+        bytes32 unit;  //單位
+        bytes32 minUnit; //可拆分最小單位
+        uint parentId;
+
         address owner;
         bytes32 extraData;
-
     }
 
     Property[] public propertyList;
