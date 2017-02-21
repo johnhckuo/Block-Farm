@@ -27,7 +27,7 @@ contract ActivityInterface is usingProperty{
     }
 
     function addBidding(uint _propertyId, bytes32 _name, uint256 _startingPrice, uint256 _currentPrice, uint _closeDate) returns(bool success, uint _id){
-        uint _id = biddingList.length++;
+        _id = biddingList.length++;
 
         biddingList[_id] = Bidding({
             id: _id,
@@ -65,14 +65,14 @@ contract ActivityInterface is usingProperty{
 
 }
 
-contract BuyerInterface is ActivityInterface, usingProperty{
+contract BuyerInterface is ActivityInterface, Congress{
 
 
     function BuyerInterface(){
 
     }
 
-    function bid(uint id, uint256 bidPrice, address buyAddress) returns (bool success){
+    function bid(uint _id, uint256 bidPrice, address buyAddress) returns (bool success){
         if (bidPrice <= biddingList[_id].currrentPrice || now > biddingList[_id].closeDate || msg.sender == biddingList[_id].bidOwner) throw;
         biddingList[_id].currentPrice = bidPrice;
         biddingList[_id].lastBidder = msg.sender;
@@ -82,11 +82,14 @@ contract BuyerInterface is ActivityInterface, usingProperty{
     function resourceRating(uint _id, uint rating){
         uint s_id = stakeholderId[msg.sender];
         propertyList[_id].rating[s_id] = rating;
+
+
+
     }
 
 }
 
-contract SellerInterface is ActivityInterface, usingProperty{
+contract SellerInterface is ActivityInterface{
 
     function SellerInterface(){
 

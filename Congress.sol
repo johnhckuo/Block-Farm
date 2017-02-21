@@ -1,7 +1,5 @@
 pragma solidity ^0.4.2;
 
-import "./ActivityInterface.sol";
-
 contract owned {
     address public owner;
 
@@ -48,6 +46,8 @@ contract Congress is owned, tokenRecipient {
     uint public numProposals;
     mapping (address => uint) public stakeholderId;
     Stakeholder[] public stakeholders;
+
+    address PropertyAddress = 0x1;    //  <------------------------------ here
 
     event ProposalAdded(uint proposalID, address recipient, uint amount, string description);
     event Voted(uint proposalID, bool position, address voter, string justification);
@@ -123,6 +123,12 @@ contract Congress is owned, tokenRecipient {
                since:now,
                character: _character
            });
+
+           usingProperty temp = usingProperty(PropertyAddress);
+           for (uint i = 0 ; i < temp.propertyList.length ; i++){
+              temp.propertyList[i].rating.push(0);
+           }
+
         } else {
             id = stakeholderId[targetStakeholder];
             Stakeholder m = stakeholders[id];
@@ -249,3 +255,11 @@ contract Congress is owned, tokenRecipient {
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
 }
+
+
+//---------------------------
+//|                         |
+//|     Property            |
+//|     Contract            |
+//|             :D          |
+//---------------------------

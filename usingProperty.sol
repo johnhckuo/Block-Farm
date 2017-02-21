@@ -1,5 +1,8 @@
+pragma solidity ^0.4.2;
 
-contract usingProperty{
+import "./Congress.sol";
+
+contract usingProperty is Congress{
 
     event propertyAdded(bool);
     struct Property{
@@ -7,15 +10,11 @@ contract usingProperty{
         uint id;
         mapping (address => bool) accessStakeholders;
         uint since;
-
         uint256 propertyCount;
         bytes32 unit;  //單位
         bytes32 minUnit; //可拆分最小單位
-        uint parentId;
-
         address owner;
         bytes32 extraData;
-
         uint[] rating;
     }
 
@@ -35,26 +34,36 @@ contract usingProperty{
   */
 
 
-    function Property(){
+    function usingProperty(){
     }
 
-    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, bytes32 _extraData) returns(bool success, uint _id){
-        uint _id = propertyList.length++;
+    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, uint _unit, bytes32 _minUnit, bytes32 _extraData, uint _rating) returns(bool success, uint _id){
+        _id = propertyList.length++;
         // a little issue here, I can't create an identifier for each propertyList, therefore repeating propertyList issue might emerge
 
-        propertyList[_id] = Property({
-            name: _name,
-            id: _id,
-            propertyCount: _propertyCount,
-            since: now,
-            address: msg.sender,
-            extraData: _extraData
+        uint s_Id = stakeholderId[msg.sender];
 
-        });
-
+        mapping (address => bool) temp;
         for (uint i = 0 ; i < _accessStakeholders.length ; i++){
-          propertyList[_id].accessStakeholders[_accessStakeholders[i]] = true;
+          temp[_accessStakeholders[i]] = true;
         }
+
+        propertyList[_id].rating.length = stakeholders.length;
+
+        Property prop;
+        prop.rating.length = 1;
+        prop.name = _name;
+        prop.id= _id;
+        prop.accessStakeholders= temp;
+        prop.propertyCount= _propertyCount;
+        prop.since= now;
+        prop.unit= _unit;
+        prop.minUnit= _minUnit;
+        prop.owner= msg.sender;
+        prop.extraData= _extraData;
+        prop.rating[s_Id]= _rating;
+
+        propertyList[_id] = prop;
 
         propertyAdded(true);
     }
