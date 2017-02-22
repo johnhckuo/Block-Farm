@@ -1,6 +1,6 @@
 pragma solidity ^0.4.2;
 
-import "./usingProperty.sol";
+import "./Congress.sol";
 
 contract mainActivity is usingProperty{
     function mainActivity(){
@@ -8,7 +8,7 @@ contract mainActivity is usingProperty{
     }
 
     function tradingMatch(){
-        uint[] visitedProperty;
+        uint[] memory visitedProperty;
         uint highestRating = 0;
 
         for (uint i = 0 ; i < propertyList.length ; i++){
