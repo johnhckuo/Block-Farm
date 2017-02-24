@@ -23,12 +23,13 @@ contract usingProperty{
         address owner;
         bytes32 extraData;
         uint[] rating;
+        uint averageRating;
     }
 
     Property[] public propertyList;
 
     address CongressAddress = 0x1;
-
+    Congress congress = Congress(CongressAddress);
   /*
     // seller property
     struct TicketInfo{
@@ -50,8 +51,10 @@ contract usingProperty{
         _id = propertyList.length++;
         // a little issue here, I can't create an identifier for each propertyList, therefore repeating propertyList issue might emerge
 
-        Congress temp = Congress(CongressAddress);
-        uint s_Id = temp.stakeholderId(msg.sender);
+
+        uint s_Id = congress.stakeholderId(msg.sender);
+        congress.addProperty(s_Id, _id);
+
       //  Stakeholder[] s_List = temp.stakeholders;
 
         Property prop = propertyList[_id];
@@ -59,7 +62,7 @@ contract usingProperty{
           prop.accessStakeholders[_accessStakeholders[i]] = true;
         }
 
-        prop.rating.length = temp.getStakeholdersLength();
+        prop.rating.length = congress.getStakeholdersLength();
         //prop.rating.length = 1;
         prop.name = _name;
         prop.id= _id;
@@ -70,6 +73,7 @@ contract usingProperty{
         prop.owner= msg.sender;
         prop.extraData= _extraData;
         prop.rating[s_Id]= _rating;
+        prop.averageRating = _rating;
 
         propertyAdded(true);
     }
@@ -77,7 +81,7 @@ contract usingProperty{
     function removeProperty(uint _id){
         if (getPropertiesLength() == 0) throw;
 
-        for (uint i = 0; i<propertyList.length-1; i++){
+        for (uint i = 0; i<propertyList.length; i++){
             propertyList[i] = propertyList[i+1];
         }
         delete propertyList[propertyList.length-1];
@@ -85,18 +89,29 @@ contract usingProperty{
 
     }
 
-    function queryProperty(uint _id) returns (bytes32, uint, uint, uint256, address, bytes32){
-        Property temp = propertyList[_id];
-        return (temp.name, temp.id, temp.since, temp.propertyCount, temp.owner, temp.extraData);
-    }
-
     function getPropertiesLength() constant returns(uint){
         return propertyList.length;
     }
 
-    function updatePropertiesRating(uint _id, bytes operation){
+    function getProperty(uint p_Id) constant returns(bytes32, uint, uint256, uint256, bytes32, address, bytes32){
+        return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].unit, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
+    }
+
+    function getPartialProperty(uint p_Id) returns(address, uint){
+        return (propertyList[p_Id].owner, propertyList[p_Id].averageRating);
+    }
+
+    function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint){
+        return propertyList[p_Id].rating[s_Id];
+    }
+
+    function updatePropertiesRating(uint _id, uint r_Id, uint rate, bytes operation){
         if (sha3(operation) == sha3("init")){      //consider import string.utils contract ?
           propertyList[_id].rating.push(0);
+        }else if (sha3(operation) == sha3("update")){
+          uint length = congress.getStakeholdersLength();
+          propertyList[_id].rating[r_Id] = rate;
+          propertyList[_id].averageRating = ((propertyList[_id].averageRating * (length-1))+rate)/length;
         }
     }
 
@@ -190,7 +205,9 @@ contract Congress is owned, tokenRecipient {
         uint rate;
         address addr;
         uint since;
-        string character;
+        bytes32 character;
+        uint propertyCount;
+        uint[] propertyId;
     }
 
     struct Vote {
@@ -225,29 +242,44 @@ contract Congress is owned, tokenRecipient {
         return stakeholders.length;
     }
 
+    function getStakeholder(uint s_Id) constant returns(bytes32, uint256, uint256, uint, address, uint, bytes32){
+        return (stakeholders[s_Id].name, stakeholders[s_Id].threshold, stakeholders[s_Id].fund, stakeholders[s_Id].rate, stakeholders[s_Id].addr, stakeholders[s_Id].since, stakeholders[s_Id].character);
+    }
+
+    function getPropertyId(uint s_Id, uint index) constant returns(uint){
+        return stakeholders[s_Id].propertyId[index];
+    }
+
+    function getStakeholderPropertyCount(uint s_Id) constant returns(uint){
+        return stakeholders[s_Id].propertyCount;
+    }
+
+    function addProperty(uint _id, uint p_Id){
+        stakeholders[_id].propertyCount++;
+        stakeholders[_id].propertyId.push(p_Id);
+    }
+
     /*make Stakeholder*/
-    function addMember(address targetStakeholder, bytes32 _name, uint256 _threshold, uint256 _fund, uint _rate, string _character) onlyOwner {
+    function addMember(address targetStakeholder, bytes32 _name, uint256 _threshold, uint256 _fund, uint _rate, bytes32 _character) onlyOwner {
         uint id;
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
            id = stakeholders.length++;
-           stakeholders[id] = Stakeholder({
-               name:_name,
-               threshold:_threshold,
-               fund:_fund,
-               id:id,
-               rate:_rate,
-               addr:msg.sender,
-               since:now,
-               character: _character
-           });
+
+           stakeholders[id].name=_name;
+           stakeholders[id].threshold=_threshold;
+           stakeholders[id].fund=_fund;
+           stakeholders[id].id=id;
+           stakeholders[id].rate=_rate;
+           stakeholders[id].addr=msg.sender;
+           stakeholders[id].since=now;
+           stakeholders[id].character= _character;
 
            usingProperty temp = usingProperty(PropertyAddress);
            //Property[] p_List = temp.propertyList;
            uint p_Length = temp.getPropertiesLength();
-           for (uint i = 0 ; i < p_Length ; i++){
-              temp.updatePropertiesRating(i, "init");
-           }
+           temp.updatePropertiesRating(p_Length, 0, 0, "init");
+
 
         } else {
             id = stakeholderId[targetStakeholder];
