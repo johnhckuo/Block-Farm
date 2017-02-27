@@ -1,133 +1,5 @@
 pragma solidity ^0.4.2;
 
-
-//---------------------------
-//|                         |
-//|     Property            |
-//|     Contract            |
-//|             :D          |
-//---------------------------
-
-
-contract usingProperty{
-
-    event propertyAdded(bool);
-    struct Property{
-        bytes32 name;
-        uint id;
-        mapping (address => bool) accessStakeholders;
-        uint since;
-        uint256 propertyCount;
-        uint256 unit;  //單位
-        bytes32 minUnit; //可拆分最小單位
-        address owner;
-        bytes32 extraData;
-        uint[] rating;
-        uint averageRating;
-    }
-
-    Property[] public propertyList;
-
-    address CongressAddress = 0x1;
-    Congress congress = Congress(CongressAddress);
-  /*
-    // seller property
-    struct TicketInfo{
-        uint date;
-        bytes32 location;
-        uint cost;
-        bytes32 seat;
-        address seller;
-    }
-
-    mapping (string => string[]) Tickets;  //using singer name to search for his concert list
-  */
-
-
-    function usingProperty(){
-    }
-
-    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, uint256 _unit, bytes32 _minUnit, bytes32 _extraData, uint _rating) returns(bool success, uint _id){
-        _id = propertyList.length++;
-        // a little issue here, I can't create an identifier for each propertyList, therefore repeating propertyList issue might emerge
-
-
-        uint s_Id = congress.stakeholderId(msg.sender);
-        congress.addProperty(s_Id, _id);
-
-      //  Stakeholder[] s_List = temp.stakeholders;
-
-        Property prop = propertyList[_id];
-        for (uint i = 0 ; i < _accessStakeholders.length ; i++){
-          prop.accessStakeholders[_accessStakeholders[i]] = true;
-        }
-
-        prop.rating.length = congress.getStakeholdersLength();
-        //prop.rating.length = 1;
-        prop.name = _name;
-        prop.id= _id;
-        prop.propertyCount= _propertyCount;
-        prop.since= now;
-        prop.unit= _unit;
-        prop.minUnit= _minUnit;
-        prop.owner= msg.sender;
-        prop.extraData= _extraData;
-        prop.rating[s_Id]= _rating;
-        prop.averageRating = _rating;
-
-        propertyAdded(true);
-    }
-
-    function removeProperty(uint _id){
-        if (getPropertiesLength() == 0) throw;
-
-        for (uint i = 0; i<propertyList.length; i++){
-            propertyList[i] = propertyList[i+1];
-        }
-        delete propertyList[propertyList.length-1];
-        propertyList.length--;
-
-    }
-
-    function getPropertiesLength() constant returns(uint){
-        return propertyList.length;
-    }
-
-    function getProperty(uint p_Id) constant returns(bytes32, uint, uint256, uint256, bytes32, address, bytes32){
-        return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].unit, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
-    }
-
-    function getPartialProperty(uint p_Id) returns(address, uint){
-        return (propertyList[p_Id].owner, propertyList[p_Id].averageRating);
-    }
-
-    function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint){
-        return propertyList[p_Id].rating[s_Id];
-    }
-
-    function updatePropertiesRating(uint _id, uint r_Id, uint rate, bytes operation){
-        if (sha3(operation) == sha3("init")){      //consider import string.utils contract ?
-          propertyList[_id].rating.push(0);
-        }else if (sha3(operation) == sha3("update")){
-          uint length = congress.getStakeholdersLength();
-          propertyList[_id].rating[r_Id] = rate;
-          propertyList[_id].averageRating = ((propertyList[_id].averageRating * (length-1))+rate)/length;
-        }
-    }
-
-
-}
-
-
-//---------------------------
-//|                         |
-//|     Congress            |
-//|     Contract            |
-//|             :D          |
-//---------------------------
-
-
-
 contract owned {
     address public owner;
 
@@ -175,7 +47,7 @@ contract Congress is owned, tokenRecipient {
     mapping (address => uint) public stakeholderId;
     Stakeholder[] public stakeholders;
 
-    address PropertyAddress = 0x1;    //  <------------------------------ here
+    // address PropertyAddress = 0x1;    //  <------------------------------ here
 
     event ProposalAdded(uint proposalID, address recipient, uint amount, string description);
     event Voted(uint proposalID, bool position, address voter, string justification);
@@ -224,6 +96,7 @@ contract Congress is owned, tokenRecipient {
     }
 
     /* First time setup */
+
     function Congress(
         uint minimumQuorumForProposals,
         uint minutesForDebate,
@@ -232,11 +105,17 @@ contract Congress is owned, tokenRecipient {
         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
         if (congressLeader != 0) owner = congressLeader;
         // It’s necessary to add an empty first Stakeholder
-        addMember(0, 'Genesis', 0, 0, 0, "Genesis");
+        //addMember(0, 'Genesis', 0, 0, 0, "Genesis");
+
         // and let's add the founder, to save a step later
-        addMember(msg.sender, 'Moderator', 0, 0, 0, "Founder");
+        addMember('Moderator', 0, 0, 0, "Founder");
 
     }
+
+    // function Congress(){
+    //     owner = msg.sender;
+    // }
+
 
     function getStakeholdersLength() constant returns(uint){
         return stakeholders.length;
@@ -260,8 +139,9 @@ contract Congress is owned, tokenRecipient {
     }
 
     /*make Stakeholder*/
-    function addMember(address targetStakeholder, bytes32 _name, uint256 _threshold, uint256 _fund, uint _rate, bytes32 _character) onlyOwner {
+    function addMember(bytes32 _name, uint256 _threshold, uint256 _fund, uint _rate, bytes32 _character){
         uint id;
+        address targetStakeholder = msg.sender;
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
            id = stakeholders.length++;
@@ -275,10 +155,10 @@ contract Congress is owned, tokenRecipient {
            stakeholders[id].since=now;
            stakeholders[id].character= _character;
 
-           usingProperty temp = usingProperty(PropertyAddress);
-           //Property[] p_List = temp.propertyList;
-           uint p_Length = temp.getPropertiesLength();
-           temp.updatePropertiesRating(p_Length, 0, 0, "init");
+          // important!!!!! This will be implemented in the front end interface !!!!!!!!!!! so that the using property dependency can be removed
+          //  usingProperty temp = usingProperty(PropertyAddress);
+          //  uint p_Length = temp.getPropertiesLength();
+          //  temp.updatePropertiesRating(p_Length, 0, "init");
 
 
         } else {
