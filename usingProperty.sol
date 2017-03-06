@@ -58,7 +58,11 @@ contract usingProperty{
         return CongressAddress;
     }
 
-    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, bytes32 _unit, uint256 _minUnit, bytes32 _extraData, uint _rating) returns(bool success, uint _id){
+    function getStakeholdersLength() constant returns(uint){
+        return congress.getStakeholdersLength();
+    }
+
+    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, bytes32 _unit, uint256 _minUnit, bytes32 _extraData, uint _rating) returns(uint _id){
         _id = propertyList.length++;
 
         uint s_Id = congress.stakeholderId(msg.sender);
@@ -110,7 +114,7 @@ contract usingProperty{
         return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].unit, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
-    function getPartialProperty(uint p_Id) returns(address, uint){
+    function getPartialProperty(uint p_Id) constant returns(address, uint){
         return (propertyList[p_Id].owner, propertyList[p_Id].averageRating);
     }
 
@@ -124,13 +128,19 @@ contract usingProperty{
 
     function updatePropertiesRating(uint _id, uint rate, bytes operation){
         if (sha3(operation) == sha3("init")){      //consider import string.utils contract ?
-          propertyList[_id].rating.push(0);
+            propertyList[_id].rating.push(0);
         }else if (sha3(operation) == sha3("update")){
-          uint length = congress.getStakeholdersLength();
+            uint length = congress.getStakeholdersLength();
 
-          uint s_Id = congress.stakeholderId(msg.sender);
-          propertyList[_id].rating[s_Id] = rate;
-          propertyList[_id].averageRating = ((propertyList[_id].averageRating * (length-1))+rate)/length;
+            length = length-1; // ignore founder rating
+
+            uint s_Id = congress.stakeholderId(msg.sender);
+            propertyList[_id].rating[s_Id] = rate;
+            propertyList[_id].averageRating = ((propertyList[_id].averageRating * (length-1))+rate)/length;
+        }else if (sha3(operation) == sha3("new")){
+            for (uint j = 0 ; j < _id ; j++){
+                propertyList[j].rating.push(0);
+            }
         }
     }
 

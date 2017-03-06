@@ -12,7 +12,7 @@ body{
   height:100vh;
   align-items: center;
 }
-.header{
+.indexHeader{
   position: absolute;
   display:flex;
   align-items: center;
@@ -22,6 +22,18 @@ body{
   top:100vh;
   background: rgba(0,0,0,0.5);
 }
+
+.normalHeader{
+  position: absolute;
+  display:flex;
+  align-items: center;
+  width:100vw;
+  height:50px;
+  color:#fff;
+  top:0px;
+  background: rgba(0,0,0,0.5);
+}
+
 .header ul{
   display:flex;
   justify-content: space-around;

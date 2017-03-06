@@ -1,13 +1,27 @@
 pragma solidity ^0.4.2;
 
-import "./Congress.sol";
+contract Congress{
+    mapping (address => uint) public stakeholderId;
+    function getStakeholdersLength() constant returns(uint);
+}
 
-contract ActivityInterface is usingProperty{
+contract usingProperty{
+    function getPropertiesLength() constant returns(uint);
+    function getPartialProperty(uint p_Id) returns(address, uint);
+    function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint);
+    function updatePropertiesRating(uint _id, uint rate, bytes operation);
+}
+
+contract ActivityInterface{
 
     event biddingAdded(bool);
     address owner;
 
+    Congress congress;
+    usingProperty property;
 
+    address CongressAddress;
+    address PropertyAddress;
 
     struct Bidding{
         uint id;
@@ -24,8 +38,13 @@ contract ActivityInterface is usingProperty{
 
     Bidding[] biddingList;
 
-    function ActivityInterface(){
+    function ActivityInterface(address _congressAddress, address _propertyAddress){
         owner = msg.sender;
+        CongressAddress = _congressAddress;
+        PropertyAddress = _propertyAddress;
+
+        congress = Congress(CongressAddress);
+        property = usingProperty(PropertyAddress);
     }
 
     function addBidding(uint _propertyId, bytes32 _name, uint256 _startingPrice, uint256 _currentPrice, uint _closeDate) returns(bool success, uint _id){
@@ -86,13 +105,8 @@ contract BuyerInterface is ActivityInterface{
     }
 
     function resourceRating(uint _id, uint rating){
-        address CongressAddress = 0x1;
-        Congress temp = Congress(CongressAddress);
-        uint s_Id = temp.stakeholderId(msg.sender);
-        propertyList[_id].rating[s_Id] = rating;
-
-
-
+        uint s_Id = congress.stakeholderId(msg.sender);
+        property.updatePropertiesRating(_id, rating, "update");
     }
 
 }

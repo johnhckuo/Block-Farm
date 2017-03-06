@@ -286,4 +286,5 @@ contract Congress is owned, tokenRecipient {
         // Fire Events
         ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
     }
+
 }

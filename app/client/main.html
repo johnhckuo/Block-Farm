@@ -3,12 +3,31 @@
 </head>
 
 <body>
-  <div class="header flexbox">
+</body>
+
+<template name="init">
+</template>
+
+<template name="manage">
+  <div class="header flexbox normalHeader">
+      <ul class="flexbox">
+        <li><a href="/">Home</a></li>
+        <li>About Us</li>
+        <li>Contact Us</li>
+        <li>lala</li>
+        <li>lala</li>
+        <li>lala</li>
+      </ul>
+  </div>
+</template>
+
+<template name="index">
+  <div class="header flexbox indexHeader">
       <ul class="flexbox">
         <li>Home</li>
         <li>About Us</li>
         <li>Contact Us</li>
-        <li>lala</li>
+        <li><a href="/manage">Manage</a></li>
         <li>lala</li>
         <li>lala</li>
       </ul>
@@ -24,7 +43,7 @@
           Learn More!
         </span>
       </div>
-      {{> arrowDown}}
+      <a href="#section2" data-title="" id="arrow-down">Get started</a>
   </div>
 
   <div id="intro" class="flexbox layout">
@@ -68,57 +87,102 @@
           <div class="flipper" id="flipper">
               <div class="front flexbox">
 
-                  <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
-                      <h2>Stakeholder Registry</h2>
-                      <br>
-                      <label for="stakeholder">Characters</label>
-                      {{> chooseCharacters}}
-                      <br>
-                      <label for="address">Address</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                        <input type="text" class="form-control" placeholder="Node Address">
-                      </div>
-                      <br>
-                      <label for="username">Username</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-user" id="address"></span>
-                        <input type="text" class="form-control" placeholder="">
-                      </div>
-                      <br>
-                      <label for="fund">Fund</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
-                        <input type="text" class="form-control" placeholder="USD dollars">
-                      </div>
-                      <br>
-                      {{> next}}
-                  </form>
+                <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
+                    <h2>Stakeholder Registry</h2>
+                    <br>
+                    <label for="stakeholder">Characters</label>
+                    <div class="btn-group" role="group" id="characters">
+                      <button type="button" class="btn btn-default chooseCharacters" id="seller" value='seller'>Seller</button>
+                      <button type="button" class="btn btn-default chooseCharacters" id="buyer" value='buyer'>Buyer</button>
+                    </div>
+                    <br>
+                    <label for="address">Address</label>
+                    <div class="input-group">
+                      <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                      <input type="text" class="form-control" placeholder="Node Address">
+                    </div>
+                    <br>
+                    <label for="name">Name</label>
+                    <div class="input-group">
+                      <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
+                      <input type="text" class="form-control s_Name" placeholder="">
+                    </div>
+                    <br>
+                    <label for="threshold">Threshold</label>
+                    <div class="input-group">
+                      <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                      <input type="text" class="form-control s_Threshold" placeholder="USD dollars">
+                    </div>
+                    <br>
+                    <label for="fund">Fund</label>
+                    <div class="input-group">
+                      <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                      <input type="text" class="form-control s_Fund" placeholder="USD dollars">
+                    </div>
+                    <br>
+                    <label for="rate">Rate</label>
+                    <div class="input-group">
+                      <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                      <input type="text" class="form-control s_Rate" placeholder="">
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-success" id='next'>Next</button>
+                </form>
             </div>
             <div class="back flexbox">
                 <div id="sellerInfo">
-                    <form class="navbar-form navbar-left" role="search">
-                        <h2>Add Property</h2>
-                        <br>
-                        <label for="name">Name</label>
-                        <div class="input-group">
-                          <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                          <input type="text" class="form-control" placeholder="Property Name">
-                        </div>
-                        <br>
-                        <label for="count">Property Count</label>
-                        <div class="input-group">
-                          <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                          <input type="text" class="form-control" placeholder="">
-                        </div>
-                        <br>
-                        <label for="data">Additional Data</label>
-                        <div class="input-group">
-                          <span class="input-group-addon glyphicon glyphicon-eth" id="data"></span>
-                          <input type="text" class="form-control" placeholder="Further Info">
-                        </div>
-                        <br>
-                    </form>
+                  <form class="navbar-form navbar-left" role="search">
+                      <h2>Add Property</h2>
+                      <br>
+                      <label for="name">Name</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                        <input type="text" class="form-control p_Name" placeholder="Property name">
+                      </div>
+                      <br>
+                      <label for="count">Property Count</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                        <input type="text" class="form-control p_Count" placeholder="How many(much) are there?">
+                      </div>
+                      <br>
+                      <label for="count">Access Stakeholders</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                        <input type="text" class="form-control p_AccessStakeholders" placeholder="Address">
+                      </div>
+                      <br>
+                      <label for="count">Unit</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                        <input type="text" class="form-control p_Unit" placeholder="">
+                      </div>
+                      <br>
+                      <label for="count">Atomic Unit</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                        <input type="text" class="form-control p_AtomicUnit" placeholder="Smallest unit">
+                      </div>
+                      <br>
+                      <label for="data">Additional Data</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-eth" id="data"></span>
+                        <input type="text" class="form-control p_Data" placeholder="Further info">
+                      </div>
+                      <br>
+                      <label for="count">Rating</label>
+                      <div class="input-group">
+                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                        <input type="text" class="form-control p_Rating" placeholder="Your personal ratin">
+                      </div>
+                      <br>
+                      <div class="submitButtons flexbox">
+                        <button type="submit" class="btn btn-danger" id='previous'>Back</button>
+                        <button type="button" class="btn btn-primary" id='submit'>Register</button>
+                        <button type="button" class="btn btn-danger" id='test'>TEST</button>
+
+                      </div>
+                  </form>
                 </div>
                 <div id="buyerInfo">
                     <form class="navbar-form navbar-left" role="search">
@@ -130,53 +194,34 @@
                           <input type="text" class="form-control" placeholder="ID">
                         </div>
                         <br>
+                        <div class="submitButtons flexbox">
+                          <button type="submit" class="btn btn-danger" id='previous'>Back</button>
+                          <button type="button" class="btn btn-primary" id='submit'>Register</button>
+                          <button type="button" class="btn btn-danger" id='test'>TEST</button>
+
+                        </div>
                     </form>
                 </div>
-                <div class="submitButtons flexbox">
-                  {{> previous}}
-                  {{> submit}}
-                </div>
+
             </div>
         </div>
     </div>
   </div>
   <div id="footer" class="flexbox">
-      <h2>Copyrights</h2>
+      <h2>Copyright (c) 2016 Copyright Holder All Rights Reserved.</h2>
   </div>
 
   {{> init}}
-</body>
-
-<template name="init">
 </template>
 
-<template name="arrowDown">
-  <a href="#section2" data-title="" id="arrow-down">Get started</a>
-</template>
 
-<template name="chooseCharacters">
-  <div class="btn-group" role="group" id="characters">
-    <button type="button" class="btn btn-default" id="seller" value='seller'>Seller</button>
-    <button type="button" class="btn btn-default" id="buyer" value='buyer'>Buyer</button>
-  </div>
-</template>
-
-<template name="previous">
-  <button type="submit" class="btn btn-danger" id='next'>Back</button>
-</template>
-
-<template name="submit">
-  <button type="submit" class="btn btn-primary" id='next'>Register</button>
-</template>
-
-<template name="next">
-  <button type="submit" class="btn btn-success" id='next'>Next</button>
-</template>
 
 <template name="hello">
   <button>Click Me</button>
   <p>You've pressed the button {{counter}} times.</p>
 </template>
+
+
 
 <template name="info">
   <h2>Learn Meteor!</h2>
