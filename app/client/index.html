@@ -8,7 +8,7 @@
 <template name="init">
 </template>
 
-<template name="manage">
+<template name="normalHeader">
   <div class="header flexbox normalHeader">
       <ul class="flexbox">
         <li><a href="/">Home</a></li>
@@ -18,7 +18,49 @@
         <li>lala</li>
         <li>lala</li>
       </ul>
+
+
   </div>
+</template>
+
+
+
+<template name="manage">
+  {{> normalHeader}}
+  <div class="manageContent flex">
+    <table class="manageTable table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Threshold</th>
+          <th>Fund</th>
+          <th>Rate</th>
+          <th>Address</th>
+          <th>Since</th>
+          <th>Character</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each stakeholders}}
+          <tr>
+            <th scope='row'>#</th>
+            {{> stakeholder}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="stakeholder">
+  <td>{{name}}</td>
+  <td>{{threshold}}</td>
+  <td>{{fund}}</td>
+  <td>{{rate}}</td>
+  <td>{{address}}</td>
+  <td>{{since}}</td>
+  <td>{{character}}</td>
 </template>
 
 <template name="index">
@@ -32,7 +74,7 @@
         <li>lala</li>
       </ul>
   </div>
-  <div id="title" class="flexbox layout">
+  <div id="title" class="flexbox">
       <div class="titleContainer">
         <h1>Welcome to D3 Project !</h1>
         <h3>An academic research</h3>
