@@ -72,6 +72,26 @@ if (Meteor.isClient) {
       }
       return stakeholdersData;
 
+    },
+    properties: function(){
+      var propertiesData = [];
+      var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[0]}).c[0];
+      console.log(propertyLength)
+      for (var i = 0 ; i < propertyLength; i++){
+        var data = usingPropertyInstance.getProperty.call(i, {from:web3.eth.accounts[0]});
+        //console.log(data);
+        propertiesData.push({
+          "name": hex2a(data[0]),
+          "count": data[2],
+          "unit": hex2a(data[3]),
+          "minUnit" :data[4],
+          "owner" :data[5],
+          "extraData" : hex2a(data[6]),
+        });
+        console.log(data);
+
+      }
+      return propertiesData;
     }
   });
 
@@ -121,7 +141,7 @@ if (Meteor.isClient) {
 
         console.log(name, threshold, fund, rate, character);
 
-        var txs = CongressInstance.addMember(name, threshold, fund, rate, character, {from:web3.eth.accounts[1], gas:221468});
+        var txs = CongressInstance.addMember(name, threshold, fund, rate, character, {from:web3.eth.accounts[2], gas:221468});
         console.log(txs);
 
         document.getElementById("buyerInfo").style.display = "inline";

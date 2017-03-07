@@ -1,7 +1,9 @@
 /* CSS declarations go here */
 body{
 
-  background: url(/img/concert2.jpg);
+  *background: url(/img/concert2.jpg);
+  background: #112027;
+
   background-size: 100% 100%;
   background-attachment: fixed;
 }
@@ -82,7 +84,6 @@ h3{
   padding:10px;
   top: 20px;
   margin-right: 10px;
-
 
 }
 
@@ -307,5 +308,13 @@ h3{
   align-items: center;
   width:100vw;
   height: 100vh;
+  color: white;
+}
 
+table tr:hover{
+  color:#112027;
+}
+
+thead tr:hover{
+  color:white;
 }

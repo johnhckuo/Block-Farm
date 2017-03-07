@@ -28,6 +28,7 @@
 <template name="manage">
   {{> normalHeader}}
   <div class="manageContent flex">
+    <h2>Stakeholders</h2>
     <table class="manageTable table table-hover">
       <thead>
         <tr>
@@ -50,7 +51,40 @@
         {{/each}}
       </tbody>
     </table>
+
+    <h2>Properties</h2>
+    <table class="propertyTable table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Count</th>
+          <th>Unit</th>
+          <th>Min Unit</th>
+          <th>Onwer</th>
+          <th>Extra Data</th>
+          <th>Character</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each properties}}
+          <tr>
+            <th scope='row'>#</th>
+            {{> property}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
   </div>
+</template>
+
+<template name="property">
+  <td>{{name}}</td>
+  <td>{{count}}</td>
+  <td>{{unit}}</td>
+  <td>{{minUnit}}</td>
+  <td>{{owner}}</td>
+  <td>{{extraData}}</td>
 </template>
 
 <template name="stakeholder">
