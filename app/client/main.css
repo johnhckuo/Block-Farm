@@ -298,8 +298,6 @@ h3{
   top: 0px;
 }
 
-
-
 .manageContent{
   position: relative;
   display:flex;
@@ -316,5 +314,15 @@ table tr:hover{
 }
 
 thead tr:hover{
+  color:white;
+}
+
+.stakeholderList{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height:100vh;
+  width:80vw;
   color:white;
 }

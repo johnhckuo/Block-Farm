@@ -65,7 +65,6 @@ function hex2a(hexx) {
 
 
 window.onload = function() {
-  console.log("h")
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       alert("There was an error fetching your accounts.");

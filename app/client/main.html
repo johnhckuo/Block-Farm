@@ -18,9 +18,39 @@
         <li>lala</li>
         <li>lala</li>
       </ul>
-
-
   </div>
+</template>
+
+<template name="switchButton">
+  <button type="button" class="btn btn-info stakeholderSwitch" name="button" id={{id}}>Switch</button>
+</template>
+
+<template name="property">
+  <td>{{name}}</td>
+  <td>{{count}}</td>
+  <td>{{unit}}</td>
+  <td>{{minUnit}}</td>
+  <td>{{owner}}</td>
+  <td>{{extraData}}</td>
+</template>
+
+<template name="currentRating">
+  <td><input type="text" name="" value= {{currentRating}} id={{ratingId}}></td>
+</template>
+
+<template name="stakeholder">
+  <td>{{name}}</td>
+  <td>{{threshold}}</td>
+  <td>{{fund}}</td>
+  <td>{{rate}}</td>
+  <td>{{address}}</td>
+  <td>{{since}}</td>
+  <td>{{character}}</td>
+</template>
+
+<template name="account">
+  <td>{{id}}</td>
+  <td>{{address}}</td>
 </template>
 
 
@@ -63,7 +93,6 @@
           <th>Min Unit</th>
           <th>Onwer</th>
           <th>Extra Data</th>
-          <th>Character</th>
         </tr>
       </thead>
       <tbody>
@@ -75,37 +104,107 @@
         {{/each}}
       </tbody>
     </table>
+    <button type="button" class="btn btn-primary" id="matchMake" name="button">Match Making</button>
   </div>
+  {{> init}}
+
 </template>
 
-<template name="property">
-  <td>{{name}}</td>
-  <td>{{count}}</td>
-  <td>{{unit}}</td>
-  <td>{{minUnit}}</td>
-  <td>{{owner}}</td>
-  <td>{{extraData}}</td>
+<template name="switchStakeholder">
+  {{> init}}
+
+  {{> normalHeader}}
+
+  <div class="stakeholderList flex">
+    <h2>Stakeholders</h2>
+    <table class="stakeholderTable table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Threshold</th>
+          <th>Fund</th>
+          <th>Rate</th>
+          <th>Address</th>
+          <th>Since</th>
+          <th>Character</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each stakeholders}}
+          <tr>
+            <th scope='row'>#</th>
+            {{> stakeholder}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <h2>Web3.eth.accounts List</h2>
+    <table class="web3AccountsTable table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each web3Accounts}}
+          <tr>
+            <th scope='row'>#</th>
+            {{> account}}
+            {{> switchButton}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
 </template>
 
-<template name="stakeholder">
-  <td>{{name}}</td>
-  <td>{{threshold}}</td>
-  <td>{{fund}}</td>
-  <td>{{rate}}</td>
-  <td>{{address}}</td>
-  <td>{{since}}</td>
-  <td>{{character}}</td>
+<template name="updateData">
+  {{> init}}
+
+  {{> normalHeader}}
+  <div class="updateRating flex">
+    <h2>Properties</h2>
+    <table class="updateRatingTable table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Count</th>
+          <th>Unit</th>
+          <th>Min Unit</th>
+          <th>Onwer</th>
+          <th>Extra Data</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each properties}}
+          <tr>
+            <th scope='row'>#</th>
+            {{> property}}
+            {{> currentRating}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" id="updateRating" name="button">update</button>
+  </div>
+
 </template>
 
 <template name="index">
   <div class="header flexbox indexHeader">
       <ul class="flexbox">
-        <li>Home</li>
+        <li>Hi! {{currentAccount}}</li>
         <li>About Us</li>
         <li>Contact Us</li>
         <li><a href="/manage">Manage</a></li>
-        <li>lala</li>
-        <li>lala</li>
+        <li><a href="/update">Update Data</a></li>
+        <li><a href="/switch">Switch Stakeholder</a></li>
       </ul>
   </div>
   <div id="title" class="flexbox">
@@ -175,7 +274,7 @@
                     <label for="address">Address</label>
                     <div class="input-group">
                       <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                      <input type="text" class="form-control" placeholder="Node Address">
+                      <input type="text" class="form-control" value={{currentAddress}}>
                     </div>
                     <br>
                     <label for="name">Name</label>
@@ -288,23 +387,4 @@
   </div>
 
   {{> init}}
-</template>
-
-
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
-
-
-
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try" target="_blank">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com" target="_blank">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com" target="_blank">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com" target="_blank">Discussions</a></li>
-  </ul>
 </template>

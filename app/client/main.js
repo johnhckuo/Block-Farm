@@ -3,29 +3,20 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
 
-// Template.hello.onCreated(function helloOnCreated() {
-//   // counter starts at 0
-//   this.counter = new ReactiveVar(0);
-// });
-//
-// Template.hello.helpers({
-//   counter() {
-//     return Template.instance().counter.get();
-//   },
-// });
-//
-// Template.hello.events({
-//   'click button'(event, instance) {
-//     // increment the counter when button is clicked
-//     instance.counter.set(instance.counter.get() + 1);
-//   },
-// });
+////////////////////
+//                //
+//     Init       //
+//                //
+////////////////////
+
 var stakeholderLength;
+var currentAccount = 0, ownerAccount = 0;
 
 Template.init.rendered = function() {
     if(!this._rendered) {
       this._rendered = true;
       console.log('Template render complete');
+
       var height = window.innerHeight
         || document.documentElement.clientHeight
         || document.body.clientHeight;
@@ -37,8 +28,26 @@ Template.init.rendered = function() {
           }
 
       });
+
+      MainActivityInstance.matchSuccess().watch(function(error, result){
+        if (!error)
+          console.log(result.args);
+      });
+
+      MainActivityInstance.test().watch(function(error, result2){
+        if (!error)
+          console.log(result2.args);
+      });
     }
 }
+
+////////////////////
+//                //
+//     Utility    //
+//     Function   //
+//                //
+////////////////////
+
 
 var hex2a = function(hexx) {
     var hex = hexx.toString();//force conversion
@@ -48,15 +57,81 @@ var hex2a = function(hexx) {
     return str;
 }
 
+////////////////////
+//                //
+//     Helpers    //
+//                //
+////////////////////
+
 if (Meteor.isClient) {
+  Template.updateData.helpers({
+    properties: function(){
+      var propertiesData = [];
+      var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+      for (var i = 0 ; i < propertyLength; i++){
+        var data = usingPropertyInstance.getProperty.call(i, {from:web3.eth.accounts[currentAccount]});
+
+        var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
+        var currentRating = usingPropertyInstance.getPropertyRating.call(i, Id, {from:web3.eth.accounts[currentAccount]}).c[0];
+        propertiesData.push({
+          "name": hex2a(data[0]),
+          "count": data[2],
+          "unit": hex2a(data[3]),
+          "minUnit" :data[4],
+          "owner" :data[5],
+          "extraData" : hex2a(data[6]),
+          'currentRating' : currentRating,
+          'ratingId' : 'property'+i
+        });
+      }
+      return propertiesData;
+    }
+  });
+
+  Template.switchStakeholder.helpers({
+
+    stakeholders: function(){
+      var stakeholdersData = [];
+      var stakeholderLength = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+      for (var i = 0 ; i < stakeholderLength; i++){
+        var data = CongressInstance.getStakeholder.call(i, {from:web3.eth.accounts[currentAccount]});
+        //console.log(data);
+        stakeholdersData.push({
+          "name": hex2a(data[0]),
+          "threshold": data[1],
+          "fund": data[2],
+          "rate" :data[3],
+          "address" :data[4],
+          "since" : data[5],
+          "character": hex2a(data[6]),
+          "id": i
+        });
+      }
+
+
+      return stakeholdersData;
+
+    },
+    web3Accounts:function(){
+      var web3AccountsData = [];
+
+      for (var j = 0; j < web3.eth.accounts.length ; j++){
+        web3AccountsData.push({
+          "id": j,
+          "address" : web3.eth.accounts[j]
+        });
+      }
+      return web3AccountsData;
+    }
+  });
+
   Template.manage.helpers({
 
     stakeholders: function(){
       var stakeholdersData = [];
-      var stakeholderLength = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[0]}).c[0];
-      console.log(stakeholderLength)
+      var stakeholderLength = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
       for (var i = 0 ; i < stakeholderLength; i++){
-        var data = CongressInstance.getStakeholder.call(i, {from:web3.eth.accounts[0]});
+        var data = CongressInstance.getStakeholder.call(i, {from:web3.eth.accounts[currentAccount]});
         //console.log(data);
         stakeholdersData.push({
           "name": hex2a(data[0]),
@@ -67,18 +142,15 @@ if (Meteor.isClient) {
           "since" : data[5],
           "character": hex2a(data[6])
         });
-        console.log(data);
-
       }
       return stakeholdersData;
 
     },
     properties: function(){
       var propertiesData = [];
-      var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[0]}).c[0];
-      console.log(propertyLength)
+      var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
       for (var i = 0 ; i < propertyLength; i++){
-        var data = usingPropertyInstance.getProperty.call(i, {from:web3.eth.accounts[0]});
+        var data = usingPropertyInstance.getProperty.call(i, {from:web3.eth.accounts[currentAccount]});
         //console.log(data);
         propertiesData.push({
           "name": hex2a(data[0]),
@@ -88,14 +160,55 @@ if (Meteor.isClient) {
           "owner" :data[5],
           "extraData" : hex2a(data[6]),
         });
-        console.log(data);
-
       }
       return propertiesData;
     }
   });
 
 
+  Template.index.helpers({
+
+      currentAddress: function(){
+        return web3.eth.accounts[currentAccount];
+      },
+      currentAccount: function(){
+        var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
+        var data = CongressInstance.getStakeholder.call(Id, {from:web3.eth.accounts[currentAccount]});
+        return hex2a(data[0]);
+      }
+
+  });
+  ////////////////////
+  //                //
+  //     Event      //
+  //                //
+  ////////////////////
+
+  Template.switchStakeholder.events({
+    'click .stakeholderSwitch': function (event){
+        currentAccount = event.target.id;
+        alert("You've switched to Account"+currentAccount);
+    },
+  })
+
+  Template.updateData.events({
+    'click #updateRating': function (event){
+        var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+        for (var i = 0 ; i< propertyLength ; i++){
+          var rating = $("#property"+i);
+          var txs = usingPropertyInstance.updatePropertiesRating(i, rating, "update", {from:web3.eth.accounts[currentAccount], gas:800000});
+          console.log(txs);
+        }
+    },
+  })
+
+  Template.manage.events({
+    'click #matchMake': function (event){
+        console.log("=== Start Match Making ===");
+        var txs = MainActivityInstance.startMatching({from:web3.eth.accounts[ownerAccount], gas:4500000});
+        console.log(txs);
+    },
+  })
   Template.index.events({
     'click #arrow-down': function (e) {
         e.preventDefault();
@@ -127,7 +240,7 @@ if (Meteor.isClient) {
         var rating = parseInt($(".p_Rating").val());
         console.log(name, count, accessStakeholders, unit, atomicUnit, data, rating);
 
-        var txs = usingPropertyInstance.addProperty(name, count, [web3.eth.accounts[0]], unit, atomicUnit, data, rating, {from:web3.eth.accounts[1], gas:800000});
+        var txs = usingPropertyInstance.addProperty(name, count, [web3.eth.accounts[0]], unit, atomicUnit, data, rating, {from:web3.eth.accounts[currentAccount], gas:800000});
         console.log(txs);
 
     },
@@ -138,10 +251,15 @@ if (Meteor.isClient) {
         var fund = parseInt($(".s_Fund").val());
         var rate = parseInt($(".s_Rate").val());
 
+        alert(web3.eth.accounts[currentAccount]);
 
-        console.log(name, threshold, fund, rate, character);
+        var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+        var tx = usingPropertyInstance.updatePropertiesRating(length, 0, "init", {from:web3.eth.accounts[currentAccount], gas:221468});
+        console.log(tx);
 
-        var txs = CongressInstance.addMember(name, threshold, fund, rate, character, {from:web3.eth.accounts[2], gas:221468});
+        //console.log(name, threshold, fund, rate, character);
+
+        var txs = CongressInstance.addMember(name, threshold, fund, rate, character, {from:web3.eth.accounts[currentAccount], gas:221468});
         console.log(txs);
 
         document.getElementById("buyerInfo").style.display = "inline";
@@ -157,11 +275,7 @@ if (Meteor.isClient) {
         temp.className += " flipperClicked";
 
     },
-    'click #test': function (event){
-        console.log(CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[0]}));
 
-
-    },
 
   });
 }
