@@ -1,0 +1,25 @@
+body{
+  padding:100px;
+}
+.addMember{
+  display: flex;
+  flex-direction: column;
+  width:30vw;
+}
+.addMember input{
+  margin-bottom: 10px;
+}
+.addMember button{
+  text-align: center;
+}
+
+.memberContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+
+.table th{
+  width:40px;
+}
