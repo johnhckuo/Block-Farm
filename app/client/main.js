@@ -75,13 +75,18 @@ if (Meteor.isClient) {
         var currentRating = usingPropertyInstance.getPropertyRating.call(i, Id, {from:web3.eth.accounts[currentAccount]}).c[0];
 
         var ratingLength = usingPropertyInstance.getPropertyRatingLength.call(0, {from:web3.eth.accounts[currentAccount]}).c[0];
+
+        var s_Id = CongressInstance.stakeholderId.call(data[5], {from:web3.eth.accounts[currentAccount]}).c[0];
+        var owner = CongressInstance.getStakeholder.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+        owner = hex2a(owner[0]);
+
         console.log(ratingLength);
         propertiesData.push({
           "name": hex2a(data[0]),
           "count": data[2],
           "unit": hex2a(data[3]),
           "minUnit" :data[4],
-          "owner" :data[5],
+          "owner" :owner,
           "extraData" : hex2a(data[6]),
           'currentRating' : currentRating,
           'ratingId' : 'property'+i
@@ -155,12 +160,17 @@ if (Meteor.isClient) {
       for (var i = 0 ; i < propertyLength; i++){
         var data = usingPropertyInstance.getProperty.call(i, {from:web3.eth.accounts[currentAccount]});
         //console.log(data);
+
+        var s_Id = CongressInstance.stakeholderId.call(data[5], {from:web3.eth.accounts[currentAccount]}).c[0];
+        var owner = CongressInstance.getStakeholder.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+        owner = hex2a(owner[0]);
+
         propertiesData.push({
           "name": hex2a(data[0]),
           "count": data[2],
           "unit": hex2a(data[3]),
           "minUnit" :data[4],
-          "owner" :data[5],
+          "owner" :owner,
           "extraData" : hex2a(data[6]),
         });
       }
@@ -181,6 +191,17 @@ if (Meteor.isClient) {
       }
 
   });
+
+  Template.normalHeader.helpers({
+
+      currentAccount: function(){
+        var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
+        var data = CongressInstance.getStakeholder.call(Id, {from:web3.eth.accounts[currentAccount]});
+        return hex2a(data[0]);
+      }
+
+  });
+
   ////////////////////
   //                //
   //     Event      //
@@ -198,7 +219,8 @@ if (Meteor.isClient) {
     'click #updateRating': function (event){
         var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
         for (var i = 0 ; i< propertyLength ; i++){
-          var rating = $("#property"+i);
+          var rating = $("#property"+i).val();
+          //console.log(rating);
           var txs = usingPropertyInstance.updatePropertiesRating(i, rating, "update", {from:web3.eth.accounts[currentAccount], gas:800000});
           console.log(txs);
         }
@@ -208,6 +230,12 @@ if (Meteor.isClient) {
   Template.manage.events({
     'click #matchMake': function (event){
         console.log("=== Start Match Making ===");
+
+        MainActivityInstance.matchSuccess().watch(function(error, result){
+          if (!error)
+            console.log(result.args);
+        });
+
         var txs = MainActivityInstance.startMatching({from:web3.eth.accounts[ownerAccount], gas:4500000});
         console.log(txs);
     },

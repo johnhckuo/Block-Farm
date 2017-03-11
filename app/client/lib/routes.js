@@ -14,3 +14,7 @@ Router.route('/update', function () {
 Router.route('/switch', function () {
   this.render('switchStakeholder');
 });
+
+Router.route('/aboutus', function () {
+  this.render('aboutUs');
+});

@@ -1,12 +1,21 @@
 /* CSS declarations go here */
 body{
 
-  *background: url(/img/concert2.jpg);
-  background: #112027;
+  background: url(/img/bg.jpg);
+  *background: #112027;
 
   background-size: 100% 100%;
   background-attachment: fixed;
+  overflow-x: hidden;
 }
+.bgFilter{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  color:#fff;
+}
+
 .layout{
   display:flex;
   flex-wrap: row;
@@ -23,6 +32,7 @@ body{
   color:#fff;
   top:100vh;
   background: rgba(0,0,0,0.5);
+  z-index: 100;
 }
 
 .normalHeader{
@@ -34,6 +44,7 @@ body{
   color:#fff;
   top:0px;
   background: rgba(0,0,0,0.5);
+  z-index: 100;
 }
 
 .header ul{
@@ -95,7 +106,7 @@ h3{
     height: 100px;
     width: 70px;
     margin-left: -35px;
-    background: url(/img/bg-arrow-down.png) no-repeat 21px 26px rgba(255, 103, 95, .8);
+    background: url(/img/bg-arrow-down.png) no-repeat 21px 26px #112027;
     background-size: 28px 16px;
     text-indent: -9999px;
     display: block;
@@ -298,7 +309,7 @@ h3{
   top: 0px;
 }
 
-.manageContent{
+.table{
   position: relative;
   display:flex;
   flex-direction: column;
@@ -309,6 +320,25 @@ h3{
   color: white;
 }
 
+.manageContent{
+  position: relative;
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width:100vw;
+  height: 100vh;
+  color: white;
+}
+
+.manage{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+}
+
+
 table tr:hover{
   color:#112027;
 }
@@ -317,12 +347,38 @@ thead tr:hover{
   color:white;
 }
 
+tbody th{
+  text-align: center;
+}
+
+input, textarea{
+    background-color:#000;
+    color: #FFF;
+    border-color: #000;
+}
+
 .stakeholderList{
+
+  position: relative;
   display:flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-  height:100vh;
-  width:80vw;
-  color:white;
+  align-items: center;
+  width:100vw;
+  height: 100vh;
+  color: white;
+}
+
+#stakeholderTable{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#web3AccountsTable{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

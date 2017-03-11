@@ -5,19 +5,26 @@
 <body>
 </body>
 
+<!--
+*************************
+*   Utility Functions   *
+*************************
+-->
+
 <template name="init">
 </template>
 
 <template name="normalHeader">
+  <div class="bgFilter"></div>
   <div class="header flexbox normalHeader">
-      <ul class="flexbox">
-        <li><a href="/">Home</a></li>
-        <li>About Us</li>
-        <li>Contact Us</li>
-        <li>lala</li>
-        <li>lala</li>
-        <li>lala</li>
-      </ul>
+    <ul class="flexbox">
+      <li>Hi! {{currentAccount}}</li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/aboutus">About Us</a></li>
+      <li><a href="/manage">Manage</a></li>
+      <li><a href="/update">Update Data</a></li>
+      <li><a href="/switch">Switch Stakeholder</a></li>
+    </ul>
   </div>
 </template>
 
@@ -53,14 +60,29 @@
   <td>{{address}}</td>
 </template>
 
+<!--
+***********************
+*        Pages        *
+***********************
+-->
 
+<template name="aboutUs">
+  {{> normalHeader}}
+
+</template>
+
+<template name="matchMaking">
+  {{> normalHeader}}
+</template>
 
 <template name="manage">
   {{> normalHeader}}
   <div class="manageContent flex">
-    <h2>Stakeholders</h2>
-    <table class="manageTable table table-hover">
+    <table id="manageTable" class="manage table table-hover">
+      <h2>Stakeholders</h2>
       <thead>
+      </thead>
+      <tbody>
         <tr>
           <th>#</th>
           <th>Name</th>
@@ -71,8 +93,6 @@
           <th>Since</th>
           <th>Character</th>
         </tr>
-      </thead>
-      <tbody>
         {{#each stakeholders}}
           <tr>
             <th scope='row'>#</th>
@@ -82,9 +102,11 @@
       </tbody>
     </table>
 
-    <h2>Properties</h2>
-    <table class="propertyTable table table-hover">
+    <table id="propertyTable" class="manage table table-hover">
+      <h2>Properties</h2>
       <thead>
+      </thead>
+      <tbody>
         <tr>
           <th>#</th>
           <th>Name</th>
@@ -94,8 +116,6 @@
           <th>Onwer</th>
           <th>Extra Data</th>
         </tr>
-      </thead>
-      <tbody>
         {{#each properties}}
           <tr>
             <th scope='row'>#</th>
@@ -103,8 +123,8 @@
           </tr>
         {{/each}}
       </tbody>
+      <button type="button" class="btn btn-primary" id="matchMake" name="button">Match Making</button>
     </table>
-    <button type="button" class="btn btn-primary" id="matchMake" name="button">Match Making</button>
   </div>
   {{> init}}
 
@@ -116,11 +136,13 @@
   {{> normalHeader}}
 
   <div class="stakeholderList flex">
-    <h2>Stakeholders</h2>
     <table class="stakeholderTable table table-hover">
+      <h2>Stakeholders</h2>
+
       <thead>
+      </thead>
+      <tbody>
         <tr>
-          <th>#</th>
           <th>Name</th>
           <th>Threshold</th>
           <th>Fund</th>
@@ -129,29 +151,26 @@
           <th>Since</th>
           <th>Character</th>
         </tr>
-      </thead>
-      <tbody>
         {{#each stakeholders}}
           <tr>
-            <th scope='row'>#</th>
             {{> stakeholder}}
           </tr>
         {{/each}}
       </tbody>
     </table>
 
-    <h2>Web3.eth.accounts List</h2>
     <table class="web3AccountsTable table table-hover">
+      <h2>Web3.eth.accounts List</h2>
+
       <thead>
+      </thead>
+      <tbody>
         <tr>
           <th>#</th>
           <th>Address</th>
         </tr>
-      </thead>
-      <tbody>
         {{#each web3Accounts}}
           <tr>
-            <th scope='row'>#</th>
             {{> account}}
             {{> switchButton}}
           </tr>
@@ -167,9 +186,11 @@
 
   {{> normalHeader}}
   <div class="updateRating flex">
-    <h2>Properties</h2>
     <table class="updateRatingTable table table-hover">
+      <h2>Properties</h2>
       <thead>
+      </thead>
+      <tbody>
         <tr>
           <th>#</th>
           <th>Name</th>
@@ -180,8 +201,6 @@
           <th>Extra Data</th>
           <th>Rating</th>
         </tr>
-      </thead>
-      <tbody>
         {{#each properties}}
           <tr>
             <th scope='row'>#</th>
@@ -190,8 +209,9 @@
           </tr>
         {{/each}}
       </tbody>
+      <button type="button" class="btn btn-primary" id="updateRating" name="button">update</button>
+
     </table>
-    <button type="button" class="btn btn-primary" id="updateRating" name="button">update</button>
   </div>
 
 </template>
@@ -200,8 +220,8 @@
   <div class="header flexbox indexHeader">
       <ul class="flexbox">
         <li>Hi! {{currentAccount}}</li>
-        <li>About Us</li>
-        <li>Contact Us</li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/aboutus">About Us</a></li>
         <li><a href="/manage">Manage</a></li>
         <li><a href="/update">Update Data</a></li>
         <li><a href="/switch">Switch Stakeholder</a></li>
