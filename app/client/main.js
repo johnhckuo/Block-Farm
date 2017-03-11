@@ -36,17 +36,7 @@ Template.init.rendered = function() {
 
       MainActivityInstance.test().watch(function(error, result2){
         if (!error)
-          alert(result2.args);
-      });
-
-      usingPropertyInstance.propertyUpdated().watch(function(error, result2){
-        if (!error)
-          alert("HHHH"+result2.args);
-      });
-
-      usingPropertyInstance.propertyAdded().watch(function(error, result2){
-        if (!error)
-          alert("ADDDDDD");
+          console.log(result2.args);
       });
     }
 }
@@ -81,12 +71,11 @@ if (Meteor.isClient) {
       for (var i = 0 ; i < propertyLength; i++){
         var data = usingPropertyInstance.getProperty.call(i, {from:web3.eth.accounts[currentAccount]});
 
-        var ratingLength = usingPropertyInstance.getPropertyRatingLength.call(0, {from:web3.eth.accounts[currentAccount]}).c[0];
-        console.log(ratingLength);
         var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
         var currentRating = usingPropertyInstance.getPropertyRating.call(i, Id, {from:web3.eth.accounts[currentAccount]}).c[0];
 
-
+        var ratingLength = usingPropertyInstance.getPropertyRatingLength.call(0, {from:web3.eth.accounts[currentAccount]}).c[0];
+        console.log(ratingLength);
         propertiesData.push({
           "name": hex2a(data[0]),
           "count": data[2],
@@ -276,10 +265,7 @@ if (Meteor.isClient) {
         //alert(web3.eth.accounts[currentAccount]);
 
         var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
-        console.log(length);
-        for (var i = 0 ; i < length ; i++){
-          var tx = usingPropertyInstance.updatePropertiesRating(i, 0, "init", {from:web3.eth.accounts[currentAccount], gas:251468});
-        }
+        var tx = usingPropertyInstance.updatePropertiesRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:251468});
 
         //console.log(name, threshold, fund, rate, character);
 

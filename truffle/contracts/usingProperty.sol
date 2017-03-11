@@ -1,4 +1,5 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.8;
+import "./StringUtils.sol";
 
 contract Congress{
 
@@ -130,16 +131,12 @@ contract usingProperty{
         return propertyList[p_Id].rating.length;
     }
 
-    function returnSHA(bytes32 input) constant returns(bytes32){
-	return sha3(input);
-    }
-
-    function updatePropertiesRating(uint _id, uint rate, bytes32 operation){
+    function updatePropertiesRating(uint _id, uint rate, string operation){
         updatedPropertiesCalled();
-        if (sha3(operation) == sha3("init")){      //consider import string.utils contract ?
+        if (StringUtils.equal(operation,"init")){      //consider import string.utils contract ?
             propertyInited(_id);
             propertyList[_id].rating.push(0);
-        }else if (sha3(operation) == sha3("update")){
+        }else if (StringUtils.equal(operation,"update")){
             propertyUpdated(_id);
 
             uint length = congress.getStakeholdersLength();
@@ -149,7 +146,7 @@ contract usingProperty{
             uint s_Id = congress.stakeholderId(msg.sender);
             propertyList[_id].rating[s_Id] = rate;
             propertyList[_id].averageRating = ((propertyList[_id].averageRating * (length-1))+rate)/length;
-        }else if (sha3(operation) == sha3("new")){
+        }else if (StringUtils.equal(operation,"new")){
             propertyNewed(_id);
 
             for (uint j = 0 ; j < _id ; j++){

@@ -1,5 +1,4 @@
-pragma solidity ^0.4.2;
-
+pragma solidity ^0.4.8;
 contract Congress{
     mapping (address => uint) public stakeholderId;
     function getStakeholdersLength() constant returns(uint);
@@ -9,7 +8,7 @@ contract usingProperty{
     function getPropertiesLength() constant returns(uint);
     function getPartialProperty(uint p_Id) returns(address, uint);
     function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint);
-    function updatePropertiesRating(uint _id, uint rate, bytes32 operation);
+    function updatePropertiesRating(uint _id, uint rate, string operation);
 }
 
 contract ActivityInterface{
