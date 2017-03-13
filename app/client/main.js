@@ -29,15 +29,15 @@ Template.init.rendered = function() {
 
       });
 
-      MainActivityInstance.matchSuccess().watch(function(error, result){
-        if (!error)
-          console.log(result.args);
-      });
+      // MainActivityInstance.matchSuccess().watch(function(error, result){
+      //   if (!error)
+      //     console.log(result.args);
+      // });
 
-      MainActivityInstance.test().watch(function(error, result2){
-        if (!error)
-          console.log(result2.args);
-      });
+      // MainActivityInstance.test().watch(function(error, result2){
+      //   if (!error)
+      //     console.log(result2.args);
+      // });
     }
 }
 
@@ -64,6 +64,9 @@ var hex2a = function(hexx) {
 ////////////////////
 
 if (Meteor.isClient) {
+  var matchResult = new Meteor.Collection(null);
+
+
   Template.updateData.helpers({
     properties: function(){
       var propertiesData = [];
@@ -175,6 +178,10 @@ if (Meteor.isClient) {
         });
       }
       return propertiesData;
+    },
+    matchingResults: function(){
+      return matchResult.find({});
+
     }
   });
 
@@ -227,13 +234,39 @@ if (Meteor.isClient) {
     },
   })
 
+  var called = false;
   Template.manage.events({
     'click #matchMake': function (event){
         console.log("=== Start Match Making ===");
 
         MainActivityInstance.matchSuccess().watch(function(error, result){
-          if (!error)
-            console.log(result.args);
+          if (!error && !called){
+            called = true;
+            //var length = result.args[""].length/2;
+            var length = result.args[""].length;
+            for (var i = 0 ; i < length; i++){
+              var _id = result.args[""][i].c[0];
+              var data = usingPropertyInstance.getProperty.call(_id, {from:web3.eth.accounts[currentAccount]});
+
+              var currentRating = usingPropertyInstance.getPartialProperty.call(_id, {from:web3.eth.accounts[currentAccount]})[1].c[0];
+
+              var s_Id = CongressInstance.stakeholderId.call(data[5], {from:web3.eth.accounts[currentAccount]}).c[0];
+              var _owner = CongressInstance.getStakeholder.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+              _owner = hex2a(_owner[0]);
+
+              matchResult.insert({
+                id: _id,
+                name: hex2a(data[0]),
+                owner: _owner,
+                importance : currentRating
+              });
+
+          }
+          var height = window.innerHeight
+            || document.documentElement.clientHeight
+            || document.body.clientHeight;
+          $(window).scrollTo(height, 1500);
+        }
         });
 
         var txs = MainActivityInstance.startMatching({from:web3.eth.accounts[ownerAccount], gas:4500000});

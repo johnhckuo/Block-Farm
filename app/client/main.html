@@ -32,6 +32,14 @@
   <button type="button" class="btn btn-info stakeholderSwitch" name="button" id={{id}}>Switch</button>
 </template>
 
+<template name="matchingResult">
+  <td>{{id}}</td>
+  <td>{{name}}</td>
+  <td>{{owner}}</td>
+  <td>{{to}}</td>
+  <td>{{importance}}</td>
+</template>
+
 <template name="property">
   <td>{{name}}</td>
   <td>{{count}}</td>
@@ -69,10 +77,6 @@
 <template name="aboutUs">
   {{> normalHeader}}
 
-</template>
-
-<template name="matchMaking">
-  {{> normalHeader}}
 </template>
 
 <template name="manage">
@@ -126,6 +130,29 @@
       <button type="button" class="btn btn-primary" id="matchMake" name="button">Match Making</button>
     </table>
   </div>
+
+    <table id="matchingTable" class="table table-hover">
+      <h2>Matching Result</h2>
+      <thead>
+      </thead>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Owner</th>
+          <th>Average Importance</th>
+        </tr>
+        {{#each matchingResults}}
+          <tr>
+            <td>{{id}}</td>
+            <td>{{name}}</td>
+            <td>{{owner}}</td>
+            <td>{{importance}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
   {{> init}}
 
 </template>

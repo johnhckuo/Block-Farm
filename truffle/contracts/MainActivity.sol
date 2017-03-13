@@ -78,6 +78,8 @@ contract MainActivity{
         uint[] memory visitList = new uint[](length);
         uint[] memory sortedList = new uint[](length);
 
+        visitedProperty.length = 0;
+
         for (uint i = 0 ; i < length ; i++){
             var (owner, averageRating) = property.getPartialProperty(i);
 
@@ -141,13 +143,13 @@ contract MainActivity{
         int256 diff = int256(currentRating - self_Importance);
 
         //other diff
-        var (otherOwner, otherAverageRating) = property.getPartialProperty(i);
-        uint otherRating = property.getPropertyRating(visitNode, congress.stakeholderId(otherOwner));
-        uint other_Self_Importance = property.getPropertyRating(i, congress.stakeholderId(otherOwner));
-        int256 diff2 = int256(otherRating - other_Self_Importance);
+        //var (otherOwner, otherAverageRating) = property.getPartialProperty(i);
+        //uint otherRating = property.getPropertyRating(visitNode, congress.stakeholderId(otherOwner));
+        //uint other_Self_Importance = property.getPropertyRating(i, congress.stakeholderId(otherOwner));
+        //int256 diff2 = int256(otherRating - other_Self_Importance);
 
-        int256 result = (diff + diff2)/2;
-        return result;
+        //int256 result = (diff + diff2)/2;
+        return diff;
     }
 
     //function tradingMatch(uint visitNode) returns(bytes32){
