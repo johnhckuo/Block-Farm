@@ -1,12 +1,16 @@
 /* CSS declarations go here */
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,500,700,800,900');
+
 body{
 
   background: url(/img/bg.jpg);
   *background: #112027;
-
+  background-color: rgb(249, 204, 241);
   background-size: 100% 100%;
   background-attachment: fixed;
   overflow-x: hidden;
+
+  font-family: 'Libre Franklin', sans-serif;
 }
 .bgFilter{
   position: absolute;
@@ -17,11 +21,11 @@ body{
 }
 
 .layout{
-  display:flex;
-  flex-wrap: row;
+  /*display:flex;*/
+  /*flex-wrap: row;*/
   width: 100%;
   height:100vh;
-  align-items: center;
+  /*align-items: center;*/
 }
 .indexHeader{
   position: absolute;
@@ -71,8 +75,9 @@ body{
 }
 
 h1{
-  font-size: 45px;
-  color:white;
+  font-size: 35px;
+  color: #404040;
+  font-weight: 500;
 }
 
 h2{
@@ -82,6 +87,7 @@ h2{
 h3{
   font-size: 25px;
   color:gray;
+  font-weight: normal;
 }
 .titleContainer{
   margin-top:100px;
@@ -113,31 +119,71 @@ h3{
 }
 
 #intro{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color:white;
-  background: #112027;
+  display: flex;;
+  /*justify-content: center;*/
+  color: #404040;
+  background: #ffffff;
+/*flex-direction: row;*/
 }
 
-#intro h1{
-  margin-right: 150px;
-}
+/*#intro h1{
+  margin-left: 50px;
+}*/
 
-#intro img{
+/*#intro img{
   display: block;
   width:700px;
   height: auto;
-}
+}*/
 
 #intro div{
-  display:flex;
+  /*display:inline-flex;;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items:  flex-start;
+  margin-right: 10px;*/
+  /*height:600px;
+  width:500px;*/
+}
+#intro_head{
+  display:inline-flex;;
+  position: absolute;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
-  height:600px;
-  width:500px;
+  padding-top: 10vh;
+  align-content: space-around;
+  margin-left: 87px;
+}
+#intro_head h1{
+  padding-bottom: 5vh;
+}
+#underLine{
+  position: relative;
+  width:140px;
+  height: 0.4vh;
+  background-color:#404040;
+}
+#videoBack{
+  position: relative;
+  width:60vw;
+  height: 50vh;
+  background-color:#E8E8E8;
+  margin-top: 10vh;
+}
+#videoWord{
+  position: relative;
+  padding-left: 40vw;
+  margin-top: -6vh;
+}
+#videoWord h1{
+  background-color: #E3F4FD;
+  text-align: center;
+  height: 80px;
+  line-height: 80px;
+}
+#intro_content{
+  padding-left: 50vw;
+  padding-top: 20vh;
+  line-height: 30px;
 }
 
 #advantage{
@@ -191,7 +237,7 @@ h3{
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background: #112027;
+  background: #ffffff;
   color:white;
 }
 #tutorial > div{
@@ -206,7 +252,7 @@ h3{
 
 #tutorial img{
   display: block;
-  width:300px;
+  width:35vw;
   height: auto;
   margin-bottom: 50px;
 }
@@ -236,6 +282,7 @@ h3{
 #form label{
   width:100px;
   margin-bottom: 20px;
+  color: #7F7F7F;
 }
 #next{
   float:right;
