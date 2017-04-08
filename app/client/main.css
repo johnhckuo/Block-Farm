@@ -3,9 +3,9 @@
 
 body{
 
-  background: url(/img/bg.jpg);
-  *background: #112027;
-  background-color: rgb(249, 204, 241);
+  /*background: url(/img/bg.jpg);*/
+  /**background: #112027;*/
+  /*background-color: rgb(249, 204, 241);*/
   background-size: 100% 100%;
   background-attachment: fixed;
   overflow-x: hidden;
@@ -118,32 +118,14 @@ h3{
     display: block;
 }
 
-#intro{
-  display: flex;;
-  /*justify-content: center;*/
+#intro #aboutUs{
+  display: flex;
   color: #404040;
   background: #ffffff;
-/*flex-direction: row;*/
 }
-
-/*#intro h1{
-  margin-left: 50px;
-}*/
-
-/*#intro img{
-  display: block;
-  width:700px;
-  height: auto;
-}*/
-
-#intro div{
-  /*display:inline-flex;;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items:  flex-start;
-  margin-right: 10px;*/
-  /*height:600px;
-  width:500px;*/
+#aboutUs{
+  background: #E8E8E8;
+  height: 80vh;
 }
 #intro_head{
   display:inline-flex;;
@@ -185,7 +167,55 @@ h3{
   padding-top: 20vh;
   line-height: 30px;
 }
-
+#teamInfo{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+#teamInfo>div{
+  height:600px;
+  width:500px;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.teamCircle{
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 99em;
+  background-color: #C7EBFC;
+  /*margin-top: 50px;*/
+}
+.memeberBox>.teamCircle{
+  display: flex;
+  position: absolute;
+}
+.memeberBox>.teamPic{
+  display: flex;
+  position: absolute;
+  margin-left: 220px;
+}
+.memeberInfo{
+  z-index: 100;
+  padding-top: 30vh;
+  padding-left: 20vw;
+}
+#teamInfo p{
+  color: #A6A6A6;
+  font-size: 12px;
+  line-height: 25px;
+  font-weight: 400;
+}
+#teamInfo h1{
+  color: #7F7F7F;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 40px;
+}
 #advantage{
   display:flex;
   flex-direction: column;
@@ -256,6 +286,9 @@ h3{
   height: auto;
   margin-bottom: 50px;
 }
+#tutorial h1{
+  font-weight: 600;
+}
 #tutorial h2{
   font-size: 25px;
   margin-bottom: 50px;
@@ -263,15 +296,53 @@ h3{
 #form button{
   margin-left:30px;
 }
-
 #footer{
+  padding-top: 10vh;
+}
+#footer> .copyRight{
   display:flex;
   align-items: center;
   justify-content: center;
   width:100vw;
   height:50px;
-  color:#fff;
-  background: rgb(0,0,0);
+  color:rgb(0, 0, 0);
+  background: #E8E8E8;
+  font-weight: 500;
+}
+#footer ul{
+  display:flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.footerLogo{
+  padding-left: 8vw;
+}
+.footerLogo2{
+  margin-left: -8vw;
+}
+#footer>.contact{
+  display:flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-top: 5vh;
+  padding-bottom:7vh;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.8px;
+  color: #7F7F7F;
+}
+.footerLine{
+  position: relative;
+  width:2px;
+  height: 80px;
+  background-color:#7F7F7F;
+
+}
+.footerInfo1{
+  padding-right: 5vw;
+}
+.footerInfo2{
+  padding-left: 5vw;
 }
 #form{
   display:flex;
