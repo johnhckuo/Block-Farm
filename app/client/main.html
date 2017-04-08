@@ -15,9 +15,9 @@
 </template>
 
 <template name="normalHeader">
-  <div class="bgFilter"></div>
   <div class="header flexbox normalHeader">
     <ul class="flexbox">
+      <div><img src="/img/logo_bartering.png" alt=""></div>
       <li>Hi! {{currentAccount}}</li>
       <li><a href="/">Home</a></li>
       <li><a href="/aboutus">About Us</a></li>
@@ -27,6 +27,7 @@
     </ul>
   </div>
 </template>
+
 
 <template name="switchButton">
   <button type="button" class="btn btn-info stakeholderSwitch" name="button" id={{id}}>Switch</button>
@@ -244,27 +245,18 @@
 </template>
 
 <template name="index">
-  <div class="header flexbox indexHeader">
-      <ul class="flexbox">
-        <li>Hi! {{currentAccount}}</li>
-        <li><a href="/">Home</a></li>
-        <li><a href="/aboutus">About Us</a></li>
-        <li><a href="/manage">Manage</a></li>
-        <li><a href="/update">Update Data</a></li>
-        <li><a href="/switch">Switch Stakeholder</a></li>
-      </ul>
-  </div>
+  {{> normalHeader}}
+
   <div id="title" class="flexbox">
       <div class="titleContainer">
-        <h1>Welcome to D3 Project !</h1>
-        <h3>An academic research</h3>
-        <span class="joinUs">
-            Join Us!
-        </span>
-        <span class="learnMore">
-          Learn More!
-        </span>
+        <h1>"A Blockchain-based <br/>Bartering System"</h1>
+
       </div>
+      <div class="titleImage">
+          <img src="/img/coverpic_bartering.png" alt="">
+      </div>
+      <div class="titleBar"></div>
+
       <a href="#section2" data-title="" id="arrow-down">Get started</a>
   </div>
 
@@ -275,7 +267,9 @@
       <div class=""><h1>系統簡介</h1></div>
       <div class="underLine" id="underLine"></div>
       <div>
-      <div class="videoBack" id="videoBack"></div>
+      <div class="videoBack" id="videoBack">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/eIASMX3-PUg" frameborder="0" allowfullscreen></iframe>
+      </div>
       <div id="videoWord">
         <h1>"VideoScript of Bartering"</h1>
       </div>
@@ -294,12 +288,9 @@
     <div id="intro_head" class="flexbox">
       <div class=""><h1>"WHY D3 Bartering System?"</h1></div>
       <div class=""><h1>創立宗旨</h1></div>
-      <div class="underLine" id="underLine"></div>
+      <div class="underLine"></div>
       <div>
-      <div class="videoBack" id="videoBack"></div>
-      <div id="videoWord">
-        <h1>"Contents"</h1>
-      </div>
+
     </div>
     </div>
 
@@ -329,7 +320,7 @@
         <!-- {{> hello}}
         {{> info}} -->
         <img src="/img/getStart.png" alt="">
-        <h1>Get Started</h1>
+        <h1>"Get Started"</h1>
       </div>
       <div id="form" class="flexbox flip-container">
           <div class="flipper" id="flipper">
@@ -457,17 +448,16 @@
     </div>
   </div>
 
-  <div id="intro" class="flexbox layout">
-    <div id="intro_head" class="flexbox">
+  <div id="aboutUs" class="flexbox layout">
+    <div id="aboutUs_head" class="flexbox">
       <div class=""><h1>"ABOUT US"</h1></div>
       <div class=""><h1>團隊介紹</h1></div>
-      <div class="underLine" id="underLine"></div>
+      <div class="underLine"></div>
       <div>
-      <div class="videoBack" id="videoBack"></div>
     </div>
     </div>
 
-    <div id="intro_content">
+    <div id="aboutUs_content">
       <h3>我是中文版。我是中文版。我是中文版。</h3>
       <h3>我是中文版。我是中文版。</h3>
       <h3>I am English version of D3</h3>
