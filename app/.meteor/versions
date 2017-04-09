@@ -13,6 +13,7 @@ caching-compiler@1.1.9
 caching-html-compiler@1.1.0
 callback-hook@1.0.10
 check@1.2.4
+d3js:d3@3.5.8
 ddp@1.2.5
 ddp-client@1.2.9
 ddp-common@1.2.8

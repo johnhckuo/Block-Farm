@@ -18,5 +18,5 @@ function init(event){
 }
 
 window.onload = function() {
-    // init();
+    init();
 }
