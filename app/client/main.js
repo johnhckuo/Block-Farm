@@ -12,22 +12,13 @@ import './main.html';
 var stakeholderLength;
 var currentAccount = 0, ownerAccount = 0;
 
-Template.init.rendered = function() {
+Template.index.rendered = function() {
     if(!this._rendered) {
-      this._rendered = true;
       console.log('Template render complete');
 
-      var height = window.innerHeight
-        || document.documentElement.clientHeight
-        || document.body.clientHeight;
-      $(window).scroll(function(){
-          if (window.pageYOffset >= height){
-              $(".indexHeader").addClass("fixed");
-          }else{
-              $(".indexHeader").removeClass("fixed");
-          }
-
+      $('#fullpage').fullpage({
       });
+
 
       // MainActivityInstance.matchSuccess().watch(function(error, result){
       //   if (!error)
@@ -47,6 +38,7 @@ Template.init.rendered = function() {
 //     Function   //
 //                //
 ////////////////////
+
 
 
 var hex2a = function(hexx) {
@@ -199,7 +191,7 @@ if (Meteor.isClient) {
 
   });
 
-  Template.normalHeader.helpers({
+  Template.header.helpers({
 
       currentAccount: function(){
         var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
