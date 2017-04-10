@@ -14,19 +14,20 @@
 <template name="init">
 </template>
 
-<template name="normalHeader">
-  <div class="bgFilter"></div>
-  <div class="header flexbox normalHeader">
+<template name="header">
+  <div class="header flexbox">
     <ul class="flexbox">
+      <div><img src="/img/logo_bartering.png" alt=""></div>
       <li>Hi! {{currentAccount}}</li>
       <li><a href="/">Home</a></li>
-      <li><a href="/aboutus">About Us</a></li>
+      <li><a href="/transaction">Transaction</a></li>
       <li><a href="/manage">Manage</a></li>
       <li><a href="/update">Update Data</a></li>
       <li><a href="/switch">Switch Stakeholder</a></li>
     </ul>
   </div>
 </template>
+
 
 <template name="switchButton">
   <button type="button" class="btn btn-info stakeholderSwitch" name="button" id={{id}}>Switch</button>
@@ -74,13 +75,20 @@
 ***********************
 -->
 
-<template name="aboutUs">
-  {{> normalHeader}}
+
+<template name="transaction">
+  {{> header}}
+  <div class="transaction" style="color:white;"></div>
+  <button class='press' style="position:relative; top:300px;">press</button>
+</template>
+
+<template name="testtt">
+  hehe
 
 </template>
 
 <template name="manage">
-  {{> normalHeader}}
+  {{> header}}
   <div class="manageContent flex">
     <table id="manageTable" class="manage table table-hover">
       <h2>Stakeholders</h2>
@@ -160,7 +168,7 @@
 <template name="switchStakeholder">
   {{> init}}
 
-  {{> normalHeader}}
+  {{> header}}
 
   <div class="stakeholderList flex">
     <table class="stakeholderTable table table-hover">
@@ -211,7 +219,7 @@
 <template name="updateData">
   {{> init}}
 
-  {{> normalHeader}}
+  {{> header}}
   <div class="updateRating flex">
     <table class="updateRatingTable table table-hover">
       <h2>Properties</h2>
@@ -244,221 +252,212 @@
 </template>
 
 <template name="index">
-  <div class="header flexbox indexHeader">
-      <ul class="flexbox">
-        <li>Hi! {{currentAccount}}</li>
-        <li><a href="/">Home</a></li>
-        <li><a href="/aboutus">About Us</a></li>
-        <li><a href="/manage">Manage</a></li>
-        <li><a href="/update">Update Data</a></li>
-        <li><a href="/switch">Switch Stakeholder</a></li>
-      </ul>
-  </div>
-  <div id="title" class="flexbox">
-      <div class="titleContainer">
-        <h1>Welcome to D3 Project !</h1>
-        <h3>An academic research</h3>
-        <span class="joinUs">
-            Join Us!
-        </span>
-        <span class="learnMore">
-          Learn More!
-        </span>
-      </div>
-      <a href="#section2" data-title="" id="arrow-down">Get started</a>
-  </div>
-
-  <div id="intro" class="flexbox layout">
-
-    <div id="intro_head" class="flexbox">
-      <div class=""><h1>“WHAT is D3 Bartering System?”</h1></div>
-      <div class=""><h1>系統簡介</h1></div>
-      <div class="underLine" id="underLine"></div>
-      <div>
-      <div class="videoBack" id="videoBack"></div>
-      <div id="videoWord">
-        <h1>“VideoScript of Bartering”</h1>
-      </div>
-    </div>
-    </div>
-
-    <div id="intro_content">
-      <h3>我是中文版。我是中文版。我是中文版。</h3>
-      <h3>我是中文版。我是中文版。</h3>
-      <h3>I am English version of D3</h3>
-      <h3>I am English version.</h3>
-    </div>
-
-  </div>
-  <div id="intro" class="flexbox layout">
-    <div id="intro_head" class="flexbox">
-      <div class=""><h1>“WHY D3 Bartering System?”</h1></div>
-      <div class=""><h1>創立宗旨</h1></div>
-      <div class="underLine" id="underLine"></div>
-      <div>
-      <div class="videoBack" id="videoBack"></div>
-      <div id="videoWord">
-        <h1>“Contents”</h1>
-      </div>
-    </div>
-    </div>
-
-    <div id="intro_content">
-      <h3>我是中文版。我是中文版。我是中文版。</h3>
-      <h3>我是中文版。我是中文版。</h3>
-      <h3>I am English version of D3</h3>
-      <h3>I am English version.</h3>
-    </div>
-
-  </div>
-
-  <!-- <div id="advantage2" class="flexbox layout advantage">
-      <div id="advantageContainer2" class="flexbox advantageContainer">
-          <div class="">
-            <h1>Why D3 ?</h1>
+  {{> header}}
+  <div id="fullpage">
+      <div id="title" class="section" >
+          <div class="titleContainer">
+            <h1>"A Blockchain-based <br/>Bartering System"</h1>
 
           </div>
-          <div class="">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          <div class="titleImage">
+              <img src="/img/coverpic_bartering.png" alt="">
           </div>
+          <div class="titleBar"></div>
+          <a href="#section2" data-title="" id="arrow-down">Get started</a>
       </div>
-  </div> -->
-  <div id="tutorial" class="flexbox layout">
 
-      <div class="">
-        <!-- {{> hello}}
-        {{> info}} -->
-        <img src="/img/getStart.png" alt="">
-        <h1>“GET STARTED”</h1>
+      <div id="intro" class="layout section" >
+
+
+        <div id="intro_head" class="flexbox">
+          <div class=""><h1>"WHAT is D3 Bartering System?"</h1></div>
+          <div class=""><h1>系統簡介</h1></div>
+          <div class="underLine" id="underLine"></div>
+          <div>
+          <div class="videoBack" id="videoBack">
+          </div>
+          <div id="videoWord">
+            <h1>"VideoScript of Bartering"</h1>
+          </div>
+        </div>
+        </div>
+
+        <div id="intro_content">
+          <h3>我是中文版。我是中文版。我是中文版。</h3>
+          <h3>我是中文版。我是中文版。</h3>
+          <h3>I am English version of D3</h3>
+          <h3>I am English version.</h3>
+        </div>
+
       </div>
-      <div id="form" class="flexbox flip-container">
-          <div class="flipper" id="flipper">
-              <div class="front flexbox">
+      <div id="whyUs" class="layout section" >
+        <div id="whyUs_head" class="flexbox">
+          <div class=""><h1>"WHY D3 Bartering System?"</h1></div>
+          <div class=""><h1>創立宗旨</h1></div>
+          <div class="underLine"></div>
+          <div>
 
-                <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
-                    <h1 align="center">“Register”</h1>
-                    <br><br><br>
-                    <label for="stakeholder">Characters</label>
-                    <div class="btn-group" role="group" id="characters">
-                      <button type="button" class="btn btn-default chooseCharacters" id="seller" value='seller'>Seller</button>
-                      <button type="button" class="btn btn-default chooseCharacters" id="buyer" value='buyer'>Buyer</button>
-                    </div>
-                    <br>
-                    <label for="address">Address</label>
-                    <div class="input-group">
-                      <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                      <input type="text" class="form-control" value={{currentAddress}}>
-                    </div>
-                    <br>
-                    <label for="name">Name</label>
-                    <div class="input-group">
-                      <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
-                      <input type="text" class="form-control s_Name" placeholder="">
-                    </div>
-                    <br>
-                    <label for="threshold">Threshold</label>
-                    <div class="input-group">
-                      <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
-                      <input type="text" class="form-control s_Threshold" placeholder="USD dollars">
-                    </div>
-                    <br>
-                    <label for="fund">Fund</label>
-                    <div class="input-group">
-                      <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
-                      <input type="text" class="form-control s_Fund" placeholder="USD dollars">
-                    </div>
-                    <br>
-                    <label for="rate">Rate</label>
-                    <div class="input-group">
-                      <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
-                      <input type="text" class="form-control s_Rate" placeholder="">
-                    </div>
-                    <br>
-                    <button type="submit" class="btn btn-success" id='next'>Submit</button>
-                    <button type="button" class="btn btn-danger" id='test'>TEST</button>
+        </div>
+        </div>
 
-                </form>
-            </div>
-            <div class="back flexbox">
-                <div id="sellerInfo">
-                  <form class="navbar-form navbar-left" role="search">
-                      <h2>Add Property</h2>
-                      <br>
-                      <label for="name">Name</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                        <input type="text" class="form-control p_Name" placeholder="Property name">
-                      </div>
-                      <br>
-                      <label for="count">Property Count</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                        <input type="text" class="form-control p_Count" placeholder="How many(much) are there?">
-                      </div>
-                      <br>
-                      <label for="count">Access Stakeholders</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                        <input type="text" class="form-control p_AccessStakeholders" placeholder="Address">
-                      </div>
-                      <br>
-                      <label for="count">Unit</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                        <input type="text" class="form-control p_Unit" placeholder="">
-                      </div>
-                      <br>
-                      <label for="count">Atomic Unit</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                        <input type="text" class="form-control p_AtomicUnit" placeholder="Smallest unit">
-                      </div>
-                      <br>
-                      <label for="data">Additional Data</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-eth" id="data"></span>
-                        <input type="text" class="form-control p_Data" placeholder="Further info">
-                      </div>
-                      <br>
-                      <label for="count">Rating</label>
-                      <div class="input-group">
-                        <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                        <input type="text" class="form-control p_Rating" placeholder="Your personal ratin">
-                      </div>
-                      <br>
-                      <div class="submitButtons flexbox">
-                        <button type="submit" class="btn btn-danger" id='previous'>Back</button>
-                        <button type="button" class="btn btn-primary" id='submit'>Register</button>
+        <div id="whyUs_content">
+          <h3>我是中文版。我是中文版。我是中文版。</h3>
+          <h3>我是中文版。我是中文版。</h3>
+          <h3>I am English version of D3</h3>
+          <h3>I am English version.</h3>
+        </div>
+
+
+      </div>
+
+      <div id="tutorial" class="layout section" >
+
+          <div class="getStarted">
+            <!-- {{> hello}}
+            {{> info}} -->
+            <img src="/img/getStart.png" alt="">
+            <h1>"Get Started"</h1>
+          </div>
+          <div id="form" class="flexbox flip-container">
+              <div class="flipper" id="flipper">
+                  <div class="front flexbox">
+
+                    <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
+                        <h1>Register</h1>
+                        <br>
+                        <div class='formElement'>
+                            <label for="stakeholder">Characters</label>
+                            <div class="btn-group" role="group" id="characters">
+                              <button type="button" class="btn btn-default chooseCharacters" id="seller" value='seller'>Seller</button>
+                              <button type="button" class="btn btn-default chooseCharacters" id="buyer" value='buyer'>Buyer</button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class='formElement'>
+                            <label for="address">Address</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                              <input type="text" class="form-control" value={{currentAddress}}>
+                            </div>
+                        </div>
+                        <br>
+                        <div class='formElement'>
+                            <label for="name">Name</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
+                              <input type="text" class="form-control s_Name" placeholder="">
+                            </div>
+                        </div>
+                        <br>
+                        <div class='formElement'>
+                            <label for="threshold">Threshold</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                              <input type="text" class="form-control s_Threshold" placeholder="USD dollars">
+                            </div>
+                        </div>
+                        <br>
+                        <div class='formElement'>
+                            <label for="fund">Fund</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                              <input type="text" class="form-control s_Fund" placeholder="USD dollars">
+                            </div>
+                        </div>
+                        <br>
+                        <div class='formElement'>
+                            <label for="rate">Rate</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                              <input type="text" class="form-control s_Rate" placeholder="">
+                            </div>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-success" id='next'>Submit</button>
                         <button type="button" class="btn btn-danger" id='test'>TEST</button>
 
-                      </div>
-                  </form>
-                </div>
-                <div id="buyerInfo">
-                    <form class="navbar-form navbar-left" role="search">
-                        <h2>Current Bidding Query</h2>
-                        <br>
-                        <label for="bidId">Bidding ID</label>
-                        <div class="input-group">
-                          <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                          <input type="text" class="form-control" placeholder="ID">
-                        </div>
-                        <br>
-                        <div class="submitButtons flexbox">
-                          <button type="submit" class="btn btn-danger" id='previous'>Back</button>
-                          <button type="button" class="btn btn-primary" id='submit'>Register</button>
-
-                        </div>
                     </form>
                 </div>
+                <div class="back flexbox">
+                    <div id="sellerInfo">
+                      <form class="navbar-form navbar-left" role="search">
+                          <h2>Add Property</h2>
+                          <br>
+                          <label for="name">Name</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                            <input type="text" class="form-control p_Name" placeholder="Property name">
+                          </div>
+                          <br>
+                          <label for="count">Property Count</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_Count" placeholder="How many(much) are there?">
+                          </div>
+                          <br>
+                          <label for="count">Access Stakeholders</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_AccessStakeholders" placeholder="Address">
+                          </div>
+                          <br>
+                          <label for="count">Unit</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_Unit" placeholder="">
+                          </div>
+                          <br>
+                          <label for="count">Atomic Unit</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_AtomicUnit" placeholder="Smallest unit">
+                          </div>
+                          <br>
+                          <label for="data">Additional Data</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-eth" id="data"></span>
+                            <input type="text" class="form-control p_Data" placeholder="Further info">
+                          </div>
+                          <br>
+                          <label for="count">Rating</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_Rating" placeholder="Your personal ratin">
+                          </div>
+                          <br>
+                          <div class="submitButtons flexbox">
+                            <button type="submit" class="btn btn-danger" id='previous'>Back</button>
+                            <button type="button" class="btn btn-primary" id='submit'>Register</button>
+                            <button type="button" class="btn btn-danger" id='test'>TEST</button>
 
+                          </div>
+                      </form>
+                    </div>
+                    <div id="buyerInfo">
+                        <form class="navbar-form navbar-left" role="search">
+                            <h2>Current Bidding Query</h2>
+                            <br>
+                            <label for="bidId">Bidding ID</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                              <input type="text" class="form-control" placeholder="ID">
+                            </div>
+                            <br>
+                            <div class="submitButtons flexbox">
+                              <button type="submit" class="btn btn-danger" id='previous'>Back</button>
+                              <button type="button" class="btn btn-primary" id='submit'>Register</button>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
-  </div>
+      </div>
 
-  <div id="aboutUs" class="flexbox layout">
-    <div id="intro_head" class="flexbox">
+  <div id="aboutUs" class="flexbox layout section">
+    <div id="aboutUs_head" class="flexbox">
       <div class=""><h1>"ABOUT US"</h1></div>
       <div class=""><h1>團隊介紹</h1></div>
       <div class="underLine" id="underLine"></div>
@@ -486,8 +485,6 @@
         </div>
       </div>
     </div>
-
-  </div>
 
 
   <div id="footer" class="flexbox">

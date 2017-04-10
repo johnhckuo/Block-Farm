@@ -14,11 +14,13 @@ contract usingProperty{
 contract MainActivity{
 
     uint[] visitedProperty;
+    int256[] visitedPriority;
+
     uint visitedCount;  //in order to ignore the rest of the array elem
     uint[] actualVisitIndex;
     uint origin;
 
-    event matchSuccess(uint[]);
+    event matchSuccess(uint[], int256[]);
     event matchFail();
     event test(uint);
 
@@ -44,7 +46,7 @@ contract MainActivity{
       property = usingProperty(PropertyAddress);
     }
 
-    function sort(int256[] priorityList, uint[] visitList) returns(uint[]){
+    function sort(int256[] priorityList, uint[] visitList) returns(int256[], uint[]){
       //selection sort
 
         for (uint i=0; i < priorityList.length; i++)
@@ -63,14 +65,14 @@ contract MainActivity{
             visitList[i] = visitList[max_index];
             visitList[max_index] = temp2;
         }
-        return visitList;
+        return (priorityList, visitList);
     }
 
     function getPropertiesLength() returns(uint){
         return property.getPropertiesLength();
     }
 
-    function startMatching() returns(bytes32 success){
+    function findOrigin() returns(bytes32 success){
 
         uint length = property.getPropertiesLength();
         int256[] memory priorityList = new int256[](length);
@@ -78,6 +80,7 @@ contract MainActivity{
         uint[] memory sortedList = new uint[](length);
 
         visitedProperty.length = 0;
+        visitedPriority.length = 0;
 
         for (uint i = 0 ; i < length ; i++){
             var (owner, averageRating) = property.getPartialProperty(i);
@@ -89,14 +92,17 @@ contract MainActivity{
             visitList[i] = i;
         }
 
-        sortedList = sort(priorityList, visitList);
+        (priorityList, sortedList) = sort(priorityList, visitList);
         actualVisitIndex = new uint[](length);
         origin = sortedList[0];
 
         visitedCount = 0;
         visitedProperty.length++;
         visitedProperty[visitedCount] = origin;
-        success = tradingMatch(origin);
+        visitedPriority.length++;
+        visitedPriority[visitedCount] = 0;
+
+        success = findVisitNode(origin);
     }
 
     function checkExist(uint elem, uint[] data) returns(bool){
@@ -108,7 +114,7 @@ contract MainActivity{
         return true;
     }
 
-    function matchingAlgo(uint visitNode, uint i) constant returns(int256){
+    function returnPriority(uint visitNode, uint i) constant returns(int256){
 
         var (owner, averageRating) = property.getPartialProperty(visitNode);
         uint self_Importance = property.getPropertyRating(visitNode, congress.stakeholderId(owner));
@@ -118,7 +124,7 @@ contract MainActivity{
         return diff;
     }
 
-    function tradingMatch(uint visitNode) returns(bytes32){
+    function findVisitNode(uint visitNode) returns(bytes32){
 
         uint length = property.getPropertiesLength();
         uint[] memory goThroughList = new uint[](length);
@@ -133,10 +139,10 @@ contract MainActivity{
                 continue;
             }
 
-            diffList[i] = matchingAlgo(visitNode, i);
+            diffList[i] = returnPriority(visitNode, i);
             goThroughList[i] = i;
         }
-        goThroughList = sort(diffList, goThroughList);
+        (diffList, goThroughList) = sort(diffList, goThroughList);
 
         bool flag = false;
         uint visitIndex;
@@ -156,19 +162,18 @@ contract MainActivity{
         visitedProperty.length++;
         visitedProperty[++visitedCount] = goThroughList[visitIndex];
 
+        visitedPriority.length++;
+        visitedPriority[++visitedCount] = diffList[visitIndex];
+
         if (goThroughList[visitIndex] == origin){
-             matchSuccess(visitedProperty);
+             matchSuccess(visitedProperty, visitedPriority);
              test(visitedCount);
              return "Success";
         }else{
-            tradingMatch(goThroughList[visitIndex]);
+            findVisitNode(goThroughList[visitIndex]);
         }
 
     }
 
-
-    function initContract(){
-
-    }
 
 }

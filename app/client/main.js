@@ -2,6 +2,8 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
+import './graph.js';
+import './mainActivity.js';
 
 ////////////////////
 //                //
@@ -11,23 +13,13 @@ import './main.html';
 
 var stakeholderLength;
 var currentAccount = 0, ownerAccount = 0;
-
-Template.init.rendered = function() {
-    if(!this._rendered) {
-      this._rendered = true;
+var renderChecked = false;
+Template.index.rendered = function() {
+    if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
 
-      var height = window.innerHeight
-        || document.documentElement.clientHeight
-        || document.body.clientHeight;
-      $(window).scroll(function(){
-          if (window.pageYOffset >= height){
-              $(".indexHeader").addClass("fixed");
-          }else{
-              $(".indexHeader").removeClass("fixed");
-          }
-
-      });
+      $('#fullpage').fullpage();
+      renderChecked = true;
 
       // MainActivityInstance.matchSuccess().watch(function(error, result){
       //   if (!error)
@@ -47,6 +39,7 @@ Template.init.rendered = function() {
 //     Function   //
 //                //
 ////////////////////
+
 
 
 var hex2a = function(hexx) {
@@ -199,7 +192,7 @@ if (Meteor.isClient) {
 
   });
 
-  Template.normalHeader.helpers({
+  Template.header.helpers({
 
       currentAccount: function(){
         var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
@@ -214,6 +207,52 @@ if (Meteor.isClient) {
   //     Event      //
   //                //
   ////////////////////
+  Template.transaction.events({
+    'click .press': function (event){
+        //console.log("fff");
+
+        console.log("=== Start Match Making ===");
+
+        MainActivityInstance.matchSuccess().watch(function(error, result){
+          if (!error){
+            //var length = result.args[""].length/2;
+            var length = result.args[""].length;
+            for (var i = 0 ; i < length; i++){
+              var _id = result.args[""][i].c[0];
+              var data = usingPropertyInstance.getProperty.call(_id, {from:web3.eth.accounts[currentAccount]});
+
+              var currentRating = usingPropertyInstance.getPartialProperty.call(_id, {from:web3.eth.accounts[currentAccount]})[1].c[0];
+
+              console.log(currentRating);
+              var s_Id = CongressInstance.stakeholderId.call(data[5], {from:web3.eth.accounts[currentAccount]}).c[0];
+              var _owner = CongressInstance.getStakeholder.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+              _owner = hex2a(_owner[0]);
+
+              matchResult.insert({
+                id: _id,
+                name: hex2a(data[0]),
+                owner: _owner,
+                importance : currentRating
+              });
+
+          }
+          var height = window.innerHeight
+            || document.documentElement.clientHeight
+            || document.body.clientHeight;
+          $(window).scrollTo(height, 1500);
+        }
+        });
+
+        var txs = MainActivityInstance.findOrigin({from:web3.eth.accounts[ownerAccount], gas:4500000});
+        console.log(txs);
+
+
+        Blaze.renderWithData(Template.testtt,{},$('.hihi')[0]);
+        updateEmpowermentData('calculate', '');
+        // graph = new drawGraph(".transaction");
+
+    },
+  })
 
   Template.switchStakeholder.events({
     'click .stakeholderSwitch': function (event){
@@ -269,7 +308,7 @@ if (Meteor.isClient) {
         }
         });
 
-        var txs = MainActivityInstance.startMatching({from:web3.eth.accounts[ownerAccount], gas:4500000});
+        var txs = MainActivityInstance.findOrigin({from:web3.eth.accounts[ownerAccount], gas:4500000});
         console.log(txs);
     },
   })

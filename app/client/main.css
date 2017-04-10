@@ -3,22 +3,15 @@
 
 body{
 
-  /*background: url(/img/bg.jpg);*/
-  /**background: #112027;*/
-  /*background-color: rgb(249, 204, 241);*/
+  background: #112027;
+  *background-color: rgb(249, 204, 241);
   background-size: 100% 100%;
   background-attachment: fixed;
   overflow-x: hidden;
 
   font-family: 'Libre Franklin', sans-serif;
 }
-.bgFilter{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-  color:#fff;
-}
+
 
 .layout{
   /*display:flex;*/
@@ -39,26 +32,43 @@ body{
   z-index: 100;
 }
 
-.normalHeader{
+.header{
   position: absolute;
   display:flex;
   align-items: center;
   width:100vw;
-  height:50px;
+  height:150px;
   color:#fff;
   top:0px;
-  background: rgba(0,0,0,0.5);
   z-index: 100;
 }
 
 .header ul{
   display:flex;
   justify-content: space-around;
+  align-items: center;
   width:100%;
+  right:10px;
 }
 .header ul li{
   display: inline;
   cursor: pointer;
+
+}
+.header a{
+  color:#BFBFBF;
+  font-family: "franklin-gothic-urw", "sans-serif";
+  font-size: 20px;
+}
+
+.header ul div{
+  width: 30%;
+  height: 100%;
+}
+
+.header img{
+  width: 100%;
+  heig: 100%;;
 }
 .header ul li:hover{
   color:rgb(150,150,255);
@@ -67,15 +77,41 @@ body{
 #title{
   display: flex;
   justify-content: flex-start;
-  background: url(/img/barter.jpg);
   background-size: 100% 100%;
   flex-wrap: row;
   width: 100%;
   height:100vh;
+  background: #fff;
+}
+
+.titleImage{
+  position: absolute;
+  top:30vh;
+  right:10vw;
+  width:60%;
+  height: 60%;
+
+}
+
+.titleBar{
+  position: absolute;
+  bottom:0px;
+  left:0px;
+  width:100vw;
+  height:20vh;
+  background: #E8E8E8;
+  z-index: 1;
+}
+
+.titleImage img{
+  position: absolute;
+  width:100%;
+  height:100%;
+  z-index: 2;
 }
 
 h1{
-  font-size: 35px;
+  font-size: 65px;
   color: #404040;
   font-weight: 500;
 }
@@ -90,8 +126,10 @@ h3{
   font-weight: normal;
 }
 .titleContainer{
-  margin-top:100px;
-  margin-left: 100px;
+  position: absolute;
+  z-index: 3;
+  margin-top:200px;
+  margin-left: 200px;
 
 }
 .titleContainer span{
@@ -109,10 +147,10 @@ h3{
     bottom: 0;
     left: 50%;
     z-index: 11;
-    height: 100px;
+    height: 70px;
     width: 70px;
     margin-left: -35px;
-    background: url(/img/bg-arrow-down.png) no-repeat 21px 26px #112027;
+    background: url(/img/bg-arrow-down.png) no-repeat 21px 26px rgba(0,0,0,0.1);
     background-size: 28px 16px;
     text-indent: -9999px;
     display: block;
@@ -138,7 +176,8 @@ h3{
 #intro_head h1{
   padding-bottom: 5vh;
 }
-#underLine{
+
+.underLine{
   position: relative;
   width:140px;
   height: 0.4vh;
@@ -216,6 +255,57 @@ h3{
   font-weight: 600;
   line-height: 40px;
 }
+
+#whyUs{
+  display: flex;;
+  color: #404040;
+  background: #ffffff;
+}
+
+#whyUs_head{
+  display:inline-flex;;
+  position: absolute;
+  flex-direction: column;
+  padding-top: 10vh;
+  align-content: space-around;
+  margin-left: 87px;
+}
+#whyUs_head h1{
+  padding-bottom: 5vh;
+}
+
+#whyUs_content{
+  padding-left: 50vw;
+  padding-top: 20vh;
+  line-height: 30px;
+}
+
+
+#aboutUs{
+  display: flex;;
+  color: #404040;
+  background: #ffffff;
+}
+
+#aboutUs_head{
+  display:inline-flex;;
+  position: absolute;
+  flex-direction: column;
+  padding-top: 10vh;
+  align-content: space-around;
+  margin-left: 87px;
+}
+#aboutUs_head h1{
+  padding-bottom: 5vh;
+}
+
+#aboutUs_content{
+  padding-left: 50vw;
+  padding-top: 20vh;
+  line-height: 30px;
+}
+
+
 #advantage{
   display:flex;
   flex-direction: column;
@@ -271,11 +361,11 @@ h3{
   color:white;
 }
 #tutorial > div{
-  margin-right: 10px;
+  margin-right: 100px;
   height:600px;
   width:500px;
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 }
@@ -289,13 +379,16 @@ h3{
 #tutorial h1{
   font-weight: 600;
 }
+
+.getStarted{
+  margin-right: 300px;
+}
+
 #tutorial h2{
   font-size: 25px;
   margin-bottom: 50px;
 }
-#form button{
-  margin-left:30px;
-}
+
 #footer{
   padding-top: 10vh;
 }
@@ -355,6 +448,11 @@ h3{
   margin-bottom: 20px;
   color: #7F7F7F;
 }
+.formElement{
+  display: flex;
+  flex-direction: row;
+}
+
 #next{
   float:right;
 }
