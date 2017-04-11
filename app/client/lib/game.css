@@ -24,9 +24,9 @@
   perspective-origin:center center;
   -moz-perspective-origin:center center;
   -webkit-perspective-origin:center center;
-  perspective:500px;
-  -moz-perspective:500px;
-  -webkit-perspective:500px;
+  perspective:1000px;
+  -moz-perspective:1000px;
+  -webkit-perspective:1000px;
 }
 
 .gamingArea .canvas{
@@ -45,11 +45,11 @@
   float: none;
   margin-left: auto;
   margin-right: auto;
-  width:400px;
-  height:400px;
-  transform:translateX(50px) translateY(50px) rotateY(60deg);
-  -moz-transform:translateX(50px) translateY(50px) rotateY(60deg);
-  -webkit-transform:translateX(50px) translateY(50px) rotateY(60deg);
+  width:350px;
+  height:350px;
+  transform:rotateX(60deg) rotateZ(45deg);
+  -moz-transform:rotateX(60deg) rotateZ(45deg);
+  -webkit-transform:rotateX(60deg) rotateZ(45deg);
 
 }
 .land div{
@@ -57,7 +57,31 @@
   position: relative;
   display: inline-block;
   width:100px;
-  height:100px;
+  height: 100px;
   background: gray;
+  /*background-image: url("/img/game/land.svg");*/
 
+}
+
+.land div img{
+  height: 100%;
+  width: 100%;
+
+ /*-webkit-transform :rotateX(20deg) rotateY(45deg) rotateZ(130deg);*/
+}
+
+.landDIV{
+  position: relative;
+  top:100px;
+  left:100px;
+}
+
+.landDIV img{
+  height: 20%;
+  width: 20%;
+}
+
+.landDIV img:hover{
+  height: 50%;
+  width: 50%;
 }
