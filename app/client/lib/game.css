@@ -1,0 +1,63 @@
+.gameContainer{
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.statusList{
+  position: relative;
+  height:100%;
+  width: 30vw;
+  background: gray;
+}
+.gamingArea{
+  position: relative;
+  height:100%;
+  width:70vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  perspective-origin:center center;
+  -moz-perspective-origin:center center;
+  -webkit-perspective-origin:center center;
+  perspective:500px;
+  -moz-perspective:500px;
+  -webkit-perspective:500px;
+}
+
+.gamingArea .canvas{
+  width:80%;
+  height: 80%;
+  background: white;
+  transform-style:3d;
+  -moz-transform-style:3d;
+  -webkit-transform-style:3d;
+
+}
+
+.land{
+  position: relative;
+  top:30%;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+  width:400px;
+  height:400px;
+  transform:translateX(50px) translateY(50px) rotateY(60deg);
+  -moz-transform:translateX(50px) translateY(50px) rotateY(60deg);
+  -webkit-transform:translateX(50px) translateY(50px) rotateY(60deg);
+
+}
+.land div{
+
+  position: relative;
+  display: inline-block;
+  width:100px;
+  height:100px;
+  background: gray;
+
+}
