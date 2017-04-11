@@ -18,3 +18,7 @@ Router.route('/switch', function () {
 Router.route('/aboutus', function () {
   this.render('aboutUs');
 });
+
+Router.route('/transaction', function () {
+  this.render('transaction');
+});

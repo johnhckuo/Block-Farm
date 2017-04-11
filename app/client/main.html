@@ -20,7 +20,7 @@
       <div><img src="/img/logo_bartering.png" alt=""></div>
       <li>Hi! {{currentAccount}}</li>
       <li><a href="/">Home</a></li>
-      <li><a href="/aboutus">About Us</a></li>
+      <li><a href="/transaction">Transaction</a></li>
       <li><a href="/manage">Manage</a></li>
       <li><a href="/update">Update Data</a></li>
       <li><a href="/switch">Switch Stakeholder</a></li>
@@ -75,8 +75,15 @@
 ***********************
 -->
 
-<template name="aboutUs">
+
+<template name="transaction">
   {{> header}}
+  <div class="transaction" style="color:white;"></div>
+  <button class='press' style="position:relative; top:300px;">press</button>
+</template>
+
+<template name="testtt">
+  hehe
 
 </template>
 
@@ -256,11 +263,11 @@
               <img src="/img/coverpic_bartering.png" alt="">
           </div>
           <div class="titleBar"></div>
-
           <a href="#section2" data-title="" id="arrow-down">Get started</a>
       </div>
 
       <div id="intro" class="layout section" >
+
 
         <div id="intro_head" class="flexbox">
           <div class=""><h1>"WHAT is D3 Bartering System?"</h1></div>
@@ -316,6 +323,7 @@
                 And also an Utopia.<br />
             </h3>
         </div>
+
 
       </div>
 
@@ -465,26 +473,64 @@
         </div>
       </div>
 
-      <div id="aboutUs" class="layout section" >
-        <div id="aboutUs_head" class="flexbox">
-          <div class=""><h1>"ABOUT US"</h1></div>
-          <div class=""><h1>團隊介紹</h1></div>
-          <div class="underLine"></div>
-          <div>
-        </div>
-        </div>
+  <div id="aboutUs" class="flexbox layout section">
+    <div id="aboutUs_head" class="flexbox">
+      <div class=""><h1>"ABOUT US"</h1></div>
+      <div class=""><h1>團隊介紹</h1></div>
+      <div class="underLine" id="underLine"></div>
+    </div>
 
-        <div id="aboutUs_content">
-          <h3>我是中文版。我是中文版。我是中文版。</h3>
-          <h3>我是中文版。我是中文版。</h3>
-          <h3>I am English version of D3</h3>
-          <h3>I am English version.</h3>
+    <div id="teamInfo" class="flexbox">
+      <div class="member flexbox memeberBox">
+        <div class="teamCircle"></div>
+        <div class="teamPic"><img src="/img/user-male-black-shape.png" width="15%" height="15%" alt=""></div>
+        <div class="memeberInfo">
+          <h1>Professor Yuan</h1>
+          <p>NCCU, MIS</p>
+          <p>Service Science Research Center</p>
+          <p>ssrc@nccu.edu.tw</p>
         </div>
-
       </div>
-  </div>
+      <div class="member flexbox memeberBox">
+        <div class="teamCircle"></div>
+        <div class="teamPic"><img src="/img/user-male-black-shape.png" width="15%" height="15%" alt=""></div>
+        <div class="memeberInfo">
+          <h1>Professor Yuan</h1>
+          <p>NCCU, MIS</p>
+          <p>Service Science Research Center</p>
+          <p>ssrc@nccu.edu.tw</p>
+        </div>
+      </div>
+    </div>
+
+
   <div id="footer" class="flexbox">
+    <div>
+      <ul class="flexbox">
+        <li class="footerLogo"><img src="/img/logo_final_skin.png" width="30%" height="30%" alt=""></li>
+        <li class="footerLogo2"><img src="/img/logo_bartering.png" width="30%" height="30%" alt=""></li>
+      </ul>
+    </div>
+    <div class="contact">
+      <ul class="flexbox">
+        <li class="footerInfo1">
+          <p>國立政治大學 資訊管理學系</p>
+          <p>服務科學研究中心</p>
+          <p>116 台北市文山區指南路二段64號</p>
+          <p>TEL:02-2939-3091</p>
+        </li>
+        <li><div class="footerLine"></div></li>
+        <li class="footerInfo2">
+          <p>National ChengChi University</p>
+          <p>Service Science Research Center</p>
+          <p>No.64, Sec. 2, Zhinan Rd., Wenshan Dist., Taipei City 116, Taiwan (R.O.C)</p>
+          <p>TEL:02-2939-3091</p>
+        </li>
+      </ul>
+    </div>
+    <div class="copyRight">
       <h2>Copyright (c) 2017 Copyright Holder All Rights Reserved.</h2>
+    </div>
   </div>
 
   {{> init}}
