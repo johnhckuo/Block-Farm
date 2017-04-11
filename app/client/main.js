@@ -7,6 +7,7 @@ import './game.html';
 
 import './graph.js';
 import './mainActivity.js';
+import './game.js';
 
 ////////////////////
 //                //

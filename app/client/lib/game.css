@@ -1,0 +1,87 @@
+.gameContainer{
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.statusList{
+  position: relative;
+  height:100%;
+  width: 30vw;
+  background: gray;
+}
+.gamingArea{
+  position: relative;
+  height:100%;
+  width:70vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  perspective-origin:center center;
+  -moz-perspective-origin:center center;
+  -webkit-perspective-origin:center center;
+  perspective:1000px;
+  -moz-perspective:1000px;
+  -webkit-perspective:1000px;
+}
+
+.gamingArea .canvas{
+  width:80%;
+  height: 80%;
+  background: white;
+  transform-style:3d;
+  -moz-transform-style:3d;
+  -webkit-transform-style:3d;
+
+}
+
+.land{
+  position: relative;
+  top:30%;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+  width:350px;
+  height:350px;
+  transform:rotateX(60deg) rotateZ(45deg);
+  -moz-transform:rotateX(60deg) rotateZ(45deg);
+  -webkit-transform:rotateX(60deg) rotateZ(45deg);
+
+}
+.land div{
+
+  position: relative;
+  display: inline-block;
+  width:100px;
+  height: 100px;
+  background: gray;
+  /*background-image: url("/img/game/land.svg");*/
+
+}
+
+.land div img{
+  height: 100%;
+  width: 100%;
+
+ /*-webkit-transform :rotateX(20deg) rotateY(45deg) rotateZ(130deg);*/
+}
+
+.landDIV{
+  position: relative;
+  top:100px;
+  left:100px;
+}
+
+.landDIV img{
+  height: 20%;
+  width: 20%;
+}
+
+.landDIV img:hover{
+  height: 50%;
+  width: 50%;
+}
