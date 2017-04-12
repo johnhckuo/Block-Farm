@@ -94,3 +94,13 @@
   height: 100%;
   width: 100%;
 }
+
+
+
+.property_shop{
+  position:absolute;
+  height:80vh;
+  width:80vw;
+  margin-top:50px;
+  background-color:white;
+}
