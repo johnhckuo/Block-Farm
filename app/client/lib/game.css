@@ -24,9 +24,9 @@
   perspective-origin:center center;
   -moz-perspective-origin:center center;
   -webkit-perspective-origin:center center;
-  perspective:2000px;
-  -moz-perspective:2000px;
-  -webkit-perspective:2000px;
+  perspective:2500px;
+  -moz-perspective:2500px;
+  -webkit-perspective:2500px;
 }
 
 .gamingArea .canvas{
@@ -86,8 +86,8 @@
 
 .landDIV{
   position: absolute;
-  top:100px;
-  left:100px;
+  top:200px;
+  left:200px;
 }
 
 .landDIV img{

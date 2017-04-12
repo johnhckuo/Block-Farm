@@ -1,7 +1,9 @@
 
 var landSize;
-var blockSize = 100;
-var transform2dOffset = 40;
+var blockSize = 200;
+var transform2dOffset = 20;
+var landSrc = "/img/game/dirt.jpg";
+
 
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
@@ -11,7 +13,7 @@ Template.gameIndex.rendered = function() {
       $('.land').css("height", blockSize*landSize +50);
 
       for (var i = 0 ; i < landSize*landSize; i++){
-          $('.land').append("<div style='width:"+ blockSize +"px; height:"+ blockSize +"px;'><img src='/img/game/dirt.jpg'></img></div>");
+          $('.land').append("<div style='width:"+ blockSize +"px; height:"+ blockSize +"px;'><img src="+ landSrc +"></img></div>");
           //$('.land').append("<div></div>");
       }
 
@@ -34,7 +36,8 @@ Template.gameIndex.events({
 
       var areaLeft = $(".gamingArea").position().left;
 
-      $(".landDIV").css({top: top-transform2dOffset, left: left-areaLeft, width:"100px", height:"100px", position:"absolute"});
+
+      $(".landDIV").css({top: top-transform2dOffset, left: left-areaLeft+transform2dOffset+30, width:"150px", height:"150px", position:"absolute"});
 
   },
 })
