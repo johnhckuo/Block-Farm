@@ -34,7 +34,7 @@ contract usingProperty{
         uint averageRating;
     }
 
-    Property[] public propertyTypeList;
+    PropertyType[] public propertyTypeList;
 
     struct Property{
         bytes32 name;
