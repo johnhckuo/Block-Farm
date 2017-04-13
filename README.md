@@ -4,8 +4,6 @@ A bartering DApp for greater good of resources utilization.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
 In order to run truffle framework, you need to get truffle first
@@ -19,10 +17,6 @@ To compile the app directory and set up the whole meteor app, run the following 
 ```
 curl https://install.meteor.com/ | sh
 ```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
