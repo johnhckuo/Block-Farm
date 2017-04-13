@@ -1,16 +1,42 @@
 
 var landSize;
-var blockSize = 200;
-var transform2dOffset = 20;
+var blockSize = 150;
+var transform2dOffset = 0;
 var landSrc = "/img/game/dirt.jpg";
 
+var prefix = "/img/game/";
+var postfix = ".svg";
+
+var currentCropId;
+
+var cropList = [];
+
+var cropTypeList = [
+  {
+    id:0,
+    name: "carrot",
+    img: ["seed", "carrot_half", "carrot"],
+    count:0
+
+  },
+  {
+    id:1,
+    name: "lactus",
+    img: ["seed", "grass", "carrot"],
+    count:0
+  }
+
+];
+//////////////////
+//  onRendered  //
+//////////////////
 
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
       console.log('gameArea render complete');
       landSize = 3;
-      $('.land').css("width", blockSize*landSize +50);
-      $('.land').css("height", blockSize*landSize +50);
+      $('.land').css("width", blockSize*landSize );
+      $('.land').css("height", blockSize*landSize );
 
       for (var i = 0 ; i < landSize*landSize; i++){
           $('.land').append("<div style='width:"+ blockSize +"px; height:"+ blockSize +"px;'><img src="+ landSrc +"></img></div>");
@@ -22,17 +48,6 @@ Template.gameIndex.rendered = function() {
 
     }
 }
-
-var activated_account = 0;
-var account_index;
-property_log = [];
-user_property = [];
-property_database = [];
-display_field = [];
-
-Template.shop.helpers({
-
-});
 
 Template.shop.rendered = function () {
     $.getJSON('property.json', function (property_data) {
@@ -67,6 +82,74 @@ Template.shop.rendered = function () {
 
 }
 
+
+///////////////
+//  Helpers  //
+///////////////
+
+var activated_account = 0;
+var account_index;
+property_log = [];
+user_property = [];
+property_database = [];
+display_field = [];
+
+Template.shop.helpers({
+
+});
+
+Template.statusList.helpers({
+  crops: function(){
+
+    var cropsData = [];
+
+    for (var i = 0 ; i < cropTypeList.length; i++){
+      var data = cropTypeList[i];
+
+      //console.log(data);
+      cropsData.push({
+        "name": "crop property"+data.id,
+        "img": prefix+data.img[2]+postfix,
+        "content": data.name
+      });
+    }
+
+
+    return cropsData;
+
+
+
+  },
+});
+
+Template.summaryBoard.helpers({
+  cropsSummary: function(){
+
+    var cropsData = [];
+
+    for (var i = 0 ; i < cropList.length; i++){
+      var data = cropList[i];
+
+      //console.log(data);
+      cropsData.push({
+        "name": data.name,
+        "img": prefix+data.img+postfix,
+        "timeLeft": data.timeLeft,
+        "plantTime": data.since
+      });
+    }
+
+
+    return cropsData;
+
+
+
+  },
+});
+//////////////
+//  Events  //
+//////////////
+
 Template.shop.events({
     'click #btn_show_property': function () {
         set_property_table();
@@ -82,6 +165,82 @@ Template.shop.events({
         $('.property_shop').css('display', 'none');
     }
 });
+
+
+Template.gameIndex.events({
+  'click .land div': function (event){
+      // var left = $(event.target).position().left;
+      // var top = $(event.target).position().top;
+      if (currentCropId != null){
+        cropTypeList[currentCropId].count++;
+      }else{
+        alert("Specify Crop first");
+        return;
+      }
+      currentCropId = null;
+
+      var top = $(event.target)[0].getBoundingClientRect().top;
+      var left = $(event.target)[0].getBoundingClientRect().left;
+
+      var landTop = $(".land").position().top;
+      var landLeft = $(".land").position().left;
+
+      var areaLeft = $(".gamingArea").position().left;
+
+      var divHeight =$(".landDIV").height()/5;
+      var divWidth = $(".landDIV").width()/4;
+      // var divHeight =0;
+      // var divWidth = 0;
+
+      $(".landDIV").css({top: top-transform2dOffset-divHeight, left: left-areaLeft+transform2dOffset+divWidth, width:"150px", height:"150px", position:"absolute"});
+
+      var d = new Date();
+      var n = d.getTime();
+
+      cropList.push({
+        name: cropTypeList[currentCropId].name,
+        img:cropTypeList[currentCropId].img[2],
+        since: n,
+        timeLeft:0
+      });
+      console.log(cropList);
+
+
+  },
+})
+
+Template.crop.events({
+  'click .crop button': function (event){
+      var id = $(event.target).parent()[0].className.split("property")[1];
+      $(".landDIV").html("<img src = '" + prefix+ cropTypeList[id].img[0] + postfix +"' />");
+      currentCropId = id;
+  },
+})
+
+Template.gamingArea.events({
+  'mouseenter .land div': function (event){
+      var top = $(event.target)[0].getBoundingClientRect().top;
+      var left = $(event.target)[0].getBoundingClientRect().left;
+
+      var landTop = $(".land").position().top;
+      var landLeft = $(".land").position().left;
+
+      var areaLeft = $(".gamingArea").position().left;
+
+      var divHeight =$(".landDIV").height()/5;
+      var divWidth = $(".landDIV").width()/4;
+      // var divHeight =0;
+      // var divWidth = 0;
+
+      $(".landDIV").css({top: top-transform2dOffset-divHeight, left: left-areaLeft+transform2dOffset+divWidth, width:"150px", height:"150px", position:"absolute"});
+
+  },
+})
+
+
+/////////////////////////
+//  Utility Functions  //
+/////////////////////////
 
 get_user_property_setting = function () {
     for (i = 0; i < property_log.length; i++) {
@@ -202,23 +361,3 @@ averageRating_calculation = function () {
 
 //calling ethereum
 //MainActivityInstance.updatePropertiesRating(i, importance, "update", { from: web3.eth.accounts[currentAccount], gas: 200000 });
-
-
-Template.gameIndex.events({
-  'click .land div': function (event){
-      // var left = $(event.target).position().left;
-      // var top = $(event.target).position().top;
-
-      var top = $(event.target)[0].getBoundingClientRect().top;
-      var left = $(event.target)[0].getBoundingClientRect().left;
-
-      var landTop = $(".land").position().top;
-      var landLeft = $(".land").position().left;
-
-      var areaLeft = $(".gamingArea").position().left;
-
-
-      $(".landDIV").css({top: top-transform2dOffset, left: left-areaLeft+transform2dOffset+30, width:"150px", height:"150px", position:"absolute"});
-
-  },
-})
