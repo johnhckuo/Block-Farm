@@ -11,7 +11,12 @@
   position: relative;
   height:100%;
   width: 30vw;
-  background: gray;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top:150px;
 }
 .gamingArea{
   position: relative;
@@ -20,6 +25,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 150px;
 
   perspective-origin:center center;
   -moz-perspective-origin:center center;
@@ -36,7 +42,9 @@
   transform-style:3d;
   -moz-transform-style:3d;
   -webkit-transform-style:3d;
-
+  background-image: url("/img/game/sky.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%
 }
 
 .land{
@@ -95,7 +103,40 @@
   width: 100%;
 }
 
+.crop{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 
+.crop *{
+  margin-left: 20px;
+}
+
+.crop img{
+  width:100px;
+  height:100px;
+}
+
+.summaryBoard{
+  position: absolute;
+  width: 20vw;
+  height: 200px;
+  z-index: 20000;
+  background: rgba(0,0,0,0.5);
+  right: 7vw;
+  color:white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+.summaryBoard h2{
+  position: absolute;
+  top:20px;
+}
 
 .property_shop{
   position:absolute;
