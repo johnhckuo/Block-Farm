@@ -91,13 +91,14 @@
   z-index: 100;
 }
 
-.landDIV{
+.cropObject{
   position: absolute;
   top:200px;
   left:200px;
+  cursor: pointer;
 }
 
-.landDIV img{
+.cropObject img{
   height: 100%;
   width: 100%;
 }
@@ -116,6 +117,11 @@
 .crop img{
   width:100px;
   height:100px;
+}
+
+.farm{
+  width:150px;
+  height:150px;
 }
 
 .summaryBoard{

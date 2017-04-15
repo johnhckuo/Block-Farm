@@ -1,7 +1,6 @@
 
 var landSize;
 var blockSize = 150;
-var transform2dOffset = 0;
 var landSrc = "/img/game/land.svg";
 
 var prefix = "/img/game/";
@@ -34,14 +33,7 @@ var cropTypeList = [
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
       console.log('gameArea render complete');
-      landSize = 3;
-      $('.land').css("width", blockSize*landSize );
-      $('.land').css("height", blockSize*landSize );
-
-      for (var i = 0 ; i < landSize*landSize; i++){
-          $('.land').append("<div style='width:"+ blockSize +"px; height:"+ blockSize +"px;'><img src="+ landSrc +"></img></div>");
-          //$('.land').append("<div></div>");
-      }
+      farmObjectLoader();
 
 
 
@@ -171,6 +163,7 @@ Template.gameIndex.events({
   'click .land div': function (event){
       // var left = $(event.target).position().left;
       // var top = $(event.target).position().top;
+      console.log("gg");
       if (currentCropId != null){
         cropTypeList[currentCropId].count++;
       }else{
@@ -187,12 +180,13 @@ Template.gameIndex.events({
 
       var areaLeft = $(".gamingArea").position().left;
 
-      var divHeight =$(".landDIV").height()/5;
-      var divWidth = $(".landDIV").width()/4;
+      var divHeight =$(".cropObject").height()/5;
+      var divWidth = $(".cropObject").width()/4;
       // var divHeight =0;
       // var divWidth = 0;
+      $( ".cropObject" ).clone().appendTo( event.target.className );
 
-      $(".landDIV").css({top: top-transform2dOffset-divHeight, left: left-areaLeft+transform2dOffset+divWidth, width:"150px", height:"150px", position:"absolute"});
+      $(".cropObject").css({top: top-divHeight, left: left-areaLeft+divWidth, width:"150px", height:"150px", position:"absolute"});
 
       var d = new Date();
       var n = d.getTime();
@@ -212,7 +206,7 @@ Template.gameIndex.events({
 Template.crop.events({
   'click .crop button': function (event){
       var id = $(event.target).parent()[0].className.split("property")[1];
-      $(".landDIV").html("<img src = '" + prefix+ cropTypeList[id].img[0] + postfix +"' />");
+      $(".cropObject").html("<img src = '" + prefix+ cropTypeList[id].img[0] + postfix +"' />");
       currentCropId = id;
   },
 })
@@ -227,12 +221,12 @@ Template.gamingArea.events({
 
       var areaLeft = $(".gamingArea").position().left;
 
-      var divHeight =$(".landDIV").height()/5;
-      var divWidth = $(".landDIV").width()/4;
+      var divHeight =$(".cropObject").height()/5;
+      var divWidth = $(".cropObject").width()/4;
       // var divHeight =0;
       // var divWidth = 0;
 
-      $(".landDIV").css({top: top-transform2dOffset-divHeight, left: left-areaLeft+transform2dOffset+divWidth, width:"150px", height:"150px", position:"absolute"});
+      $(".cropObject").css({top: top-divHeight, left: left-areaLeft+divWidth, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
   },
 })
@@ -241,6 +235,18 @@ Template.gamingArea.events({
 /////////////////////////
 //  Utility Functions  //
 /////////////////////////
+
+var farmObjectLoader = function(){
+    landSize = 3;
+    $('.land').css("width", blockSize*landSize );
+    $('.land').css("height", blockSize*landSize );
+
+    for (var i = 0 ; i < landSize*landSize; i++){
+        $('.land').append("<div class=farm cropLand" + i + "><img src="+ landSrc +"></img></div>");
+        //$('.land').append("<div></div>");
+    }
+}
+
 
 get_user_property_setting = function () {
     for (i = 0; i < property_log.length; i++) {

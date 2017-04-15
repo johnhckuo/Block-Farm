@@ -39,16 +39,14 @@ contract usingProperty{
     struct Property{
         bytes32 name;
         uint id;
-        mapping (address => bool) accessStakeholders;
         uint since;
         uint256 propertyCount;
-        bytes32 unit;  //單位
         uint256 minUnit; //可拆分最小單位
         address owner;
         bytes32 extraData;
         uint[] rating;
         uint averageRating;
-        bytes32 type;
+        bytes32 propertyType;
         bool tradeable;
     }
 
@@ -83,11 +81,11 @@ contract usingProperty{
         return congress.getStakeholdersLength();
     }
 
-    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, bytes32 _unit, uint256 _minUnit, bytes32 _extraData, uint _rating, bytes32 _type, bool _tradeable) returns(uint _id){
+    function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _rating, bytes32 _type, bool _tradeable) returns(uint _id){
 
         bool flag = true;
-        for (uint i = 0 ; i < propertyType.length ; i++){
-            if (_type == propertyType[i].name){
+        for (uint w = 0 ; w < propertyTypeList.length ; w++){
+            if (_type == propertyTypeList[w].name){
                 flag = false;
                 break;
             }
@@ -105,9 +103,7 @@ contract usingProperty{
       //  Stakeholder[] s_List = temp.stakeholders;
 
         Property prop = propertyList[_id];
-        for (uint i = 0 ; i < _accessStakeholders.length ; i++){
-          prop.accessStakeholders[_accessStakeholders[i]] = true;
-        }
+
 
         uint length = congress.getStakeholdersLength();
         for (uint j = 0 ; j < length ; j++){
@@ -119,13 +115,12 @@ contract usingProperty{
         prop.id= _id;
         prop.propertyCount= _propertyCount;
         prop.since= now;
-        prop.unit= _unit;
         prop.minUnit= _minUnit;
         prop.owner= msg.sender;
         prop.extraData= _extraData;
         prop.rating[s_Id]= _rating;
         prop.averageRating = _rating;
-        prop.type = _type;
+        prop.propertyType = _type;
         prop.tradeable = _tradeable;
 
 
@@ -148,8 +143,8 @@ contract usingProperty{
         return propertyList.length;
     }
 
-    function getProperty(uint p_Id) constant returns(bytes32, uint, uint256, bytes32, uint256, address, bytes32){
-        return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].unit, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
+    function getProperty(uint p_Id) constant returns(bytes32, uint, uint256, uint256, address, bytes32){
+        return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
     function getPartialProperty(uint p_Id) constant returns(address, uint){
@@ -207,7 +202,7 @@ contract usingProperty{
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
 
             for (uint i = 0 ; i < propertyList.length; i++){
-                if (propertyList[i].type == propertyType[_id].name){
+                if (propertyList[i].propertyType == propertyTypeList[_id].name){
                     propertyList[i].averageRating = propertyTypeList[_id].averageRating;
                 }
             }
