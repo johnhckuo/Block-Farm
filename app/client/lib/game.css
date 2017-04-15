@@ -30,9 +30,9 @@
   perspective-origin:center center;
   -moz-perspective-origin:center center;
   -webkit-perspective-origin:center center;
-  perspective:2500px;
-  -moz-perspective:2500px;
-  -webkit-perspective:2500px;
+  perspective:0px;
+  -moz-perspective:0px;
+  -webkit-perspective:0px;
 }
 
 .gamingArea .canvas{
@@ -42,9 +42,8 @@
   transform-style:3d;
   -moz-transform-style:3d;
   -webkit-transform-style:3d;
-  background-image: url("/img/game/sky.jpg");
-  background-repeat: no-repeat;
-  background-size: 100% 100%
+  background-image: url("/img/game/background.svg");
+  background-size: 100px 100px;
 }
 
 .land{
@@ -55,9 +54,9 @@
   margin-right: auto;
   width:350px;
   height:350px;
-  transform:rotateX(60deg) rotateZ(45deg);
-  -moz-transform:rotateX(60deg) rotateZ(45deg);
-  -webkit-transform:rotateX(60deg) rotateZ(45deg);
+  transform:rotateX(55deg) rotateZ(45deg);
+  -moz-transform:rotateX(55deg) rotateZ(45deg);
+  -webkit-transform:rotateX(55deg) rotateZ(45deg);
 
 }
 .land div{

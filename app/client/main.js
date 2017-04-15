@@ -221,29 +221,8 @@ if (Meteor.isClient) {
           if (!error){
             //var length = result.args[""].length/2;
             var length = result.args[""].length;
-            for (var i = 0 ; i < length; i++){
-              var _id = result.args[""][i].c[0];
-              var data = usingPropertyInstance.getProperty.call(_id, {from:web3.eth.accounts[currentAccount]});
+            console.log(length);
 
-              var currentRating = usingPropertyInstance.getPartialProperty.call(_id, {from:web3.eth.accounts[currentAccount]})[1].c[0];
-
-              console.log(currentRating);
-              var s_Id = CongressInstance.stakeholderId.call(data[5], {from:web3.eth.accounts[currentAccount]}).c[0];
-              var _owner = CongressInstance.getStakeholder.call(s_Id, {from:web3.eth.accounts[currentAccount]});
-              _owner = hex2a(_owner[0]);
-
-              matchResult.insert({
-                id: _id,
-                name: hex2a(data[0]),
-                owner: _owner,
-                importance : currentRating
-              });
-
-          }
-          var height = window.innerHeight
-            || document.documentElement.clientHeight
-            || document.body.clientHeight;
-          $(window).scrollTo(height, 1500);
         }
         });
 

@@ -2,7 +2,7 @@
 var landSize;
 var blockSize = 150;
 var transform2dOffset = 0;
-var landSrc = "/img/game/dirt.jpg";
+var landSrc = "/img/game/land.svg";
 
 var prefix = "/img/game/";
 var postfix = ".svg";

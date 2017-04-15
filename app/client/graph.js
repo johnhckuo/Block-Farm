@@ -160,6 +160,7 @@ function drawGraph(el) {
 //     for (var j = 0 ; j < empowerment_links.length ; j++){
 //         graph.addLink("tx", empowerment_links[j].source.id, empowerment_links[j].target.id, empowerment_links[j].weight);
 //     }
+
 //     // fpr (var j = 0 ; j < empowerment_links.length ; j++){
 //     //     graph.addLink("tx", empowerment_links[j].source.id, empowerment_links[j].target.id, empowerment_links[j].weight);
 //     // }

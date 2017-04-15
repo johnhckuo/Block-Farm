@@ -20,9 +20,10 @@ contract MainActivity{
     uint[] actualVisitIndex;
     uint origin;
 
-    event matchSuccess(uint[], int256[]);
+    event matchSuccess(uint[] id, int256[] priority);
     event matchFail();
     event test(uint);
+    event returnOrigin(uint);
 
     Congress congress;
     usingProperty property;
@@ -95,6 +96,7 @@ contract MainActivity{
         (priorityList, sortedList) = sort(priorityList, visitList);
         actualVisitIndex = new uint[](length);
         origin = sortedList[0];
+        returnOrigin(origin);
 
         visitedCount = 0;
         visitedProperty.length++;
@@ -163,7 +165,7 @@ contract MainActivity{
         visitedProperty[++visitedCount] = goThroughList[visitIndex];
 
         visitedPriority.length++;
-        visitedPriority[++visitedCount] = diffList[visitIndex];
+        visitedPriority[visitedCount] = diffList[visitIndex];
 
         if (goThroughList[visitIndex] == origin){
              matchSuccess(visitedProperty, visitedPriority);

@@ -243,6 +243,7 @@ contract('Congress', function(accounts) {
         });
   });
 
+
   // it("match making test", function(done) {
   //   var main;
   //   return MainActivity.deployed().then(function(instance){
@@ -477,20 +478,21 @@ contract('Congress', function(accounts) {
 
       main.matchSuccess().watch(function(error, result){
         if (!error)
-          console.log(result.args);
+          console.log(result.args.id);
       });
+
 
       main.test().watch(function(error, result2){
         if (!error)
           console.log(result2.args);
       });
 
-      // main.matchFail().watch(function(error, result){
-      //   if (!error)
-      //     console.log("Fail !!!!!!!!!");
-      // });
+      main.matchFail().watch(function(error, result){
+        if (!error)
+          console.log("Fail !!!!!!!!!");
+      });
 
-        return instance.startMatching({from:accounts[0]});
+        return instance.findOrigin({from:accounts[0]});
       }).then(function(result){
             //console.log(result);
 
