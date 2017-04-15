@@ -870,7 +870,7 @@
       "address": "0xfff712ab38368819e4538de97d0feb43b6f5a356",
       "updated_at": 1489170136301
     },
-    "1489359139630": {
+    "1491747238829": {
       "events": {
         "0x646fec02522b41e7125cfc859a64fd4f4cefd5dc3b6237ca0abe251ded1fa881": {
           "anonymous": false,
@@ -1038,10 +1038,10 @@
         }
       },
       "links": {},
-      "address": "0x8e60fce93edb9aed4c92ab27e8c449e08589ad7c",
-      "updated_at": 1489359201972
+      "address": "0x51f730f765f928a3aa4e90c9fb2554e392731341",
+      "updated_at": 1491750676714
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1489359201972
+  "updated_at": 1491750676714
 }

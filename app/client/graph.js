@@ -152,22 +152,12 @@ function drawGraph(el) {
     update();
 }
 
-(function(){
-    graph = new drawGraph(".transaction");
-    for (var i = 0 ; i < empowerment_stakeholders.length ; i++){
-        graph.addNode(empowerment_stakeholders[i].id, empowerment_stakeholders[i].name);
-    }
-    for (var j = 0 ; j < empowerment_links.length ; j++){
-        graph.addLink("tx", empowerment_links[j].source.id, empowerment_links[j].target.id, empowerment_links[j].weight);
-    }
-    // fpr (var j = 0 ; j < empowerment_links.length ; j++){
-    //     graph.addLink("tx", empowerment_links[j].source.id, empowerment_links[j].target.id, empowerment_links[j].weight);
-    // }
-
-// graph.addNode('A');
-// graph.addNode('B');
-// graph.addNode('C');
-// graph.addNode('D');
-// graph.addLink('TX2', 'A','C',1);
-// graph.addLink('TX3', 'B','C',10);
-})();
+// (function(){
+//     graph = new drawGraph(".transaction");
+//     for (var i = 0 ; i < empowerment_stakeholders.length ; i++){
+//         graph.addNode(empowerment_stakeholders[i].id, empowerment_stakeholders[i].name);
+//     }
+//     for (var j = 0 ; j < empowerment_links.length ; j++){
+//         graph.addLink("tx", empowerment_links[j].source.id, empowerment_links[j].target.id, empowerment_links[j].weight);
+//     }
+// })();
