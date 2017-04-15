@@ -17,11 +17,25 @@ contract Congress{
 
 contract usingProperty{
 
-    event propertyAdded(bool);
+    event propertyAdded(bytes32);
+    event propertyTypeAdded(bool);
+
     event propertyUpdated(uint);
     event updatedPropertiesCalled();
     event propertyNewed(uint);
     event propertyInited(uint);
+
+    struct PropertyType{
+        bytes32 name;
+        uint id;
+        bytes32 unit;  //單位
+        uint256 minUnit; //可拆分最小單位
+        uint[] rating;
+        uint averageRating;
+    }
+
+    PropertyType[] public propertyTypeList;
+
     struct Property{
         bytes32 name;
         uint id;
@@ -34,6 +48,8 @@ contract usingProperty{
         bytes32 extraData;
         uint[] rating;
         uint averageRating;
+        bytes32 type;
+        bool tradeable;
     }
 
     Property[] public propertyList;
@@ -67,7 +83,20 @@ contract usingProperty{
         return congress.getStakeholdersLength();
     }
 
-    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, bytes32 _unit, uint256 _minUnit, bytes32 _extraData, uint _rating) returns(uint _id){
+    function addProperty(bytes32 _name, uint256 _propertyCount, address[] _accessStakeholders, bytes32 _unit, uint256 _minUnit, bytes32 _extraData, uint _rating, bytes32 _type, bool _tradeable) returns(uint _id){
+
+        bool flag = true;
+        for (uint i = 0 ; i < propertyType.length ; i++){
+            if (_type == propertyType[i].name){
+                flag = false;
+                break;
+            }
+        }
+        if (flag){
+            propertyAdded("Property Type Not Found");
+        }
+
+
         _id = propertyList.length++;
 
         uint s_Id = congress.stakeholderId(msg.sender);
@@ -96,8 +125,12 @@ contract usingProperty{
         prop.extraData= _extraData;
         prop.rating[s_Id]= _rating;
         prop.averageRating = _rating;
+        prop.type = _type;
+        prop.tradeable = _tradeable;
 
-        propertyAdded(true);
+
+
+        propertyAdded("Success");
     }
 
     function removeProperty(uint _id){
@@ -146,6 +179,10 @@ contract usingProperty{
             uint s_Id = congress.stakeholderId(msg.sender);
             propertyList[_id].rating[s_Id] = rate;
             propertyList[_id].averageRating = ((propertyList[_id].averageRating * (length-1))+rate)/length;
+
+            propertyTypeList[_id].rating[s_Id] = rate;
+            propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
+
         }else if (StringUtils.equal(operation,"new")){
             propertyNewed(_id);
 
@@ -153,6 +190,57 @@ contract usingProperty{
                 propertyList[j].rating.push(0);
             }
         }
+    }
+
+
+    function updatePropertyTypeRating(uint _id, uint rate, string operation){
+        updatedPropertiesCalled();
+        if (StringUtils.equal(operation,"update")){
+
+            uint length = congress.getStakeholdersLength();
+
+            length = length-1; // ignore founder rating
+
+            uint s_Id = congress.stakeholderId(msg.sender);
+
+            propertyTypeList[_id].rating[s_Id] = rate;
+            propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
+
+            for (uint i = 0 ; i < propertyList.length; i++){
+                if (propertyList[i].type == propertyType[_id].name){
+                    propertyList[i].averageRating = propertyTypeList[_id].averageRating;
+                }
+            }
+
+        }else if (StringUtils.equal(operation,"new")){
+
+            for (uint j = 0 ; j < _id ; j++){
+                propertyTypeList[j].rating.push(0);
+            }
+        }
+    }
+
+
+    function addPropertyType(bytes32 _name, bytes32 _unit, uint256 _minUnit){
+
+        uint _id = propertyTypeList.length++;
+
+        uint length = congress.getStakeholdersLength();
+        for (uint j = 0 ; j < length ; j++){
+            propertyTypeList[_id].rating.push(0);
+        }
+
+        PropertyType prop = propertyTypeList[_id];
+
+        prop.name = _name;
+        prop.id= _id;
+        prop.unit= _unit;
+        prop.minUnit= _minUnit;
+        prop.averageRating = 0;
+
+        propertyTypeAdded(true);
+
+
     }
 
 

@@ -117,7 +117,7 @@ contract('Congress', function(accounts) {
 
         }).then(function(length){
             console.log(length);
-            return property.updatePropertiesRating(length, 0, "new", {from:accounts[1]});
+            return property.updatePropertyTypeRating(length, 0, "new", {from:accounts[1]});
         });
   });
 
@@ -131,9 +131,49 @@ contract('Congress', function(accounts) {
   });
 
 
+  it("Init property type", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.addPropertyType("carrot", "piece", 1, {from:accounts[2]});
+      }).then(function(txs){
+            console.log(txs);
+
+    }).catch(function(e){
+      console.log(e);
+    });
+
+  });
+
+  it("Init property type", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.addPropertyType("cactus", "piece", 1, {from:accounts[2]});
+      }).then(function(txs){
+            console.log(txs);
+
+    }).catch(function(e){
+      console.log(e);
+    });
+
+  });
+
+
+  it("Init property type", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.addPropertyType("apple", "piece", 1, {from:accounts[2]});
+      }).then(function(txs){
+            console.log(txs);
+
+    }).catch(function(e){
+      console.log(e);
+    });
+
+  });
+
+
+
+
   it("adding new property by bill", function() {
     return usingProperty.deployed().then(function(instance){
-        return instance.addProperty("Pikachu", 1000, [accounts[0], accounts[1]], "unit", 10, "C:", 30, {from:accounts[2]});
+        return instance.addProperty("Pikachu", 1000, [accounts[0], accounts[1]], "unit", 10, "C:", 30, "carrot", true, {from:accounts[2]});
       }).then(function(txs){
             console.log(txs);
 
@@ -145,7 +185,7 @@ contract('Congress', function(accounts) {
 
   it("adding new property2 by bill", function() {
     return usingProperty.deployed().then(function(instance){
-        return instance.addProperty("MacBook", 1, [accounts[0], accounts[1]], "unit", 1, ":)", 20, {from:accounts[2]});
+        return instance.addProperty("MacBook", 1, [accounts[0], accounts[1]], "unit", 1, ":)", 20, "cactus", true, {from:accounts[2]});
       }).then(function(txs){
             console.log(txs);
 
@@ -157,7 +197,7 @@ contract('Congress', function(accounts) {
 
   it("adding new property by john", function() {
     return usingProperty.deployed().then(function(instance){
-        return instance.addProperty("Egg", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 10, {from:accounts[1]});
+        return instance.addProperty("Egg", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 10, "apple", true, {from:accounts[1]});
       }).then(function(txs){
             console.log(txs);
 
@@ -185,32 +225,7 @@ contract('Congress', function(accounts) {
         });
   });
 
-  it("updae Pikachu rating by john", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(0, 100, "update",  {from:accounts[1]});
-      }).then(function(txs){
-            console.log(txs);
 
-        });
-  });
-
-  it("updae MacBook rating by john", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(1, 100, "update",  {from:accounts[1]});
-      }).then(function(txs){
-            console.log(txs);
-
-        });
-  });
-
-  it("updae Egg rating by bill", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(2, 20, "update",  {from:accounts[2]});
-      }).then(function(txs){
-            console.log(txs);
-
-        });
-  });
 
   it("get average rating of pikachu", function() {
     return usingProperty.deployed().then(function(instance){
@@ -228,32 +243,33 @@ contract('Congress', function(accounts) {
         });
   });
 
-  it("match making test", function(done) {
-    var main;
-    return MainActivity.deployed().then(function(instance){
-      main = instance;
 
-      main.matchSuccess().watch(function(error, result){
-        if (!error)
-          console.log(result.args);
-      });
-
-      main.test().watch(function(error, result2){
-        if (!error)
-          console.log(result2.args);
-      });
-
-      // main.matchFail().watch(function(error, result){
-      //   if (!error)
-      //     console.log("Fail !!!!!!!!!");
-      // });
-
-        return instance.findOrigin({from:accounts[0]});
-      }).then(function(result){
-            //console.log(result);
-
-      });
-  });
+  // it("match making test", function(done) {
+  //   var main;
+  //   return MainActivity.deployed().then(function(instance){
+  //     main = instance;
+  //
+  //     main.matchSuccess().watch(function(error, result){
+  //       if (!error)
+  //         console.log(result.args);
+  //     });
+  //
+  //     main.test().watch(function(error, result2){
+  //       if (!error)
+  //         console.log(result2.args);
+  //     });
+  //
+  //     // main.matchFail().watch(function(error, result){
+  //     //   if (!error)
+  //     //     console.log("Fail !!!!!!!!!");
+  //     // });
+  //
+  //       return instance.startMatching({from:accounts[0]});
+  //     }).then(function(result){
+  //           //console.log(result);
+  //
+  //     });
+  // });
 
   it("adding new member", function() {
     var congress;
@@ -273,7 +289,7 @@ contract('Congress', function(accounts) {
 
         }).then(function(length){
             console.log(length);
-            return property.updatePropertiesRating(length, 0, "new", {from:accounts[1]});
+            return property.updatePropertyTypeRating(length, 0, "new", {from:accounts[1]});
         });
   });
 
@@ -281,7 +297,7 @@ contract('Congress', function(accounts) {
     var property;
     return usingProperty.deployed().then(function(instance){
         property = instance;
-        return property.addProperty("lenovo", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 5, {from:accounts[3]});
+        return property.addProperty("lenovo", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 5, "apple", true, {from:accounts[3]});
       }).then(function(txs){
         console.log(txs);
       });
@@ -292,7 +308,7 @@ contract('Congress', function(accounts) {
     var property;
     return usingProperty.deployed().then(function(instance){
         property = instance;
-        return property.addProperty("IPod", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 7, {from:accounts[3]});
+        return property.addProperty("IPod", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 7, "cactus", true, {from:accounts[3]});
       }).then(function(txs){
         console.log(txs);
       });
@@ -302,7 +318,7 @@ contract('Congress', function(accounts) {
     var property;
     return usingProperty.deployed().then(function(instance){
         property = instance;
-        return property.addProperty("IPhone", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 3, {from:accounts[3]});
+        return property.addProperty("IPhone", 100, [accounts[0], accounts[1]], "unit", 1, ":D", 3, "carrot", true, {from:accounts[3]});
       }).then(function(txs){
         console.log(txs);
       });
@@ -318,9 +334,63 @@ contract('Congress', function(accounts) {
         });
   });
 
+  it("updae Pikachu rating by john", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.updatePropertyTypeRating(0, 100, "update",  {from:accounts[1]});
+      }).then(function(txs){
+            console.log(txs);
+
+        });
+  });
+
+  it("updae MacBook rating by john", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.updatePropertyTypeRating(1, 100, "update",  {from:accounts[1]});
+      }).then(function(txs){
+            console.log(txs);
+
+        });
+  });
+
+  it("updae MacBook rating by john", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.updatePropertyTypeRating(2, 50, "update",  {from:accounts[1]});
+      }).then(function(txs){
+            console.log(txs);
+
+        });
+  });
+
+  it("updae Egg rating by bill", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.updatePropertyTypeRating(0, 40, "update",  {from:accounts[2]});
+      }).then(function(txs){
+            console.log(txs);
+
+        });
+  });
+
+  it("updae Egg rating by bill", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.updatePropertyTypeRating(1, 70, "update",  {from:accounts[2]});
+      }).then(function(txs){
+            console.log(txs);
+
+        });
+  });
+
+  it("updae Egg rating by bill", function() {
+    return usingProperty.deployed().then(function(instance){
+        return instance.updatePropertyTypeRating(2, 20, "update",  {from:accounts[2]});
+      }).then(function(txs){
+            console.log(txs);
+
+        });
+  });
+
   it("updae Egg rating by bryant", function() {
     return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(0, 80, "update",  {from:accounts[3]});
+        return instance.updatePropertyTypeRating(0, 80, "update",  {from:accounts[3]});
       }).then(function(txs){
             console.log(txs);
 
@@ -329,7 +399,7 @@ contract('Congress', function(accounts) {
 
   it("updae Pikachu rating by bryant", function() {
     return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(1, 60, "update",  {from:accounts[3]});
+        return instance.updatePropertyTypeRating(1, 60, "update",  {from:accounts[3]});
       }).then(function(txs){
             console.log(txs);
 
@@ -338,7 +408,7 @@ contract('Congress', function(accounts) {
 
   it("updae Mac rating by bryant", function() {
     return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(2, 10, "update",  {from:accounts[3]});
+        return instance.updatePropertyTypeRating(2, 10, "update",  {from:accounts[3]});
       }).then(function(txs){
             console.log(txs);
 
@@ -346,60 +416,60 @@ contract('Congress', function(accounts) {
   });
 
 
-  it("updae Lenovo rating by John", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(3, 40, "update",  {from:accounts[1]});
-      }).then(function(txs){
-            console.log(txs);
+  // it("updae Lenovo rating by John", function() {
+  //   return usingProperty.deployed().then(function(instance){
+  //       return instance.updatePropertyTypeRating(3, 40, "update",  {from:accounts[1]});
+  //     }).then(function(txs){
+  //           console.log(txs);
+  //
+  //       });
+  // });
+  //
+  // it("updae IPod rating by John", function() {
+  //   return usingProperty.deployed().then(function(instance){
+  //       return instance.updatePropertyTypeRating(4, 70, "update",  {from:accounts[1]});
+  //     }).then(function(txs){
+  //           console.log(txs);
+  //
+  //       });
+  // });
+  //
+  // it("updae IPhone rating by John", function() {
+  //   return usingProperty.deployed().then(function(instance){
+  //       return instance.updatePropertyTypeRating(5, 50, "update",  {from:accounts[1]});
+  //     }).then(function(txs){
+  //           console.log(txs);
+  //
+  //       });
+  // });
 
-        });
-  });
 
-  it("updae IPod rating by John", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(4, 70, "update",  {from:accounts[1]});
-      }).then(function(txs){
-            console.log(txs);
-
-        });
-  });
-
-  it("updae IPhone rating by John", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(5, 50, "update",  {from:accounts[1]});
-      }).then(function(txs){
-            console.log(txs);
-
-        });
-  });
-
-
-  it("updae Lenovo rating by Bill", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(3, 100, "update",  {from:accounts[2]});
-      }).then(function(txs){
-            console.log(txs);
-
-        });
-  });
-
-  it("updae IPod rating by BIll", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(4, 90, "update",  {from:accounts[2]});
-      }).then(function(txs){
-            console.log(txs);
-
-        });
-  });
-
-  it("updae IPhone rating by Bill", function() {
-    return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(5, 95, "update",  {from:accounts[2]});
-      }).then(function(txs){
-            console.log(txs);
-
-        });
-  });
+  // it("updae Lenovo rating by Bill", function() {
+  //   return usingProperty.deployed().then(function(instance){
+  //       return instance.updatePropertyTypeRating(3, 100, "update",  {from:accounts[2]});
+  //     }).then(function(txs){
+  //           console.log(txs);
+  //
+  //       });
+  // });
+  //
+  // it("updae IPod rating by BIll", function() {
+  //   return usingProperty.deployed().then(function(instance){
+  //       return instance.updatePropertyTypeRating(4, 90, "update",  {from:accounts[2]});
+  //     }).then(function(txs){
+  //           console.log(txs);
+  //
+  //       });
+  // });
+  //
+  // it("updae IPhone rating by Bill", function() {
+  //   return usingProperty.deployed().then(function(instance){
+  //       return instance.updatePropertyTypeRating(5, 95, "update",  {from:accounts[2]});
+  //     }).then(function(txs){
+  //           console.log(txs);
+  //
+  //       });
+  // });
 
   it("match making test", function(done) {
     var main;

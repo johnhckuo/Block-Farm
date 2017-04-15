@@ -1,3 +1,5 @@
+// index
+
 Router.route('/', function () {
   this.render('index');
 });
@@ -21,4 +23,11 @@ Router.route('/aboutus', function () {
 
 Router.route('/transaction', function () {
   this.render('transaction');
+});
+
+
+//game
+
+Router.route('/game', function () {
+  this.render('gameIndex');
 });

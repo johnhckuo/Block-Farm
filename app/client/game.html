@@ -1,0 +1,103 @@
+<template name="gameIndex">
+  {{> header}}
+  <div class="gameContainer">
+    {{> statusList}}
+    {{> gamingArea}}
+    {{> shop}}
+
+
+
+  </div>
+
+
+
+</template>
+
+<template name="crop">
+    <div class={{name}}>
+        <img src={{img}} alt="">
+        <div class="cropContent">
+          {{content}}
+        </div>
+        <button class="btn btn-primary plant">Specify</button>
+    </div>
+</template>
+
+
+<template name="cropSummary">
+    <td><img src={{img}} alt=""></td>
+    <td>{{name}}</td>
+    <td>{{timeLeft}}</td>
+    <td>{{plantTime}}</td>
+</template>
+
+<template name="statusList">
+    <div class="statusList">
+        <h2>Crop List</h2>
+        <hr>
+        {{#each crops}}
+                {{> crop}}
+        {{/each}}
+    </div>
+</template>
+
+<template name="summaryBoard">
+  <div class="summaryBoard">
+      <table id="manageTable" class="manage table table-hover">
+        <h2>Current Crop Summary</h2>
+        <thead>
+        </thead>
+        <tbody>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Time Elapsed</th>
+            <th>Crop Time</th>
+
+          </tr>
+          {{#each cropsSummary}}
+            <tr>
+              <th scope='row'>#</th>
+              {{> cropSummary}}
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+  </div>
+</template>
+
+<template name="gamingArea">
+    <div class = "gamingArea">
+
+        <div class="canvas">
+            {{> summaryBoard}}
+            <div class= 'landObject'>
+              <div class="landDIV">
+                <img src="/img/game/carrot_halfx4_3d.svg" alt="">
+              </div>
+            </div>
+
+            <div class = "land">
+
+            </div>
+
+        </div>
+
+    </div>
+</template>
+
+
+<template name="shop">
+    <div class="property_shop">
+        <div class="shop_header">
+            <input type="text" id="search_property" />
+            <input type="button" id="btn_show_property" value="show" />
+            <input type="button" id="btn_search_property" value="search" />
+            <input type="button" id="btn_shop_close" value="close" />
+            <input type="text" id="temp_property" />
+        </div>
+        <div class="shop_content">
+
+        </div>
+    </div>
+</template>
