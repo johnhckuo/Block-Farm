@@ -1,3 +1,5 @@
+import { Tracker } from 'meteor/tracker';
+
 
 var landSize;
 var blockSize = 150;
@@ -7,25 +9,42 @@ var prefix = "/img/game/";
 var postfix = ".svg";
 
 var currentCropId;
-
+var plantMode = false;
 var cropList = [];
+var _dep = new Tracker.Dependency;
+
 
 var cropTypeList = [
   {
     id:0,
-    name: "carrot",
+    name: "Carrot",
     img: ["seed", "carrot_half", "carrot"],
     count:0
 
   },
   {
     id:1,
-    name: "lactus",
-    img: ["seed", "grass", "carrot"],
+    name: "Radish",
+    img: ["seed", "grass", "radish"],
     count:0
   }
 
 ];
+
+///////////////////////////
+//  prototype functions  //
+///////////////////////////
+
+Date.prototype.addTime = function(days, hours, minutes, seconds) {
+  var dat = new Date(this.valueOf());
+  dat.setDate(dat.getDate() + days);
+  dat.setHours(dat.getHours() + hours);
+  dat.setMinutes(dat.getMinutes() + minutes);
+  dat.setSeconds(dat.getSeconds() + seconds);
+
+  return dat;
+}
+
 //////////////////
 //  onRendered  //
 //////////////////
@@ -35,6 +54,7 @@ Template.gameIndex.rendered = function() {
       console.log('gameArea render complete');
       farmObjectLoader();
 
+      setInterval(cropSummaryUpdate, 1000);
 
 
 
@@ -112,11 +132,7 @@ Template.statusList.helpers({
 
 
   },
-});
-
-Template.summaryBoard.helpers({
   cropsSummary: function(){
-
     var cropsData = [];
 
     for (var i = 0 ; i < cropList.length; i++){
@@ -126,18 +142,19 @@ Template.summaryBoard.helpers({
       cropsData.push({
         "name": data.name,
         "img": prefix+data.img+postfix,
-        "timeLeft": data.timeLeft,
-        "plantTime": data.since
+        "timeLeft": data.timeLeft
       });
     }
 
-
+    _dep.depend();
     return cropsData;
 
 
 
   },
 });
+
+
 //////////////
 //  Events  //
 //////////////
@@ -160,59 +177,76 @@ Template.shop.events({
 
 
 Template.gameIndex.events({
-  'click .land div': function (event){
+  'click .cropObject': function (event){
       // var left = $(event.target).position().left;
       // var top = $(event.target).position().top;
-      console.log("gg");
-      if (currentCropId != null){
-        cropTypeList[currentCropId].count++;
-      }else{
-        alert("Specify Crop first");
-        return;
-      }
-      currentCropId = null;
 
-      var top = $(event.target)[0].getBoundingClientRect().top;
-      var left = $(event.target)[0].getBoundingClientRect().left;
+        console.log("gg");
+        if (currentCropId != null && plantMode){
+          cropTypeList[currentCropId].count++;
+        }else{
+          alert("Specify Crop first");
+          return;
+        }
 
-      var landTop = $(".land").position().top;
-      var landLeft = $(".land").position().left;
+        $( ".cropObject" ).clone().attr("class","croppedObject").appendTo(".landObject").css({opacity:1});
 
-      var areaLeft = $(".gamingArea").position().left;
+        //var start = Date.now();
+        var start = new Date();
+        var end = new Date();
 
-      var divHeight =$(".cropObject").height()/5;
-      var divWidth = $(".cropObject").width()/4;
-      // var divHeight =0;
-      // var divWidth = 0;
-      $( ".cropObject" ).clone().appendTo( event.target.className );
+        end = end.addTime(1, 0, 0, 30);
+        console.log(start);
+        console.log(end);
 
-      $(".cropObject").css({top: top-divHeight, left: left-areaLeft+divWidth, width:"150px", height:"150px", position:"absolute"});
+        var difference = elapsedTime(start, end);
+        console.log(difference.getDate());
+        console.log(difference.getSeconds());
+        var diffData = difference.getHours()+'.'+difference.getMinutes()+'.'+difference.getSeconds();
 
-      var d = new Date();
-      var n = d.getTime();
+        cropList.push({
+          name: cropTypeList[currentCropId].name,
+          img:cropTypeList[currentCropId].img[2],
+          since: start,
+          timeLeft: diffData
+        });
+        console.log(cropList);
+        _dep.changed();
 
-      cropList.push({
-        name: cropTypeList[currentCropId].name,
-        img:cropTypeList[currentCropId].img[2],
-        since: n,
-        timeLeft:0
-      });
-      console.log(cropList);
+
+
+
 
 
   },
 })
+
+var panelCounter = 1, panelCount = 3;
 
 Template.crop.events({
   'click .crop button': function (event){
       var id = $(event.target).parent()[0].className.split("property")[1];
       $(".cropObject").html("<img src = '" + prefix+ cropTypeList[id].img[0] + postfix +"' />");
       currentCropId = id;
+
+      plantMode = !plantMode;
+      if (plantMode){
+          $(event.target).css("background", "gray");
+          $(event.target).css("border-color", "gray");
+          $(event.target).text("Done");
+      }else{
+          $(event.target).css("background", "#337ab7");
+          $(event.target).css("border-color", "#337ab7");
+          $(event.target).text("Specify");
+
+      }
   },
+
 })
 
 Template.gamingArea.events({
   'mouseenter .land div': function (event){
+      console.log("enter");
       var top = $(event.target)[0].getBoundingClientRect().top;
       var left = $(event.target)[0].getBoundingClientRect().left;
 
@@ -231,10 +265,61 @@ Template.gamingArea.events({
   },
 })
 
+Template.statusList.events({
+  'click .btn-info': function (e) {
+
+      var temp = panelCounter;
+      $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
+      $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
+
+      // setTimeout(function(){
+      //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
+      // },1000);
+
+      panelCounter = e.target.className.split("crop")[1];
+
+      $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
+      $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
+
+
+
+
+
+
+  },
+})
+
+
+
 
 /////////////////////////
 //  Utility Functions  //
 /////////////////////////
+
+var cropSummaryUpdate = function(){
+
+    for (var i = 0 ; i < cropList.length ; i++){
+
+    }
+}
+
+var elapsedTime = function(start, end){
+
+
+    var elapsed = end - start; // time in milliseconds
+
+    var difference = new Date(elapsed);
+
+    var diff_days = difference.getDate();
+    var diff_hours = difference.getHours();
+    var diff_mins = difference.getMinutes();
+    var diff_secs = difference.getSeconds();
+    return difference;
+    //return (diff_days, diff_hours, diff_mins, diff_secs);
+
+}
+
+
 
 var farmObjectLoader = function(){
     landSize = 3;
@@ -242,7 +327,7 @@ var farmObjectLoader = function(){
     $('.land').css("height", blockSize*landSize );
 
     for (var i = 0 ; i < landSize*landSize; i++){
-        $('.land').append("<div class=farm cropLand" + i + "><img src="+ landSrc +"></img></div>");
+        $('.land').append("<div class='farm cropLand" + i + "'><img src="+ landSrc +"></img></div>");
         //$('.land').append("<div></div>");
     }
 }
