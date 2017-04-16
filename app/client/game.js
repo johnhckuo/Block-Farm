@@ -126,8 +126,8 @@ Template.gameIndex.rendered = function() {
       farmObjectLoader();
 
       setInterval(cropSummaryUpdate, 1000);
-      // var audio = new Audio('/music/background_music.mp3');
-      // audio.play();
+      var audio = new Audio('/music/background_music.mp3');
+      audio.play();
 
 
     }
