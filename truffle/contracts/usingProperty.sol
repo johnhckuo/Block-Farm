@@ -13,6 +13,7 @@ contract Congress{
     function getPropertyId(uint s_Id, uint index) constant returns(uint);
 
     function getStakeholderPropertyCount(uint s_Id) constant returns(uint);
+
 }
 
 contract usingProperty{
@@ -46,7 +47,7 @@ contract usingProperty{
         bytes32 extraData;
         uint[] rating;
         uint averageRating;
-        bytes32 propertyType;
+        uint propertyType;
         bool tradeable;
     }
 
@@ -81,11 +82,11 @@ contract usingProperty{
         return congress.getStakeholdersLength();
     }
 
-    function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _rating, bytes32 _type, bool _tradeable) returns(uint _id){
+    function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _rating, uint _type, bool _tradeable) returns(uint _id){
 
         bool flag = true;
         for (uint w = 0 ; w < propertyTypeList.length ; w++){
-            if (_type == propertyTypeList[w].name){
+            if (_type == propertyTypeList[w].id){
                 flag = false;
                 break;
             }
@@ -147,6 +148,10 @@ contract usingProperty{
         return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
+    function getProperty_Shop(uint p_Id) constant returns( uint256, address, uint, bool){
+        return (propertyList[p_Id].propertyCount,  propertyList[p_Id].owner, propertyList[p_Id].propertyType, propertyList[p_Id].tradeable);
+    }
+
     function getPartialProperty(uint p_Id) constant returns(address, uint){
         return (propertyList[p_Id].owner, propertyList[p_Id].averageRating);
     }
@@ -202,7 +207,7 @@ contract usingProperty{
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
 
             for (uint i = 0 ; i < propertyList.length; i++){
-                if (propertyList[i].propertyType == propertyTypeList[_id].name){
+                if (propertyList[i].propertyType == _id){
                     propertyList[i].averageRating = propertyTypeList[_id].averageRating;
                 }
             }
@@ -238,5 +243,16 @@ contract usingProperty{
 
     }
 
+    function getPropertyType(uint p_id, uint u_id) constant returns(bytes32, uint, bytes32, uint256,  uint){
+        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].unit, propertyTypeList[p_id].minUnit, propertyTypeList[p_id].averageRating);
+    }
+
+    function getPropertyTypeRating(uint u_id, uint p_id) constant returns(uint){
+        return (propertyTypeList[p_id].rating[u_id]);
+    }
+
+    function getPropertyTypeLength() constant returns(uint){
+        return propertyTypeList.length;
+    }
 
 }
