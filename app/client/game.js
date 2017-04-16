@@ -19,6 +19,15 @@ var cropList = [];
 var landList = [];
 var _dep = new Tracker.Dependency;
 
+
+var hex2a = function(hexx) {
+    var hex = hexx.toString();//force conversion
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
+
 var panelCounter = 2, panelCount = 3;
 
 
@@ -27,6 +36,7 @@ var currentUser = {
   exp: 100,
   type: "Guard"
 };
+
 
 
 var cropTypeList = [
@@ -116,43 +126,44 @@ Template.gameIndex.rendered = function() {
       farmObjectLoader();
 
       setInterval(cropSummaryUpdate, 1000);
-      // var audio = new Audio('/music/background_music.mp3');
-      // audio.play();
+      var audio = new Audio('/music/background_music.mp3');
+      audio.play();
 
 
     }
 }
 
 Template.shop.rendered = function () {
-    $.getJSON('property.json', function (property_data) {
-        for (i = 0; i < property_data.length; i++) {
-            property_database.push(property_data[i]);
-            display_field.push(property_data[i]);
-        }
-    });
-    $.getJSON('test.json', function (user_data) {
-        property_log = user_data;
-    })
-    .done(function () {
-        var select = $('<select>></select>');
-        for (i = 0; i < property_log.length; i++) {
-            option = $('<option>', {
-                value: property_log[i].account,
-                text: property_log[i].account
-            });
-            select.append(option);
-        }
-        select.on('change', function () {
-            activated_account = $(this).val();
-            set_property_table();
-        })
-        $('.shop_header').append(select);
-    })
-    .fail(function (jqxhr, textStatus, error) {
-        var err = textStatus + ", " + error;
-        console.log("Request Failed: " + err);
-    });
-    console.log("rend");
+    //$.getJSON('property.json', function (property_data) {
+    //    for (i = 0; i < property_data.length; i++) {
+    //        property_database.push(property_data[i]);
+    //        display_field.push(property_data[i]);
+    //    }
+    //});
+
+    //$.getJSON('test.json', function (user_data) {
+    //    property_log = user_data;
+    //})
+    //.done(function () {
+    //    var select = $('<select>></select>');
+    //    for (i = 0; i < property_log.length; i++) {
+    //        option = $('<option>', {
+    //            value: property_log[i].account,
+    //            text: property_log[i].account
+    //        });
+    //        select.append(option);
+    //    }
+    //    select.on('change', function () {
+    //        activated_account = $(this).val();
+    //        set_property_table();
+    //    })
+    //    $('.shop_header').append(select);
+    //})
+    //.fail(function (jqxhr, textStatus, error) {
+    //    var err = textStatus + ", " + error;
+    //    console.log("Request Failed: " + err);
+    //});
+    //console.log("rend");
 
 }
 
@@ -167,7 +178,9 @@ property_log = [];
 user_property = [];
 property_database = [];
 display_field = [];
-
+//for testing
+currentAccount = activated_account;
+//for testing
 Template.shop.helpers({
 
 });
@@ -241,10 +254,16 @@ Template.statusList.helpers({
 
 Template.shop.events({
     'click #btn_show_property': function () {
-        set_property_table();
+        set_propertyType_table();
     },
     'click #btn_shop_close': function () {
         $('.property_shop').css('display', 'none');
+    },
+    'click #btn_shop_add':function(){
+
+    },
+    'click #btn_property_tradeable':function(){
+        set_property_table();
     }
 });
 
@@ -494,70 +513,77 @@ var farmObjectLoader = function(){
 /////////////////////////
 
 get_user_property_setting = function () {
-    for (i = 0; i < property_log.length; i++) {
-        if (activated_account == property_log[i].account) {
-            user_property = property_log[i].property;
-            account_index = i;
-        }
-    }
+    //for (i = 0; i < property_log.length; i++) {
+    //    if (activated_account == property_log[i].account) {
+    //        user_property = property_log[i].property;
+    //        account_index = i;
+    //    }
+    //}
 
-    for (i = 0; i < display_field.length; i++) {
-        display_field.rating = 0;
-        display_field.propertyCount =0;
-        for (j = 0; j < user_property.length; j++){
-            if (user_property[j].id == display_field[i].id) {
-                display_field[i].rating = user_property[j].rating;
-                display_field[i].propertyCount = user_property[j].propertyCount;
-                display_field[i].tradeable = user_property[j].tradeable;                
-                break;
-            }
+    //for (i = 0; i < display_field.length; i++) {
+    //    display_field.rating = 0;
+    //    display_field.propertyCount =0;
+    //    for (j = 0; j < user_property.length; j++){
+    //        if (user_property[j].id == display_field[i].id) {
+    //            display_field[i].rating = user_property[j].rating;
+    //            display_field[i].propertyCount = user_property[j].propertyCount;
+    //            display_field[i].tradeable = user_property[j].tradeable;                
+    //            break;
+    //        }
+    //    }
+    //}
+    user_property = [];
+    var propertyLength = usingPropertyInstance.getPropertiesLength.call();
+    for(i = 0; i < propertyLength;i++){
+        var property_data = usingPropertyInstance.getProperty_Shop(i, {from:web3.eth.accounts[currentAccount]});
+        if(web3.eth.accounts[currentAccount] == property_data[1]){
+            var data = {"id":i,"propertyCount":property_data[0].c[0],"propertyType":property_data[2].c[0],"tradeable":property_data[3]};
+            user_property.push(data);
         }
     }
 }
 
-set_property_table = function () {
+get_propertyType_setting = function(){
+    display_field = [];
+    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
 
-    var table, tr, td, heart_path, heart_status,property_index;
+    for(i = 0; i < propertyTypeLength.c[0]; i++){
+        var property_type = usingPropertyInstance.getPropertyType.call(i,currentAccount, {from:web3.eth.accounts[currentAccount]});
+        var property_type_rating = usingPropertyInstance.getPropertyTypeRating.call(currentAccount,i,{from:web3.eth.accounts[currentAccount]});
+        console.log(property_type_rating);
 
-    heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
- 
+        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0],"averageRating":property_type[4].c[0]};
+        display_field.push(data);
+    }
+}
+
+set_property_table = function(){
     get_user_property_setting();
+    var table, tr, td, heart_path, heart_status;
+    heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
+
     $('.shop_content').html('');
     table = $('<table></table>').attr('id', 'property_table');
     //header
     tr = $('<tr></tr>');
     tr.append($('<th></th>').text('Property'));
     tr.append($('<th></th>').text('Stock'));
-    tr.append($('<th></th>').text('Rating'));
-    tr.append($('<th></th>').text('AVG Rating'));
     tr.append($('<th></th>').text('Favorite'));
     table.append(tr);
     //header
     //content
-    for (i = 0; i < display_field.length; i++) {
+    for(i = 0; i < user_property.length; i++){
         tr = $('<tr></tr>');
-        tr.append($('<td></td>').text(display_field[i].name));
-        tr.append($('<td></td>').text(display_field[i].propertyCount));
-        td = $('<td></td>');
-        td.append($('<input>', {
-            type: 'range',
-            value: display_field[i].rating,
-            max: 5,
-            min: 0,
-            step: 1,
-            id: 'rating' + i
-        }).on('change', function () {
-            $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
-        })
-        );
-        td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
-        tr.append(td);
-        tr.append($('<td></td>').text(display_field[i].averageRating));
-        heart_status = display_field[i].tradeable;
+        tr.append($('<td></td>').text(user_property[i].id));
+        tr.append($('<td></td>').text(user_property[i].propertyCount));
+        if(user_property[i].tradeable)
+            heart_status = 1;
+        else
+            heart_status = 0;
         tr.append(
             $('<td></td>').append(
-               $('<img></img>').attr('src', heart_path[display_field[i].tradeable])
-                               .attr('heart_status',display_field[i].tradeable)
+               $('<img></img>').attr('src', heart_path[heart_status])
+                               .attr('heart_status',heart_status)
                                .attr('property_index',i)
                                .css('width', '30px')
                                .css('height', '30px')
@@ -574,8 +600,47 @@ set_property_table = function () {
                                    }
                                    add_to_favorite(account_index, property_index,$(this).attr('heart_status'));
                                    $(this).attr('src', heart_path[$(this).attr('heart_status')]);
-                                  // $(this).attr('heart_status', heart_status);
                                })));
+        table.append(tr);
+    }
+    //content
+    $('.shop_content').append(table);
+}
+
+set_propertyType_table = function () {
+
+    var table, tr, td, property_index;
+ 
+    get_propertyType_setting();
+    $('.shop_content').html('');
+    table = $('<table></table>').attr('id', 'property_table');
+    //header
+    tr = $('<tr></tr>');
+    tr.append($('<th></th>').text('Property'));
+    tr.append($('<th></th>').text('Rating'));
+    tr.append($('<th></th>').text('AVG Rating'));
+    table.append(tr);
+    //header
+    //content
+    for (i = 0; i < display_field.length; i++) {
+        tr = $('<tr></tr>');
+        tr.append($('<td></td>').text(display_field[i].name));
+        //tr.append($('<td></td>').text(display_field[i].propertyCount));
+        td = $('<td></td>');
+        td.append($('<input>', {
+            type: 'range',
+            value: display_field[i].rating,
+            max: 5,
+            min: 0,
+            step: 1,
+            id: 'rating' + i
+        }).on('change', function () {
+            $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
+        })
+        );
+        td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
+        tr.append(td);
+        tr.append($('<td></td>').text(display_field[i].averageRating));
         table.append(tr);
     }
     //content
@@ -596,10 +661,6 @@ set_property_table = function () {
     }).on('click', function () {
         alert('cancel');
     }));
-    td.append($('<input>').attr({
-        type: 'text',
-        id: 'json_temp',
-        value: ''}));
     tr.append(td);
     table.append(tr);
     //control bar
@@ -607,17 +668,21 @@ set_property_table = function () {
 }
 
 add_to_favorite = function(_account_index, _property_index,_heart_status){
-    property_log[_account_index].property[_property_index].tradeable =  _heart_status;
-    $('#json_temp').val(JSON.stringify(property_log));
+
 }
 
 save_rating_setting = function () {
-    for (i = 0; i < user_property.length; i++) {
-        user_property[i].rating = $('#rating' + i).val();
+    //for (i = 0; i < user_property.length; i++) {
+    //    user_property[i].rating = $('#rating' + i).val();
+    //}
+    //property_log[account_index].property = user_property;
+    //$('#json_temp').val(JSON.stringify(property_log));
+    //averageRating_calculation();
+    for(i = 0; i < display_field.length;i++){
+        usingPropertyInstance.updatePropertyTypeRating(parseInt(display_field[i].id,10), parseInt($('#rating' + i).val(),10), "update", {from:web3.eth.accounts[currentAccount],gas:200000});
     }
-    property_log[account_index].property = user_property;
-    $('#json_temp').val(JSON.stringify(property_log));
-    averageRating_calculation();
+
+
 }
 
 averageRating_calculation = function () {
