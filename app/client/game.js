@@ -243,13 +243,6 @@ Template.shop.events({
     'click #btn_show_property': function () {
         set_property_table();
     },
-
-    'click #btn_search_property': function () {
-        if ($('#search_property').val() != '') {
-
-        }
-    },
-
     'click #btn_shop_close': function () {
         $('.property_shop').css('display', 'none');
     }
@@ -496,6 +489,10 @@ var farmObjectLoader = function(){
 }
 
 
+/////////////////////////
+//  Shop Functions  //
+/////////////////////////
+
 get_user_property_setting = function () {
     for (i = 0; i < property_log.length; i++) {
         if (activated_account == property_log[i].account) {
@@ -506,44 +503,49 @@ get_user_property_setting = function () {
 
     for (i = 0; i < display_field.length; i++) {
         display_field.rating = 0;
+        display_field.propertyCount =0;
         for (j = 0; j < user_property.length; j++){
             if (user_property[j].id == display_field[i].id) {
                 display_field[i].rating = user_property[j].rating;
+                display_field[i].propertyCount = user_property[j].propertyCount;
+                display_field[i].tradeable = user_property[j].tradeable;                
                 break;
             }
         }
     }
-    //search bar auto complete wait for jquery UI
-    //var auto_complete = [];
-    //for(i = 0; i < user_property.length; i++){
-    //    auto_complete.push({"label":user_property[i].name, "value":user_property[i].name});
-    //}
-    //$('#search_property').autocomplete({ source: auto_complete, delay: 200, minLength: 2 });
 }
 
 set_property_table = function () {
+
+    var table, tr, td, heart_path, heart_status,property_index;
+
+    heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
+ 
     get_user_property_setting();
     $('.shop_content').html('');
-    var table = $('<table></table>').attr('id', 'property_table');
+    table = $('<table></table>').attr('id', 'property_table');
     //header
-    var tr = $('<tr></tr>');
+    tr = $('<tr></tr>');
     tr.append($('<th></th>').text('Property'));
+    tr.append($('<th></th>').text('Stock'));
     tr.append($('<th></th>').text('Rating'));
     tr.append($('<th></th>').text('AVG Rating'));
+    tr.append($('<th></th>').text('Favorite'));
     table.append(tr);
     //header
     //content
     for (i = 0; i < display_field.length; i++) {
         tr = $('<tr></tr>');
         tr.append($('<td></td>').text(display_field[i].name));
-        var td = $('<td></td>');
+        tr.append($('<td></td>').text(display_field[i].propertyCount));
+        td = $('<td></td>');
         td.append($('<input>', {
-                type: 'range',
-                value: display_field[i].rating,
-                max: 5,
-                min: 0,
-                step: 1,
-                id: 'rating' + i
+            type: 'range',
+            value: display_field[i].rating,
+            max: 5,
+            min: 0,
+            step: 1,
+            id: 'rating' + i
         }).on('change', function () {
             $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
         })
@@ -551,6 +553,29 @@ set_property_table = function () {
         td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
         tr.append(td);
         tr.append($('<td></td>').text(display_field[i].averageRating));
+        heart_status = display_field[i].tradeable;
+        tr.append(
+            $('<td></td>').append(
+               $('<img></img>').attr('src', heart_path[display_field[i].tradeable])
+                               .attr('heart_status',display_field[i].tradeable)
+                               .attr('property_index',i)
+                               .css('width', '30px')
+                               .css('height', '30px')
+                               .on('click', function(){
+                                   property_index = $(this).attr('property_index');
+                                   if( $(this).attr('heart_status') == 0)
+                                   {
+                                       $(this).attr('heart_status', 1);
+                                   }
+                                   else
+                                   {
+                                       $(this).attr('heart_status', 0);
+                                       heart_status =0;
+                                   }
+                                   add_to_favorite(account_index, property_index,$(this).attr('heart_status'));
+                                   $(this).attr('src', heart_path[$(this).attr('heart_status')]);
+                                  // $(this).attr('heart_status', heart_status);
+                               })));
         table.append(tr);
     }
     //content
@@ -579,6 +604,11 @@ set_property_table = function () {
     table.append(tr);
     //control bar
     $('.shop_content').append(table);
+}
+
+add_to_favorite = function(_account_index, _property_index,_heart_status){
+    property_log[_account_index].property[_property_index].tradeable =  _heart_status;
+    $('#json_temp').val(JSON.stringify(property_log));
 }
 
 save_rating_setting = function () {
