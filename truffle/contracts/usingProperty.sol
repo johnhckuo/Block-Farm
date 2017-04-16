@@ -177,8 +177,13 @@ contract usingProperty{
             length = length-1; // ignore founder rating
 
             uint s_Id = congress.stakeholderId(msg.sender);
-            propertyList[_id].rating[s_Id] = rate;
-            propertyList[_id].averageRating = ((propertyList[_id].averageRating * (length-1))+rate)/length;
+            //propertyList的id需要調整
+            for(uint i = 0; i < propertyList.length; i++){
+                if(_id == propertyList[i].propertyType){
+                    propertyList[i].rating[s_Id] = rate;
+                    propertyList[i].averageRating = ((propertyList[i].averageRating * (length-1))+rate)/length;
+                }
+            }
 
             propertyTypeList[_id].rating[s_Id] = rate;
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
@@ -248,7 +253,7 @@ contract usingProperty{
     }
 
     function getPropertyTypeRating(uint u_id, uint p_id) constant returns(uint){
-        return (propertyTypeList[p_id].rating[u_id]);
+        return propertyTypeList[p_id].rating[u_id];
     }
 
     function getPropertyTypeLength() constant returns(uint){
