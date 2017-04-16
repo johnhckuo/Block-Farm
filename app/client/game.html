@@ -1,5 +1,4 @@
 <template name="gameIndex">
-  {{> header}}
   <div class="gameContainer">
     {{> statusList}}
     {{> gamingArea}}
@@ -17,15 +16,27 @@
     </div>
 </template>
 
+<template name="land">
+    <div class={{name}}>
+        <img src={{img}} alt="">
+        <div class="landContent">
+          {{content}}
+        </div>
+        <button class="btn btn-primary placeButton">Specify</button>
+    </div>
+</template>
+
 
 <template name="cropSummary">
     <td><img src={{img}} alt=""></td>
     <td>{{name}}</td>
-    <td>{{timeLeft}}</td>
+    <td class={{id}}>
+    </td>
 </template>
 
 <template name="statusList">
     <div class="statusList">
+        {{> characterList}}
         <div class="plantPanel statusPanel statusPanelShow" style="z-index:1;">
             <h2>Crop List</h2>
             <hr>
@@ -44,6 +55,7 @@
                   <tbody>
                     <tr>
                       <th>#</th>
+                      <th>Img</th>
                       <th>Name</th>
                       <th>Time Left</th>
 
@@ -60,8 +72,12 @@
             {{> cropSelectingBtns}}
 
         </div>
-        <div class="Panel statusPanel" style="z-index:-1;">
-
+        <div class="landPanel statusPanel" style="z-index:-1;">
+            <h2>Land List</h2>
+            <hr>
+            {{#each lands}}
+                    {{> land}}
+            {{/each}}
             {{> cropSelectingBtns}}
         </div>
 
@@ -69,15 +85,42 @@
 </template>
 
 <template name="cropSelectingBtns">
-  <button type="button" class="btn btn-info crop1" name="button">Plant Crop</button>
-  <button type="button" class="btn btn-info crop2" name="button">Current Crop</button>
-  <button type="button" class="btn btn-info crop3" name="button">Rank</button>
+  <div class="controlButtons">
+    <button type="button" class="btn btn-info crop2" name="button">Plant Crop</button>
+    <button type="button" class="btn btn-info crop3" name="button">Current Crop</button>
+    <button type="button" class="btn btn-info crop4" name="button">Land</button>
 
+  </div>
+
+</template>
+
+<template name="logo">
+    <div class="logo">
+        <img src="/img/logo_bartering.png" alt="">
+    </div>
 </template>
 
 <template name="characterList">
     <div class="characterList">
+        <div class="characterImg">
+            <img src="/img/game/farmer.svg" alt="">
+        </div>
+        <div class="characterStatus">
+            <div class="userName">
+              {{userName}}
+            </div>
+            <div class="userExp">
+              <!-- <div class="cropProgress">
+                  <div class={{id}}></div>
+              </div> -->
+              {{userExp}}
+            </div>
+        </div>
+        <div class="characterSwitch">
+              <button type="button" name="button" class="btn btn-primary">Farmer</button>
 
+              <button type="button" name="button" class="btn btn-primary">{{characterType}}</button>
+        </div>
     </div>
 </template>
 
@@ -85,9 +128,14 @@
     <div class = "gamingArea">
 
         <div class="canvas">
-            {{> characterList}}
-            <div class= 'landObject'>
+            {{> logo}}
+            <div class= 'surfaceObject'>
               <div class="cropObject">
+                <img src="/img/game/carrot_half.svg" alt="">
+              </div>
+            </div>
+            <div class= 'landObject'>
+              <div class="farmObject">
                 <img src="/img/game/carrot_half.svg" alt="">
               </div>
             </div>
