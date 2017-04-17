@@ -224,11 +224,11 @@
   margin-top:50px;
   background-color:#337ab7;
   display:none;
-  text-align:center; 
+  text-align:center;
 }
 
 .shop_content{
-  text-align:center; 
+  text-align:center;
   margin-top:10px;
   margin-left:120px;
 }
@@ -328,4 +328,41 @@ td img{
   height: 80%;
 }
 
+.croppedObject{
+  cursor: pointer;
+}
 
+.animationObject{
+  -webkit-transition: opacity 1s,  -webkit-transform 1s; /* Safari */
+
+  transition:  opacity 1s, transform 1s;
+  display: none;
+  opacity: 0;
+}
+
+.animationTemp{
+  width:150px;
+  height:150px;
+  position:absolute;
+  z-index:6;
+
+  -webkit-transition: opacity 1s,  -webkit-transform 1s; /* Safari */
+
+  transition:  opacity 1s, transform 1s;
+  -webkit-transform: translateY(0px);
+  transform: translateY(0px);
+
+  display: none;
+  opacity: 0;
+}
+
+.animationTempShow{
+   opacity:1;
+   transform:translateY(-50px);
+   -webkit-transform:translateY(-50px);
+}
+
+.animationImg img{
+  width:100px;
+  height: 100px;
+}
