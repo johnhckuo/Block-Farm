@@ -117,9 +117,15 @@
             </div>
         </div>
         <div class="characterSwitch">
+              <button type="button" name="button" class="btn btn-primary shopOpen">Shop</button>
+
               <button type="button" name="button" class="btn btn-primary">Farmer</button>
 
               <button type="button" name="button" class="btn btn-primary">{{characterType}}</button>
+              <div class="musicSwitch">
+                  <img src="/img/game/speaker_off.svg" alt="">
+              </div>
+
         </div>
     </div>
 </template>
@@ -151,7 +157,7 @@
 
 
 <template name="shop">
-    <div class="property_shop">
+    <div class="property_shop" style="display:none;">
         <div class="shop_header">
             <input type="button" id="btn_show_property" value="Ratings" />
             <input type="button" id="btn_property_tradeable" value="Tradable" />

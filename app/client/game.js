@@ -53,7 +53,7 @@ var cropTypeList = [
     name: "Radish",
     img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
     count:0,
-    time:"0.0.2.0"
+    time:"0.0.0.30"
 
   },
   {
@@ -280,7 +280,7 @@ Template.gameIndex.events({
            'z-index' : "2",
            'opacity': 1
          };
-          $( ".cropObject" ).clone().attr("class","croppedObject").appendTo(".surfaceObject").css(styles);
+          $( ".cropObject" ).clone().attr("class","croppedObject"+cropList.length).appendTo(".surfaceObject").css(styles);
 
           //var start = Date.now();
           var start = new Date();
@@ -454,6 +454,13 @@ Template.statusList.events({
   },
 })
 
+Template.characterList.events({
+  'click .shopOpen': function (e) {
+      $(".property_shop").css("display", "inline");
+
+  },
+})
+
 
 
 
@@ -472,6 +479,15 @@ var cropSummaryUpdate = function(){
         //   continue;
         // }
         //$(".currentCrop"+i).css("width", percentage+"%");
+        var percent = difference/originDifference;
+        if (percent <= 0.6){
+          $(".croppedObject"+cropList[i].id).find("img").attr("src","/img/game/carrot_grow.svg");
+        }
+        if (percent <= 0){
+          $(".croppedObject"+cropList[i].id).find("img").attr("src","/img/game/radish_harvest.svg");
+          continue;
+        }
+
         var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
         $(".currentCrop"+i).html(diffData);
     }
@@ -527,7 +543,7 @@ get_user_property_setting = function () {
     //        if (user_property[j].id == display_field[i].id) {
     //            display_field[i].rating = user_property[j].rating;
     //            display_field[i].propertyCount = user_property[j].propertyCount;
-    //            display_field[i].tradeable = user_property[j].tradeable;                
+    //            display_field[i].tradeable = user_property[j].tradeable;
     //            break;
     //        }
     //    }
@@ -610,7 +626,7 @@ set_property_table = function(){
 set_propertyType_table = function () {
 
     var table, tr, td, property_index;
- 
+
     get_propertyType_setting();
     $('.shop_content').html('');
     table = $('<table></table>').attr('id', 'property_table');
