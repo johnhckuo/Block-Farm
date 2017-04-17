@@ -579,7 +579,8 @@ set_property_table = function(){
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
     $('.shop_content').html('');
-    table = $('<table></table>').attr('id', 'property_table');
+    table = $('<table></table>').attr('id', 'property_table')
+                                .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
     tr.append($('<th></th>').text('Property'));
@@ -629,7 +630,8 @@ set_propertyType_table = function () {
 
     get_propertyType_setting();
     $('.shop_content').html('');
-    table = $('<table></table>').attr('id', 'property_table');
+    table = $('<table></table>').attr('id', 'property_table')
+                                .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
     tr.append($('<th></th>').text('Property'));

@@ -220,9 +220,21 @@
   position:absolute;
   z-index: 6;
   height:80vh;
-  width:80vw;
+  width:30vw;
   margin-top:50px;
-  background-color:white;
+  background-color:#337ab7;
+  display:none;
+  text-align:center; 
+}
+
+.shop_content{
+  text-align:center; 
+  margin-top:10px;
+  margin-left:120px;
+}
+
+.property_shop_table{
+    border: 1px solid black;
 }
 
 .cropProgress{
@@ -315,3 +327,5 @@ td img{
   width:80%;
   height: 80%;
 }
+
+
