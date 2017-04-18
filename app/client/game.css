@@ -384,3 +384,16 @@ td img{
   width:100px;
   height: 100px;
 }
+
+.levelUpObject{
+  -webkit-transition: opacity 1s,  -webkit-transform 1s; /* Safari */
+
+  transition:  opacity 1s, transform 1s;
+  display: none;
+  opacity: 0;
+
+  position:absolute;
+  width:150px;
+  height:150px;
+  z-index:7;
+}
