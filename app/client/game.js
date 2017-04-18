@@ -16,8 +16,12 @@ var currentCropLand;
 
 
 var cropList = [];
+var harvestCropList = [];
 var landList = [];
 var _dep = new Tracker.Dependency;
+
+var cursorX;
+var cursorY;
 
 
 var hex2a = function(hexx) {
@@ -45,7 +49,7 @@ var cropTypeList = [
     name: "Carrot",
     img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"],
     count:0,
-    time:"0.0.5.0"
+    time:"0.0.0.3"
 
   },
   {
@@ -69,7 +73,7 @@ var cropTypeList = [
     name: "Cauliflower",
     img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
     count:0,
-    time:"0.1.0.0"
+    time:"0.0.0.10"
 
   },
   {
@@ -99,6 +103,17 @@ var landTypeList = [
   }
 
 ];
+
+var playerFile =
+{
+  id:0
+  name:"john",
+  address:"0x101010101010",
+  character:"guard",
+  exp:0,
+
+
+};
 
 ///////////////////////////
 //  prototype functions  //
@@ -280,7 +295,7 @@ Template.gameIndex.events({
            'z-index' : "2",
            'opacity': 1
          };
-          $( ".cropObject" ).clone().attr("class","croppedObject"+cropList.length).appendTo(".surfaceObject").css(styles);
+          $( ".cropObject" ).clone().attr("class","croppedObject croppedObject"+cropList.length).appendTo(".surfaceObject").css(styles);
 
           //var start = Date.now();
           var start = new Date();
@@ -297,7 +312,9 @@ Template.gameIndex.events({
             name: cropTypeList[currentCropId].name,
             img:cropTypeList[currentCropId].img[3],
             start: start,
-            end: end
+            end: end,
+            type: cropTypeList[currentCropId].id,
+            ripe: 0
           });
           console.log(cropList);
           _dep.changed();
@@ -327,7 +344,60 @@ Template.gameIndex.events({
         alert("Specify Land first");
         return;
       }
-  }
+  },
+  'click .croppedObject, click .croppedObject img': function (event){
+      // var left = $(event.target).position().left;
+      // var top = $(event.target).position().top;
+        var id, cropClass;
+        if (event.target.className == ""){
+            cropClass = $(event.target).parent().prop('className').split(" ")[1];
+            id = cropClass.split("croppedObject")[1];
+        }else{
+            cropClass = event.target.className.split(" ")[1];
+            id = cropClass.split("croppedObject")[1];
+
+        }
+        console.log(cropClass);
+        if (cropList[id].ripe){
+
+          $(".animationImg").html("<img src = '" + prefix+ cropTypeList[cropList[id].type].img[3] + postfix +"' />");
+          //var exp = cropTypeList[cropList[id].type].exp;
+
+          var difference = elapsedTime(cropList[id].start, cropList[id].end);
+          var exp = "+" + (difference/(1000*30))*20 +"XP";
+          $(".scoreObject").html(exp);
+        }else{
+          alert("Patience is a virtue :D");
+          return;
+        }
+
+        var landTop = $(".land").position().top;
+        var landLeft = $(".land").position().left;
+
+        var areaLeft = $(".gamingArea").position().left;
+
+        var divHeight =$(".farmObject").height()/5;
+        var divWidth = $(".farmObject").width()/4;
+
+        var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
+        temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
+        temp.addClass("animationTempShow");
+
+        setTimeout(function(){
+          temp.css({opacity:0, transform:"translateY(0px)"});
+          setTimeout(function(){
+            temp.css({display: "none"});
+            temp.remove();
+          },1000);
+        },1000);
+
+        harvestCropList.push(cropList[id]);
+        //cropList.splice(id, 1);
+        $("."+cropClass).remove();
+
+
+
+  },
 })
 
 
@@ -468,9 +538,19 @@ Template.characterList.events({
 //  Utility Functions  //
 /////////////////////////
 
+
+document.onmousemove = function(e){
+    cursorX = e.pageX;
+    cursorY = e.pageY;
+}
+
+
 var cropSummaryUpdate = function(){
 
     for (var i = 0 ; i < cropList.length ; i++){
+        if (cropList[i].ripe){
+          continue;
+        }
         var difference = elapsedTime(new Date(), cropList[i].end);
         var originDifference = elapsedTime(cropList[i].start, cropList[i].end);
         //var percentage = (1 - (difference / originDifference))*100;
@@ -481,10 +561,11 @@ var cropSummaryUpdate = function(){
         //$(".currentCrop"+i).css("width", percentage+"%");
         var percent = difference/originDifference;
         if (percent <= 0.6){
-          $(".croppedObject"+cropList[i].id).find("img").attr("src","/img/game/carrot_grow.svg");
+          $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[cropList[i].type].img[1]+postfix);
         }
         if (percent <= 0){
-          $(".croppedObject"+cropList[i].id).find("img").attr("src","/img/game/radish_harvest.svg");
+          $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[cropList[i].type].img[2]+postfix);
+          cropList[i].ripe = 1;
           continue;
         }
 

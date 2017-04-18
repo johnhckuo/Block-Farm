@@ -9,7 +9,7 @@ var CongressAddr;
 //acount1 = new member
 
 contract('Congress', function(accounts) {
-  it("adding new member", function() {
+  it("add new member", function() {
     return Congress.deployed().then(function(instance){
         return instance.addMember("John", 100, 100, 50, "buyer", {from:accounts[1]});
       }).then(function(txs){
