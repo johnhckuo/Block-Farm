@@ -1,7 +1,7 @@
 import { Tracker } from 'meteor/tracker';
 
 
-var landSize;
+var landSize = 3;
 var blockSize = 150;
 var landSrc = "/img/game/land.svg";
 
@@ -13,7 +13,6 @@ var plantMode = false;
 var currentLandId;
 var placeMode = false;
 var currentCropLand;
-
 
 var cropList = [];
 var harvestCropList = [];
@@ -36,11 +35,17 @@ var panelCounter = 2, panelCount = 3;
 
 
 var currentUser = {
+  id:0,
+  address:"0x101010101010",
+
   name: "john",
-  exp: 100,
-  type: "Guard"
+  exp: 0,
+  type: "Guard",
+  landSize: 3,
+  level:0
 };
 
+var userLandConfiguration = [];
 
 
 var cropTypeList = [
@@ -104,16 +109,7 @@ var landTypeList = [
 
 ];
 
-var playerFile =
-{
-  id:0
-  name:"john",
-  address:"0x101010101010",
-  character:"guard",
-  exp:0,
 
-
-};
 
 ///////////////////////////
 //  prototype functions  //
@@ -138,12 +134,23 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
       console.log('gameArea render complete');
+
+      updateUserExp(0);
       farmObjectLoader();
 
       setInterval(cropSummaryUpdate, 1000);
       var audio = new Audio('/music/background_music.mp3');
       audio.play();
 
+      for (var i = 0 ; i < currentUser.landSize*currentUser.landSize ; i++){
+          userLandConfiguration.push(
+            {
+              id: i,
+              land: null,
+              crop:null
+            }
+          );
+       }
 
     }
 }
@@ -288,6 +295,16 @@ Template.gameIndex.events({
       // var left = $(event.target).position().left;
       // var top = $(event.target).position().top;
         if (currentCropId != null && plantMode){
+          var _landId = currentCropLand.split("cropLand")[1];
+
+
+          if (userLandConfiguration[_landId].crop != null){
+              alert("Its already been planted dude -3- ");
+              return;
+          }else if (userLandConfiguration[_landId].land == null){
+              alert("WTF dude? you need a land first!!");
+              return;
+          }
 
           cropTypeList[currentCropId].count++;
 
@@ -307,6 +324,7 @@ Template.gameIndex.events({
 
           var _id = cropList.length;
 
+          userLandConfiguration[_landId].land = _id;
           cropList.push({
             id: _id,
             name: cropTypeList[currentCropId].name,
@@ -316,7 +334,6 @@ Template.gameIndex.events({
             type: cropTypeList[currentCropId].id,
             ripe: 0
           });
-          console.log(cropList);
           _dep.changed();
 
         }else{
@@ -329,12 +346,19 @@ Template.gameIndex.events({
   },
   'click .farmObject': function(event){
       if (currentLandId != null && placeMode){
+        var _landId = currentCropLand.split("cropLand")[1];
+
+        if (userLandConfiguration[_landId].land != null){
+            alert("Its already been planted dude -3- ");
+            return;
+        }
         landTypeList[currentLandId].count++;
         currentCropLand = currentCropLand.split(" ")[1];
         $( ".farmObject" ).children().clone().appendTo("."+currentCropLand).css({opacity:1});
         $("."+currentCropLand).css({"border-style":"none"});
         var _id = landList.length;
 
+        userLandConfiguration[_landId].land = _id;
         landList.push({
           id: _id,
           name: landTypeList[currentLandId].name,
@@ -345,7 +369,7 @@ Template.gameIndex.events({
         return;
       }
   },
-  'click .croppedObject, click .croppedObject img': function (event){
+  'click .croppedObject': function (event){
       // var left = $(event.target).position().left;
       // var top = $(event.target).position().top;
         var id, cropClass;
@@ -357,17 +381,17 @@ Template.gameIndex.events({
             id = cropClass.split("croppedObject")[1];
 
         }
-        console.log(cropClass);
         if (cropList[id].ripe){
 
           $(".animationImg").html("<img src = '" + prefix+ cropTypeList[cropList[id].type].img[3] + postfix +"' />");
           //var exp = cropTypeList[cropList[id].type].exp;
 
           var difference = elapsedTime(cropList[id].start, cropList[id].end);
-          var exp = "+" + (difference/(1000*30))*20 +"XP";
-          $(".scoreObject").html(exp);
+          var exp = (difference/(1000*30))*20;
+          updateUserExp(exp);
+          $(".scoreObject").html("+" + exp +"XP");
         }else{
-          alert("Patience is a virtue :D");
+          alert("Not yet~~~ Patience is a virtue <3");
           return;
         }
 
@@ -453,6 +477,7 @@ Template.land.events({
 Template.gamingArea.events({
   'mouseenter .land div': function (event){
       if (plantMode){
+          currentCropLand = event.target.className;
           var top = $(event.target)[0].getBoundingClientRect().top;
           var left = $(event.target)[0].getBoundingClientRect().left;
 
@@ -544,6 +569,21 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+var powerFunc = function(n){
+    var powerResult = 1;
+    for (var i = 0 ; i < n ; i++){
+        powerResult *= 2;
+    }
+    return powerResult;
+}
+
+var updateUserExp = function(exp){
+  currentUser.exp += parseInt(exp);
+  var lvlCap = powerFunc(currentUser.level)*100;
+  console.log((currentUser.exp/lvlCap)*100);
+  $(".expProgressBar").css("width", (currentUser.exp/lvlCap)*100 + "%");
+  $(".expText").text(currentUser.exp+"/"+lvlCap);
+}
 
 var cropSummaryUpdate = function(){
 
@@ -594,11 +634,10 @@ var elapsedTime = function(start, end){
 
 
 var farmObjectLoader = function(){
-    landSize = 3;
-    $('.land').css("width", blockSize*landSize );
-    $('.land').css("height", blockSize*landSize );
+    $('.land').css("width", blockSize*currentUser.landSize );
+    $('.land').css("height", blockSize*currentUser.landSize );
 
-    for (var i = 0 ; i < landSize*landSize; i++){
+    for (var i = 0 ; i < currentUser.landSize*currentUser.landSize; i++){
         $('.land').append("<div class='farm cropLand" + i + "' style='border:1px solid black; border-style:solid;'></div>");
         //$('.land').append("<div></div>");
     }
