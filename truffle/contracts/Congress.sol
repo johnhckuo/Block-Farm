@@ -21,6 +21,7 @@ contract tokenRecipient {
     event receivedEther(address sender, uint amount);
     event receivedTokens(address _from, uint256 _value, address _token, bytes _extraData);
 
+
     function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData){
         Token t = Token(_token);
         if (!t.transferFrom(_from, this, _value)) throw;
@@ -54,6 +55,10 @@ contract Congress is owned, tokenRecipient {
     event ProposalTallied(uint proposalID, int result, uint quorum, bool active);
     event MembershipChanged(address Stakeholder, bool isMember);
     event ChangeOfRules(uint minimumQuorum, uint debatingPeriodInMinutes, int majorityMargin);
+
+    event addmember_test(bytes32);
+    event int_test(uint);
+    event int256_test(uint256);
 
     struct Proposal {
         address recipient;
@@ -142,6 +147,7 @@ contract Congress is owned, tokenRecipient {
     function addMember(bytes32 _name, uint256 _threshold, uint256 _fund, uint _rate, bytes32 _character){
         uint id;
         address targetStakeholder = msg.sender;
+        
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
            id = stakeholders.length++;
@@ -161,7 +167,8 @@ contract Congress is owned, tokenRecipient {
           //  temp.updatePropertiesRating(p_Length, 0, "init");
 
 
-        } else {
+        } 
+        else {
             id = stakeholderId[targetStakeholder];
             Stakeholder m = stakeholders[id];
         }
