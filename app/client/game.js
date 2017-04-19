@@ -860,7 +860,6 @@ var updateUserExp = function(exp){
 }
 
 var cropSummaryUpdate = function(){
-    console.log(cropList)
     for (var i = 0 ; i < cropList.length ; i++){
         if (cropList[i] == null || cropList[i].ripe ){
           continue;
