@@ -251,6 +251,7 @@
 
 .expProgressBar{
   position: absolute;
+  left:0px;
   width: 0%;
   height: 100%;
   background-color: #BBFF00;
@@ -281,6 +282,7 @@
 
 .staProgressBar{
   position: absolute;
+  left:0px;
   width: 0%;
   height: 100%;
   background-color: #BBFF00;
@@ -385,6 +387,10 @@ td img{
 
 .characterStatus h4{
   margin-right: 5px;
+}
+
+.userExp{
+  margin-bottom: 10px;
 }
 
 .functionSwitch{
