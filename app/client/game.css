@@ -141,6 +141,8 @@
 
 .cropObject{
   position: absolute;
+  width:150px;
+  height:150px;
   top:200px;
   left:200px;
   cursor: pointer;
@@ -249,7 +251,7 @@
 
 .expProgressBar{
   position: absolute;
-  width: 100%;
+  width: 0%;
   height: 100%;
   background-color: #BBFF00;
   transition: all 1s;
@@ -258,6 +260,36 @@
 }
 
 .expText{
+  position: relative;
+  top:0px;
+  left:0px;
+  float:none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.staProgress{
+  position: relative;
+  width: 100px;
+  height: 20px;
+
+  background-color: grey;
+  color:black;
+  text-align: center;
+}
+
+.staProgressBar{
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  background-color: #BBFF00;
+  transition: all 1s;
+
+
+}
+
+.staText{
   position: relative;
   top:0px;
   left:0px;
@@ -331,14 +363,55 @@ td img{
   height:100%;
 }
 
+.characterStatus{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.characterStatus *{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.characterStatus h3{
+  margin-bottom: 10px;
+}
+
+.characterStatus h4{
+  margin-right: 5px;
+}
+
+.functionSwitch{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.functionSwitch button{
+  margin-right: 10px;
+}
+
 .musicSwitch{
-  width:50px;
-  height:50px;
+  width:40px;
+  height:40px;
   border-radius: 100%;
   background: #E5E5E5;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.musicSwitch:hover{
+  background: rgba(255,255,255,0.3);
 }
 
 .musicSwitch img{
@@ -396,4 +469,24 @@ td img{
   width:150px;
   height:150px;
   z-index:7;
+}
+
+.progressObject{
+  -webkit-transition: opacity 1s,  -webkit-transform 1s; /* Safari */
+
+  transition:  opacity 1s, transform 1s;
+  display: none;
+  opacity: 0;
+
+}
+.loading{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  background: rgba(255,255,255,0.5);
+  transition: opacity 1s;
 }

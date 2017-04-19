@@ -107,24 +107,29 @@
         </div>
         <div class="characterStatus">
             <div class="userName">
-              {{userName}}
+              <h3>{{userName}}</h3>
             </div>
             <div class="userExp">
+              <h4>EXP </h4>
               <div class="expProgress">
                   <div class="expProgressBar"></div>
                   <div class="expText"></div>
               </div>
             </div>
+            <div class="userSta">
+              <h4>STA </h4>
+              <div class="staProgress">
+                  <div class="staProgressBar"></div>
+                  <div class="staText"></div>
+              </div>
+            </div>
         </div>
-        <div class="characterSwitch">
+        <div class="functionSwitch">
               <button type="button" name="button" class="btn btn-primary shopOpen">Shop</button>
-
-              <button type="button" name="button" class="btn btn-primary">Farmer</button>
-
-              <button type="button" name="button" class="btn btn-primary">{{characterType}}</button>
-              <!-- <div class="musicSwitch">
+              <button type="button" name="button" class="btn btn-primary characterSwitch">{{characterType}}</button>
+              <span class="musicSwitch">
                   <img src="/img/game/speaker_off.svg" alt="">
-              </div> -->
+              </span>
 
         </div>
     </div>
@@ -132,7 +137,9 @@
 
 <template name="gamingArea">
     <div class = "gamingArea">
-
+        <div class="loading">
+          <img src="/img/game/loading.gif" alt="">
+        </div>
         <div class="canvas">
             {{> logo}}
             <div class= 'animationObject'>
