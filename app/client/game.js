@@ -186,7 +186,21 @@ Template.shop.rendered = function () {
     //    console.log("Request Failed: " + err);
     //});
     //console.log("rend");
-
+    var stakeholder_length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]});
+        var select = $('<select>></select>');
+        for (i = 0; i < stakeholder_length; i++) {
+            var stakeholder_info = CongressInstance.getStakeholder.call(i,{from:web3.eth.accounts[currentAccount]});
+            option = $('<option>', {
+                value: i,
+                text: hex2a(stakeholder_info[0])
+            });
+            select.append(option);
+        }
+        select.on('change', function () {
+            currentAccount = $(this).val();
+            set_propertyType_table();
+        })
+        $('.shop_header').append(select);
 }
 
 
@@ -194,7 +208,7 @@ Template.shop.rendered = function () {
 //  Helpers  //
 ///////////////
 
-var activated_account = 0;
+var activated_account = 2;
 var account_index;
 property_log = [];
 user_property = [];
@@ -282,7 +296,27 @@ Template.shop.events({
         $('.property_shop').css('display', 'none');
     },
     'click #btn_shop_add':function(){
+        CongressInstance.addMember('Jonn', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[0], gas: 2000000 });
+        CongressInstance.addMember('Bryant', 10, 900, 2, 'farmer', { from: web3.eth.accounts[1], gas: 2000000 });
+        CongressInstance.addMember('Claire', 10, 500, 3, 'farmer', { from: web3.eth.accounts[2], gas: 2000000 });
+        CongressInstance.addMember('Po-Wei', 10, 800, 4, 'farmer', { from: web3.eth.accounts[3], gas: 2000000 });
+        CongressInstance.addMember('Ping', 10, 850, 1, 'farmer', { from: web3.eth.accounts[4], gas: 2000000 });
+        CongressInstance.addMember('Chi', 10, 777, 1, 'farmer', { from: web3.eth.accounts[5], gas: 2000000 });
+        CongressInstance.addMember('Nina', 10, 666, 1, 'farmer', { from: web3.eth.accounts[6], gas: 2000000 });
+        CongressInstance.addMember('Jackie', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[7], gas: 2000000 });
+        CongressInstance.addMember('Charlie', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[8], gas: 2000000 });
 
+
+        usingPropertyInstance.addPropertyType('no1', 'a', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('no2', 'b', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('no3', 'c', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('no4', 'd', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+
+
+        usingPropertyInstance.addProperty('no1', 4, 1, '', 0, 0, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addProperty('no2', 4, 1, '', 0, 1, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addProperty('no3', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addProperty('no4', 3, 1, '', 0, 3, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     },
     'click #btn_property_tradeable':function(){
         set_property_table();
@@ -649,31 +683,12 @@ var farmObjectLoader = function(){
 /////////////////////////
 
 get_user_property_setting = function () {
-    //for (i = 0; i < property_log.length; i++) {
-    //    if (activated_account == property_log[i].account) {
-    //        user_property = property_log[i].property;
-    //        account_index = i;
-    //    }
-    //}
-
-    //for (i = 0; i < display_field.length; i++) {
-    //    display_field.rating = 0;
-    //    display_field.propertyCount =0;
-    //    for (j = 0; j < user_property.length; j++){
-    //        if (user_property[j].id == display_field[i].id) {
-    //            display_field[i].rating = user_property[j].rating;
-    //            display_field[i].propertyCount = user_property[j].propertyCount;
-    //            display_field[i].tradeable = user_property[j].tradeable;
-    //            break;
-    //        }
-    //    }
-    //}
     user_property = [];
     var propertyLength = usingPropertyInstance.getPropertiesLength.call();
     for(i = 0; i < propertyLength;i++){
         var property_data = usingPropertyInstance.getProperty_Shop(i, {from:web3.eth.accounts[currentAccount]});
-        if(web3.eth.accounts[currentAccount] == property_data[1]){
-            var data = {"id":i,"propertyCount":property_data[0].c[0],"propertyType":property_data[2].c[0],"tradeable":property_data[3]};
+        if(web3.eth.accounts[currentAccount] == property_data[2]){
+            var data = {"id":i, "propertyType":property_data[0].c[0], "name":hex2a(property_data[1]), "propertyCount":property_data[3].c[0],  "tradeable":property_data[4]};
             user_property.push(data);
         }
     }
@@ -703,45 +718,91 @@ set_property_table = function(){
                                 .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
+    tr.append($('<th></th>'));
     tr.append($('<th></th>').text('Property'));
     tr.append($('<th></th>').text('Stock'));
-    tr.append($('<th></th>').text('Favorite'));
+    tr.append($('<th></th>').text('Tradable'));
     table.append(tr);
     //header
     //content
     for(i = 0; i < user_property.length; i++){
         tr = $('<tr></tr>');
-        tr.append($('<td></td>').text(user_property[i].id));
-        tr.append($('<td></td>').text(user_property[i].propertyCount));
-        if(user_property[i].tradeable)
-            heart_status = 1;
-        else
-            heart_status = 0;
-        tr.append(
-            $('<td></td>').append(
-               $('<img></img>').attr('src', heart_path[heart_status])
-                               .attr('heart_status',heart_status)
-                               .attr('property_index',i)
-                               .css('width', '30px')
-                               .css('height', '30px')
-                               .on('click', function(){
-                                   property_index = $(this).attr('property_index');
-                                   if( $(this).attr('heart_status') == 0)
-                                   {
-                                       $(this).attr('heart_status', 1);
-                                   }
-                                   else
-                                   {
-                                       $(this).attr('heart_status', 0);
-                                       heart_status =0;
-                                   }
-                                   add_to_favorite(account_index, property_index,$(this).attr('heart_status'));
-                                   $(this).attr('src', heart_path[$(this).attr('heart_status')]);
-                               })));
+        td = $('<td></td>');
+        td.append($('<img></img>', {
+            src:prefix+cropTypeList[user_property[i].propertyType].img[3] + postfix,
+            style:'width:50px; height:50px'
+        }));
+        tr.append(td);
+        td = $('<td></td>');
+        td.text(user_property[i].name);
+        tr.append(td);
+        td = $('<td></td>');
+        td.text(user_property[i].propertyCount);
+        tr.append(td);
+        td = $('<td></td>');
+        td.append(
+                $('<input></input>',{
+                    type:'text',
+                    class:'shop_tradable_input',
+                    id:'tradable_input_' + user_property[i].id,
+                    value:user_property[i].tradeable
+                })
+                .on('keydown',function (e) {
+                    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                        (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+                        (e.keyCode >= 35 && e.keyCode <= 40)) {
+                        return;
+                    }
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                })
+                .on('change',function(e){
+                    var _id = index_finder($(this).attr('id'), 'tradable_input_');
+                    if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
+                        $(this).val($('#shop_stock_' + _id).val());
+                    }
+                    $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
+                })
+                .on('click', function(){
+                    $(this).select();
+                })
+                );
+        td.append($('<input></input>',{
+            type:'hidden',
+            id:'shop_stock_' + user_property[i].id,
+            value: user_property[i].propertyCount
+        }));
+        tr.append(td);
         table.append(tr);
     }
     //content
+    //control bar
+    tr = $('<tr></tr>');
+    td = $('<td></td>').attr('colspan', 4).attr('style','textalign=cneter;');
+    td.append($('<input>').attr( {
+        type: 'button',
+        id: 'btn_property_save',
+        value: 'SAVE'
+    }).on('click', function () {
+        save_tradable_setting();
+    }));
+    td.append($('<input>').attr( {
+        type: 'button',
+        id: 'btn_property_cancel',
+        value: 'CANCEL'
+    }).on('click', function () {
+        alert('cancel');
+    }));
+    tr.append(td);
+    table.append(tr);
+    //control bar
     $('.shop_content').append(table);
+}
+
+index_finder = function(_source, _mask){
+    var res = _source.substring(_mask.length, _source.length);
+    return res;
 }
 
 set_propertyType_table = function () {
@@ -805,8 +866,13 @@ set_propertyType_table = function () {
     $('.shop_content').append(table);
 }
 
-add_to_favorite = function(_account_index, _property_index,_heart_status){
-
+save_tradable_setting = function(){
+    for(i = 0; i < $('.shop_tradable_input').length; i++){
+        var _id = index_finder( $('.shop_tradable_input')[i].id, 'tradable_input_');
+        var _tradable = $('#tradable_input_' + _id).val();
+        var _propertyCount = parseInt($('#shop_stock_' + _id).val(),10) - parseInt(_tradable,10);
+        usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000});
+    }
 }
 
 save_rating_setting = function () {
@@ -817,7 +883,9 @@ save_rating_setting = function () {
     //$('#json_temp').val(JSON.stringify(property_log));
     //averageRating_calculation();
     for(i = 0; i < display_field.length;i++){
-        usingPropertyInstance.updatePropertyTypeRating(parseInt(display_field[i].id,10), parseInt($('#rating' + i).val(),10), "update", {from:web3.eth.accounts[currentAccount],gas:200000});
+        var _id = parseInt(display_field[i].id,10);
+        var _rate = parseInt($('#rating' + i).val(),10);
+        usingPropertyInstance.updatePropertyTypeRating(_id, _rate, "update", {from:web3.eth.accounts[currentAccount],gas:200000});
     }
 
 
