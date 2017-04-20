@@ -12,7 +12,7 @@
         <div class="cropContent">
           {{content}}
         </div>
-        <button class="btn btn-primary plantButton">Specify</button>
+        <button class="btn btn-primary plantButton" data-pressed = "false" >Specify</button>
     </div>
 </template>
 
@@ -22,7 +22,7 @@
         <div class="landContent">
           {{content}}
         </div>
-        <button class="btn btn-primary placeButton">Specify</button>
+        <button class="btn btn-primary placeButton" data-pressed = "false" >Specify</button>
     </div>
 </template>
 
@@ -136,11 +136,13 @@
         <div class="canvas">
             {{> logo}}
             <div class= 'animationObject'>
-              <div class="animationImg">
+              <div class="animationImg"></div>
+              <div class="scoreObject"></div>
+            </div>
 
-              </div>
-              <div class="scoreObject">
-              </div>
+            <div class="levelUpObject">
+                <div class="levelUpAnimation"></div>
+                <div class="levelUpText"></div>
             </div>
 
             <div class= 'surfaceObject'>

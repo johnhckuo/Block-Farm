@@ -40,6 +40,7 @@ var currentUser = {
 
   name: "john",
   exp: 0,
+  totalExp: 0,
   type: "Guard",
   landSize: 3,
   level:0
@@ -79,14 +80,6 @@ var cropTypeList = [
     img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
     count:0,
     time:"0.0.0.10"
-
-  },
-  {
-    id:4,
-    name: "Mill",
-    img: ["mill", "cauliflower_grow", "cauliflower_harvest", "mill"],
-    count:0,
-    time:"0.1.0.0"
 
   }
 
@@ -464,23 +457,37 @@ Template.gameIndex.events({
 Template.crop.events({
   'click .crop button': function (event){
       var id = $(event.target).parent()[0].className.split("property")[1];
-      $(".cropObject").html("<img src = '" + prefix+ cropTypeList[id].img[0] + postfix +"' />");
-      currentCropId = id;
 
-      plantMode = !plantMode;
-      if (plantMode){
-          $(".cropObject").css("display", "inline");
-
-          $(event.target).css("background", "gray");
-          $(event.target).css("border-color", "gray");
-          $(event.target).text("Done");
-      }else{
-          $(".cropObject").css("display", "none");
+      if ($(event.target).data('pressed')){
           $(event.target).css("background", "#337ab7");
           $(event.target).css("border-color", "#337ab7");
           $(event.target).text("Specify");
-
+          plantMode = false;
+          return;
       }
+
+      plantMode = true;
+
+      $(event.target).data('pressed', true);
+      var btns = $(".crop").find("button");
+
+      for (var i = 0 ; i < btns.length; i++){
+        if ($(btns[i]).data('pressed')){
+            $(btns[i]).css("background", "#337ab7");
+            $(btns[i]).css("border-color", "#337ab7");
+            $(btns[i]).text("Specify");
+        }
+      }
+
+      $(".cropObject").html("<img src = '" + prefix+ cropTypeList[id].img[0] + postfix +"' />");
+      currentCropId = id;
+
+      $(".cropObject").css("display", "inline");
+
+      $(event.target).css("background", "gray");
+      $(event.target).css("border-color", "gray");
+      $(event.target).text("Done");
+
   },
 
 })
@@ -615,9 +622,16 @@ var powerFunc = function(n){
 
 var updateUserExp = function(exp){
   currentUser.exp += parseInt(exp);
+  currentUser.totalExp += currentUser.exp;
   var lvlCap = powerFunc(currentUser.level)*100;
-  console.log((currentUser.exp/lvlCap)*100);
-  $(".expProgressBar").css("width", (currentUser.exp/lvlCap)*100 + "%");
+  var percent = (currentUser.exp/lvlCap)*100;
+  if  (percent >= 100){
+    currentUser.level += 1;
+    currentUser.exp = 0;
+    $(".levelUpObject").attr("display", "inline");
+
+  }
+  $(".expProgressBar").css("width", percent + "%");
   $(".expText").text(currentUser.exp+"/"+lvlCap);
 }
 
