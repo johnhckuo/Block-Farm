@@ -317,6 +317,8 @@ Template.shop.events({
         usingPropertyInstance.addProperty('no2', 4, 1, '', 0, 1, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
         usingPropertyInstance.addProperty('no3', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
         usingPropertyInstance.addProperty('no4', 3, 1, '', 0, 3, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        //var id = usingPropertyInstance.gets_id.call({ from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        //alert(id);
     },
     'click #btn_property_tradeable':function(){
         set_property_table();
@@ -700,7 +702,7 @@ get_propertyType_setting = function(){
 
     for(i = 0; i < propertyTypeLength.c[0]; i++){
         var property_type = usingPropertyInstance.getPropertyType.call(i,currentAccount, {from:web3.eth.accounts[currentAccount]});
-        var property_type_rating = usingPropertyInstance.getPropertyTypeRating.call(currentAccount,i,{from:web3.eth.accounts[currentAccount]});
+        var property_type_rating = usingPropertyInstance.getPropertyTypeRating.call(i,{from:web3.eth.accounts[currentAccount]});
         console.log(property_type_rating);
 
         var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0],"averageRating":property_type[4].c[0]};

@@ -225,7 +225,12 @@
   background-color:#337ab7;
   display:none;
   text-align:center;
+ color:white;
 }
+
+    .property_shop select {
+         color:black;
+    }
 
 .shop_content{
   text-align:center;
