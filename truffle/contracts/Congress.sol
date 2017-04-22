@@ -101,6 +101,7 @@ contract Congress is owned, tokenRecipient {
         _;
     }
 
+
     /* First time setup */
 
     function Congress(
@@ -117,6 +118,8 @@ contract Congress is owned, tokenRecipient {
         addMember('Moderator', 0, 0, 0, "Founder");
 
     }
+
+
 
     // function Congress(){
     //     owner = msg.sender;

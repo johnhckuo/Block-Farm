@@ -148,7 +148,7 @@ Template.gameIndex.created = function() {
     loading(1);
 
     audio = new Audio('/music/background_music.mp3');
-    audio.play();
+    //audio.play();
 
     for (var i = 0 ; i < currentUser.landSize*currentUser.landSize ; i++){
         userLandConfiguration.push(
@@ -355,10 +355,10 @@ Template.shop.events({
         CongressInstance.addMember('Charlie', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[8], gas: 2000000 });
 
 
-        usingPropertyInstance.addPropertyType('no1', 'a', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no2', 'b', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no3', 'c', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no4', 'd', '2', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('no1', 4, '0.0.0.10', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('no2', 4, '0.0.0.30', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('no3', 4, '0.0.10.0', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('no4', 4, '0.0.0.10', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
 
         usingPropertyInstance.addProperty('no1', 4, 1, '', 0, 0, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
@@ -1168,20 +1168,36 @@ averageRating_calculation = function () {
 var mission_list = [];
 
 get_mission_list = function(){
-    mission_list = [
-   {id:0, name:'mission1', exp:100, lvl_limited:1, items:
-       [
-       {crop_id:1, crop_name:'carrot', quantity:4 },
-       {crop_id:2, crop_name:'Radish', quantity:3 }
-       ],
-       solved:false, status:true },
-   {id:1, name:'mission2', exp:200, lvl_limited:1, items:
-       [
-       {crop_id:2, crop_name:'Lettuce', quantity:1 },
-       {crop_id:3, crop_name:'Cauliflower', quantity:5 }
-       ],
-       solved:false, status:true },
-    ];
+    var item, result, _cropId, _cropName, _quantity, _missionId, _missionName, _exp, _lvl_limitation, _accountStatus;
+    var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]});
+    mission_list = [];
+
+    for(i = 0; i < mission_count; i++){
+        mission_source = GameCoreInstance.getMission.call(i, {from:web3.eth.accounts[currentAccount]});
+        item_length = GameCoreInstance.getMissionItemsLength.call(i, {from:web3.eth.accounts[currentAccount]});
+        mission = {id: i, name:hex2a(mission_source[0]), exp: mission_source[1], lvl_limitation: mission_source[2], solved:mission_source[3],items:[]};
+        for(j = 0; j < item_length;j++){
+            item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
+            item = {crop_id:item_source[0], crop_name: hex2a(item_source[1]), quantity:item_source[2]};
+            mission.items.push(item);
+        }
+        mission_list.push(mission);
+    }
+
+   // mission_list = [
+   //{id:0, name:'mission1', exp:100, lvl_limited:1, items:
+   //    [
+   //    {crop_id:1, crop_name:'carrot', quantity:4 },
+   //    {crop_id:2, crop_name:'Radish', quantity:3 }
+   //    ],
+   //    solved:false, status:true },
+   //{id:1, name:'mission2', exp:200, lvl_limited:1, items:
+   //    [
+   //    {crop_id:2, crop_name:'Lettuce', quantity:1 },
+   //    {crop_id:3, crop_name:'Cauliflower', quantity:5 }
+   //    ],
+   //    solved:false, status:true },
+   // ];
 }
 mission_rending = function(){
     
@@ -1193,6 +1209,34 @@ mission_rending = function(){
     })
     .on('click', function(){ $('.mission_template').css('display','none'); })
     );
+    $('.mission_template').append($('<input></input>',{
+        type:'button',
+        value:'add',
+    })
+.on('click', function(){ 
+    GameCoreInstance.addMission('Mission1', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission2', 300, 4, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission3', 200, 2, false, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission4', 500, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+
+    //GameCoreInstance.addMission('Mission5', 567, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //GameCoreInstance.addMission('Mission6', 600, 7, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //GameCoreInstance.addMission('Mission7', 700, 9, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //GameCoreInstance.addMission('Mission8', 880, 8, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+
+    GameCoreInstance.addMissionItem(0, 0, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(0, 1, 4, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(1, 1, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(1, 3, 2, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(2, 0, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(2, 1, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(2, 2, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(3, 0, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(3, 1, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(3, 2, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(3, 3, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+})
+);
     var table, tr, td;
     table = $('<table></table>');
     //header
