@@ -46,6 +46,7 @@ contract usingProperty{
         uint[] id;
         uint[] crop;
         uint[] land;
+
     }
 
     mapping (uint => UserLandConfiguration) userLandConfigurationList;
@@ -246,7 +247,6 @@ contract usingProperty{
     //    }
     //}
 
-
     function updatePropertyTypeRating(uint _id, uint rate, string operation){
         updatedPropertiesCalled();
         if (StringUtils.equal(operation,"update")){
@@ -288,6 +288,7 @@ contract usingProperty{
 
     function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
 
+
         uint _id = propertyTypeList.length++;
 
         uint length = congress.getStakeholdersLength();
@@ -300,8 +301,13 @@ contract usingProperty{
         prop.name = _name;
         prop.id= _id;
 
-        prop.averageRating = 0;
 
+        prop.averageRating = 0;
+        prop.img.push("_seed");
+        prop.img.push("_grow");
+        prop.img.push("_harvest");
+        prop.img.push("");
+        prop.time = _time;
 
         uint imgLength = _img.length;
         for (uint i = 0 ; i < imgLength ; i++){
@@ -314,7 +320,10 @@ contract usingProperty{
 
         //propertyTypeAdded(true);
 
+    }
 
+    function getPropertyType(uint p_id, uint u_id) constant returns(bytes32, uint, uint, uint){
+        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].harvestUnit, propertyTypeList[p_id].averageRating);
     }
 
 
@@ -330,8 +339,14 @@ contract usingProperty{
         return propertyTypeList[p_Id].img[img_Id];
     }
 
-    function getPropertyTypeRating(uint u_id, uint p_id) constant returns(uint){
-        return propertyTypeList[p_id].rating[u_id];
+    function getPropertyType_forMission(uint p_id, uint cropStage) constant returns(bytes32, uint, bytes32){
+        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].img[cropStage]);
+    }
+
+
+    function getPropertyTypeRating(uint p_id) constant returns(uint){
+        uint s_Id = congress.stakeholderId(msg.sender);
+        return propertyTypeList[p_id].rating[s_Id];
     }
 
     function getPropertyTypeLength() constant returns(uint){

@@ -3,6 +3,7 @@
     {{> statusList}}
     {{> gamingArea}}
     {{> shop}}
+    {{> mission}}
   </div>
 </template>
 
@@ -127,6 +128,7 @@
         <div class="functionSwitch">
               <button type="button" name="button" class="btn btn-primary shopOpen">Shop</button>
               <button type="button" name="button" class="btn btn-primary characterSwitch">{{characterType}}</button>
+              <button type="button" name="button" class="btn btn-primary MissionOpen">Mission</button>
               <span class="musicSwitch">
                   <img src="/img/game/speaker_off.svg" alt="">
               </span>
@@ -182,5 +184,11 @@
         <div class="shop_content">
 
         </div>
+    </div>
+</template>
+
+<template name="mission">
+    <div class="mission_template">
+
     </div>
 </template>

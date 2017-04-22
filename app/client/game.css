@@ -197,7 +197,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 
 .logo img{
@@ -218,6 +218,18 @@
   top:20px;
 }
 
+.mission_template{
+  position:absolute;
+  z-index: 6;
+  height:80vh;
+  width:30vw;
+  margin-top:50px;
+  background-color:#337ab7;
+  display:none;
+  text-align:center;
+ color:white;
+}
+
 .property_shop{
   position:absolute;
   z-index: 6;
@@ -227,7 +239,12 @@
   background-color:#337ab7;
   display:none;
   text-align:center;
+ color:white;
 }
+
+    .property_shop select {
+         color:black;
+    }
 
 .shop_content{
   text-align:center;

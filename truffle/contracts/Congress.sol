@@ -83,6 +83,8 @@ contract Congress is owned, tokenRecipient {
         uint rate;
         address addr;
         uint since;
+        uint farmerLevel;
+
     }
 
     struct StakeholderGameData {
@@ -114,6 +116,7 @@ contract Congress is owned, tokenRecipient {
         _;
     }
 
+
     /* First time setup */
 
     function Congress(
@@ -130,10 +133,11 @@ contract Congress is owned, tokenRecipient {
 
     }
 
+
+
     // function Congress(){
     //     owner = msg.sender;
     // }
-
 
     function getStakeholdersLength() constant returns(uint){
         return stakeholders.length;
@@ -141,6 +145,10 @@ contract Congress is owned, tokenRecipient {
 
     function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint){
         return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
+    }
+
+    function getStakeholder_Mission(uint s_Id) constant returns(uint){
+        return stakeholders[s_Id].farmerLevel;
     }
 
     function getPropertyId(uint s_Id, uint index) constant returns(uint){
@@ -171,11 +179,15 @@ contract Congress is owned, tokenRecipient {
            stakeholders[id].addr=msg.sender;
            stakeholders[id].since=now;
 
+
+           stakeholders[id].farmerLevel = 0;
           // important!!!!! This will be implemented in the front end interface !!!!!!!!!!! so that the using property dependency can be removed
           //  usingProperty temp = usingProperty(PropertyAddress);
           //  uint p_Length = temp.getPropertiesLength();
           //  temp.updatePropertiesRating(p_Length, 0, "init");
 
+            //04.21 Powei
+            //  mission status[] needed to be pushed
 
         }
         else {
