@@ -14,20 +14,13 @@ var placeMode = false;
 var currentCropLand;
 var audio;
 
+var s_Id;
+
 
 var _dep = new Tracker.Dependency;
 
 var cursorX;
 var cursorY;
-
-
-var hex2a = function(hexx) {
-    var hex = hexx.toString();//force conversion
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-}
 
 var panelCounter = 2, panelCount = 3;
 
@@ -37,18 +30,7 @@ var landList = [];
 
 var staminaList = {crop:5,steal:5};
 
-var currentUser = {
-  id:0,
-  address:"0x101010101010",
-
-  name: "John",
-  exp: 0,
-  totalExp: 0,
-  type: "Guard",
-  landSize: 3,
-  level:0,
-  stamina: 100
-};
+var currentUser = {};
 
 var userLandConfiguration = [];
 
@@ -63,9 +45,11 @@ var otherUser =
     exp: 0,
     totalExp: 0,
     type: "Thief",
-    landSize: 3,
+    landSize: 5,
     level:0,
-    stamina: 100
+    stamina: 100,
+    guardId: null,
+    thiefId: null
   };
 
 var cropTypeList = [
@@ -144,6 +128,11 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 /////////////////
 
 Template.gameIndex.created = function() {
+
+    s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
+    s_Id = s_Id.c[0];
+    getUserData(s_Id);
+    getLandConfiguration(s_Id);
 
     loading(1);
 
@@ -713,6 +702,58 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+var getUserData = function(s_Id){
+
+    var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    currentUser = {
+      id:s_Id,
+      address:web3.eth.accounts[currentAccount],
+
+      name: hex2a(data[0]),
+      exp: data[1].c[0],
+      totalExp: data[2].c[0],
+      type: hex2a(data[3]),
+      landSize: data[4].c[0],
+      level:data[5].c[0],
+      stamina: data[6].c[0],
+      guardId: null,
+      thiefId: null
+    };
+    console.log(currentUser);
+
+}
+
+var getLandConfiguration = function(s_Id){
+    var data = usingPropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    console.log(data);
+    // currentUser = {
+    //   id:s_Id,
+    //   address:web3.eth.accounts[currentAccount],
+    //
+    //   name: hex2a(data[0]),
+    //   exp: data[1].c[0],
+    //   totalExp: data[2].c[0],
+    //   type: hex2a(data[3]),
+    //   landSize: data[4].c[0],
+    //   level:data[5].c[0],
+    //   stamina: data[6].c[0],
+    //   guardId: null,
+    //   thiefId: null
+    // };
+    // console.log(currentUser);
+
+}
+
+var hex2a = function(hexx) {
+    var hex = hexx.toString();//force conversion
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
+
 var loading = function(on){
   var opacity;
   $(".cropObject").css("display", "none");
@@ -729,6 +770,12 @@ var loading = function(on){
   $(".loading").css("opacity", opacity);
 
 
+}
+
+var rerenderCropLand = function(id){
+  getUserData(id);
+  getLandConfiguration(id);
+  initCropLand(currentUser, userLandConfiguration);
 }
 
 var initCropLand = function(user, config){
@@ -851,8 +898,11 @@ var updateUserExp = function(exp){
   var percent = (currentUser.exp/lvlCap)*100;
   if  (percent >= 100){
     currentUser.level += 1;
-    currentUser.exp = 0;
+    currentUser.exp = currentUser.totalExp - lvlCap;
     $(".levelUpObject").attr("display", "inline");
+
+    MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+    rerenderCropLand(s_Id);
 
   }
   $(".expProgressBar").css("width", percent + "%");

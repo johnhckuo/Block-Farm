@@ -30,13 +30,30 @@ contract usingProperty{
     struct PropertyType{
         bytes32 name;
         uint id;
-        bytes32 unit;  //單位
-        uint256 minUnit; //可拆分最小單位
         uint[] rating;
         uint averageRating;
+        bytes32[] img;
+        bytes32 time;
+        uint harvestUnit;
     }
 
+    struct UserPropertyType{
+        uint[] id;
+        uint[] count;
+    }
+
+    struct UserLandConfiguration{
+        uint[] id;
+        uint[] crop;
+        uint[] land;
+    }
+
+    mapping (uint => UserLandConfiguration) userLandConfigurationList;
+
+
     PropertyType[] public propertyTypeList;
+
+    mapping (uint => UserPropertyType) userPropertyTypeList;
 
     struct Property{
         bytes32 name;
@@ -161,6 +178,41 @@ contract usingProperty{
         return propertyTypeList[p_Id].rating.length;
     }
 
+    function addUserPropertyType(uint u_Id, uint p_Id){
+        userPropertyTypeList[u_Id].id.push(p_Id);
+        userPropertyTypeList[u_Id].count.push(0);
+
+    }
+
+    function updateUserPropertyType(uint u_Id, uint level){
+        userPropertyTypeList[u_Id].count[level]++;
+
+    }
+
+    function getUserPropertyType(uint u_Id) constant returns(uint[], uint[]){
+        return (userPropertyTypeList[u_Id].id, userPropertyTypeList[u_Id].count);
+
+    }
+
+
+    function addUserLandConfiguration(uint u_Id){
+        uint _id = userLandConfigurationList[u_Id].id.length++;
+        userLandConfigurationList[u_Id].id.push(_id);
+        //userLandConfigurationList[u_Id].land.push(0);
+        //userLandConfigurationList[u_Id].crop.push(0);
+
+    }
+
+    function updateUserLandConfiguration(uint u_Id, uint c_Id, uint cropId, uint landId){
+        userLandConfigurationList[u_Id].land[c_Id] = landId;
+        userLandConfigurationList[u_Id].crop[c_Id] = cropId;
+    }
+
+    function getUserLandConfiguration(uint u_Id) constant returns(uint[], uint[]){
+        return (userLandConfigurationList[u_Id].land, userLandConfigurationList[u_Id].crop);
+
+    }
+
     //function updatePropertiesRating(uint _id, uint rate, string operation){
     //    updatedPropertiesCalled();
     //    if (StringUtils.equal(operation,"init")){      //consider import string.utils contract ?
@@ -234,7 +286,7 @@ contract usingProperty{
     }
 
 
-    function addPropertyType(bytes32 _name, bytes32 _unit, uint256 _minUnit){
+    function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
 
         uint _id = propertyTypeList.length++;
 
@@ -247,17 +299,35 @@ contract usingProperty{
 
         prop.name = _name;
         prop.id= _id;
-        prop.unit= _unit;
-        prop.minUnit= _minUnit;
+
         prop.averageRating = 0;
+
+
+        uint imgLength = _img.length;
+        for (uint i = 0 ; i < imgLength ; i++){
+            propertyTypeList[_id].img.push(_img[i]);
+        }
+
+
+        prop.time = _time;
+        prop.harvestUnit = _harvestUnit;
 
         //propertyTypeAdded(true);
 
 
     }
 
-    function getPropertyType(uint p_id, uint u_id) constant returns(bytes32, uint, bytes32, uint256,  uint){
-        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].unit, propertyTypeList[p_id].minUnit, propertyTypeList[p_id].averageRating);
+
+    function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
+        return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].time, propertyTypeList[p_Id].harvestUnit);
+    }
+
+    function getPropertyTypeId(uint p_Id) constant returns(uint){
+        return propertyTypeList[p_Id].id;
+    }
+
+    function getPropertyTypeImg(uint p_Id, uint img_Id) constant returns(bytes32){
+        return propertyTypeList[p_Id].img[img_Id];
     }
 
     function getPropertyTypeRating(uint u_id, uint p_id) constant returns(uint){

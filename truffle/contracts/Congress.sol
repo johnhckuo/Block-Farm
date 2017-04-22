@@ -48,6 +48,8 @@ contract Congress is owned, tokenRecipient {
     mapping (address => uint) public stakeholderId;
     Stakeholder[] public stakeholders;
 
+    StakeholderGameData[] public stakeholdersGameData;
+
     // address PropertyAddress = 0x1;    //  <------------------------------ here
 
     event ProposalAdded(uint proposalID, address recipient, uint amount, string description);
@@ -75,14 +77,26 @@ contract Congress is owned, tokenRecipient {
     }
 
     struct Stakeholder {
-        bytes32 name;
         uint256 threshold;
         uint256 fund;
         uint256 id;
         uint rate;
         address addr;
         uint since;
+    }
+
+    struct StakeholderGameData {
+        bytes32 name;
         bytes32 character;
+
+        uint exp;
+        uint totalExp;
+        uint landSize;
+        uint level;
+        uint stamina;
+        uint guardId;
+        uint[] thiefId;
+
         uint propertyCount;
         uint[] propertyId;
     }
@@ -113,7 +127,6 @@ contract Congress is owned, tokenRecipient {
         //addMember(0, 'Genesis', 0, 0, 0, "Genesis");
 
         // and let's add the founder, to save a step later
-        addMember('Moderator', 0, 0, 0, "Founder");
 
     }
 
@@ -126,40 +139,37 @@ contract Congress is owned, tokenRecipient {
         return stakeholders.length;
     }
 
-    function getStakeholder(uint s_Id) constant returns(bytes32, uint256, uint256, uint, address, uint, bytes32){
-        return (stakeholders[s_Id].name, stakeholders[s_Id].threshold, stakeholders[s_Id].fund, stakeholders[s_Id].rate, stakeholders[s_Id].addr, stakeholders[s_Id].since, stakeholders[s_Id].character);
+    function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint){
+        return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
     }
 
     function getPropertyId(uint s_Id, uint index) constant returns(uint){
-        return stakeholders[s_Id].propertyId[index];
+        return stakeholdersGameData[s_Id].propertyId[index];
     }
 
     function getStakeholderPropertyCount(uint s_Id) constant returns(uint){
-        return stakeholders[s_Id].propertyCount;
+        return stakeholdersGameData[s_Id].propertyCount;
     }
 
     function addProperty(uint _id, uint p_Id){
-        stakeholders[_id].propertyCount++;
-        stakeholders[_id].propertyId.push(p_Id);
+        stakeholdersGameData[_id].propertyCount++;
+        stakeholdersGameData[_id].propertyId.push(p_Id);
     }
 
-    /*make Stakeholder*/
-    function addMember(bytes32 _name, uint256 _threshold, uint256 _fund, uint _rate, bytes32 _character){
+    function addMember(uint256 _threshold, uint256 _fund, uint _rate){
         uint id;
         address targetStakeholder = msg.sender;
-        
+
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
            id = stakeholders.length++;
 
-           stakeholders[id].name=_name;
            stakeholders[id].threshold=_threshold;
            stakeholders[id].fund=_fund;
            stakeholders[id].id=id;
            stakeholders[id].rate=_rate;
            stakeholders[id].addr=msg.sender;
            stakeholders[id].since=now;
-           stakeholders[id].character= _character;
 
           // important!!!!! This will be implemented in the front end interface !!!!!!!!!!! so that the using property dependency can be removed
           //  usingProperty temp = usingProperty(PropertyAddress);
@@ -167,13 +177,49 @@ contract Congress is owned, tokenRecipient {
           //  temp.updatePropertiesRating(p_Length, 0, "init");
 
 
-        } 
+        }
         else {
             id = stakeholderId[targetStakeholder];
             Stakeholder m = stakeholders[id];
         }
 
         MembershipChanged(targetStakeholder, true);
+    }
+
+
+    /*make Stakeholder*/
+    function initPlayerData(bytes32 _name, bytes32 _character){
+
+         uint _id = stakeholdersGameData.length++;
+         stakeholdersGameData[_id].name=_name;
+
+         stakeholdersGameData[_id].character= _character;
+
+         stakeholdersGameData[_id].exp = 0;
+         stakeholdersGameData[_id].totalExp = 0;
+         stakeholdersGameData[_id].landSize = 3;
+         stakeholdersGameData[_id].level = 0;
+         stakeholdersGameData[_id].stamina = 100;
+
+         //stakeholders[_id].guardId = 0;
+         //stakeholders[_id].thiefId = 0;
+
+    }
+
+    function updateUserExp(uint u_Id, uint exp){
+        stakeholdersGameData[u_Id].exp = exp;
+        stakeholdersGameData[u_Id].totalExp += exp;
+    }
+
+    function updateUserStamina(uint u_Id, uint sta){
+        stakeholdersGameData[u_Id].stamina = sta;
+    }
+
+    function updateGameData(uint u_Id, uint _landSize, uint _level, uint _exp){
+        stakeholdersGameData[u_Id].landSize = _landSize;
+        stakeholdersGameData[u_Id].level = _level;
+        stakeholdersGameData[u_Id].exp = _exp;
+
     }
 
     function removeStakeholder(address targetStakeholder) onlyOwner {
