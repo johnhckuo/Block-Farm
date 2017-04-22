@@ -30,10 +30,11 @@ contract usingProperty{
     struct PropertyType{
         bytes32 name;
         uint id;
-        bytes32 unit;  //單位
-        uint256 minUnit; //可拆分最小單位
+        uint harvestUnit; //一次收成的數量
         uint[] rating;
         uint averageRating;
+        bytes32[] img;
+        bytes32 time;
     }
 
     PropertyType[] public propertyTypeList;
@@ -194,7 +195,6 @@ contract usingProperty{
     //    }
     //}
 
-
     function updatePropertyTypeRating(uint _id, uint rate, string operation){
         updatedPropertiesCalled();
         if (StringUtils.equal(operation,"update")){
@@ -234,7 +234,7 @@ contract usingProperty{
     }
 
 
-    function addPropertyType(bytes32 _name, bytes32 _unit, uint256 _minUnit){
+    function addPropertyType(bytes32 _name, uint _harvestUnit, bytes32 _time){
 
         uint _id = propertyTypeList.length++;
 
@@ -247,21 +247,27 @@ contract usingProperty{
 
         prop.name = _name;
         prop.id= _id;
-        prop.unit= _unit;
-        prop.minUnit= _minUnit;
         prop.averageRating = 0;
-
-        //propertyTypeAdded(true);
-
+        prop.img.push("_seed");
+        prop.img.push("_grow");
+        prop.img.push("_harvest");
+        prop.img.push("");
+        prop.time = _time;
 
     }
 
-    function getPropertyType(uint p_id, uint u_id) constant returns(bytes32, uint, bytes32, uint256,  uint){
-        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].unit, propertyTypeList[p_id].minUnit, propertyTypeList[p_id].averageRating);
+    function getPropertyType(uint p_id, uint u_id) constant returns(bytes32, uint, uint, uint){
+        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].harvestUnit, propertyTypeList[p_id].averageRating);
     }
 
-    function getPropertyTypeRating(uint u_id, uint p_id) constant returns(uint){
-        return propertyTypeList[p_id].rating[u_id];
+    function getPropertyType_forMission(uint p_id, uint cropStage) constant returns(bytes32, uint, bytes32){
+        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].img[cropStage]);
+    }
+
+
+    function getPropertyTypeRating(uint p_id) constant returns(uint){
+        uint s_Id = congress.stakeholderId(msg.sender);
+        return propertyTypeList[p_id].rating[s_Id];
     }
 
     function getPropertyTypeLength() constant returns(uint){
