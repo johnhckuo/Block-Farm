@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Session } from 'meteor/session';
 
 import './main.html';
 import './index.html';
@@ -16,12 +17,13 @@ import './game.js';
 ////////////////////
 
 var stakeholderLength;
-var currentAccount = 1, ownerAccount = 0;
+var ownerAccount = 0;
+var currentAccount;
 var renderChecked = false;
 Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
-
+      currentAccount = Session.get('currentAccount');
       $('#fullpage').fullpage();
       renderChecked = true;
 

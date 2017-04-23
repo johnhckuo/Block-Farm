@@ -323,8 +323,46 @@
       "links": {},
       "address": "0xb2576ebf5079c828768ead190539d9dc9152ee0b",
       "updated_at": 1492872669151
+    },
+    "1492932761390": {
+      "events": {
+        "0xc2c1af3ea88836d81cd60be9ffd4f35c8510b1c2ecbfad52c3d99de1f1f6bce1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "biddingAdded",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xa1d102f8ef534d7515909361a055b3799869d36a",
+      "updated_at": 1492937500944
+    },
+    "1492940617815": {
+      "events": {
+        "0xc2c1af3ea88836d81cd60be9ffd4f35c8510b1c2ecbfad52c3d99de1f1f6bce1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "biddingAdded",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x6b31b78bb3c5a46ba0ef7c0e2ef97ca0f3baa550",
+      "updated_at": 1492945718664
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1492872669151
+  "updated_at": 1492945718664
 }
