@@ -16,7 +16,7 @@ contract owned {
         owner = newOwner;
     }
 }
-    
+
 contract tokenRecipient {
     event receivedEther(address sender, uint amount);
     event receivedTokens(address _from, uint256 _value, address _token, bytes _extraData);
@@ -101,6 +101,18 @@ contract Congress is owned, tokenRecipient {
 
         uint propertyCount;
         uint[] propertyId;
+    }
+
+    struct Syndicate{
+        uint id;
+        uint characterId;
+        int256 progress;
+        uint exp;
+        uint totalExp;
+        uint level;
+        int256 success;
+        int256 fail;
+        bytes32 type;
     }
 
     struct Vote {
