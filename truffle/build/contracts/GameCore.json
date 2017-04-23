@@ -1,0 +1,462 @@
+{
+  "contract_name": "GameCore",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "mId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getMissionItemsLength",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getMissionsLength",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "MissionList",
+      "outputs": [
+        {
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "name": "name",
+          "type": "bytes32"
+        },
+        {
+          "name": "exp",
+          "type": "uint256"
+        },
+        {
+          "name": "lvl_limitation",
+          "type": "uint256"
+        },
+        {
+          "name": "missionStatus",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "mId",
+          "type": "uint256"
+        },
+        {
+          "name": "_cropId",
+          "type": "uint256"
+        },
+        {
+          "name": "_quantity",
+          "type": "uint256"
+        }
+      ],
+      "name": "addMissionItem",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getPropertyTypeLength",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "mId",
+          "type": "uint256"
+        },
+        {
+          "name": "itemId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getMissionItems",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "bytes32"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_name",
+          "type": "bytes32"
+        },
+        {
+          "name": "_exp",
+          "type": "uint256"
+        },
+        {
+          "name": "_lvl_limitation",
+          "type": "uint256"
+        },
+        {
+          "name": "_missionStatus",
+          "type": "bool"
+        }
+      ],
+      "name": "addMission",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "mId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getMission",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_congressAddress",
+          "type": "address"
+        },
+        {
+          "name": "_usingPropertyInstanceAddress",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "lengthtest",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x606060405234610000576040516040806109498339810160405280516020909101515b60018054600160a060020a03808516600160a060020a03199283161792839055600280548316938216939093179092556003805484841690831617908190556004805490921692169190911790555b50505b6108c6806100836000396000f300606060405236156100725763ffffffff60e060020a6000350416631f3e87c6811461007757806345d5432d14610099578063a1247b57146100b8578063bb4d0110146100f5578063c34eca9f1461010d578063cc9dfedd1461012c578063d3fc80f91461015d578063eb2b94b51461017a575b610000565b34610000576100876004356101b2565b60408051918252519081900360200190f35b34610000576100876101de565b60408051918252519081900360200190f35b34610000576100c860043561021c565b60408051958652602086019490945284840192909252606084015215156080830152519081900360a00190f35b346100005761010b60043560243560443561025e565b005b346100005761008761033d565b60408051918252519081900360200190f35b346100005761013f6004356024356103ae565b60408051938452602084019290925282820152519081900360600190f35b346100005761010b60043560243560443560643515156104cb565b005b346100005761018a60043561073f565b6040805194855260208501939093528383019190915215156060830152519081900360800190f35b6000600082815481101561000057906000526020600020906008020160005b506006015490505b919050565b6000805460408051918252517ff66c9d8ad4be3663636282aa639fde885f3ff830d63f3dfd02dfb17330f3a3659181900360200190a1506000545b90565b600081815481101561000057906000526020600020906008020160005b5080546001820154600283015460038401546005909401549294509092909160ff1685565b6000600084815481101561000057906000526020600020906008020160005b5090508060060180548060010182818154818355818115116102c4576000838152602090206102c49181019083015b808211156102c057600081556001016102ac565b5090565b5b505050916000526020600020900160005b508490555060078101805460018101808355828183801582901161031f5760008381526020902061031f9181019083015b808211156102c057600081556001016102ac565b5090565b5b505050916000526020600020900160005b50839055505b50505050565b6000600460009054906101000a9004600160a060020a0316600160a060020a031663c34eca9f6000604051602001526040518163ffffffff1660e060020a028152600401809050602060405180830381600087803b156100005760325a03f115610000575050604051519150505b90565b6000600060006000600060006000600089815481101561000057906000526020600020906008020160005b50600454600682018054929650600160a060020a03909116916364969cf391908b9081101561000057906000526020600020900160005b505460036000604051606001526040518363ffffffff1660e060020a0281526004018083815260200182815260200192505050606060405180830381600087803b156100005760325a03f11561000057505050604051805190602001805190602001805190509250925092508360060188815481101561000057906000526020600020900160005b505483856007018a815481101561000057906000526020600020900160005b50549650965096505b505050509250925092565b6000600060006000600260009054906101000a9004600160a060020a0316600160a060020a03166368dc61e06000604051602001526040518163ffffffff1660e060020a028152600401809050602060405180830381600087803b156100005760325a03f1156100005750506040515160008054600181018083559297509250908280158290116106525760080281600802836000526020600020918201910161065291905b808211156102c057600080825560018201819055600282018190556003820181905560048201805482825590825260208083206105cb92601f01919091048101905b808211156102c057600081556001016102ac565b5090565b5b5060058201805460ff191690556006820180546000808355918252602090912061060c918101905b808211156102c057600081556001016102ac565b5090565b5b50600782018054600082559060005260206000209081019061064391905b808211156102c057600081556001016102ac565b5090565b5b5050600801610571565b5090565b5b5050509250600083815481101561000057906000526020600020906008020160005b509150600090505b8381101561070c578160040180548060010182818154818355818115116106d957601f016020900481601f016020900483600052602060002091820191016106d991905b808211156102c057600081556001016102ac565b5090565b5b50505091600052602060002090602091828204019190065b81546101009190910a60ff0219169055505b60010161067d565b82825560018201889055600282018790556003820186905560058201805460ff19168615151790555b5050505050505050565b600060006000600060006000600087815481101561000057906000526020600020906008020160005b50600254604080516000602091820181905282517fe0d371cc000000000000000000000000000000000000000000000000000000008152600160a060020a0333811660048301529351959750929093169363e0d371cc936024808501948390030190829087803b156100005760325a03f11561000057505050604051805190509050600087815481101561000057906000526020600020906008020160005b506005015460ff161561085f57816001015482600201548360030154846004018481548110156100005790600052602060002090602091828204019190065b9054906101000a900460ff169550955095509550610890565b7f656d7074795f6d697373696f6e000000000000000000000000000000000000009550600094506103e79350600192505b5b505091935091935600a165627a7a72305820f8123d8cfbfa40d01d61f0d8f8e854a4a37083cbb944ad7b39044f7ed8c01e2d0029",
+  "networks": {
+    "1492579331951": {
+      "events": {
+        "0xb20ec1de982f17158d279d158e013ccf7950beb5d08bca72baa432986ba27eb6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "CropTypeAdded",
+          "type": "event"
+        },
+        "0x53e4097eac5e8a9c6f0af3855979be3b4eb2f44da4265f3ec888978d6d2a944f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "missionevent",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x35caed940a16e2ee5414bb02d329b3fb0eaede1c",
+      "updated_at": 1492833106825
+    },
+    "1492833205258": {
+      "events": {
+        "0xb20ec1de982f17158d279d158e013ccf7950beb5d08bca72baa432986ba27eb6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "CropTypeAdded",
+          "type": "event"
+        },
+        "0x53e4097eac5e8a9c6f0af3855979be3b4eb2f44da4265f3ec888978d6d2a944f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "missionevent",
+          "type": "event"
+        },
+        "0x29e99f07d14aa8d30a12fa0b0789b43183ba1bf6b4a72b95459a3e397cca10d7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "test",
+          "type": "event"
+        },
+        "0x427b0e7bf8895a6534f5e63235a50d04148673c9c26ba40c252dca10f9112dd9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "cropnamegetting",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xf514d4ea35aefa4e1ce7a443c5d85d3910c6cb09",
+      "updated_at": 1492861671892
+    },
+    "1492862321059": {
+      "events": {
+        "0x427b0e7bf8895a6534f5e63235a50d04148673c9c26ba40c252dca10f9112dd9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "cropnamegetting",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xf7ff0219943ec98644b50c08b2a06f10d3d00985",
+      "updated_at": 1492862952820
+    },
+    "1492863936916": {
+      "events": {
+        "0x427b0e7bf8895a6534f5e63235a50d04148673c9c26ba40c252dca10f9112dd9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "cropnamegetting",
+          "type": "event"
+        },
+        "0x4e925964b677de94bd7af5578296766cbebfb365fa088f6270e353ed47ed9676": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "ifelsetest",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xde24187a0a4855de47e0703b4724ac71f546ca0b",
+      "updated_at": 1492865285917
+    },
+    "1492865431353": {
+      "events": {
+        "0x4e925964b677de94bd7af5578296766cbebfb365fa088f6270e353ed47ed9676": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "ifelsetest",
+          "type": "event"
+        },
+        "0xf66c9d8ad4be3663636282aa639fde885f3ff830d63f3dfd02dfb17330f3a365": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "lengthtest",
+          "type": "event"
+        },
+        "0x830888960bb4b2e79a67e3248141c408cb7af60c4fc03ea518b18894afbaaebf": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "booltest",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x0542f399d24475556a2048491332bbd56321efba",
+      "updated_at": 1492866647390
+    },
+    "1492866742683": {
+      "events": {
+        "0x4e925964b677de94bd7af5578296766cbebfb365fa088f6270e353ed47ed9676": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "ifelsetest",
+          "type": "event"
+        },
+        "0x830888960bb4b2e79a67e3248141c408cb7af60c4fc03ea518b18894afbaaebf": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "booltest",
+          "type": "event"
+        },
+        "0xf66c9d8ad4be3663636282aa639fde885f3ff830d63f3dfd02dfb17330f3a365": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "lengthtest",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x7a25aff0e486af6cdaae6bed957220a30a7ad509",
+      "updated_at": 1492867162787
+    },
+    "1492867286203": {
+      "events": {
+        "0xf66c9d8ad4be3663636282aa639fde885f3ff830d63f3dfd02dfb17330f3a365": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "lengthtest",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x959787fd49000a1071eee798494fbe8345516fd4",
+      "updated_at": 1492867766268
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1492867766268
+
+}

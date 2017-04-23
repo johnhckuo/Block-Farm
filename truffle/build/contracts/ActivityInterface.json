@@ -266,8 +266,65 @@
       "links": {},
       "address": "0xe44153d1a1d6110c2d7ef472b34a1bcc45941ab6",
       "updated_at": 1492585864375
+    },
+    "1492694572299": {
+      "events": {
+        "0xc2c1af3ea88836d81cd60be9ffd4f35c8510b1c2ecbfad52c3d99de1f1f6bce1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "biddingAdded",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x665360860ddc7a99172fdfe75d156401edb82aaa",
+      "updated_at": 1492700981490
+    },
+    "1492701559285": {
+      "events": {
+        "0xc2c1af3ea88836d81cd60be9ffd4f35c8510b1c2ecbfad52c3d99de1f1f6bce1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "biddingAdded",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xfe50493f139379258e2ebc7814de90e4f9843190",
+      "updated_at": 1492837286064
+    },
+    "1492844117142": {
+      "events": {
+        "0xc2c1af3ea88836d81cd60be9ffd4f35c8510b1c2ecbfad52c3d99de1f1f6bce1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "biddingAdded",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xb2576ebf5079c828768ead190539d9dc9152ee0b",
+      "updated_at": 1492872669151
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1492585864375
+  "updated_at": 1492872669151
 }

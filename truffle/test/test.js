@@ -10,13 +10,18 @@ contract('Congress', function (accounts) {
        // var property;
 
         return Congress.deployed().then(function (instance) {
-            return instance.addMember("Bill", 0, 0, 100, "buyer", { from: accounts[2] });
+            return instance.addMember(0, 0, 100 { from: accounts[2] });
 
-            return instance.getStakeholdersLength.call();
         }).then(function (txs) {
-            console.log(txs);
         });
     });
+
+    it("bla", function(){
+	return Congress.deployed().then(function (instance){
+		return instance.initGameData("Bill", "Guard", {from:accounts[2]});
+	});
+	
+   });
 
     it("check stakeholders length", function () {
         return Congress.deployed().then(function (instance) {

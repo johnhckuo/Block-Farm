@@ -74,29 +74,23 @@ contract GameCore{
         Mission obj = MissionList[mId];
 
         uint s_Id = congress.stakeholderId(msg.sender);
-
         if(MissionList[mId].missionStatus){
             return (obj.name, obj.exp, obj.lvl_limitation, obj.accountStatus[s_Id]);
         }
+        else{
+            return ("empty_mission", 0, 999, true);
+        }
     }
-        event cropnamegetting(bytes32);
+
     function getMissionItems(uint mId, uint itemId) constant returns(uint ,bytes32, uint){
         Mission obj = MissionList[mId];
        
         var (name, id, img) = usingPropertyInstance.getPropertyType_forMission(obj.cropId[itemId], 3);
-
-        cropnamegetting(name);
-        return (obj.cropId[itemId], name, obj.quantity[itemId]);
-        
+        return (obj.cropId[itemId], name, obj.quantity[itemId]);      
     }
-
-    //function getMissionItems_forList(uint itemId) constant returns(uint, uint, bytes32, uint){
-    //    MissionItem obj = MissionItemList[itemId];
-    //    bytes32 cropName = CropTypeList[obj.cropId].name;
-    //    return (obj.missionId, obj.cropId, cropName, obj.quantity);
-    //}
-    
-    function getMissionsLength() constant returns(uint){
+        event lengthtest(uint);
+        function getMissionsLength() constant returns(uint){
+            lengthtest( MissionList.length);
         return MissionList.length;
     }
 

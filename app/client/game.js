@@ -14,20 +14,13 @@ var placeMode = false;
 var currentCropLand;
 var audio;
 
+var s_Id;
+
 
 var _dep = new Tracker.Dependency;
 
 var cursorX;
 var cursorY;
-
-
-var hex2a = function(hexx) {
-    var hex = hexx.toString();//force conversion
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-}
 
 var panelCounter = 2, panelCount = 3;
 
@@ -37,18 +30,8 @@ var landList = [];
 
 var staminaList = {crop:5,steal:5};
 
-var currentUser = {
-    id:0,
-    address:"0x101010101010",
+var currentUser = {};
 
-    name: "John",
-    exp: 0,
-    totalExp: 0,
-    type: "Guard",
-    landSize: 3,
-    level:0,
-    stamina: 100
-};
 
 var userLandConfiguration = [];
 
@@ -56,16 +39,19 @@ var otherUserLandConfiguration = [];
 
 var otherUser =
   {
-      id:0,
-      address:"0x0101010101",
+    id:0,
+    address:"0x0101010101",
 
-      name: "bill",
-      exp: 0,
-      totalExp: 0,
-      type: "Thief",
-      landSize: 3,
-      level:0,
-      stamina: 100
+    name: "bill",
+    exp: 0,
+    totalExp: 0,
+    type: "Thief",
+    landSize: 5,
+    level:0,
+    stamina: 100,
+    guardId: null,
+    thiefId: null
+
   };
 
 var cropTypeList = [
@@ -144,6 +130,11 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 /////////////////
 
 Template.gameIndex.created = function() {
+
+    s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
+    s_Id = s_Id.c[0];
+    getUserData(s_Id);
+    getLandConfiguration(s_Id);
 
     loading(1);
 
@@ -253,7 +244,7 @@ Template.shop.rendered = function () {
 //  Helpers  //
 ///////////////
 
-var activated_account = 2;
+var activated_account =3;
 var account_index;
 property_log = [];
 user_property = [];
@@ -721,6 +712,58 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+var getUserData = function(s_Id){
+
+    var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    currentUser = {
+      id:s_Id,
+      address:web3.eth.accounts[currentAccount],
+
+      name: hex2a(data[0]),
+      exp: data[1].c[0],
+      totalExp: data[2].c[0],
+      type: hex2a(data[3]),
+      landSize: data[4].c[0],
+      level:data[5].c[0],
+      stamina: data[6].c[0],
+      guardId: null,
+      thiefId: null
+    };
+    console.log(currentUser);
+
+}
+
+var getLandConfiguration = function(s_Id){
+    var data = usingPropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    console.log(data);
+    // currentUser = {
+    //   id:s_Id,
+    //   address:web3.eth.accounts[currentAccount],
+    //
+    //   name: hex2a(data[0]),
+    //   exp: data[1].c[0],
+    //   totalExp: data[2].c[0],
+    //   type: hex2a(data[3]),
+    //   landSize: data[4].c[0],
+    //   level:data[5].c[0],
+    //   stamina: data[6].c[0],
+    //   guardId: null,
+    //   thiefId: null
+    // };
+    // console.log(currentUser);
+
+}
+
+var hex2a = function(hexx) {
+    var hex = hexx.toString();//force conversion
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
+
 var loading = function(on){
     var opacity;
     $(".cropObject").css("display", "none");
@@ -737,6 +780,12 @@ var loading = function(on){
     $(".loading").css("opacity", opacity);
 
 
+}
+
+var rerenderCropLand = function(id){
+  getUserData(id);
+  getLandConfiguration(id);
+  initCropLand(currentUser, userLandConfiguration);
 }
 
 var initCropLand = function(user, config){
@@ -853,18 +902,22 @@ var updateUserStamina = function(){
 
 
 var updateUserExp = function(exp){
-    currentUser.exp += parseInt(exp);
-    currentUser.totalExp += currentUser.exp;
-    var lvlCap = levelCap(currentUser.level);
-    var percent = (currentUser.exp/lvlCap)*100;
-    if  (percent >= 100){
-        currentUser.level += 1;
-        currentUser.exp = 0;
-        $(".levelUpObject").attr("display", "inline");
+  currentUser.exp += parseInt(exp);
+  currentUser.totalExp += currentUser.exp;
+  var lvlCap = levelCap(currentUser.level);
+  var percent = (currentUser.exp/lvlCap)*100;
+  if  (percent >= 100){
+    currentUser.level += 1;
+    currentUser.exp = currentUser.totalExp - lvlCap;
+    $(".levelUpObject").attr("display", "inline");
 
-    }
-    $(".expProgressBar").css("width", percent + "%");
-    $(".expText").text(currentUser.exp+"/"+lvlCap);
+    MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+    rerenderCropLand(s_Id);
+
+  }
+  $(".expProgressBar").css("width", percent + "%");
+  $(".expText").text(currentUser.exp+"/"+lvlCap);
+
 }
 
 var cropSummaryUpdate = function(){
@@ -1175,32 +1228,21 @@ get_mission_list = function(){
     for(i = 0; i < mission_count; i++){
         mission_source = GameCoreInstance.getMission.call(i, {from:web3.eth.accounts[currentAccount]});
         item_length = GameCoreInstance.getMissionItemsLength.call(i, {from:web3.eth.accounts[currentAccount]});
-        mission = {id: i, name:hex2a(mission_source[0]), exp: mission_source[1], lvl_limitation: mission_source[2], solved:mission_source[3],items:[]};
-        for(j = 0; j < item_length;j++){
-            item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-            item = {crop_id:item_source[0], crop_name: hex2a(item_source[1]), quantity:item_source[2]};
-            mission.items.push(item);
-        }
-        mission_list.push(mission);
-    }
+        mission = {id: i, name:$.trim(hex2a(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
 
-   // mission_list = [
-   //{id:0, name:'mission1', exp:100, lvl_limited:1, items:
-   //    [
-   //    {crop_id:1, crop_name:'carrot', quantity:4 },
-   //    {crop_id:2, crop_name:'Radish', quantity:3 }
-   //    ],
-   //    solved:false, status:true },
-   //{id:1, name:'mission2', exp:200, lvl_limited:1, items:
-   //    [
-   //    {crop_id:2, crop_name:'Lettuce', quantity:1 },
-   //    {crop_id:3, crop_name:'Cauliflower', quantity:5 }
-   //    ],
-   //    solved:false, status:true },
-   // ];
+        if(mission.lvl_limitation ===999){}
+        else{
+            for(j = 0; j < item_length;j++){
+                item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
+                item = {crop_id:item_source[0], crop_name: hex2a(item_source[1]), quantity:item_source[2]};
+                mission.items.push(item);
+            }
+            mission_list.push(mission);
+        }
+    }
 }
 mission_rending = function(){
-    
+
     get_mission_list();
     $('.mission_template').html('');
     $('.mission_template').append($('<input></input>',{
@@ -1213,7 +1255,7 @@ mission_rending = function(){
         type:'button',
         value:'add',
     })
-.on('click', function(){ 
+.on('click', function(){
     GameCoreInstance.addMission('Mission1', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     GameCoreInstance.addMission('Mission2', 300, 4, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     GameCoreInstance.addMission('Mission3', 200, 2, false, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
@@ -1291,6 +1333,10 @@ mission_rending = function(){
     }
     //content
     $('.mission_template').append(table);
+
+    for(k = 0; k < mission_list.length;k++){
+        mission_qulify_check(mission_list[k].id);
+    }
 }
 
 mission_qulify_check = function(_id){
@@ -1318,15 +1364,15 @@ mission_qulify_check = function(_id){
             }
         }
         if(!qualify){
-            alert("Insufficient property count");
+            $('#btn_mission_submit_' + _id).css('display', 'none');
             break;
         }
 
     }
 
     if(qualify){
-        alert("go go update!!!!!!!!!!!!!!!");
+        $('#btn_mission_submit_' + _id).css('display', 'block');
+        updateUserExp(target_mission.exp);
+        
     }
 }
-
-
