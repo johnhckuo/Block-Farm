@@ -3,12 +3,22 @@ pragma solidity ^0.4.8;
 contract Congress{
     mapping (address => uint) public stakeholderId;
     function getStakeholdersLength() constant returns(uint);
+    function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
+    function updateGameData(uint u_Id, uint _landSize, uint _level, uint _exp);
+    function initPlayerData(bytes32 _name, bytes32 _character);
+    function addMember(uint256 _threshold, uint256 _fund, uint _rate);
+
+
 }
 
 contract usingProperty{
     function getPropertiesLength() constant returns(uint);
     function getPartialProperty(uint p_Id) returns(address, uint);
     function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint);
+    function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint);
+    function addUserPropertyType(uint u_Id, uint p_Id);
+    function getPropertyTypeId(uint p_Id) constant returns(uint);
+    function addUserLandConfiguration(uint u_Id);
 }
 
 contract MainActivity{
@@ -31,6 +41,8 @@ contract MainActivity{
     address CongressAddress;
     address PropertyAddress;
 
+    uint unlockCropNum = 3;
+
     struct Match{
         uint id;
         uint[] actualVisitIndex;
@@ -45,6 +57,43 @@ contract MainActivity{
 
       congress = Congress(CongressAddress);
       property = usingProperty(PropertyAddress);
+
+      congress.addMember(0, 0, 0);
+      initGameData(0, "Moderator", "Guard");
+    }
+
+    function initGameData(uint s_Id, bytes32 _name, bytes32 _character){
+        congress.initPlayerData(_name, _character);
+        for (uint i = 0 ; i < 3 ; i++){
+            property.addUserLandConfiguration(s_Id);
+
+        }
+
+
+    }
+
+    function levelCap(uint _level) constant returns(uint){
+        uint powerResult = 1;
+        for (uint i = 0 ; i < _level ; i++){
+            powerResult *= 2;
+        }
+        return powerResult*100;
+    }
+
+    function playerLevelUp(uint u_Id, uint random){
+        //congress.
+        //property.
+        var (name, exp, totalExp, character, landSize, level, stamina) = congress.getStakeholder(u_Id);
+        level += 1;
+        uint lvlCap = levelCap(level);
+        exp = totalExp - lvlCap;
+        if (level % 5 == 0){
+            landSize += 1;
+            uint p_Id = property.getPropertyTypeId(random + (level*unlockCropNum));
+            property.addUserPropertyType(u_Id, p_Id);
+        }
+
+        congress.updateGameData(u_Id, landSize, level, exp);
     }
 
     function sort(int256[] priorityList, uint[] visitList) returns(int256[], uint[]){
