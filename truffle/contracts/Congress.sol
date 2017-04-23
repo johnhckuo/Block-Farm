@@ -16,7 +16,7 @@ contract owned {
         owner = newOwner;
     }
 }
-
+    
 contract tokenRecipient {
     event receivedEther(address sender, uint amount);
     event receivedTokens(address _from, uint256 _value, address _token, bytes _extraData);
