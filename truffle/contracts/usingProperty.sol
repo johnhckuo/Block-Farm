@@ -141,7 +141,7 @@ contract usingProperty{
 
 
 
-        propertyAdded("Success");
+        //propertyAdded("Success");
     }
 
     function removeProperty(uint _id){
@@ -165,6 +165,10 @@ contract usingProperty{
 
     function getProperty_Shop(uint p_Id) constant returns(uint, bytes32, address, uint256, uint){
         return (propertyList[p_Id].propertyType, propertyTypeList[propertyList[p_Id].propertyType].name, propertyList[p_Id].owner, propertyList[p_Id].propertyCount, propertyList[p_Id].tradeable);
+    }
+
+    function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint){
+        return (propertyList[p_Id].propertyType, propertyList[p_Id].owner, propertyList[p_Id].propertyCount);
     }
 
     function getPartialProperty(uint p_Id) constant returns(address){
@@ -195,8 +199,7 @@ contract usingProperty{
         return (userPropertyTypeList[u_Id].id, userPropertyTypeList[u_Id].count);
 
     }
-
-
+    
     function addUserLandConfiguration(uint u_Id){
         uint _id = userLandConfigurationList[u_Id].id.length++;
         userLandConfigurationList[u_Id].id.push(_id);
@@ -253,6 +256,9 @@ contract usingProperty{
         }
     }
 
+    function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount){
+        propertyList[_id].propertyCount = _propertyCount;
+    }
 
     function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
         uint _id = propertyTypeList.length++;
@@ -266,13 +272,7 @@ contract usingProperty{
 
         prop.name = _name;
         prop.id= _id;
-
         prop.averageRating = 0;
-        prop.img.push("_seed");
-        prop.img.push("_grow");
-        prop.img.push("_harvest");
-        prop.img.push("");
-        prop.time = _time;
 
         uint imgLength = _img.length;
         for (uint i = 0 ; i < imgLength ; i++){
@@ -284,11 +284,6 @@ contract usingProperty{
 
         //propertyTypeAdded(true);
     }
-
-    function getPropertyType(uint p_id, uint u_id) constant returns(bytes32, uint, uint, uint){
-        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].harvestUnit, propertyTypeList[p_id].averageRating);
-    }
-
 
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].time, propertyTypeList[p_Id].harvestUnit);
