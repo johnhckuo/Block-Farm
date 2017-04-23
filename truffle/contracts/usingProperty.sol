@@ -27,6 +27,7 @@ contract usingProperty{
     event propertyInited(uint);
     event propertyRatinglength_testing(uint);
 
+
     struct PropertyType{
         bytes32 name;
         uint id;
@@ -286,6 +287,7 @@ contract usingProperty{
     }
 
 
+
     function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
 
 
@@ -342,7 +344,6 @@ contract usingProperty{
     function getPropertyType_forMission(uint p_id, uint cropStage) constant returns(bytes32, uint, bytes32){
         return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].img[cropStage]);
     }
-
 
     function getPropertyTypeRating(uint p_id) constant returns(uint){
         uint s_Id = congress.stakeholderId(msg.sender);

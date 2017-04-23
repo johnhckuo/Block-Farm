@@ -1,5 +1,6 @@
 if(typeof web3 === 'undefined')
     web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+
 CongressAddr = "0x46f93ef7fd3de201bae059a5e2c00a894c1425e3";
 usingPropertyAddr = "0xb5a84b693da95071b4f804252dd5a7a78b2c541c";
 MainActivityAddr = "0xe5e7e788d53c058ab0c01acab268e41aa82330a2";
