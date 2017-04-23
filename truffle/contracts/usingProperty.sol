@@ -141,7 +141,7 @@ contract usingProperty{
 
 
 
-        propertyAdded("Success");
+        //propertyAdded("Success");
     }
 
     function removeProperty(uint _id){
@@ -165,6 +165,10 @@ contract usingProperty{
 
     function getProperty_Shop(uint p_Id) constant returns(uint, bytes32, address, uint256, uint){
         return (propertyList[p_Id].propertyType, propertyTypeList[propertyList[p_Id].propertyType].name, propertyList[p_Id].owner, propertyList[p_Id].propertyCount, propertyList[p_Id].tradeable);
+    }
+
+    function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint){
+        return (propertyList[p_Id].propertyType, propertyList[p_Id].owner, propertyList[p_Id].propertyCount);
     }
 
     function getPartialProperty(uint p_Id) constant returns(address){
@@ -195,8 +199,7 @@ contract usingProperty{
         return (userPropertyTypeList[u_Id].id, userPropertyTypeList[u_Id].count);
 
     }
-
-
+    
     function addUserLandConfiguration(uint u_Id){
         uint _id = userLandConfigurationList[u_Id].id.length++;
         userLandConfigurationList[u_Id].id.push(_id);
@@ -214,39 +217,6 @@ contract usingProperty{
         return (userLandConfigurationList[u_Id].land, userLandConfigurationList[u_Id].crop);
 
     }
-
-    //function updatePropertiesRating(uint _id, uint rate, string operation){
-    //    updatedPropertiesCalled();
-    //    if (StringUtils.equal(operation,"init")){      //consider import string.utils contract ?
-    //        propertyInited(_id);
-    //        propertyList[_id].rating.push(0);
-    //    }else if (StringUtils.equal(operation,"update")){
-    //        propertyUpdated(_id);
-
-    //        uint length = congress.getStakeholdersLength();
-
-    //        length = length-1; // ignore founder rating
-
-    //        uint s_Id = congress.stakeholderId(msg.sender);
-    //        //propertyList的id需要調整
-    //        for(uint i = 0; i < propertyList.length; i++){
-    //            if(_id == propertyList[i].propertyType){
-    //                propertyList[i].rating[s_Id] = rate;
-    //                propertyList[i].averageRating = ((propertyList[i].averageRating * (length-1))+rate)/length;
-    //            }
-    //        }
-
-    //        propertyTypeList[_id].rating[s_Id] = rate;
-    //        propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
-
-    //    }else if (StringUtils.equal(operation,"new")){
-    //        propertyNewed(_id);
-
-    //        for (uint j = 0 ; j < _id ; j++){
-    //            propertyList[j].rating.push(0);
-    //        }
-    //    }
-    //}
 
     function updatePropertyTypeRating(uint _id, uint rate, string operation){
         updatedPropertiesCalled();
@@ -286,11 +256,11 @@ contract usingProperty{
         }
     }
 
-
+    function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount){
+        propertyList[_id].propertyCount = _propertyCount;
+    }
 
     function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
-
-
         uint _id = propertyTypeList.length++;
 
         uint length = congress.getStakeholdersLength();
@@ -302,32 +272,18 @@ contract usingProperty{
 
         prop.name = _name;
         prop.id= _id;
-
-
         prop.averageRating = 0;
-        prop.img.push("_seed");
-        prop.img.push("_grow");
-        prop.img.push("_harvest");
-        prop.img.push("");
-        prop.time = _time;
 
         uint imgLength = _img.length;
         for (uint i = 0 ; i < imgLength ; i++){
             propertyTypeList[_id].img.push(_img[i]);
         }
 
-
         prop.time = _time;
         prop.harvestUnit = _harvestUnit;
 
         //propertyTypeAdded(true);
-
     }
-
-    function getPropertyType(uint p_id, uint u_id) constant returns(bytes32, uint, uint, uint){
-        return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].harvestUnit, propertyTypeList[p_id].averageRating);
-    }
-
 
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].time, propertyTypeList[p_Id].harvestUnit);
