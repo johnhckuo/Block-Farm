@@ -454,9 +454,27 @@
       "links": {},
       "address": "0x959787fd49000a1071eee798494fbe8345516fd4",
       "updated_at": 1492867766268
+    },
+    "1492938851690": {
+      "events": {
+        "0xf66c9d8ad4be3663636282aa639fde885f3ff830d63f3dfd02dfb17330f3a365": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "lengthtest",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x52886263e47578f6bb231d7bc1d9efbbbfb8368c",
+      "updated_at": 1492938992101
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1492867766268
-
+  "updated_at": 1492938992101
 }

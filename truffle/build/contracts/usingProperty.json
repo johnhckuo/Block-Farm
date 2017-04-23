@@ -1462,8 +1462,95 @@
       },
       "address": "0xb5a84b693da95071b4f804252dd5a7a78b2c541c",
       "updated_at": 1492872669139
+    },
+    "1492938851690": {
+      "events": {
+        "0x6e98a67d07b1236151193da1b1a71c35ff356fb2dfcb683e46f63b6abf4becef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "propertyAdded",
+          "type": "event"
+        },
+        "0x3696e6175db6d8a89552b74242d83ee40aedbac30cfdbb4d75bba58cb643dba3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "propertyTypeAdded",
+          "type": "event"
+        },
+        "0x39877db6ea3194f11c06f9c3a3daeba6cd30831fda3e1b1284c717f1096a7e59": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "propertyUpdated",
+          "type": "event"
+        },
+        "0xbe94f4bc9231183f4e52990fb4744cff4530314ce3425a3b0c4c281817b19557": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "updatedPropertiesCalled",
+          "type": "event"
+        },
+        "0x7f445f8451d59b7fae7dd57068653ebc377ea74d534142248da8203e8df9bf8c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "propertyNewed",
+          "type": "event"
+        },
+        "0xb20022e2964d49349bc52b92123fe9879854efc705410aa8a69fac302e1f4546": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "propertyInited",
+          "type": "event"
+        },
+        "0x8abc202c428b4ff626ba799f83938a413393019d1edc1556b59141eeced8afa7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "propertyRatinglength_testing",
+          "type": "event"
+        }
+      },
+      "links": {
+        "StringUtils": "0x6a1a0170027113eb227fbb38d4b2fdfcc7ae54aa"
+      },
+      "address": "0xf68f97d8f7469c8415ac24c4c2ed5faafbcbfc74",
+      "updated_at": 1492938992087
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1492874832099
+  "updated_at": 1492938992087
 }

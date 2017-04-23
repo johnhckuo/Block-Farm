@@ -629,7 +629,7 @@ Template.gamingArea.events({
 
 Template.statusList.events({
     'click .btn-info': function (e) {
-
+        var $tempE=$(e.target).parent().children();
         var temp = panelCounter;
         $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
         $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
@@ -638,7 +638,7 @@ Template.statusList.events({
         //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
         // },1000);
 
-        panelCounter = e.target.className.split("crop")[1];
+        panelCounter = tempE.target.className.split("crop")[1];
 
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
@@ -1373,6 +1373,6 @@ mission_qulify_check = function(_id){
     if(qualify){
         $('#btn_mission_submit_' + _id).css('display', 'block');
         updateUserExp(target_mission.exp);
-        
+
     }
 }
