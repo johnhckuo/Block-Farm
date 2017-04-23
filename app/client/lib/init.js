@@ -2,6 +2,59 @@ import { Session } from 'meteor/session';
 
 var currentAccount = 1;
 
+var cropTypeList = [
+  {
+      id:0,
+      name: "Carrot",
+      img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"],
+      count:0,
+      time:"0.0.0.3"
+
+  },
+  {
+      id:1,
+      name: "Radish",
+      img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
+      count:0,
+      time:"0.0.0.30"
+
+  },
+  {
+      id:2,
+      name: "Lettuce",
+      img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce"],
+      count:0,
+      time:"0.0.10.0"
+
+  },
+  {
+      id:3,
+      name: "Cauliflower",
+      img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
+      count:0,
+      time:"0.0.0.10"
+
+  }
+
+];
+
+var landTypeList = [
+  {
+      id:0,
+      name: "Dirt",
+      img: "land",
+      count:0,
+  },
+  {
+      id:1,
+      name: "Water",
+      img: "pond",
+      count:0,
+
+  }
+
+];
+
 
 function init(event){
   web3.eth.getAccounts(function(err, accs) {
@@ -34,17 +87,9 @@ function initGameConfig(){
 
 }
 
-
-var hex2a = function(hexx) {
-    var hex = hexx.toString();//force conversion
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-}
-
 window.onload = function() {
     init();
     Session.set('currentAccount', currentAccount);
     //initGameConfig();
+
 }
