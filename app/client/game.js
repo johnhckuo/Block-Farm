@@ -163,36 +163,6 @@ Template.gameIndex.rendered = function() {
 }
 
 Template.shop.rendered = function () {
-    //$.getJSON('property.json', function (property_data) {
-    //    for (i = 0; i < property_data.length; i++) {
-    //        property_database.push(property_data[i]);
-    //        display_field.push(property_data[i]);
-    //    }
-    //});
-
-    //$.getJSON('test.json', function (user_data) {
-    //    property_log = user_data;
-    //})
-    //.done(function () {
-    //    var select = $('<select>></select>');
-    //    for (i = 0; i < property_log.length; i++) {
-    //        option = $('<option>', {
-    //            value: property_log[i].account,
-    //            text: property_log[i].account
-    //        });
-    //        select.append(option);
-    //    }
-    //    select.on('change', function () {
-    //        activated_account = $(this).val();
-    //        set_property_table();
-    //    })
-    //    $('.shop_header').append(select);
-    //})
-    //.fail(function (jqxhr, textStatus, error) {
-    //    var err = textStatus + ", " + error;
-    //    console.log("Request Failed: " + err);
-    //});
-    //console.log("rend");
     var stakeholder_length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]});
     var select = $('<select>></select>');
     for (i = 0; i < stakeholder_length; i++) {
@@ -215,7 +185,7 @@ Template.shop.rendered = function () {
 //  Helpers  //
 ///////////////
 
-var activated_account =3;
+var activated_account = 2;
 var account_index;
 property_log = [];
 user_property = [];
@@ -313,27 +283,52 @@ Template.shop.events({
         $('.property_shop').css('display', 'none');
     },
     'click #btn_shop_add':function(){
-        CongressInstance.addMember('Jonn', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[0], gas: 2000000 });
-        CongressInstance.addMember('Bryant', 10, 900, 2, 'farmer', { from: web3.eth.accounts[1], gas: 2000000 });
-        CongressInstance.addMember('Claire', 10, 500, 3, 'farmer', { from: web3.eth.accounts[2], gas: 2000000 });
-        CongressInstance.addMember('Po-Wei', 10, 800, 4, 'farmer', { from: web3.eth.accounts[3], gas: 2000000 });
-        CongressInstance.addMember('Ping', 10, 850, 1, 'farmer', { from: web3.eth.accounts[4], gas: 2000000 });
-        CongressInstance.addMember('Chi', 10, 777, 1, 'farmer', { from: web3.eth.accounts[5], gas: 2000000 });
-        CongressInstance.addMember('Nina', 10, 666, 1, 'farmer', { from: web3.eth.accounts[6], gas: 2000000 });
-        CongressInstance.addMember('Jackie', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[7], gas: 2000000 });
-        CongressInstance.addMember('Charlie', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[8], gas: 2000000 });
+        CongressInstance.initPlayerData('John', 'Guard',  { from: web3.eth.accounts[0], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[0], gas: 2000000 });
+        CongressInstance.initPlayerData('Bryant', 'Guard',  { from: web3.eth.accounts[1], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[1], gas: 2000000 });
+        CongressInstance.initPlayerData('Claire', 'Thief',  { from: web3.eth.accounts[2], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[2], gas: 2000000 });
+        CongressInstance.initPlayerData('Po-Wei', 'Thief',  { from: web3.eth.accounts[3], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[3], gas: 2000000 });
+        CongressInstance.initPlayerData('Ping', 'Guard',  { from: web3.eth.accounts[4], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[4], gas: 2000000 });
+        CongressInstance.initPlayerData('Chi', 'Thief',  { from: web3.eth.accounts[5], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[5], gas: 2000000 });
+        CongressInstance.initPlayerData('Nina', 'Guard',  { from: web3.eth.accounts[6], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[6], gas: 2000000 });
+        CongressInstance.initPlayerData('Jackie', 'Thief',  { from: web3.eth.accounts[7], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[7], gas: 2000000 });
+        CongressInstance.initPlayerData('Charlie', 'Guard',  { from: web3.eth.accounts[8], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[8], gas: 2000000 });
 
 
-        usingPropertyInstance.addPropertyType('no1', 4, '0.0.0.10', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no2', 4, '0.0.0.30', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no3', 4, '0.0.10.0', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no4', 4, '0.0.0.10', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Carrot', ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"], '0.0.0.10', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Radish',["radish_seed", "radish_grow", "radish_harvest", "radish"], '0.0.0.30', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Lettuce',["lettuce_seed", "lettucet_grow", "lettuce_harvest", "lettuce"], '0.0.10.0', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Cauliflower', ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"], '0.0.0.10', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
 
-        usingPropertyInstance.addProperty('no1', 4, 1, '', 0, 0, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addProperty('no2', 4, 1, '', 0, 1, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addProperty('no3', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addProperty('no4', 3, 1, '', 0, 3, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 4, 1, '', 0, 0, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 4, 1, '', 0, 1, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 3, 1, '', 0, 3, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 8, 1, '', 0, 0, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 5, 1, '', 0, 1, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 9, 1, '', 0, 2, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower',10, 1, '', 0, 3, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot',10, 1, '', 0, 0, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 9, 1, '', 0, 1, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 7, 1, '', 0, 2, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 6, 1, '', 0, 3, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 14, 1, '', 0, 0, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 14, 1, '', 0, 1, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 13, 1, '', 0, 2, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 13, 1, '', 0, 3, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 1, 1, '', 0, 0, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 2, 1, '', 0, 1, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 4, 1, '', 0, 3, 0, { from: web3.eth.accounts[4], gas: 2000000 });
         //var id = usingPropertyInstance.gets_id.call({ from: web3.eth.accounts[currentAccount], gas: 2000000 });
         //alert(id);
     },
@@ -1051,7 +1046,7 @@ get_propertyType_setting = function(){
         var property_type_rating = usingPropertyInstance.getPropertyTypeRating.call(i,{from:web3.eth.accounts[currentAccount]});
         console.log(property_type_rating);
 
-        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0],"averageRating":property_type[4].c[0]};
+        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0],"averageRating":property_type[2].c[0]};
         display_field.push(data);
     }
 }
@@ -1282,7 +1277,7 @@ get_mission_list = function(){
         else{
             for(j = 0; j < item_length;j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0], crop_name: hex2a(item_source[1]), quantity:item_source[2]};
+                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0]};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1362,6 +1357,11 @@ mission_rending = function(){
         td = $('<td></td>');
         td.append($('<input></input>',{
             type:'hidden',
+            id:'mission_exp_' + mission_list[i].id,
+            value:mission_list[i].exp
+        }));
+        td.append($('<input></input>',{
+            type:'hidden',
             id:'mission_id_' + mission_list[i].id
         }));
         if(!mission_list[i].solved){
@@ -1372,7 +1372,10 @@ mission_rending = function(){
             })
             .on('click', function(){
                 var _id =index_finder($(this).prev('input').attr('id'),'mission_id_');
-                var mission_qulify = mission_qulify_check(_id);
+                var mission_qualify = mission_qualify_check(_id);
+                if(mission_qualify){
+                    mission_submit(_id);
+                }
             })
             );
         }
@@ -1381,15 +1384,21 @@ mission_rending = function(){
     }
     //content
     $('.mission_template').append(table);
-
+    get_user_property_setting();
+    get_mission_list();
     for(k = 0; k < mission_list.length;k++){
-        mission_qulify_check(mission_list[k].id);
+        mission_qualify_check(mission_list[k].id);
     }
 }
 
-mission_qulify_check = function(_id){
-    get_user_property_setting();
-    get_mission_list();
+mission_submit = function(_id){
+    updateUserExp(parseInt($('#mission_exp_' + _id).val(),10));
+    GameCoreInstance.submitMission(_id,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    mission_rending();
+}
+
+mission_qualify_check = function(_id){
+
     var target_mission;
     for(i = 0; i < mission_list.length; i++){
         if(mission_list[i].id == _id){
@@ -1401,7 +1410,7 @@ mission_qulify_check = function(_id){
     for(i = 0; i < target_mission.items.length; i++){
         qualify = false;
         for(j =0; j < user_property.length; j++){
-            if(user_property[j].id == target_mission.items[i].crop_id){
+            if(user_property[j].propertyType == target_mission.items[i].crop_id){
                 if(parseInt(user_property[j].propertyCount,10) >= parseInt(target_mission.items[i].quantity,10)){
                     qualify = true;
                 }
@@ -1412,15 +1421,16 @@ mission_qulify_check = function(_id){
             }
         }
         if(!qualify){
-            $('#btn_mission_submit_' + _id).css('display', 'none');
             break;
         }
-
     }
 
     if(qualify){
         $('#btn_mission_submit_' + _id).css('display', 'block');
-        updateUserExp(target_mission.exp);
-
+        return (true);
+    }
+    else {
+        $('#btn_mission_submit_' + _id).css('display', 'none');
+        return (false);
     }
 }

@@ -112,7 +112,7 @@ contract Congress is owned, tokenRecipient {
         uint level;
         int256 success;
         int256 fail;
-        bytes32 type;
+        bytes32 character;
     }
 
     struct Vote {
@@ -124,10 +124,9 @@ contract Congress is owned, tokenRecipient {
     /* modifier that allows only shareholders to vote and create new proposals */
     modifier onlyStakeholders {
         if (stakeholderId[msg.sender] == 0)
-        throw;
+            throw;
         _;
     }
-
 
     /* First time setup */
 
@@ -142,10 +141,12 @@ contract Congress is owned, tokenRecipient {
         //addMember(0, 'Genesis', 0, 0, 0, "Genesis");
 
         // and let's add the founder, to save a step later
+        //addMember(0,0,0);
+        //initPlayerData("John", "Guard");
+        //addMember(0,0,0);
+        //initPlayerData("Powei", "Theft");
 
     }
-
-
 
     // function Congress(){
     //     owner = msg.sender;
@@ -206,7 +207,6 @@ contract Congress is owned, tokenRecipient {
             id = stakeholderId[targetStakeholder];
             Stakeholder m = stakeholders[id];
         }
-
         MembershipChanged(targetStakeholder, true);
     }
 
@@ -227,7 +227,6 @@ contract Congress is owned, tokenRecipient {
 
          //stakeholders[_id].guardId = 0;
          //stakeholders[_id].thiefId = 0;
-
     }
 
     function updateUserExp(uint u_Id, uint exp){

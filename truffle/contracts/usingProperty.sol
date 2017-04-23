@@ -150,7 +150,7 @@ contract usingProperty{
 
 
 
-        propertyAdded("Success");
+        //propertyAdded("Success");
     }
 
     function removeProperty(uint _id){
@@ -176,6 +176,10 @@ contract usingProperty{
         return (propertyList[p_Id].propertyType, propertyTypeList[propertyList[p_Id].propertyType].name, propertyList[p_Id].owner, propertyList[p_Id].propertyCount, propertyList[p_Id].tradeable);
     }
 
+    function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint){
+        return (propertyList[p_Id].propertyType, propertyList[p_Id].owner, propertyList[p_Id].propertyCount);
+    }
+
     function getPartialProperty(uint p_Id) constant returns(address){
         return (propertyList[p_Id].owner);
     }
@@ -187,6 +191,21 @@ contract usingProperty{
     function getPropertyRatingLength(uint p_Id) constant returns(uint){
         propertyRatinglength_testing(propertyTypeList[p_Id].rating.length);
         return propertyTypeList[p_Id].rating.length;
+    }
+
+    function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
+
+        if(propertyList[_id].owner == msg.sender){
+            propertyList[_id].propertyCount = _propertyCount;
+            propertyList[_id].tradeable = _tradeable;
+        }
+        else{
+            throw;
+        }
+    }
+
+    function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount){
+        propertyList[_id].propertyCount = _propertyCount;
     }
 
 
@@ -212,7 +231,6 @@ contract usingProperty{
 
     }
 
-
     /*  ----------------------------------
         |                                |
         |       land configuration       |
@@ -235,18 +253,6 @@ contract usingProperty{
     function getUserLandConfiguration(uint u_Id) constant returns(int256[], int256[]){
         return (userLandConfigurationList[u_Id].land, userLandConfigurationList[u_Id].crop);
 
-    }
-
-
-    function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
-
-        if(propertyList[_id].owner == msg.sender){
-            propertyList[_id].propertyCount = _propertyCount;
-            propertyList[_id].tradeable = _tradeable;
-        }
-        else{
-            throw;
-        }
     }
 
     /*  ----------------------------------
@@ -277,7 +283,6 @@ contract usingProperty{
         |                                |
         ----------------------------------  */
 
-
     function updatePropertyTypeRating(uint _id, uint rate, string operation){
         updatedPropertiesCalled();
         if (StringUtils.equal(operation,"update")){
@@ -306,8 +311,6 @@ contract usingProperty{
     }
 
     function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
-
-
         uint _id = propertyTypeList.length++;
 
         uint length = congress.getStakeholdersLength();
@@ -319,22 +322,17 @@ contract usingProperty{
 
         prop.name = _name;
         prop.id= _id;
-
-
         prop.averageRating = 0;
-        prop.time = _time;
 
         uint imgLength = _img.length;
         for (uint i = 0 ; i < imgLength ; i++){
             propertyTypeList[_id].img.push(_img[i]);
         }
 
-
         prop.time = _time;
         prop.harvestUnit = _harvestUnit;
 
         //propertyTypeAdded(true);
-
     }
 
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
