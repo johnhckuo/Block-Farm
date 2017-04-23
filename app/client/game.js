@@ -20,8 +20,6 @@ var s_Id;
 
 
 var _dep = new Tracker.Dependency;
-var _crop = new Tracker.Dependency;
-
 var cursorX;
 var cursorY;
 
@@ -225,7 +223,6 @@ Template.statusList.helpers({
                 "content": data.name
             });
         }
-        _crop.depend();
         return cropsData;
     },
     cropsSummary: function(){
@@ -693,10 +690,10 @@ var getUserData = function(s_Id){
       id:s_Id,
       address:web3.eth.accounts[currentAccount],
 
-      name: hex2a(data[0]),
+      name: web3.toUtf8(data[0]),
       exp: data[1].c[0],
       totalExp: data[2].c[0],
-      type: hex2a(data[3]),
+      type: web3.toUtf8(data[3]),
       landSize: data[4].c[0],
       level:data[5].c[0],
       stamina: data[6].c[0],
@@ -774,24 +771,22 @@ var fetchGameInitConfig = function(){
             //tempImg.push("carrot_grow");
         }
         cropTypeList.push({
-          name : hex2a(cropData[i][0]),
+          name : web3.toUtf8(cropData[i][0]),
           id : cropData[i][1].c[0],
           img: tempImg,
-          time: hex2a(cropData[i][3]),
+          time: web3.toUtf8(cropData[i][3]),
           count:cropData[i][4].c[0]
 
         })
     }
     console.log(cropTypeList);
 
-    _crop.changed();
-
     for (var i = 0 ; i < landData.length ; i++){
 
         landTypeList.push({
           id : landData[i][0].c[0],
-          name : hex2a(landData[i][1]),
-          img: hex2a(landData[i][2]),
+          name : web3.toUtf8(landData[i][1]),
+          img: web3.toUtf8(landData[i][2]),
           count:landData[i][3].c[0]
 
         })
@@ -964,6 +959,7 @@ var updateUserExp = function(exp){
 }
 
 var cropSummaryUpdate = function(){
+    console.log(cropList);
     for (var i = 0 ; i < cropList.length ; i++){
         if (cropList[i] == null || cropList[i].ripe ){
             continue;
