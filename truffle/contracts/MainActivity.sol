@@ -64,7 +64,7 @@ contract MainActivity{
 
     function initGameData(uint s_Id, bytes32 _name, bytes32 _character){
         congress.initPlayerData(_name, _character);
-        for (uint i = 0 ; i < 3 ; i++){
+        for (uint i = 0 ; i < 9 ; i++){
             property.addUserLandConfiguration(s_Id);
 
         }

@@ -1,4 +1,6 @@
 import { Tracker } from 'meteor/tracker';
+import { Session } from 'meteor/session';
+
 
 var landSize = 3;
 var blockSize = 150;
@@ -18,6 +20,7 @@ var s_Id;
 
 
 var _dep = new Tracker.Dependency;
+var _crop = new Tracker.Dependency;
 
 var cursorX;
 var cursorY;
@@ -54,58 +57,9 @@ var otherUser =
 
   };
 
-var cropTypeList = [
-  {
-      id:0,
-      name: "Carrot",
-      img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"],
-      count:0,
-      time:"0.0.0.3"
+var cropTypeList = [];
 
-  },
-  {
-      id:1,
-      name: "Radish",
-      img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
-      count:0,
-      time:"0.0.0.30"
-
-  },
-  {
-      id:2,
-      name: "Lettuce",
-      img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce"],
-      count:0,
-      time:"0.0.10.0"
-
-  },
-  {
-      id:3,
-      name: "Cauliflower",
-      img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
-      count:0,
-      time:"0.0.0.10"
-
-  }
-
-];
-
-var landTypeList = [
-  {
-      id:0,
-      name: "Dirt",
-      img: "land",
-      count:0,
-  },
-  {
-      id:1,
-      name: "Water",
-      img: "pond",
-      count:0,
-
-  }
-
-];
+var landTypeList = [];
 
 
 
@@ -130,39 +84,56 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 /////////////////
 
 Template.gameIndex.created = function() {
+    currentAccount = Session.get('currentAccount');
+
+
+
 
     s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
     s_Id = s_Id.c[0];
     getUserData(s_Id);
     getLandConfiguration(s_Id);
+    fetchGameInitConfig();
+    console.log(cropTypeList);
+    // Tracker.autorun(() => {
+    //   Meteor.subscribe('characterList', { userName: Session.get('userName') });
+    // });
+    Session.set('userName', currentUser.name);
+    Session.set('userExp', currentUser.exp);
+    Session.set('userCharacter', currentUser.type);
+
+
+    // Template.registerHelper('characterList',function(input){
+    //     return Session.get("userName");
+    // });
 
     loading(1);
 
     audio = new Audio('/music/background_music.mp3');
     //audio.play();
 
-    for (var i = 0 ; i < currentUser.landSize*currentUser.landSize ; i++){
-        userLandConfiguration.push(
-          {
-              id: i,
-              land: null,
-              crop:null
-          }
-        );
-    }
-
-    for (var i = 0 ; i < otherUser.landSize*otherUser.landSize; i++){
-        otherUserLandConfiguration.push(
-          {
-              id: i,
-              // land: Math.floor(Math.random() * landTypeList.length),
-              // crop: Math.floor(Math.random() * cropTypeList.length)
-              land:null,
-              crop:null
-
-          }
-        );
-    }
+    // for (var i = 0 ; i < currentUser.landSize*currentUser.landSize ; i++){
+    //     userLandConfiguration.push(
+    //       {
+    //           id: i,
+    //           land: null,
+    //           crop:null
+    //       }
+    //     );
+    // }
+    //
+    // for (var i = 0 ; i < otherUser.landSize*otherUser.landSize; i++){
+    //     otherUserLandConfiguration.push(
+    //       {
+    //           id: i,
+    //           // land: Math.floor(Math.random() * landTypeList.length),
+    //           // crop: Math.floor(Math.random() * cropTypeList.length)
+    //           land:null,
+    //           crop:null
+    //
+    //       }
+    //     );
+    // }
 
 
 
@@ -221,16 +192,22 @@ user_property = [];
 property_database = [];
 display_field = [];
 //for testing
-currentAccount = activated_account;
+//currentAccount = activated_account;
 //for testing
 Template.shop.helpers({
 
 });
 
 Template.characterList.helpers({
-    userName: currentUser.name,
-    userExp: currentUser.exp,
-    characterType: currentUser.type
+    userName: function() {
+      return Session.get('userName');
+    },
+    userExp: function() {
+      return Session.get('userExp');
+    },
+    characterType: function() {
+      return Session.get('userCharacter');
+    }
 });
 
 Template.statusList.helpers({
@@ -248,6 +225,7 @@ Template.statusList.helpers({
                 "content": data.name
             });
         }
+        _crop.depend();
         return cropsData;
     },
     cropsSummary: function(){
@@ -732,22 +710,92 @@ var getUserData = function(s_Id){
 var getLandConfiguration = function(s_Id){
     var data = usingPropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
 
-    console.log(data);
-    // currentUser = {
-    //   id:s_Id,
-    //   address:web3.eth.accounts[currentAccount],
-    //
-    //   name: hex2a(data[0]),
-    //   exp: data[1].c[0],
-    //   totalExp: data[2].c[0],
-    //   type: hex2a(data[3]),
-    //   landSize: data[4].c[0],
-    //   level:data[5].c[0],
-    //   stamina: data[6].c[0],
-    //   guardId: null,
-    //   thiefId: null
-    // };
-    // console.log(currentUser);
+    var contractLandData = data[0];
+    var contractCropData = data[1];
+    console.log(contractLandData[0].s);
+
+    var landSize = currentUser.landSize;
+
+    for (var i = 0 ; i < landSize*landSize ; i++){
+        if (contractLandData[i].s == -1){
+            contractLandData[i].s = null;
+        }
+        if (contractCropData[i].s == -1){
+            contractCropData[i].s = null;
+        }
+        userLandConfiguration.push(
+          {
+              id: i,
+              land: contractLandData[i].s,
+              crop: contractCropData[i].s
+          }
+        );
+    }
+
+}
+
+var fetchGameInitConfig = function(){
+    var cropData = [];
+    var landData = [];
+
+    var flag = true;
+    var i = 0;
+    while (flag){
+      try{
+        cropData.push(usingPropertyInstance.propertyTypeList(i));
+        i++;
+      }
+      catch(err) {
+        flag = false;
+      }
+    }
+
+    flag = true;
+    i = 0;
+
+    while (flag){
+      try{
+        landData.push(usingPropertyInstance.landTypeList(i));
+        i++;
+      }
+      catch(err) {
+        flag = false;
+      }
+    }
+
+    // console.log(landData);
+    // console.log(cropData);
+    for (var i = 0 ; i < cropData.length ; i++){
+        var tempImg = [];
+        for (var j = 0 ; j < 4; j++){
+            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(i, j, { from:web3.eth.accounts[currentAccount]})).toString();
+            tempImg.push(tempStr);
+            //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
+            //tempImg.push("carrot_grow");
+        }
+        cropTypeList.push({
+          name : hex2a(cropData[i][0]),
+          id : cropData[i][1].c[0],
+          img: tempImg,
+          time: hex2a(cropData[i][3]),
+          count:cropData[i][4].c[0]
+
+        })
+    }
+    console.log(cropTypeList);
+
+    _crop.changed();
+
+    for (var i = 0 ; i < landData.length ; i++){
+
+        landTypeList.push({
+          id : landData[i][0].c[0],
+          name : hex2a(landData[i][1]),
+          img: hex2a(landData[i][2]),
+          count:landData[i][3].c[0]
+
+        })
+    }
 
 }
 
@@ -1325,7 +1373,7 @@ mission_rending = function(){
             .on('click', function(){
                 var _id =index_finder($(this).prev('input').attr('id'),'mission_id_');
                 var mission_qualify = mission_qualify_check(_id);
-                if(mission_qualify){                    
+                if(mission_qualify){
                     mission_submit(_id);
                 }
             })
@@ -1376,10 +1424,10 @@ mission_qualify_check = function(_id){
             break;
         }
     }
-  
+
     if(qualify){
         $('#btn_mission_submit_' + _id).css('display', 'block');
-        return (true);  
+        return (true);
     }
     else {
         $('#btn_mission_submit_' + _id).css('display', 'none');
