@@ -16,7 +16,7 @@ import './game.js';
 ////////////////////
 
 var stakeholderLength;
-var currentAccount = 0, ownerAccount = 0;
+var currentAccount = 1, ownerAccount = 0;
 var renderChecked = false;
 Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
@@ -313,8 +313,8 @@ if (Meteor.isClient) {
         $(window).scrollTo(height, scrollDuration);
     },
     'click .chooseCharacters':function (event, instance){
-        document.getElementById("seller").setAttribute("class", "btn btn-default");
-        document.getElementById("buyer").setAttribute("class", "btn btn-default");
+        document.getElementById("guard").setAttribute("class", "btn btn-default");
+        document.getElementById("thief").setAttribute("class", "btn btn-default");
         event.target.className = "btn btn-info";
         character = event.target.value;
     },
@@ -346,15 +346,20 @@ if (Meteor.isClient) {
         var rate = parseInt($(".s_Rate").val());
 
         //alert(web3.eth.accounts[currentAccount]);
+        var txs = CongressInstance.addMember(threshold, fund, rate, {from:web3.eth.accounts[currentAccount], gas:221468});
+        var s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
+        var txs = MainActivityInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468});
 
-        var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
-        var tx = usingPropertyInstance.updatePropertiesRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:251468});
+        //console.log(txs);
+
+        var length = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+        console.log(length);
+        var tx = usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:251468});
 
         //console.log(name, threshold, fund, rate, character);
 
-        var txs = CongressInstance.addMember(name, threshold, fund, rate, character, {from:web3.eth.accounts[currentAccount], gas:221468});
-        console.log(txs);
-
+        Router.go('game');
+/*
         document.getElementById("buyerInfo").style.display = "inline";
         document.getElementById("sellerInfo").style.display = "inline";
 
@@ -366,7 +371,7 @@ if (Meteor.isClient) {
 
         var temp = document.getElementById("flipper");
         temp.className += " flipperClicked";
-
+*/
     },
 
 
