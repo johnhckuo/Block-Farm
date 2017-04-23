@@ -253,7 +253,7 @@ Template.shop.rendered = function () {
 //  Helpers  //
 ///////////////
 
-var activated_account = 2;
+var activated_account =3;
 var account_index;
 property_log = [];
 user_property = [];
@@ -1175,29 +1175,18 @@ get_mission_list = function(){
     for(i = 0; i < mission_count; i++){
         mission_source = GameCoreInstance.getMission.call(i, {from:web3.eth.accounts[currentAccount]});
         item_length = GameCoreInstance.getMissionItemsLength.call(i, {from:web3.eth.accounts[currentAccount]});
-        mission = {id: i, name:hex2a(mission_source[0]), exp: mission_source[1], lvl_limitation: mission_source[2], solved:mission_source[3],items:[]};
-        for(j = 0; j < item_length;j++){
-            item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-            item = {crop_id:item_source[0], crop_name: hex2a(item_source[1]), quantity:item_source[2]};
-            mission.items.push(item);
-        }
-        mission_list.push(mission);
-    }
+        mission = {id: i, name:$.trim(hex2a(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
 
-   // mission_list = [
-   //{id:0, name:'mission1', exp:100, lvl_limited:1, items:
-   //    [
-   //    {crop_id:1, crop_name:'carrot', quantity:4 },
-   //    {crop_id:2, crop_name:'Radish', quantity:3 }
-   //    ],
-   //    solved:false, status:true },
-   //{id:1, name:'mission2', exp:200, lvl_limited:1, items:
-   //    [
-   //    {crop_id:2, crop_name:'Lettuce', quantity:1 },
-   //    {crop_id:3, crop_name:'Cauliflower', quantity:5 }
-   //    ],
-   //    solved:false, status:true },
-   // ];
+        if(mission.lvl_limitation ===999){}
+        else{
+            for(j = 0; j < item_length;j++){
+                item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
+                item = {crop_id:item_source[0], crop_name: hex2a(item_source[1]), quantity:item_source[2]};
+                mission.items.push(item);
+            }
+            mission_list.push(mission);
+        }
+    }
 }
 mission_rending = function(){
     
@@ -1291,6 +1280,10 @@ mission_rending = function(){
     }
     //content
     $('.mission_template').append(table);
+
+    for(k = 0; k < mission_list.length;k++){
+        mission_qulify_check(mission_list[k].id);
+    }
 }
 
 mission_qulify_check = function(_id){
@@ -1318,14 +1311,16 @@ mission_qulify_check = function(_id){
             }
         }
         if(!qualify){
-            alert("Insufficient property count");
+            $('#btn_mission_submit_' + _id).css('display', 'none');
             break;
         }
 
     }
 
     if(qualify){
-        alert("go go update!!!!!!!!!!!!!!!");
+        $('#btn_mission_submit_' + _id).css('display', 'block');
+        updateUserExp(target_mission.exp);
+        
     }
 }
 
