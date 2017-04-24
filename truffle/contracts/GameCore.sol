@@ -14,7 +14,9 @@ contract Congress{
 contract usingProperty{
     function getPropertyTypeLength() constant returns(uint);
     function getPropertyType_forMission(uint p_id, uint cropStage) constant returns(bytes32, uint, bytes32);
-
+    function getPropertiesLength() constant returns(uint);
+    function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount);
+    function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint);
 }
 
 contract GameCore{
@@ -88,14 +90,37 @@ contract GameCore{
         var (name, id, img) = usingPropertyInstance.getPropertyType_forMission(obj.cropId[itemId], 3);
         return (obj.cropId[itemId], name, obj.quantity[itemId]);      
     }
-        event lengthtest(uint);
-        function getMissionsLength() constant returns(uint){
-            lengthtest( MissionList.length);
+
+    function getMissionsLength() constant returns(uint){
         return MissionList.length;
     }
 
     function getMissionItemsLength(uint mId) constant returns(uint){
         return MissionList[mId].cropId.length;
+    }
+        event status(bool);
+    function submitMission(uint mId){
+        uint missionItemLength = getMissionItemsLength(mId);
+        uint propertyLength = usingPropertyInstance.getPropertiesLength();
+        for(uint i = 0; i < missionItemLength; i++){
+            
+            var (cropId, name, quantity) = getMissionItems(mId, i);
+            
+            for(uint j = 0; j < propertyLength; j++){
+                var (propertyType, propertyOwner, propertyCount) = usingPropertyInstance.getProperty_MissionSubmit(j);
+                if((propertyOwner == msg.sender)&&(propertyType == cropId)){
+                    uint countResult = propertyCount - quantity;
+                    if(countResult >= 0){
+                        usingPropertyInstance.updatePropertyCount_MissionSubmit(j, countResult);
+                        break;
+                    }
+                }
+            }
+        }
+    uint s_Id = congress.stakeholderId(msg.sender);
+    status( MissionList[mId].accountStatus[s_Id]);
+    MissionList[mId].accountStatus[s_Id] = true;
+    status( MissionList[mId].accountStatus[s_Id]);
     }
 
 }

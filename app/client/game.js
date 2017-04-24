@@ -1,4 +1,6 @@
 import { Tracker } from 'meteor/tracker';
+import { Session } from 'meteor/session';
+
 
 var landSize = 3;
 var blockSize = 150;
@@ -18,95 +20,26 @@ var s_Id;
 
 
 var _dep = new Tracker.Dependency;
-
 var cursorX;
 var cursorY;
 
 var panelCounter = 2, panelCount = 3;
 
 var cropList = [];
-var harvestCropList = [];
+var stockList = [];
 var landList = [];
 
 var staminaList = {crop:5,steal:5};
 
 var currentUser = {};
 
-
 var userLandConfiguration = [];
 
-var otherUserLandConfiguration = [];
+var showThief = false;
 
-var otherUser =
-  {
-    id:0,
-    address:"0x0101010101",
+var cropTypeList = [];
 
-    name: "bill",
-    exp: 0,
-    totalExp: 0,
-    type: "Thief",
-    landSize: 5,
-    level:0,
-    stamina: 100,
-    guardId: null,
-    thiefId: null
-
-  };
-
-var cropTypeList = [
-  {
-      id:0,
-      name: "Carrot",
-      img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"],
-      count:0,
-      time:"0.0.0.3"
-
-  },
-  {
-      id:1,
-      name: "Radish",
-      img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
-      count:0,
-      time:"0.0.0.30"
-
-  },
-  {
-      id:2,
-      name: "Lettuce",
-      img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce"],
-      count:0,
-      time:"0.0.10.0"
-
-  },
-  {
-      id:3,
-      name: "Cauliflower",
-      img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
-      count:0,
-      time:"0.0.0.10"
-
-  }
-
-];
-
-var landTypeList = [
-  {
-      id:0,
-      name: "Dirt",
-      img: "land",
-      count:0,
-  },
-  {
-      id:1,
-      name: "Water",
-      img: "pond",
-      count:0,
-
-  }
-
-];
-
+var landTypeList = [];
 
 
 ///////////////////////////
@@ -130,39 +63,45 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 /////////////////
 
 Template.gameIndex.created = function() {
+    currentAccount = Session.get('currentAccount');
+
+
+
 
     s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
     s_Id = s_Id.c[0];
     getUserData(s_Id);
     getLandConfiguration(s_Id);
+    loadCropList(s_Id);
+    getUserStockList(s_Id);
+
+    fetchGameInitConfig();
+    console.log(cropTypeList);
+    // Tracker.autorun(() => {
+    //   Meteor.subscribe('characterList', { userName: Session.get('userName') });
+    // });
+
+
+
+    // Template.registerHelper('characterList',function(input){
+    //     return Session.get("userName");
+    // });
 
     loading(1);
 
     audio = new Audio('/music/background_music.mp3');
     //audio.play();
 
-    for (var i = 0 ; i < currentUser.landSize*currentUser.landSize ; i++){
-        userLandConfiguration.push(
-          {
-              id: i,
-              land: null,
-              crop:null
-          }
-        );
-    }
-
-    for (var i = 0 ; i < otherUser.landSize*otherUser.landSize; i++){
-        otherUserLandConfiguration.push(
-          {
-              id: i,
-              // land: Math.floor(Math.random() * landTypeList.length),
-              // crop: Math.floor(Math.random() * cropTypeList.length)
-              land:null,
-              crop:null
-
-          }
-        );
-    }
+    // for (var i = 0 ; i < currentUser.landSize*currentUser.landSize ; i++){
+    //     userLandConfiguration.push(
+    //       {
+    //           id: i,
+    //           land: null,
+    //           crop:null
+    //       }
+    //     );
+    // }
+    //
 
 
 
@@ -178,12 +117,19 @@ Template.gameIndex.rendered = function() {
         updateUserExp(0);
         updateStaminaBar(0);
 
+        initCropLand(currentAccount);
+
+        Session.set('userName', currentUser.name);
+        Session.set('userExp', currentUser.exp);
+        Session.set('userSta', currentUser.sta);
+        Session.set('userCharacter', currentUser.type);
+
         //farmObjectLoader();
 
+        setInterval(checkMission, 1000);
         setInterval(cropSummaryUpdate, 1000);
         setInterval(updateUserStamina, 1000*60);
 
-        initCropLand(currentUser, userLandConfiguration);
         //initCropLand(otherUser, otherUserLandConfiguration);
         console.log('gameArea render complete');
 
@@ -192,36 +138,6 @@ Template.gameIndex.rendered = function() {
 }
 
 Template.shop.rendered = function () {
-    //$.getJSON('property.json', function (property_data) {
-    //    for (i = 0; i < property_data.length; i++) {
-    //        property_database.push(property_data[i]);
-    //        display_field.push(property_data[i]);
-    //    }
-    //});
-
-    //$.getJSON('test.json', function (user_data) {
-    //    property_log = user_data;
-    //})
-    //.done(function () {
-    //    var select = $('<select>></select>');
-    //    for (i = 0; i < property_log.length; i++) {
-    //        option = $('<option>', {
-    //            value: property_log[i].account,
-    //            text: property_log[i].account
-    //        });
-    //        select.append(option);
-    //    }
-    //    select.on('change', function () {
-    //        activated_account = $(this).val();
-    //        set_property_table();
-    //    })
-    //    $('.shop_header').append(select);
-    //})
-    //.fail(function (jqxhr, textStatus, error) {
-    //    var err = textStatus + ", " + error;
-    //    console.log("Request Failed: " + err);
-    //});
-    //console.log("rend");
     var stakeholder_length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]});
     var select = $('<select>></select>');
     for (i = 0; i < stakeholder_length; i++) {
@@ -240,27 +156,42 @@ Template.shop.rendered = function () {
 }
 
 
+
+$(window).on("beforeunload", function() {
+    CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), {from:web3.eth.accounts[currentAccount], gas:2000000} );
+    CongressInstance.updateUserStamina(s_Id, currentUser.sta, {from:web3.eth.accounts[currentAccount], gas:2000000} );
+
+    console.log("saved");
+    return true ? "Do you really want to close?" : null;
+})
+
 ///////////////
 //  Helpers  //
 ///////////////
 
-var activated_account =3;
+var activated_account = 2;
 var account_index;
 property_log = [];
 user_property = [];
 property_database = [];
 display_field = [];
 //for testing
-currentAccount = activated_account;
+//currentAccount = activated_account;
 //for testing
 Template.shop.helpers({
 
 });
 
 Template.characterList.helpers({
-    userName: currentUser.name,
-    userExp: currentUser.exp,
-    characterType: currentUser.type
+    userName: function() {
+      return Session.get('userName');
+    },
+    userExp: function() {
+      return Session.get('userExp');
+    },
+    characterType: function() {
+      return Session.get('userCharacter');
+    }
 });
 
 Template.statusList.helpers({
@@ -284,7 +215,7 @@ Template.statusList.helpers({
         var cropsData = [];
 
         for (var i = 0 ; i < cropList.length; i++){
-            if (cropList[i] == null){
+            if (cropList[i].name == 0){
                 continue;
             }
             var data = cropList[i];
@@ -335,27 +266,52 @@ Template.shop.events({
         $('.property_shop').css('display', 'none');
     },
     'click #btn_shop_add':function(){
-        CongressInstance.addMember('Jonn', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[0], gas: 2000000 });
-        CongressInstance.addMember('Bryant', 10, 900, 2, 'farmer', { from: web3.eth.accounts[1], gas: 2000000 });
-        CongressInstance.addMember('Claire', 10, 500, 3, 'farmer', { from: web3.eth.accounts[2], gas: 2000000 });
-        CongressInstance.addMember('Po-Wei', 10, 800, 4, 'farmer', { from: web3.eth.accounts[3], gas: 2000000 });
-        CongressInstance.addMember('Ping', 10, 850, 1, 'farmer', { from: web3.eth.accounts[4], gas: 2000000 });
-        CongressInstance.addMember('Chi', 10, 777, 1, 'farmer', { from: web3.eth.accounts[5], gas: 2000000 });
-        CongressInstance.addMember('Nina', 10, 666, 1, 'farmer', { from: web3.eth.accounts[6], gas: 2000000 });
-        CongressInstance.addMember('Jackie', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[7], gas: 2000000 });
-        CongressInstance.addMember('Charlie', 10, 1000, 1, 'farmer', { from: web3.eth.accounts[8], gas: 2000000 });
+        CongressInstance.initPlayerData('John', 'Guard',  { from: web3.eth.accounts[0], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[0], gas: 2000000 });
+        CongressInstance.initPlayerData('Bryant', 'Guard',  { from: web3.eth.accounts[1], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[1], gas: 2000000 });
+        CongressInstance.initPlayerData('Claire', 'Thief',  { from: web3.eth.accounts[2], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[2], gas: 2000000 });
+        CongressInstance.initPlayerData('Po-Wei', 'Thief',  { from: web3.eth.accounts[3], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[3], gas: 2000000 });
+        CongressInstance.initPlayerData('Ping', 'Guard',  { from: web3.eth.accounts[4], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[4], gas: 2000000 });
+        CongressInstance.initPlayerData('Chi', 'Thief',  { from: web3.eth.accounts[5], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[5], gas: 2000000 });
+        CongressInstance.initPlayerData('Nina', 'Guard',  { from: web3.eth.accounts[6], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[6], gas: 2000000 });
+        CongressInstance.initPlayerData('Jackie', 'Thief',  { from: web3.eth.accounts[7], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[7], gas: 2000000 });
+        CongressInstance.initPlayerData('Charlie', 'Guard',  { from: web3.eth.accounts[8], gas: 2000000 });
+        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[8], gas: 2000000 });
 
 
-        usingPropertyInstance.addPropertyType('no1', 4, '0.0.0.10', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no2', 4, '0.0.0.30', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no3', 4, '0.0.10.0', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('no4', 4, '0.0.0.10', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Carrot', ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"], '0.0.0.10', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Radish',["radish_seed", "radish_grow", "radish_harvest", "radish"], '0.0.0.30', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Lettuce',["lettuce_seed", "lettucet_grow", "lettuce_harvest", "lettuce"], '0.0.10.0', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addPropertyType('Cauliflower', ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"], '0.0.0.10', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
 
-        usingPropertyInstance.addProperty('no1', 4, 1, '', 0, 0, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addProperty('no2', 4, 1, '', 0, 1, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addProperty('no3', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addProperty('no4', 3, 1, '', 0, 3, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 4, 1, '', 0, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 4, 1, '', 1, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 2, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 3, 1, '', 3, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 8, 1, '', 0, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 5, 1, '', 1, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 9, 1, '', 2, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower',10, 1, '', 3, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot',10, 1, '', 0, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 9, 1, '', 1, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 7, 1, '', 2, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 6, 1, '', 3, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 14, 1, '', 0, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 14, 1, '', 1, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 13, 1, '', 2, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 13, 1, '', 3, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 1, 1, '', 0, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 2, 1, '', 1, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 2, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 4, 1, '', 3, 0, { from: web3.eth.accounts[4], gas: 2000000 });
         //var id = usingPropertyInstance.gets_id.call({ from: web3.eth.accounts[currentAccount], gas: 2000000 });
         //alert(id);
     },
@@ -373,18 +329,17 @@ Template.gameIndex.events({
             var _landId = currentCropLand.split("cropLand")[1];
 
 
-            if (userLandConfiguration[_landId].crop != null){
-                alert("Its already been planted dude -3- ");
+            if (userLandConfiguration[_landId].crop != -1){
+                alert("Don't plant twice !");
                 return;
-            }else if (userLandConfiguration[_landId].land == null){
-                alert("WTF dude? you need a land first!!");
+            }else if (userLandConfiguration[_landId].land == -1){
+                alert("You need a land first !");
                 return;
-            }else if (currentUser.stamina < staminaList["crop"]){
+            }else if (currentUser.sta < staminaList["crop"]){
                 alert("not enough stamina");
                 return;
             }
 
-            cropTypeList[currentCropId].count++;
             updateStaminaBar(staminaList["crop"]);
 
             var styles = {
@@ -405,7 +360,9 @@ Template.gameIndex.events({
 
             //userLandConfiguration[_landId].crop = cropTypeList[currentCropId].id;
             userLandConfiguration[_landId].crop = _id;
+            usingPropertyInstance.updateUserLandConfiguration(s_Id, _landId, _id, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
 
+            usingPropertyInstance.addCropList(s_Id, cropTypeList[currentCropId].name, cropTypeList[currentCropId].img[3], start, end, parseInt(cropTypeList[currentCropId].id), 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
             cropList.push({
                 id: _id,
                 name: cropTypeList[currentCropId].name,
@@ -415,7 +372,11 @@ Template.gameIndex.events({
                 type: cropTypeList[currentCropId].id,
                 ripe: 0
             });
+            //console.log(cropList);
             _dep.changed();
+
+            console.log(userLandConfiguration);
+            console.log(cropList);
 
         }else{
             alert("Specify Crop first");
@@ -429,8 +390,8 @@ Template.gameIndex.events({
         if (currentLandId != null && placeMode){
             var _landId = currentCropLand.split("cropLand")[1];
 
-            if (userLandConfiguration[_landId].land != null){
-                alert("Its already been planted dude -3- ");
+            if (userLandConfiguration[_landId].land != -1){
+                alert("Don't plant twice !");
                 return;
             }
             landTypeList[currentLandId].count++;
@@ -439,15 +400,28 @@ Template.gameIndex.events({
             $("."+currentCropLand).css({"border-style":"none"});
             var _id = landList.length;
             userLandConfiguration[_landId].land = landTypeList[currentLandId].id;
+            usingPropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, landTypeList[currentLandId].id, 'land', {from:web3.eth.accounts[currentAccount], gas:2000000});
+
             landList.push({
                 id: _id,
                 name: landTypeList[currentLandId].name,
                 img:landTypeList[currentLandId].img,
             });
+
+            console.log(userLandConfiguration);
+            console.log(cropList);
         }else{
             alert("Specify Land first");
             return;
         }
+    },
+    'click .thief': function(event){
+        $(event.target).parent().css({opacity:0, transform:"translateY(50px)"});
+        setTimeout(function(){
+            $(event.target).parent().remove();
+        },1000);
+
+
     },
     'click .croppedObject': function (event){
         // var left = $(event.target).position().left;
@@ -495,13 +469,39 @@ Template.gameIndex.events({
             },1000);
         },1000);
 
-        harvestCropList.push(cropList[id]);
+        var stockId = stockList.length;
+        stockList.push({
+            id: stockId,
+            name: cropList[id].name,
+            minUnit: 1,
+            extraData: cropList[id].name,
+            type: cropList[id].type,
+            count: cropTypeList[cropList[id].type].count,
+            tradeable: 0
+        });
+        console.log(cropTypeList);
+
+        usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+        var configId;
         for (var i = 0 ; i < userLandConfiguration.length ; i++){
             if (userLandConfiguration[i].crop == id){
-                userLandConfiguration[i].crop = null;
+                userLandConfiguration[i].crop = -1;
+                configId = i;
             }
         }
-        cropList[id] = null;
+
+        usingPropertyInstance.updateUserLandConfiguration(s_Id, configId, -1, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+        cropList[id].name = 0;
+        cropList[id].img = 0;
+        cropList[id].start = 0;
+        cropList[id].end = 0;
+        cropList[id].type = 0;
+        cropList[id].ripe = 0;
+
+        usingPropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
         //cropList.splice(id, 1);
         $("."+cropClass).remove();
 
@@ -660,18 +660,30 @@ Template.characterList.events({
     'click .characterSwitch': function (event) {
 
         loading(1);
+        var s_Length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
 
+        var visitNode = currentAccount;
+        while (visitNode == currentAccount){
+            visitNode = Math.floor(s_Length*Math.random());
+        }
+        console.log(visitNode);
+        console.log(s_Length);
         if ($(event.target).html() == "Guard"){
-            initCropLand(otherUser, otherUserLandConfiguration);
+            showThief = true;
+
+            rerenderCropLand(visitNode);
             $(event.target).html("Home");
         }else if ($(event.target).html() == "Thief"){
-            initCropLand(otherUser, otherUserLandConfiguration);
+            rerenderCropLand(visitNode);
             $(event.target).html("Home");
             $(event.target).parent().append("<button type='button' name='button' class='btn btn-primary nextHome'>Next</button>");
 
         }else if ($(event.target).html() == "Home"){
-            $(event.target).html(currentUser.type);
-            initCropLand(currentUser, userLandConfiguration);
+            $(event.target).html(Session.get('userCharacter'));
+            showThief = false;
+            $(".missionObject").html("<div class='thiefObject'></div>");
+
+            rerenderCropLand(currentAccount);
             $(event.target).parent().find(".nextHome").remove();
         }
         loading(0);
@@ -696,7 +708,8 @@ Template.characterList.events({
     'click .MissionOpen': function(event){
         $(".mission_template").css("display", "inline");
         mission_rending();
-    }
+    },
+
 })
 
 
@@ -712,6 +725,56 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+var loadCropList = function(s_Id){
+    cropList = [];
+    var data = usingPropertyInstance.getCropList(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var length = usingPropertyInstance.getCropListLength(s_Id, { from:web3.eth.accounts[currentAccount]});
+    for (var i = 0 ; i < length ; i++){
+      var start = web3.toUtf8(data[3][i]).split(".")[0]+"Z";
+      var end = web3.toUtf8(data[4][i]).split(".")[0]+"Z";
+
+      start = start.split("\"")[1];
+      end = end.split("\"")[1];
+
+        cropList.push({
+            id: data[0][i].c[0],
+            name: web3.toUtf8(data[1][i]),
+            img: web3.toUtf8(data[2][i]),
+            start: new Date(start),
+            end: new Date(end),
+            type: data[5][i].c[0],
+            ripe: data[6][i]
+        });
+    }
+    console.log(cropList);
+
+}
+
+
+var getUserStockList = function(s_Id){
+    var p_List = CongressInstance.getPropertyList(s_Id, { from:web3.eth.accounts[currentAccount]})
+    console.log(p_List);
+
+
+    var data = [];
+    for (var i = 0 ; i < p_List.length ; i++){
+        data.push(usingPropertyInstance.getPropertyByOwner(p_List[i].c[0], { from:web3.eth.accounts[currentAccount]}));
+    }
+    for (var i = 0 ; i < data.length ; i++){
+      stockList.push({
+          id: data[i][0].c[0],
+          name: web3.toUtf8(data[i][1]),
+          count: data[i][2].c[0],
+          minUnit: data[i][3].c[0],
+          extraData: web3.toUtf8(data[i][4]),
+          type: data[i][5].c[0],
+          tradeable: data[i][6].c[0]
+      });
+    }
+    console.log(stockList);
+
+}
+
 var getUserData = function(s_Id){
 
     var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
@@ -720,39 +783,119 @@ var getUserData = function(s_Id){
       id:s_Id,
       address:web3.eth.accounts[currentAccount],
 
-      name: hex2a(data[0]),
+      name: web3.toUtf8(data[0]),
       exp: data[1].c[0],
       totalExp: data[2].c[0],
-      type: hex2a(data[3]),
+      type: web3.toUtf8(data[3]),
       landSize: data[4].c[0],
       level:data[5].c[0],
-      stamina: data[6].c[0],
+      sta: data[6].c[0],
       guardId: null,
       thiefId: null
     };
-    console.log(currentUser);
+
+    var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
+    //
+    lastLogin = new Date(lastLogin.split("\"")[1]);
+    var difference = elapsedTime(lastLogin, new Date());
+    currentUser.sta += Math.round(difference.getTime()/(1000*60));
+
+    // end = end.split("\"")[1];
 
 }
 
 var getLandConfiguration = function(s_Id){
+    userLandConfiguration = [];
     var data = usingPropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
 
-    console.log(data);
-    // currentUser = {
-    //   id:s_Id,
-    //   address:web3.eth.accounts[currentAccount],
-    //
-    //   name: hex2a(data[0]),
-    //   exp: data[1].c[0],
-    //   totalExp: data[2].c[0],
-    //   type: hex2a(data[3]),
-    //   landSize: data[4].c[0],
-    //   level:data[5].c[0],
-    //   stamina: data[6].c[0],
-    //   guardId: null,
-    //   thiefId: null
-    // };
-    // console.log(currentUser);
+    var contractLandData = data[0];
+    var contractCropData = data[1];
+
+    var landSize = currentUser.landSize;
+
+    for (var i = 0 ; i < landSize*landSize ; i++){
+        if (contractLandData[i].s != -1){
+            contractLandData[i].s = contractLandData[i].c[0];
+        }
+        if (contractCropData[i].s != -1){
+            contractCropData[i].s = contractCropData[i].c[0];
+        }
+        userLandConfiguration.push(
+          {
+              id: i,
+              land: contractLandData[i].s,
+              crop: contractCropData[i].s
+          }
+        );
+    }
+
+    console.log(contractCropData);
+
+
+}
+
+var fetchGameInitConfig = function(){
+    var cropData = [];
+    var landData = [];
+
+    var flag = true;
+    var i = 0;
+    while (flag){
+      try{
+        cropData.push(usingPropertyInstance.propertyTypeList(i));
+        i++;
+      }
+      catch(err) {
+        flag = false;
+      }
+    }
+
+    flag = true;
+    i = 0;
+
+    while (flag){
+      try{
+        landData.push(usingPropertyInstance.landTypeList(i));
+        i++;
+      }
+      catch(err) {
+        flag = false;
+      }
+    }
+
+    // console.log(landData);
+    // console.log(cropData);
+    for (var i = 0 ; i < cropData.length ; i++){
+        var tempImg = [];
+        for (var j = 0 ; j < 4; j++){
+            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(i, j, { from:web3.eth.accounts[currentAccount]})).toString();
+            tempImg.push(tempStr);
+            //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
+            //tempImg.push("carrot_grow");
+        }
+        cropTypeList.push({
+          name : web3.toUtf8(cropData[i][0]),
+          id : cropData[i][1].c[0],
+          img: tempImg,
+          time: web3.toUtf8(cropData[i][3]),
+          count:cropData[i][4].c[0]
+
+        })
+    }
+    console.log(cropTypeList);
+
+    for (var i = 0 ; i < landData.length ; i++){
+
+        landTypeList.push({
+          id : landData[i][0].c[0],
+          name : web3.toUtf8(landData[i][1]),
+          img: web3.toUtf8(landData[i][2]),
+          count:landData[i][3].c[0]
+
+        })
+    }
 
 }
 
@@ -785,38 +928,43 @@ var loading = function(on){
 var rerenderCropLand = function(id){
   getUserData(id);
   getLandConfiguration(id);
-  initCropLand(currentUser, userLandConfiguration);
+  loadCropList(id);
+  initCropLand(id);
+
+  getUserStockList(id);
 }
 
-var initCropLand = function(user, config){
+var initCropLand = function(id){
 
     $('.land').html("");
     $(".surfaceObject").html("");
     $(".surfaceObject").append("<div class='cropObject'></div>");
 
-    $('.land').css("width", blockSize*user.landSize );
-    $('.land').css("height", blockSize*user.landSize );
+    $('.land').css("width", blockSize*currentUser.landSize );
+    $('.land').css("height", blockSize*currentUser.landSize );
 
-    for (var i = 0 ; i < user.landSize*user.landSize; i++){
+    for (var i = 0 ; i < currentUser.landSize*currentUser.landSize; i++){
         $('.land').append("<div class='farm cropLand" + i + "'></div>");
-        if (config[i].land == null){
+        if (userLandConfiguration[i].land == -1){
             $('.cropLand'+i).css("border", '1px solid black');
         }
         //$('.land').append("<div></div>");
     }
 
-    for (var i = 0 ; i < config.length ; i++){
+    var theifId = 0;
+    for (var i = 0 ; i < userLandConfiguration.length ; i++){
 
-        if (config[i].land == null){
+        if (userLandConfiguration[i].land == -1){
             continue;
         }
-        $(".farmObject").html("<img src = '" + prefix+ landTypeList[config[i].land].img + postfix +"' />");
+        $(".farmObject").html("<img src = '" + prefix+ landTypeList[userLandConfiguration[i].land].img + postfix +"' />");
         $( ".farmObject" ).children().clone().appendTo(".cropLand"+ i).css({opacity:1});
 
 
-        if (config[i].crop == null){
+        if (userLandConfiguration[i].crop == -1){
             continue;
         }
+
         //currentCropLand = event.target.className;
         var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
         var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
@@ -841,7 +989,11 @@ var initCropLand = function(user, config){
         };
 
 
-        var index = config[i].crop;
+        var index = userLandConfiguration[i].crop;
+        if (index == -1){
+          return;
+        }
+
         var difference = elapsedTime(new Date(), cropList[index].end);
         var originDifference = elapsedTime(cropList[index].start, cropList[index].end);
 
@@ -861,7 +1013,28 @@ var initCropLand = function(user, config){
         //$(".cropObject").html("<img src = '" + prefix+ cropTypeList[config[i].crop].img[0] + postfix +"' />");
         $( ".cropObject" ).clone().attr("class","croppedObject croppedObject"+index).appendTo(".surfaceObject").css(styles);
 
+        console.log(showThief)
+        if (showThief){
+          var missionStyles = {
+              top: top-divHeight,
+              left: left-areaLeft+divWidth,
+              width:"150px",
+              height:"150px",
+              position:"absolute",
+              opacity:1,
+              "z-index":5,
+              display:'inline'
+          };
 
+
+          var prob = Math.random()*3;
+          if (prob > 2){
+            $(".thiefObject").html("<img src = '/img/game/thief.gif' />");
+            $( ".thiefObject" ).clone().attr("class","thief thief"+theifId++).appendTo(".missionObject").css(missionStyles);
+          }
+        }else{
+            $(".missionObject").html("<div class='thiefObject'></div>");
+        }
 
     }
 }
@@ -881,36 +1054,36 @@ var staminaCap = function(n){
 var updateStaminaBar = function(consumedSta){
     var staCap = staminaCap(currentUser.level);
 
-    currentUser.stamina -= consumedSta;
-    var percent = (currentUser.stamina/staCap)*100;
+    currentUser.sta -= consumedSta;
+    var percent = (currentUser.sta/staCap)*100;
     $(".staProgressBar").css("width", percent + "%");
-    $(".staText").text(currentUser.stamina+"/"+staCap);
+    $(".staText").text(currentUser.sta+"/"+staCap);
 }
 
 
 var updateUserStamina = function(){
     var staCap = staminaCap(currentUser.level);
-    if (currentUser.stamina >= staCap){
+    if (currentUser.sta >= staCap){
         return;
     }
-    currentUser.stamina += 1;
+    currentUser.sta += 1;
     updateStaminaBar(0);
 
 }
 
 
 
-
 var updateUserExp = function(exp){
   currentUser.exp += parseInt(exp);
   currentUser.totalExp += currentUser.exp;
+  CongressInstance.updateUserExp(s_Id, exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
   var lvlCap = levelCap(currentUser.level);
   var percent = (currentUser.exp/lvlCap)*100;
   if  (percent >= 100){
     currentUser.level += 1;
-    currentUser.exp = currentUser.totalExp - lvlCap;
+    currentUser.exp = currentUser.exp - lvlCap;
     $(".levelUpObject").attr("display", "inline");
-
     MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
     rerenderCropLand(s_Id);
 
@@ -920,9 +1093,17 @@ var updateUserExp = function(exp){
 
 }
 
+var checkMission = function(){
+
+    if (showThief){
+
+
+    }
+}
+
 var cropSummaryUpdate = function(){
     for (var i = 0 ; i < cropList.length ; i++){
-        if (cropList[i] == null || cropList[i].ripe ){
+        if (cropList[i].name == 0 || cropList[i].ripe ){
             continue;
         }
         var difference = elapsedTime(new Date(), cropList[i].end);
@@ -1003,7 +1184,7 @@ get_propertyType_setting = function(){
         var property_type_rating = usingPropertyInstance.getPropertyTypeRating.call(i,{from:web3.eth.accounts[currentAccount]});
         console.log(property_type_rating);
 
-        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0],"averageRating":property_type[4].c[0]};
+        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0],"averageRating":property_type[2].c[0]};
         display_field.push(data);
     }
 }
@@ -1234,7 +1415,7 @@ get_mission_list = function(){
         else{
             for(j = 0; j < item_length;j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0], crop_name: hex2a(item_source[1]), quantity:item_source[2]};
+                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0]};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1314,6 +1495,11 @@ mission_rending = function(){
         td = $('<td></td>');
         td.append($('<input></input>',{
             type:'hidden',
+            id:'mission_exp_' + mission_list[i].id,
+            value:mission_list[i].exp
+        }));
+        td.append($('<input></input>',{
+            type:'hidden',
             id:'mission_id_' + mission_list[i].id
         }));
         if(!mission_list[i].solved){
@@ -1324,7 +1510,10 @@ mission_rending = function(){
             })
             .on('click', function(){
                 var _id =index_finder($(this).prev('input').attr('id'),'mission_id_');
-                var mission_qulify = mission_qulify_check(_id);
+                var mission_qualify = mission_qualify_check(_id);
+                if(mission_qualify){
+                    mission_submit(_id);
+                }
             })
             );
         }
@@ -1333,15 +1522,21 @@ mission_rending = function(){
     }
     //content
     $('.mission_template').append(table);
-
+    get_user_property_setting();
+    get_mission_list();
     for(k = 0; k < mission_list.length;k++){
-        mission_qulify_check(mission_list[k].id);
+        mission_qualify_check(mission_list[k].id);
     }
 }
 
-mission_qulify_check = function(_id){
-    get_user_property_setting();
-    get_mission_list();
+mission_submit = function(_id){
+    updateUserExp(parseInt($('#mission_exp_' + _id).val(),10));
+    GameCoreInstance.submitMission(_id,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    mission_rending();
+}
+
+mission_qualify_check = function(_id){
+
     var target_mission;
     for(i = 0; i < mission_list.length; i++){
         if(mission_list[i].id == _id){
@@ -1353,7 +1548,7 @@ mission_qulify_check = function(_id){
     for(i = 0; i < target_mission.items.length; i++){
         qualify = false;
         for(j =0; j < user_property.length; j++){
-            if(user_property[j].id == target_mission.items[i].crop_id){
+            if(user_property[j].propertyType == target_mission.items[i].crop_id){
                 if(parseInt(user_property[j].propertyCount,10) >= parseInt(target_mission.items[i].quantity,10)){
                     qualify = true;
                 }
@@ -1364,15 +1559,17 @@ mission_qulify_check = function(_id){
             }
         }
         if(!qualify){
-            $('#btn_mission_submit_' + _id).css('display', 'none');
             break;
         }
-
     }
 
     if(qualify){
         $('#btn_mission_submit_' + _id).css('display', 'block');
         updateUserExp(target_mission.exp);
-
+        return (true);
+    }
+    else {
+        $('#btn_mission_submit_' + _id).css('display', 'none');
+        return (false);
     }
 }

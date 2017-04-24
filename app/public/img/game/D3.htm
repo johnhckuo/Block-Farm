@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://localhost:3000/ -->
+<html class="fp-enabled" style="overflow: hidden; height: 100%;"><script id="tinyhippos-injected">if (window.top.ripple) { window.top.ripple("bootstrap").inject(window, document); }</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" class="__meteor-css__" href="./D3_files/merged-stylesheets.css">
+<title>D3</title>
+  <link rel="icon" sizes="16x16 32x32" href="http://localhost:3000/img/favicon.ico?v=2">
+
+</head>
+<body class="fp-viewing-0" style="overflow: hidden; height: 100%;">
+
+
+
+<script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("%7B%22meteorRelease%22%3A%22METEOR%401.4.2.5%22%2C%22meteorEnv%22%3A%7B%22NODE_ENV%22%3A%22development%22%2C%22TEST_METADATA%22%3A%22%7B%7D%22%7D%2C%22PUBLIC_SETTINGS%22%3A%7B%7D%2C%22ROOT_URL%22%3A%22http%3A%2F%2Flocalhost%3A3000%2F%22%2C%22ROOT_URL_PATH_PREFIX%22%3A%22%22%2C%22appId%22%3A%222y0khc1bjknqv1x4tqn4%22%2C%22autoupdateVersion%22%3A%2283d90a4ac6187c88d280f106e65a4a5c55e8e06a%22%2C%22autoupdateVersionRefreshable%22%3A%227f5ebd61f6d8dbc8e0a9ec2ca3dc37155dfbad38%22%2C%22autoupdateVersionCordova%22%3A%22none%22%7D"));</script>
+
+  <script type="text/javascript" src="./D3_files/underscore.js"></script>
+  <script type="text/javascript" src="./D3_files/meteor.js"></script>
+  <script type="text/javascript" src="./D3_files/meteor-base.js"></script>
+  <script type="text/javascript" src="./D3_files/mobile-experience.js"></script>
+  <script type="text/javascript" src="./D3_files/modules-runtime.js"></script>
+  <script type="text/javascript" src="./D3_files/modules.js"></script>
+  <script type="text/javascript" src="./D3_files/es5-shim.js"></script>
+  <script type="text/javascript" src="./D3_files/promise.js"></script>
+  <script type="text/javascript" src="./D3_files/ecmascript-runtime.js"></script>
+  <script type="text/javascript" src="./D3_files/babel-compiler.js"></script>
+  <script type="text/javascript" src="./D3_files/ecmascript.js"></script>
+  <script type="text/javascript" src="./D3_files/base64.js"></script>
+  <script type="text/javascript" src="./D3_files/ejson.js"></script>
+  <script type="text/javascript" src="./D3_files/id-map.js"></script>
+  <script type="text/javascript" src="./D3_files/ordered-dict.js"></script>
+  <script type="text/javascript" src="./D3_files/tracker.js"></script>
+  <script type="text/javascript" src="./D3_files/babel-runtime.js"></script>
+  <script type="text/javascript" src="./D3_files/random.js"></script>
+  <script type="text/javascript" src="./D3_files/mongo-id.js"></script>
+  <script type="text/javascript" src="./D3_files/diff-sequence.js"></script>
+  <script type="text/javascript" src="./D3_files/geojson-utils.js"></script>
+  <script type="text/javascript" src="./D3_files/minimongo.js"></script>
+  <script type="text/javascript" src="./D3_files/check.js"></script>
+  <script type="text/javascript" src="./D3_files/retry.js"></script>
+  <script type="text/javascript" src="./D3_files/ddp-common.js"></script>
+  <script type="text/javascript" src="./D3_files/reload.js"></script>
+  <script type="text/javascript" src="./D3_files/ddp-client.js"></script>
+  <script type="text/javascript" src="./D3_files/ddp.js"></script>
+  <script type="text/javascript" src="./D3_files/ddp-server.js"></script>
+  <script type="text/javascript" src="./D3_files/allow-deny.js"></script>
+  <script type="text/javascript" src="./D3_files/insecure.js"></script>
+  <script type="text/javascript" src="./D3_files/mongo.js"></script>
+  <script type="text/javascript" src="./D3_files/blaze-html-templates.js"></script>
+  <script type="text/javascript" src="./D3_files/reactive-var.js"></script>
+  <script type="text/javascript" src="./D3_files/jquery.js"></script>
+  <script type="text/javascript" src="./D3_files/standard-minifier-css.js"></script>
+  <script type="text/javascript" src="./D3_files/standard-minifier-js.js"></script>
+  <script type="text/javascript" src="./D3_files/shell-server.js"></script>
+  <script type="text/javascript" src="./D3_files/autopublish.js"></script>
+  <script type="text/javascript" src="./D3_files/ethereum_web3.js"></script>
+  <script type="text/javascript" src="./D3_files/shcherbin_flexbox-grid.js"></script>
+  <script type="text/javascript" src="./D3_files/twbs_bootstrap.js"></script>
+  <script type="text/javascript" src="./D3_files/natestrauser_jquery-scrollto.js"></script>
+  <script type="text/javascript" src="./D3_files/deps.js"></script>
+  <script type="text/javascript" src="./D3_files/observe-sequence.js"></script>
+  <script type="text/javascript" src="./D3_files/htmljs.js"></script>
+  <script type="text/javascript" src="./D3_files/blaze.js"></script>
+  <script type="text/javascript" src="./D3_files/ui.js"></script>
+  <script type="text/javascript" src="./D3_files/spacebars.js"></script>
+  <script type="text/javascript" src="./D3_files/templating-compiler.js"></script>
+  <script type="text/javascript" src="./D3_files/templating-runtime.js"></script>
+  <script type="text/javascript" src="./D3_files/templating.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_core.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_dynamic-template.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_layout.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_url.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_middleware-stack.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_location.js"></script>
+  <script type="text/javascript" src="./D3_files/reactive-dict.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_controller.js"></script>
+  <script type="text/javascript" src="./D3_files/iron_router.js"></script>
+  <script type="text/javascript" src="./D3_files/lawshe_full-page.js"></script>
+  <script type="text/javascript" src="./D3_files/d3js_d3.js"></script>
+  <script type="text/javascript" src="./D3_files/session.js"></script>
+  <script type="text/javascript" src="./D3_files/webapp.js"></script>
+  <script type="text/javascript" src="./D3_files/livedata.js"></script>
+  <script type="text/javascript" src="./D3_files/hot-code-push.js"></script>
+  <script type="text/javascript" src="./D3_files/launch-screen.js"></script>
+  <script type="text/javascript" src="./D3_files/autoupdate.js"></script>
+  <script type="text/javascript" src="./D3_files/global-imports.js"></script>
+  <script type="text/javascript" src="./D3_files/app.js"></script>
+
+
+
+
+<div class="header flexbox">
+    <ul class="flexbox">
+      <div><img src="./D3_files/logo_bartering.png" alt=""></div>
+      <li>Hi! </li>
+      <li><a href="http://localhost:3000/">Home</a></li>
+      <li><a href="http://localhost:3000/transaction">Transaction</a></li>
+      <li><a href="http://localhost:3000/game">Game</a></li>
+      <li><a href="http://localhost:3000/update">Update Data</a></li>
+      <li><a href="http://localhost:3000/switch">Switch Stakeholder</a></li>
+    </ul>
+  </div>
+  <div id="fullpage" class="fullpage-wrapper" style="height: 100%; position: relative; touch-action: none; transform: translate3d(0px, 0px, 0px);">
+      <div id="title" class="section fp-section active fp-table fp-completely" style="height: 782px;"><div class="fp-tableCell" style="height: 782px;">
+          <div class="titleContainer">
+            <h1>"A Blockchain-based <br>Bartering System"</h1>
+
+          </div>
+          <div class="titleImage">
+              <img src="./D3_files/coverpic_bartering.png" alt="">
+          </div>
+          <div class="titleBar"></div>
+          <a href="http://localhost:3000/#section2" data-title="" id="arrow-down">Get started</a>
+      </div></div>
+
+      <div id="intro" class="layout section fp-section fp-table" style="height: 782px;"><div class="fp-tableCell" style="height: 782px;">
+
+
+        <div id="intro_head" class="flexbox">
+          <div class=""><h1>"WHAT is D3 Bartering System?"</h1></div>
+          <div class=""><h1>Introduction</h1></div>
+          <div class="underLine" id="underLine"></div>
+          <div>
+          <div class="videoBack" id="videoBack">
+          </div>
+          <div id="videoWord">
+            <h1>"VideoScript of Bartering"</h1>
+          </div>
+        </div>
+        </div>
+
+        <div id="intro_content">
+          <!--<h3>我是中文版。我是中文版。我是中文版。</h3>
+          <h3>我是中文版。我是中文版。</h3>-->
+          <h3>
+              We all have many white elephants at home, and also some
+              idle properties that can be transacted or donated to others.
+              Besides, we hope to acquire things we are craving for.
+              Thus, UtoBarterian, an auto-property bartering system can
+              help you exchange idle properties to what you desire for.
+          </h3>
+        </div>
+
+      </div></div>
+      <div id="whyUs" class="layout section fp-section fp-table" style="height: 782px;"><div class="fp-tableCell" style="height: 782px;">
+        <div id="whyUs_head" class="flexbox">
+          <div class=""><h1>"WHY D3 Bartering System?"</h1></div>
+          <div class=""><h1>Motivation</h1></div>
+          <div class="underLine"></div>
+          <div>
+
+        </div>
+        </div>
+
+        <div id="whyUs_content">
+            <!--<h3>我們幸運地處在一個資源豐沛的世界，且資源的取得越來越容易；<br />
+                然而，在如此便利的環境下，<br />
+                資源分配不均與資源浪費的問題卻日趨嚴重… <br />
+                我們都期望一個更好的世界，沒有浪費，公平共享的和諧世界。<br />
+                Utobarterian期望透過符合使用者期待的自動化以物易物系統，<br />
+                創造出一個將世界所有資源之效用最大化的烏托邦社會。
+            </h3>-->
+          <h3>
+              The world is full of resources and constantly growing larger.
+                However, the allocating is more unevenly
+                and the wasted is getting worse…
+                We are all yearning for a better world,
+                an even, unwasted world.
+                An equality, prosperity and harmony world.
+                And also an Utopia.<br>
+            </h3>
+        </div>
+
+
+      </div></div>
+
+      <div id="tutorial" class="layout section fp-section fp-table" style="height: 782px;"><div class="fp-tableCell" style="height: 782px;">
+
+          <div class="getStarted">
+            <!-- {{> hello}}
+            {{> info}} -->
+            <img src="./D3_files/getStart.png" alt="">
+            <h1>"Get Started"</h1>
+          </div>
+          <div id="form" class="flexbox flip-container">
+              <div class="flipper" id="flipper">
+                  <div class="front flexbox">
+
+                    <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
+                        <h1>Register</h1>
+                        <br>
+                        <div class="formElement">
+                            <label for="stakeholder">Characters</label>
+                            <div class="btn-group" role="group" id="characters">
+                              <button type="button" class="btn btn-default chooseCharacters" id="guard" value="Guard">Guard</button>
+                              <button type="button" class="btn btn-default chooseCharacters" id="thief" value="Thief">Thief</button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="formElement">
+                            <label for="address">Address</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                              <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="formElement">
+                            <label for="name">Name</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
+                              <input type="text" class="form-control s_Name" placeholder="">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="formElement">
+                            <label for="threshold">Threshold</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                              <input type="text" class="form-control s_Threshold" placeholder="USD dollars">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="formElement">
+                            <label for="fund">Fund</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                              <input type="text" class="form-control s_Fund" placeholder="USD dollars">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="formElement">
+                            <label for="rate">Rate</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
+                              <input type="text" class="form-control s_Rate" placeholder="">
+                            </div>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-success" id="next">Start Farming !</button>
+                        <button type="button" class="btn btn-danger" id="test">TEST</button>
+
+                    </form>
+                </div>
+                <div class="back flexbox">
+                    <div id="sellerInfo">
+                      <form class="navbar-form navbar-left" role="search">
+                          <h2>Add Property</h2>
+                          <br>
+                          <label for="name">Name</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                            <input type="text" class="form-control p_Name" placeholder="Property name">
+                          </div>
+                          <br>
+                          <label for="count">Property Count</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_Count" placeholder="How many(much) are there?">
+                          </div>
+                          <br>
+                          <label for="count">Access Stakeholders</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_AccessStakeholders" placeholder="Address">
+                          </div>
+                          <br>
+                          <label for="count">Unit</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_Unit" placeholder="">
+                          </div>
+                          <br>
+                          <label for="count">Atomic Unit</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_AtomicUnit" placeholder="Smallest unit">
+                          </div>
+                          <br>
+                          <label for="data">Additional Data</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-eth" id="data"></span>
+                            <input type="text" class="form-control p_Data" placeholder="Further info">
+                          </div>
+                          <br>
+                          <label for="count">Rating</label>
+                          <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
+                            <input type="text" class="form-control p_Rating" placeholder="Your personal ratin">
+                          </div>
+                          <br>
+                          <div class="submitButtons flexbox">
+                            <button type="submit" class="btn btn-danger" id="previous">Back</button>
+                            <button type="button" class="btn btn-primary" id="submit">Register</button>
+                            <button type="button" class="btn btn-danger" id="test">TEST</button>
+
+                          </div>
+                      </form>
+                    </div>
+                    <div id="buyerInfo">
+                        <form class="navbar-form navbar-left" role="search">
+                            <h2>Current Bidding Query</h2>
+                            <br>
+                            <label for="bidId">Bidding ID</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-globe"></span>
+                              <input type="text" class="form-control" placeholder="ID">
+                            </div>
+                            <br>
+                            <div class="submitButtons flexbox">
+                              <button type="submit" class="btn btn-danger" id="previous">Back</button>
+                              <button type="button" class="btn btn-primary" id="submit">Register</button>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+      </div></div>
+
+  <div id="aboutUs" class="flexbox layout section fp-section fp-table" style="height: 782px;"><div class="fp-tableCell" style="height: 782px;">
+    <div id="aboutUs_head" class="flexbox">
+      <div class=""><h1>"ABOUT US"</h1></div>
+      <div class=""><h1>團隊介紹</h1></div>
+      <div class="underLine" id="underLine"></div>
+    </div>
+
+    <div id="teamInfo" class="flexbox">
+      <div class="member flexbox memeberBox">
+        <div class="teamCircle"></div>
+        <div class="teamPic"><img src="./D3_files/user-male-black-shape.png" width="15%" height="15%" alt=""></div>
+        <div class="memeberInfo">
+          <h1>Professor Yuan</h1>
+          <p>NCCU, MIS</p>
+          <p>Service Science Research Center</p>
+          <p>ssrc@nccu.edu.tw</p>
+        </div>
+      </div>
+      <div class="member flexbox memeberBox">
+        <div class="teamCircle"></div>
+        <div class="teamPic"><img src="./D3_files/user-male-black-shape.png" width="15%" height="15%" alt=""></div>
+        <div class="memeberInfo">
+          <h1>Professor Yuan</h1>
+          <p>NCCU, MIS</p>
+          <p>Service Science Research Center</p>
+          <p>ssrc@nccu.edu.tw</p>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <div id="footer" class="flexbox">
+    <div>
+      <ul class="flexbox">
+        <li class="footerLogo"><img src="./D3_files/logo_final_skin.png" width="30%" height="30%" alt=""></li>
+        <li class="footerLogo2"><img src="./D3_files/logo_bartering.png" width="30%" height="30%" alt=""></li>
+      </ul>
+    </div>
+    <div class="contact">
+      <ul class="flexbox">
+        <li class="footerInfo1">
+          <p>國立政治大學 資訊管理學系</p>
+          <p>服務科學研究中心</p>
+          <p>116 台北市文山區指南路二段64號</p>
+          <p>TEL:02-2939-3091</p>
+        </li>
+        <li><div class="footerLine"></div></li>
+        <li class="footerInfo2">
+          <p>National ChengChi University</p>
+          <p>Service Science Research Center</p>
+          <p>No.64, Sec. 2, Zhinan Rd., Wenshan Dist., Taipei City 116, Taiwan (R.O.C)</p>
+          <p>TEL:02-2939-3091</p>
+        </li>
+      </ul>
+    </div>
+    <div class="copyRight">
+      <h2>Copyright (c) 2017 Copyright Holder All Rights Reserved.</h2>
+    </div>
+  </div>
+</div>
+
+  <div id="window-resizer-tooltip" style="display: block;"><a href="http://localhost:3000/#" title="Edit settings"></a><span class="tooltipTitle">Window size: </span><span class="tooltipWidth" id="winWidth">1440</span> x <span class="tooltipHeight" id="winHeight">900</span><br><span class="tooltipTitle">Viewport size: </span><span class="tooltipWidth" id="vpWidth">1440</span> x <span class="tooltipHeight" id="vpHeight">782</span></div></body></html>
