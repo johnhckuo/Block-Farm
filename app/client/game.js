@@ -628,18 +628,20 @@ Template.gamingArea.events({
 })
 
 Template.statusList.events({
-    'click .btn-info': function (e) {
-        var $tempE=$(e.target).parent().children();
-        var temp = panelCounter;
+    'click .btnSelect': function (e) {
+
+        var temp = panelCounter; // default:2
         $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
         $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
 
         // setTimeout(function(){
         //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
         // },1000);
-
-        panelCounter = tempE.target.className.split("crop")[1];
-
+        if(e.target.className==""){
+          panelCounter=$(e.target).parent().prop('className').split("crop")[1];
+        }else{
+          panelCounter = e.target.className.split("crop")[1];
+        }
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
 
