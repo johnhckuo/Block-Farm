@@ -1,5 +1,5 @@
 
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.4;
 library StringUtils {
     /// @dev Does a byte-by-byte lexicographical comparison of two strings.
     /// @return a negative number if `_a` is smaller, zero if they are equal

@@ -38,59 +38,76 @@
 <template name="statusList">
     <div class="statusList">
         {{> characterList}}
-        <div class="plantPanel statusPanel statusPanelShow" style="z-index:1;">
-            <h2>Crop List</h2>
-            <hr>
-            {{#each crops}}
-                    {{> crop}}
-            {{/each}}
+        <!-- <div class="cropListButton statusListButton"> -->
+        <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
+          <div class="statusPanelList">
+              <h2>Crop List</h2>
+              <hr>
+              {{#each crops}}
+                      {{> crop}}
+              {{/each}}
+              <!-- {{> cropSelectingBtns}} -->
+          </div>
+          <div>
             {{> cropSelectingBtns}}
+          </div>
         </div>
-        <div class="cropPanel statusPanel" style="z-index:-1;">
-            <div class="summaryBoard">
-                <h2>Current Crop Summary</h2>
 
-                <table id="cropTable" class="">
-                  <thead>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th>#</th>
-                      <th>Img</th>
-                      <th>Name</th>
-                      <th>Time Left</th>
+        <!-- <div class="currentListButton statusListButton" style="z-index:-1"> -->
+        <div class="cropPanel statusPanel listbutton" style="z-index:-1;">
+            <div class="statusPanelList">
+              <div class="summaryBoard">
+                  <h2>Current Crop Summary</h2>
 
-                    </tr>
-                    {{#each cropsSummary}}
+                  <table id="cropTable" class="">
+                    <thead>
+                    </thead>
+                    <tbody>
                       <tr>
-                        <th scope='row'>#</th>
-                        {{> cropSummary}}
+                        <th>#</th>
+                        <th>Img</th>
+                        <th>Name</th>
+                        <th>Time Left</th>
+
                       </tr>
-                    {{/each}}
-                  </tbody>
-                </table>
-            </div>
+                      {{#each cropsSummary}}
+                        <tr>
+                          <th scope='row'>#</th>
+                          {{> cropSummary}}
+                        </tr>
+                      {{/each}}
+                    </tbody>
+                  </table>
+              </div>
+              <!-- {{> cropSelectingBtns}} -->
+          </div>
+          <div>
             {{> cropSelectingBtns}}
-
+          </div>
         </div>
-        <div class="landPanel statusPanel" style="z-index:-1;">
-            <h2>Land List</h2>
-            <hr>
-            {{#each lands}}
-                    {{> land}}
-            {{/each}}
+        <!-- <div class="landListButton statusListButton"> -->
+        <div class="landPanel statusPanel listbutton" style="z-index:-1;">
+          <div class="statusPanelList">
+              <h2>Land List</h2>
+              <hr>
+              {{#each lands}}
+                      {{> land}}
+              {{/each}}
+              <!-- {{> cropSelectingBtns}} -->
+          </div>
+          <div>
             {{> cropSelectingBtns}}
+          </div>
         </div>
-
     </div>
 </template>
 
 <template name="cropSelectingBtns">
   <div class="controlButtons">
-    <button type="button" class="btn btn-info crop2" name="button">Plant Crop</button>
-    <button type="button" class="btn btn-info crop3" name="button">Current Crop</button>
-    <button type="button" class="btn btn-info crop4" name="button">Land</button>
-
+    <button type="button" class="btn btnSelect crop2" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
+    <button type="button" class="btn btnSelect crop3" name="button"><img src="/img/game/sprout.svg" alt=""></button>
+    <button type="button" class="btn btnSelect crop4" name="button"><img src="/img/game/harvest.svg" alt=""></button>
+    <button type="button" class="btn btnSelect crop5" name="button"><img src="/img/game/barn.svg" alt=""></button>
   </div>
 
 </template>
@@ -128,7 +145,14 @@
         <div class="functionSwitch">
               <button type="button" name="button" class="btn btn-primary shopOpen">Shop</button>
               <button type="button" name="button" class="btn btn-primary characterSwitch">{{characterType}}</button>
-              <button type="button" name="button" class="btn btn-primary MissionOpen">Mission</button>
+              <button type="button" name="button" class="btn btn-primary MissionOpen">
+                <div class="missionIndicator">
+                  !
+                </div>
+                Mission
+
+              </button>
+
               <span class="musicSwitch">
                   <img src="/img/game/speaker_off.svg" alt="">
               </span>
@@ -152,6 +176,11 @@
             <div class="levelUpObject">
                 <div class="levelUpAnimation"></div>
                 <div class="levelUpText"></div>
+            </div>
+
+            <div class= 'missionObject'>
+              <div class="thiefObject">
+              </div>
             </div>
 
             <div class= 'surfaceObject'>
