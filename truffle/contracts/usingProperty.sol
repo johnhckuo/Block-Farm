@@ -27,7 +27,6 @@ contract usingProperty{
     event propertyInited(uint);
     event propertyRatinglength_testing(uint);
 
-
     struct PropertyType{
         bytes32 name;
         uint id;
@@ -75,9 +74,22 @@ contract usingProperty{
         bytes32 extraData;
         uint propertyType;
         uint tradeable; //可被交易的數量
+
     }
 
     Property[] public propertyList;
+
+    struct CropList{
+        uint[] id;
+        bytes32[] name;
+        bytes32[] img;
+        bytes32[] start;
+        bytes32[] end;
+        uint[] cropType;
+        bool[] ripe;
+    }
+
+    mapping (uint => CropList) cropList;
 
     address CongressAddress;
     Congress congress;
@@ -233,6 +245,45 @@ contract usingProperty{
 
     /*  ----------------------------------
         |                                |
+        |            Crop List           |
+        |                                |
+        ----------------------------------  */
+
+        function addCropList(uint u_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe){
+            uint _id = cropList[u_Id].id.length++;
+            cropList[u_Id].id[_id] = _id;
+            cropList[u_Id].name.push(_name);
+            cropList[u_Id].img.push(_img);
+            cropList[u_Id].start.push(_start);
+            cropList[u_Id].end.push(_end);
+            cropList[u_Id].cropType.push(_cropType);
+            cropList[u_Id].ripe.push(_ripe);
+
+
+        }
+
+        function updateCropList(uint u_Id, uint p_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe){
+
+            cropList[u_Id].name[p_Id] = _name;
+            cropList[u_Id].img[p_Id] = _img;
+            cropList[u_Id].start[p_Id] = _start;
+            cropList[u_Id].end[p_Id] = _end;
+            cropList[u_Id].cropType[p_Id] = _cropType;
+            cropList[u_Id].ripe[p_Id] = _ripe;
+        }
+
+        function getCropList(uint u_Id) constant returns( uint[], bytes32[], bytes32[], bytes32[], bytes32[], uint[], bool[]){
+            return (cropList[u_Id].id, cropList[u_Id].name, cropList[u_Id].img, cropList[u_Id].start, cropList[u_Id].end, cropList[u_Id].cropType, cropList[u_Id].ripe);
+        }
+
+        function getCropListLength(uint u_Id) constant returns(uint){
+            return cropList[u_Id].id.length;
+        }
+
+
+
+    /*  ----------------------------------
+        |                                |
         |       land configuration       |
         |                                |
         ----------------------------------  */
@@ -245,9 +296,13 @@ contract usingProperty{
 
     }
 
-    function updateUserLandConfiguration(uint u_Id, uint c_Id, int256 cropId, int256 landId){
-        userLandConfigurationList[u_Id].land[c_Id] = landId;
-        userLandConfigurationList[u_Id].crop[c_Id] = cropId;
+    function updateUserLandConfiguration(uint u_Id, uint c_Id, int256 cropId, int256 landId, string operation){
+        if (StringUtils.equal(operation,"land")){
+            userLandConfigurationList[u_Id].land[c_Id] = landId;
+
+        }else if (StringUtils.equal(operation,"crop")){
+            userLandConfigurationList[u_Id].crop[c_Id] = cropId;
+        }
     }
 
     function getUserLandConfiguration(uint u_Id) constant returns(int256[], int256[]){

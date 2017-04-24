@@ -1,6 +1,6 @@
 import { Session } from 'meteor/session';
 
-var currentAccount = 1;
+var currentAccount = 2;
 
 var cropTypeList = [
   {
@@ -84,6 +84,7 @@ function initGameConfig(){
         usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
 
     }
+    console.log("Init Complete");
 
 }
 

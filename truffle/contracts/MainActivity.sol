@@ -59,7 +59,7 @@ contract MainActivity{
       property = usingProperty(PropertyAddress);
 
       congress.addMember(0, 0, 0);
-      initGameData(0, "Moderator", "Guard");
+      initGameData(0, "Moderator", "guard");
     }
 
     function initGameData(uint s_Id, bytes32 _name, bytes32 _character){
