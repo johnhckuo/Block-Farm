@@ -6,7 +6,7 @@ var landSize = 3;
 var blockSize = 150;
 var landSrc = "/img/game/land.svg";
 
-var prefix = "/img/game/";
+var prefix = "/img/game/plant/";
 var postfix = ".svg";
 
 var currentCropId;
@@ -65,8 +65,7 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 Template.gameIndex.created = function() {
     currentAccount = Session.get('currentAccount');
 
-
-
+    loading(1);
 
     s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
     s_Id = s_Id.c[0];
@@ -87,7 +86,6 @@ Template.gameIndex.created = function() {
     //     return Session.get("userName");
     // });
 
-    loading(1);
 
     audio = new Audio('/music/background_music.mp3');
     //audio.play();
