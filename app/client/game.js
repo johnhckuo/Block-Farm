@@ -133,6 +133,7 @@ Template.gameIndex.rendered = function() {
         console.log('gameArea render complete');
 
         loading(0);
+        console.log(fetchAllCropTypes());
     }
 }
 
@@ -738,6 +739,45 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+var fetchAllCropTypes = function(){
+
+    var cropData = [];
+    var typesList = [];
+
+    var flag = true;
+    var i = 0;
+    while (flag){
+      try{
+        cropData.push(usingPropertyInstance.propertyTypeList(i));
+        i++;
+      }
+      catch(err) {
+        flag = false;
+      }
+    }
+
+
+    for (var i = 0 ; i < cropData.length ; i++){
+        var tempImg = [];
+        for (var j = 0 ; j < 4; j++){
+            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(cropData[i][1].c[0], j, { from:web3.eth.accounts[currentAccount]})).toString();
+            tempImg.push(tempStr);
+            //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
+            //tempImg.push("carrot_grow");
+        }
+        typesList.push({
+          name : web3.toUtf8(cropData[i][0]),
+          id : cropData[i][1].c[0],
+          img: tempImg,
+          time: web3.toUtf8(cropData[i][3]),
+          count:cropData[i][4].c[0]
+
+        })
+    }
+
+    return typesList;
+}
+
 var loadCropList = function(s_Id){
     cropList = [];
     var data = usingPropertyInstance.getCropList(s_Id, { from:web3.eth.accounts[currentAccount]});
@@ -862,18 +902,6 @@ var fetchGameInitConfig = function(){
             count: userCropTypeData[1][i].c[0],
         });
     }
-    // var flag = true;
-    // var i = 0;
-    // while (flag){
-    //   try{
-    //     cropData.push(usingPropertyInstance.propertyTypeList(i));
-    //     i++;
-    //   }
-    //   catch(err) {
-    //     flag = false;
-    //   }
-    // }
-    //
 
     for (var i = 0 ; i < userCropType.length; i++){
         cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
