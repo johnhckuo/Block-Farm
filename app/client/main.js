@@ -359,7 +359,7 @@ if (Meteor.isClient) {
         var tx = usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:251468});
 
         //console.log(name, threshold, fund, rate, character);
-        var unlockCropId = Math.floor(cropsPerLvl*Math.random());
+        var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
         usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468});
 
         Router.go('game');

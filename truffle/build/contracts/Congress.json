@@ -149,8 +149,8 @@
     "1493034194377": {
       "events": {},
       "links": {},
-      "address": "0xf9a739807cb5eaa3af370d41a4032f9ed61f20e4",
-      "updated_at": 1492329612952
+      "address": "0xe0d8f2d2812dbd52c9a312066bb90fb068f26df3",
+      "updated_at": 1493047339696
     },
     "1492331925758": {
       "events": {},
@@ -1000,5 +1000,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1493041593671
+  "updated_at": 1493047339696
 }

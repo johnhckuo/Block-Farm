@@ -41,6 +41,7 @@ var cropTypeList = [];
 
 var landTypeList = [];
 
+var userCropType = [];
 
 ///////////////////////////
 //  prototype functions  //
@@ -196,13 +197,13 @@ Template.statusList.helpers({
     crops: function(){
 
         var cropsData = [];
-
+        console.log(cropTypeList);
         for (var i = 0 ; i < cropTypeList.length; i++){
             var data = cropTypeList[i];
 
             //console.log(data);
             cropsData.push({
-                "name": "crop property"+data.id,
+                "name": "crop property"+ i,
                 "img": prefix+data.img[3]+postfix,
                 "content": data.name
             });
@@ -373,6 +374,8 @@ Template.gameIndex.events({
             //console.log(cropList);
             _dep.changed();
 
+            userCropType[currentCropId].count++;
+            usingPropertyInstance.updateUserPropertyType(s_Id, currentCropId, {from:web3.eth.accounts[currentAccount], gas:2000000});
             console.log(userLandConfiguration);
             console.log(cropList);
 
@@ -425,6 +428,7 @@ Template.gameIndex.events({
         // var left = $(event.target).position().left;
         // var top = $(event.target).position().top;
         var id, cropClass;
+
         if (event.target.className == ""){
             cropClass = $(event.target).parent().prop('className').split(" ")[1];
             id = cropClass.split("croppedObject")[1];
@@ -433,9 +437,17 @@ Template.gameIndex.events({
             id = cropClass.split("croppedObject")[1];
 
         }
+
+        var typeIndex;
+        for (var j = 0 ; j < cropTypeList.length ; j++){
+            if (cropTypeList[j].id == cropList[id].type){
+                typeIndex = j;
+            }
+        }
+
         if (cropList[id].ripe){
 
-            $(".animationImg").html("<img src = '" + prefix+ cropTypeList[cropList[id].type].img[3] + postfix +"' />");
+            $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
             //var exp = cropTypeList[cropList[id].type].exp;
 
             var difference = elapsedTime(cropList[id].start, cropList[id].end);
@@ -474,7 +486,7 @@ Template.gameIndex.events({
             minUnit: 1,
             extraData: cropList[id].name,
             type: cropList[id].type,
-            count: cropTypeList[cropList[id].type].count,
+            count: cropTypeList[typeIndex].count,
             tradeable: 0
         });
         console.log(cropTypeList);
@@ -514,6 +526,8 @@ Template.crop.events({
         var id = $(event.target).parent()[0].className.split("property")[1];
 
         if ($(event.target).data('pressed')){
+            $(".cropObject").css("display", "none");
+
             $(event.target).css("background", "#337ab7");
             $(event.target).css("border-color", "#337ab7");
             $(event.target).text("Specify");
@@ -686,7 +700,6 @@ Template.characterList.events({
             rerenderCropLand(currentAccount);
             $(event.target).parent().find(".nextHome").remove();
         }
-        loading(0);
     },
     'click .nextHome': function (event) {
 
@@ -793,8 +806,11 @@ var getUserData = function(s_Id){
       guardId: null,
       thiefId: null
     };
-
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    if (web3.toUtf8(lastLogin) == 0){
+        return;
+    }
 
     lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
     //
@@ -839,20 +855,32 @@ var fetchGameInitConfig = function(){
     var cropData = [];
     var landData = [];
 
-    var flag = true;
-    var i = 0;
-    while (flag){
-      try{
-        cropData.push(usingPropertyInstance.propertyTypeList(i));
-        i++;
-      }
-      catch(err) {
-        flag = false;
-      }
+    var userCropTypeData = usingPropertyInstance.getUserPropertyType(s_Id, { from:web3.eth.accounts[currentAccount]});
+    for (var i = 0 ; i < userCropTypeData[0].length ; i++){
+        userCropType.push({
+            id: userCropTypeData[0][i].c[0],
+            count: userCropTypeData[1][i].c[0],
+        });
+    }
+    // var flag = true;
+    // var i = 0;
+    // while (flag){
+    //   try{
+    //     cropData.push(usingPropertyInstance.propertyTypeList(i));
+    //     i++;
+    //   }
+    //   catch(err) {
+    //     flag = false;
+    //   }
+    // }
+    //
+
+    for (var i = 0 ; i < userCropType.length; i++){
+        cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
     }
 
-    flag = true;
-    i = 0;
+    var flag = true;
+    var i = 0;
 
     while (flag){
       try{
@@ -864,12 +892,10 @@ var fetchGameInitConfig = function(){
       }
     }
 
-    // console.log(landData);
-    // console.log(cropData);
     for (var i = 0 ; i < cropData.length ; i++){
         var tempImg = [];
         for (var j = 0 ; j < 4; j++){
-            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(i, j, { from:web3.eth.accounts[currentAccount]})).toString();
+            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(cropData[i][1].c[0], j, { from:web3.eth.accounts[currentAccount]})).toString();
             tempImg.push(tempStr);
             //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
             //tempImg.push("carrot_grow");
@@ -911,7 +937,7 @@ var loading = function(on){
     $(".cropObject").css("display", "none");
     if (on){
         $(".loading").css("display", "flex");
-        opacity = 0.5;
+        opacity = 0.7;
     }else{
         setTimeout(function(){
             $(".loading").css("display", "none");
@@ -931,6 +957,8 @@ var rerenderCropLand = function(id){
   initCropLand(id);
 
   getUserStockList(id);
+  loading(0);
+
 }
 
 var initCropLand = function(id){
@@ -995,13 +1023,22 @@ var initCropLand = function(id){
 
         var difference = elapsedTime(new Date(), cropList[index].end);
         var originDifference = elapsedTime(cropList[index].start, cropList[index].end);
-
         var percent = difference/originDifference;
+
+
+        var typeIndex;
+        for (var j = 0 ; j < cropTypeList.length ; j++){
+            if (cropTypeList[j].id == cropList[index].type){
+                typeIndex = j;
+            }
+        }
+
+
         if (percent <= 0.6){
-            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[cropList[index].type].img[1] + postfix +"' />");
+            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[1] + postfix +"' />");
         }
         if (percent <= 0){
-            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[cropList[index].type].img[2] + postfix +"' />");
+            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[2] + postfix +"' />");
             //cropList[i].ripe = 1;
         }
 
@@ -1114,11 +1151,19 @@ var cropSummaryUpdate = function(){
         // }
         //$(".currentCrop"+i).css("width", percentage+"%");
         var percent = difference/originDifference;
+
+        var index;
+        for (var j = 0 ; j < cropTypeList.length ; j++){
+            if (cropTypeList[j].id == cropList[i].type){
+                index = j;
+            }
+        }
+
         if (percent <= 0.6){
-            $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[cropList[i].type].img[1]+postfix);
+            $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[1]+postfix);
         }
         if (percent <= 0){
-            $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[cropList[i].type].img[2]+postfix);
+            $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[2]+postfix);
             cropList[i].ripe = 1;
             $(".currentCrop"+cropList[i].id).parent().remove();
             continue;
