@@ -801,7 +801,6 @@ var getUserData = function(s_Id){
     lastLogin = new Date(lastLogin.split("\"")[1]);
     var difference = elapsedTime(lastLogin, new Date());
     currentUser.sta += Math.round(difference.getTime()/(1000*60));
-
     // end = end.split("\"")[1];
 
 }
@@ -1076,7 +1075,7 @@ var updateUserStamina = function(){
 var updateUserExp = function(exp){
   currentUser.exp += parseInt(exp);
   currentUser.totalExp += currentUser.exp;
-  CongressInstance.updateUserExp(s_Id, exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+  CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
   var lvlCap = levelCap(currentUser.level);
   var percent = (currentUser.exp/lvlCap)*100;
