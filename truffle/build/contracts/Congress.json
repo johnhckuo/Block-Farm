@@ -149,10 +149,857 @@
     "1493034194377": {
       "events": {},
       "links": {},
-      "address": "0xcb0dab5fc1147850e40b213db345998be3dc9faa",
-      "updated_at": 1493037525564
+      "address": "0xf9a739807cb5eaa3af370d41a4032f9ed61f20e4",
+      "updated_at": 1492329612952
+    },
+    "1492331925758": {
+      "events": {},
+      "links": {},
+      "address": "0x69b29944f07afc760d016b6907b14792fd5a0c97",
+      "updated_at": 1492497204370
+    },
+    "1492500880612": {
+      "events": {},
+      "links": {},
+      "address": "0xd1d4ad48774d6440e51fc500f5794499a3c277f5",
+      "updated_at": 1492579220524
+    },
+    "1492579331951": {
+      "events": {
+        "0x646fec02522b41e7125cfc859a64fd4f4cefd5dc3b6237ca0abe251ded1fa881": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "name": "ProposalAdded",
+          "type": "event"
+        },
+        "0xc34f869b7ff431b034b7b9aea9822dac189a685e0b015c7d1be3add3f89128e8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "position",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "voter",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "justification",
+              "type": "string"
+            }
+          ],
+          "name": "Voted",
+          "type": "event"
+        },
+        "0xd220b7272a8b6d0d7d6bcdace67b936a8f175e6d5c1b3ee438b72256b32ab3af": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "result",
+              "type": "int256"
+            },
+            {
+              "indexed": false,
+              "name": "quorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "active",
+              "type": "bool"
+            }
+          ],
+          "name": "ProposalTallied",
+          "type": "event"
+        },
+        "0x27b022af4a8347100c7a041ce5ccf8e14d644ff05de696315196faae8cd50c9b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "Stakeholder",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "isMember",
+              "type": "bool"
+            }
+          ],
+          "name": "MembershipChanged",
+          "type": "event"
+        },
+        "0xa439d3fa452be5e0e1e24a8145e715f4fd8b9c08c96a42fd82a855a85e5d57de": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "minimumQuorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "debatingPeriodInMinutes",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "majorityMargin",
+              "type": "int256"
+            }
+          ],
+          "name": "ChangeOfRules",
+          "type": "event"
+        },
+        "0xb5350045630ca1a5cc343e354c40b1db154687f41f4f855703362716ab3038c7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "addmember_test",
+          "type": "event"
+        },
+        "0xa398b89ba344a0b23a0b9de53db298b2a1a868b396c1878b7e9dcbafecd49b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "receivedEther",
+          "type": "event"
+        },
+        "0x0eeb71b8926d7ed8f47a2cedf6b9b204e2001344c7fa20c696c9f06ea7c413c6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_extraData",
+              "type": "bytes"
+            }
+          ],
+          "name": "receivedTokens",
+          "type": "event"
+        },
+        "0xc7abef3f3819a0a1c1dca003ffbe6c8dbf3573cd2cdfafadc2a69290c3f70589": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int_test",
+          "type": "event"
+        },
+        "0x70698fc28fbef901694858846443c4244a812d356997ecb70bf597321ff5b273": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int256_test",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3d35f0281174dc7a593e76e5c67fc3118ceeb0b8",
+      "updated_at": 1492585864383
+    },
+    "1492694572299": {
+      "events": {
+        "0x646fec02522b41e7125cfc859a64fd4f4cefd5dc3b6237ca0abe251ded1fa881": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "name": "ProposalAdded",
+          "type": "event"
+        },
+        "0xc34f869b7ff431b034b7b9aea9822dac189a685e0b015c7d1be3add3f89128e8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "position",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "voter",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "justification",
+              "type": "string"
+            }
+          ],
+          "name": "Voted",
+          "type": "event"
+        },
+        "0xd220b7272a8b6d0d7d6bcdace67b936a8f175e6d5c1b3ee438b72256b32ab3af": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "result",
+              "type": "int256"
+            },
+            {
+              "indexed": false,
+              "name": "quorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "active",
+              "type": "bool"
+            }
+          ],
+          "name": "ProposalTallied",
+          "type": "event"
+        },
+        "0x27b022af4a8347100c7a041ce5ccf8e14d644ff05de696315196faae8cd50c9b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "Stakeholder",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "isMember",
+              "type": "bool"
+            }
+          ],
+          "name": "MembershipChanged",
+          "type": "event"
+        },
+        "0xa439d3fa452be5e0e1e24a8145e715f4fd8b9c08c96a42fd82a855a85e5d57de": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "minimumQuorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "debatingPeriodInMinutes",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "majorityMargin",
+              "type": "int256"
+            }
+          ],
+          "name": "ChangeOfRules",
+          "type": "event"
+        },
+        "0xb5350045630ca1a5cc343e354c40b1db154687f41f4f855703362716ab3038c7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "addmember_test",
+          "type": "event"
+        },
+        "0xc7abef3f3819a0a1c1dca003ffbe6c8dbf3573cd2cdfafadc2a69290c3f70589": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int_test",
+          "type": "event"
+        },
+        "0x70698fc28fbef901694858846443c4244a812d356997ecb70bf597321ff5b273": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int256_test",
+          "type": "event"
+        },
+        "0xa398b89ba344a0b23a0b9de53db298b2a1a868b396c1878b7e9dcbafecd49b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "receivedEther",
+          "type": "event"
+        },
+        "0x0eeb71b8926d7ed8f47a2cedf6b9b204e2001344c7fa20c696c9f06ea7c413c6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_extraData",
+              "type": "bytes"
+            }
+          ],
+          "name": "receivedTokens",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x71c25add0f3b42fcdb868d880fab0a0345fb66a7",
+      "updated_at": 1492700981487
+    },
+    "1492701559285": {
+      "events": {
+        "0x646fec02522b41e7125cfc859a64fd4f4cefd5dc3b6237ca0abe251ded1fa881": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "name": "ProposalAdded",
+          "type": "event"
+        },
+        "0xc34f869b7ff431b034b7b9aea9822dac189a685e0b015c7d1be3add3f89128e8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "position",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "voter",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "justification",
+              "type": "string"
+            }
+          ],
+          "name": "Voted",
+          "type": "event"
+        },
+        "0xd220b7272a8b6d0d7d6bcdace67b936a8f175e6d5c1b3ee438b72256b32ab3af": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "result",
+              "type": "int256"
+            },
+            {
+              "indexed": false,
+              "name": "quorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "active",
+              "type": "bool"
+            }
+          ],
+          "name": "ProposalTallied",
+          "type": "event"
+        },
+        "0x27b022af4a8347100c7a041ce5ccf8e14d644ff05de696315196faae8cd50c9b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "Stakeholder",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "isMember",
+              "type": "bool"
+            }
+          ],
+          "name": "MembershipChanged",
+          "type": "event"
+        },
+        "0xa439d3fa452be5e0e1e24a8145e715f4fd8b9c08c96a42fd82a855a85e5d57de": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "minimumQuorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "debatingPeriodInMinutes",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "majorityMargin",
+              "type": "int256"
+            }
+          ],
+          "name": "ChangeOfRules",
+          "type": "event"
+        },
+        "0xb5350045630ca1a5cc343e354c40b1db154687f41f4f855703362716ab3038c7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "addmember_test",
+          "type": "event"
+        },
+        "0xc7abef3f3819a0a1c1dca003ffbe6c8dbf3573cd2cdfafadc2a69290c3f70589": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int_test",
+          "type": "event"
+        },
+        "0x70698fc28fbef901694858846443c4244a812d356997ecb70bf597321ff5b273": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int256_test",
+          "type": "event"
+        },
+        "0xa398b89ba344a0b23a0b9de53db298b2a1a868b396c1878b7e9dcbafecd49b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "receivedEther",
+          "type": "event"
+        },
+        "0x0eeb71b8926d7ed8f47a2cedf6b9b204e2001344c7fa20c696c9f06ea7c413c6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_extraData",
+              "type": "bytes"
+            }
+          ],
+          "name": "receivedTokens",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x15622602fd5891a2c17fba66c4ae07751bc60346",
+      "updated_at": 1492837286060
+    },
+    "1492844117142": {
+      "events": {
+        "0x646fec02522b41e7125cfc859a64fd4f4cefd5dc3b6237ca0abe251ded1fa881": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "name": "ProposalAdded",
+          "type": "event"
+        },
+        "0xc34f869b7ff431b034b7b9aea9822dac189a685e0b015c7d1be3add3f89128e8": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "position",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "name": "voter",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "justification",
+              "type": "string"
+            }
+          ],
+          "name": "Voted",
+          "type": "event"
+        },
+        "0xd220b7272a8b6d0d7d6bcdace67b936a8f175e6d5c1b3ee438b72256b32ab3af": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "proposalID",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "result",
+              "type": "int256"
+            },
+            {
+              "indexed": false,
+              "name": "quorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "active",
+              "type": "bool"
+            }
+          ],
+          "name": "ProposalTallied",
+          "type": "event"
+        },
+        "0x27b022af4a8347100c7a041ce5ccf8e14d644ff05de696315196faae8cd50c9b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "Stakeholder",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "isMember",
+              "type": "bool"
+            }
+          ],
+          "name": "MembershipChanged",
+          "type": "event"
+        },
+        "0xa439d3fa452be5e0e1e24a8145e715f4fd8b9c08c96a42fd82a855a85e5d57de": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "minimumQuorum",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "debatingPeriodInMinutes",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "majorityMargin",
+              "type": "int256"
+            }
+          ],
+          "name": "ChangeOfRules",
+          "type": "event"
+        },
+        "0xb5350045630ca1a5cc343e354c40b1db154687f41f4f855703362716ab3038c7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "addmember_test",
+          "type": "event"
+        },
+        "0xc7abef3f3819a0a1c1dca003ffbe6c8dbf3573cd2cdfafadc2a69290c3f70589": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int_test",
+          "type": "event"
+        },
+        "0x70698fc28fbef901694858846443c4244a812d356997ecb70bf597321ff5b273": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "name": "int256_test",
+          "type": "event"
+        },
+        "0xa398b89ba344a0b23a0b9de53db298b2a1a868b396c1878b7e9dcbafecd49b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "sender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "receivedEther",
+          "type": "event"
+        },
+        "0x0eeb71b8926d7ed8f47a2cedf6b9b204e2001344c7fa20c696c9f06ea7c413c6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_from",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_value",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "_token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_extraData",
+              "type": "bytes"
+            }
+          ],
+          "name": "receivedTokens",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x46f93ef7fd3de201bae059a5e2c00a894c1425e3",
+      "updated_at": 1492872669149
+    },
+    "1492938851690": {
+      "events": {},
+      "links": {},
+      "address": "0x7cf5bbc8783fd21d9c6a24c597f2fbc9a8f631de",
+      "updated_at": 1492938992097
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1493037525564
+  "updated_at": 1492938992097
+
 }

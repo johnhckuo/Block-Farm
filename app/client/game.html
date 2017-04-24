@@ -38,14 +38,20 @@
 <template name="statusList">
     <div class="statusList">
         {{> characterList}}
-        <div class="plantPanel statusPanel statusPanelShow" style="z-index:1;">
-            <h2>Crop List</h2>
-            <hr>
-            {{#each crops}}
-                    {{> crop}}
-            {{/each}}
+        <div class="cropListButton">
+          <div class="plantPanel statusPanel statusPanelShow" style="z-index:1;">
+              <h2>Crop List</h2>
+              <hr>
+              {{#each crops}}
+                      {{> crop}}
+              {{/each}}
+              <!-- {{> cropSelectingBtns}} -->
+          </div>
+          <div>
             {{> cropSelectingBtns}}
+          </div>
         </div>
+
         <div class="cropPanel statusPanel" style="z-index:-1;">
             <div class="summaryBoard">
                 <h2>Current Crop Summary</h2>
@@ -87,10 +93,10 @@
 
 <template name="cropSelectingBtns">
   <div class="controlButtons">
+    <button type="button" class="btn btn-info crop4" name="button"><img src="/img/game/fertilizer.svg" alt="" width=50px height=50px></button>
     <button type="button" class="btn btn-info crop2" name="button">Plant Crop</button>
     <button type="button" class="btn btn-info crop3" name="button">Current Crop</button>
-    <button type="button" class="btn btn-info crop4" name="button">Land</button>
-
+    <button type="button" class="btn btn-info crop5" name="button">Warehouse</button>
   </div>
 
 </template>

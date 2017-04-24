@@ -1280,10 +1280,5 @@
       "links": {
         "StringUtils": "0x9d1959136651b3f156de785b4525a5a4c2ae7b09"
       },
-      "address": "0x7a62a466cd3eb5efcdec4d97122afb996b8e56d2",
-      "updated_at": 1493037525548
-    }
-  },
-  "schema_version": "0.0.5",
-  "updated_at": 1493037525548
+
 }
