@@ -11,36 +11,41 @@
   position: relative;
   height:100%;
   width: 30vw;
-  background: #513F31;
+  /*background: #513F31;*/
+  background: white;
+  background-image: url("/img/game/background.svg");
+  background-size: 100px 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  color:white;
+  /*color:white;*/
 }
 
 .statusPanel{
-  transform: translateY(100px);
+  /*transform: translateY(100px);*/
   position: absolute;
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-end;
   align-items: center;
-  color: white;
+  color: black;
+  font-size: 30px;
   opacity: 0;
-
+  background-color: rgba(255,255,255,0.65);
 }
 
 .statusPanelShow{
-  transform: translateY(0vw);
-  transition: all 1s;
+  /*transform: translateY(0vw);
+  transition: all 1s;*/
   opacity: 1;
 
 }
-
+.statusPanelList{
+  margin-top: -20vh;
+}
 
 
 .gamingArea{
@@ -337,15 +342,19 @@
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  right: 0px;
+  right: -5vw;
   z-index: 1;
-  width: 0px;
-  /*margin-top: 100px;*/
-
+  width: 5vw;
+  margin-top: 150px;
+    transition: all 0s;
+    transition-duration:0s;
+    transition-delay: 0s;
 }
 .controlButtons button{
   margin-top: 1vh;
+  border-top-left-radius: 0px;
   border-top-right-radius: 15px;
+  border-bottom-left-radius: 0px;
   border-bottom-right-radius: 15px;
   height: 15vh;
   width: 5vw;
@@ -353,20 +362,12 @@
   border-style: none;
 }
 .controlButtons button:hover{
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: rgba(255, 255, 255, 0.65);
 }
-/*.button img{
-  height: 100px;
-  width: 100px;
-}*/
-/*.controlButtons *{
-  margin-right: 10px;
-}*/
-.cropListButton{
-  display: flex;
-  position: relative;
-  flex-direction: row-reverse;
-  align-items: center;
+.controlButtons button:active{
+  background-color: rgb(0,0,0,0.65);
+}
+.controlButtons img{
   height: 100%;
   width: 100%;
 }
@@ -402,13 +403,17 @@ td img{
   position: absolute;
   top: 0px;
   left: 0px;
-  padding:50px;
+  padding:10px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  background: rgba(0,0,0,0.2);
   z-index:5;
+
+  background: white;
+  background-image: url("/img/game/background.svg");
+  background-size: 100px 100px;
+
 }
 
 .characterImg{
