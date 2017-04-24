@@ -264,8 +264,27 @@
       "links": {},
       "address": "0x7907ba471cf3b15904bb15200f008db29ab6962c",
       "updated_at": 1492991692837
+    },
+    "1493034194377": {
+      "events": {
+        "0xc84dabcf2f66674d288267aa8d2fc25e3d9efa76e3b2b54c8cfbb3d12bd47596": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "status",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x116c621de9006cc1c293d49ab734d39a0d77576e",
+      "updated_at": 1493037525566
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1492991692837
+  "updated_at": 1493037525566
 }

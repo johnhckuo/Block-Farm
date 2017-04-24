@@ -121,7 +121,7 @@ contract usingProperty{
         |                                |
         ----------------------------------  */
 
-    function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _rating, uint _type, uint _tradeable) returns(uint _id){
+    function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
 
         bool flag = true;
         for (uint w = 0 ; w < propertyTypeList.length ; w++){
@@ -164,6 +164,16 @@ contract usingProperty{
 
         //propertyAdded("Success");
     }
+
+
+    function getPropertyByOwner(uint p_Id) constant returns (uint, bytes32, uint256, uint256, bytes32, uint, uint){
+        if(propertyList[p_Id].owner == msg.sender){
+            return (propertyList[p_Id].id, propertyList[p_Id].name, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].extraData, propertyList[p_Id].propertyType, propertyList[p_Id].tradeable);
+        }else{
+            throw;
+        }
+    }
+
 
     function removeProperty(uint _id){
         if (getPropertiesLength() == 0) throw;

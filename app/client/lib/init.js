@@ -1,13 +1,13 @@
 import { Session } from 'meteor/session';
 
-var currentAccount = 2;
+var currentAccount = 1;
 
 var cropTypeList = [
   {
       id:0,
       name: "Carrot",
       img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"],
-      count:0,
+      count:4,
       time:"0.0.0.3"
 
   },
@@ -15,7 +15,7 @@ var cropTypeList = [
       id:1,
       name: "Radish",
       img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
-      count:0,
+      count:4,
       time:"0.0.0.30"
 
   },
@@ -23,7 +23,7 @@ var cropTypeList = [
       id:2,
       name: "Lettuce",
       img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce"],
-      count:0,
+      count:4,
       time:"0.0.10.0"
 
   },
@@ -31,7 +31,7 @@ var cropTypeList = [
       id:3,
       name: "Cauliflower",
       img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
-      count:0,
+      count:4,
       time:"0.0.0.10"
 
   }

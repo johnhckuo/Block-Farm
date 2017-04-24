@@ -4,7 +4,7 @@ contract Congress{
     mapping (address => uint) public stakeholderId;
     function getStakeholdersLength() constant returns(uint);
     function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
-    function updateGameData(uint u_Id, uint _landSize, uint _level, uint _exp);
+    function updateGameData(uint u_Id, uint _landSize, uint _level);
     function initPlayerData(bytes32 _name, bytes32 _character);
     function addMember(uint256 _threshold, uint256 _fund, uint _rate);
 
@@ -81,8 +81,7 @@ contract MainActivity{
     }
 
     function playerLevelUp(uint u_Id, uint random){
-        //congress.
-        //property.
+
         var (name, exp, totalExp, character, landSize, level, stamina) = congress.getStakeholder(u_Id);
         level += 1;
         uint lvlCap = levelCap(level);
@@ -93,7 +92,9 @@ contract MainActivity{
             property.addUserPropertyType(u_Id, p_Id);
         }
 
-        congress.updateGameData(u_Id, landSize, level, exp);
+        congress.updateGameData(u_Id, landSize, level);
+        //congress.updateUserExp(u_Id, exp);
+
     }
 
     function sort(int256[] priorityList, uint[] visitList) returns(int256[], uint[]){

@@ -26,36 +26,16 @@ var cursorY;
 var panelCounter = 2, panelCount = 3;
 
 var cropList = [];
-var harvestCropList = [];
+var stockList = [];
 var landList = [];
 
 var staminaList = {crop:5,steal:5};
 
 var currentUser = {};
 
-
 var userLandConfiguration = [];
 
 var showThief = false;
-
-var otherUserLandConfiguration = [];
-
-var otherUser =
-  {
-    id:0,
-    address:"0x0101010101",
-
-    name: "bill",
-    exp: 0,
-    totalExp: 0,
-    type: "Thief",
-    landSize: 5,
-    level:0,
-    stamina: 100,
-    guardId: null,
-    thiefId: null
-
-  };
 
 var cropTypeList = [];
 
@@ -93,6 +73,7 @@ Template.gameIndex.created = function() {
     getUserData(s_Id);
     getLandConfiguration(s_Id);
     loadCropList(s_Id);
+    getUserStockList(s_Id);
 
     fetchGameInitConfig();
     console.log(cropTypeList);
@@ -121,17 +102,6 @@ Template.gameIndex.created = function() {
     //     );
     // }
     //
-    for (var i = 0 ; i < otherUser.landSize*otherUser.landSize; i++){
-        otherUserLandConfiguration.push(
-          {
-              id: i,
-              land: Math.floor(Math.random() * landTypeList.length),
-              crop: Math.floor(Math.random() * cropTypeList.length)
-
-
-          }
-        );
-    }
 
 
 
@@ -185,6 +155,15 @@ Template.shop.rendered = function () {
     $('.shop_header').append(select);
 }
 
+
+
+$(window).on("beforeunload", function() {
+    CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), {from:web3.eth.accounts[currentAccount], gas:2000000} );
+    CongressInstance.updateUserStamina(s_Id, currentUser.sta, {from:web3.eth.accounts[currentAccount], gas:2000000} );
+
+    console.log("saved");
+    return true ? "Do you really want to close?" : null;
+})
 
 ///////////////
 //  Helpers  //
@@ -313,26 +292,26 @@ Template.shop.events({
         usingPropertyInstance.addPropertyType('Cauliflower', ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"], '0.0.0.10', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
 
-        usingPropertyInstance.addProperty('Carrot', 4, 1, '', 0, 0, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 4, 1, '', 0, 1, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 3, 1, '', 0, 3, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot', 8, 1, '', 0, 0, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 5, 1, '', 0, 1, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 9, 1, '', 0, 2, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower',10, 1, '', 0, 3, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot',10, 1, '', 0, 0, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 9, 1, '', 0, 1, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 7, 1, '', 0, 2, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 6, 1, '', 0, 3, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot', 14, 1, '', 0, 0, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 14, 1, '', 0, 1, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 13, 1, '', 0, 2, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 13, 1, '', 0, 3, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot', 1, 1, '', 0, 0, 0, { from: web3.eth.accounts[4], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 2, 1, '', 0, 1, 0, { from: web3.eth.accounts[4], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 0, 2, 0, { from: web3.eth.accounts[4], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 4, 1, '', 0, 3, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 4, 1, '', 0, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 4, 1, '', 1, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 2, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 3, 1, '', 3, 0, { from: web3.eth.accounts[0], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 8, 1, '', 0, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 5, 1, '', 1, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 9, 1, '', 2, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower',10, 1, '', 3, 0, { from: web3.eth.accounts[1], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot',10, 1, '', 0, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 9, 1, '', 1, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 7, 1, '', 2, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 6, 1, '', 3, 0, { from: web3.eth.accounts[2], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 14, 1, '', 0, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 14, 1, '', 1, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 13, 1, '', 2, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 13, 1, '', 3, 0, { from: web3.eth.accounts[3], gas: 2000000 });
+        usingPropertyInstance.addProperty('Carrot', 1, 1, '', 0, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Radish', 2, 1, '', 1, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 2, 0, { from: web3.eth.accounts[4], gas: 2000000 });
+        usingPropertyInstance.addProperty('Cauliflower', 4, 1, '', 3, 0, { from: web3.eth.accounts[4], gas: 2000000 });
         //var id = usingPropertyInstance.gets_id.call({ from: web3.eth.accounts[currentAccount], gas: 2000000 });
         //alert(id);
     },
@@ -361,7 +340,6 @@ Template.gameIndex.events({
                 return;
             }
 
-            cropTypeList[currentCropId].count++;
             updateStaminaBar(staminaList["crop"]);
 
             var styles = {
@@ -491,7 +469,19 @@ Template.gameIndex.events({
             },1000);
         },1000);
 
-        harvestCropList.push(cropList[id]);
+        var stockId = stockList.length;
+        stockList.push({
+            id: stockId,
+            name: cropList[id].name,
+            minUnit: 1,
+            extraData: cropList[id].name,
+            type: cropList[id].type,
+            count: cropTypeList[cropList[id].type].count,
+            tradeable: 0
+        });
+        console.log(cropTypeList);
+
+        usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
         var configId;
         for (var i = 0 ; i < userLandConfiguration.length ; i++){
@@ -507,7 +497,7 @@ Template.gameIndex.events({
         cropList[id].img = 0;
         cropList[id].start = 0;
         cropList[id].end = 0;
-        cropList[id].cropType = 0;
+        cropList[id].type = 0;
         cropList[id].ripe = 0;
 
         usingPropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
@@ -760,6 +750,31 @@ var loadCropList = function(s_Id){
 
 }
 
+
+var getUserStockList = function(s_Id){
+    var p_List = CongressInstance.getPropertyList(s_Id, { from:web3.eth.accounts[currentAccount]})
+    console.log(p_List);
+
+
+    var data = [];
+    for (var i = 0 ; i < p_List.length ; i++){
+        data.push(usingPropertyInstance.getPropertyByOwner(p_List[i].c[0], { from:web3.eth.accounts[currentAccount]}));
+    }
+    for (var i = 0 ; i < data.length ; i++){
+      stockList.push({
+          id: data[i][0].c[0],
+          name: web3.toUtf8(data[i][1]),
+          count: data[i][2].c[0],
+          minUnit: data[i][3].c[0],
+          extraData: web3.toUtf8(data[i][4]),
+          type: data[i][5].c[0],
+          tradeable: data[i][6].c[0]
+      });
+    }
+    console.log(stockList);
+
+}
+
 var getUserData = function(s_Id){
 
     var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
@@ -778,6 +793,16 @@ var getUserData = function(s_Id){
       guardId: null,
       thiefId: null
     };
+
+    var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
+    //
+    lastLogin = new Date(lastLogin.split("\"")[1]);
+    var difference = elapsedTime(lastLogin, new Date());
+    currentUser.sta += Math.round(difference.getTime()/(1000*60));
+
+    // end = end.split("\"")[1];
 
 }
 
@@ -905,6 +930,8 @@ var rerenderCropLand = function(id){
   getLandConfiguration(id);
   loadCropList(id);
   initCropLand(id);
+
+  getUserStockList(id);
 }
 
 var initCropLand = function(id){
@@ -1046,17 +1073,17 @@ var updateUserStamina = function(){
 
 
 
-
 var updateUserExp = function(exp){
   currentUser.exp += parseInt(exp);
   currentUser.totalExp += currentUser.exp;
+  CongressInstance.updateUserExp(s_Id, exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
   var lvlCap = levelCap(currentUser.level);
   var percent = (currentUser.exp/lvlCap)*100;
   if  (percent >= 100){
     currentUser.level += 1;
     currentUser.exp = currentUser.exp - lvlCap;
     $(".levelUpObject").attr("display", "inline");
-
     MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
     rerenderCropLand(s_Id);
 

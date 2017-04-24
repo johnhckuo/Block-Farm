@@ -101,6 +101,8 @@ contract Congress is owned, tokenRecipient {
 
         uint propertyCount;
         uint[] propertyId;
+
+        bytes32 lastLogin;
     }
 
     struct Syndicate{
@@ -160,8 +162,16 @@ contract Congress is owned, tokenRecipient {
         return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
     }
 
+    function getStakeholderLastLogin(uint s_Id) constant returns(bytes32){
+        return stakeholdersGameData[s_Id].lastLogin;
+    }
+
     function getStakeholder_Mission(uint s_Id) constant returns(uint){
         return stakeholders[s_Id].farmerLevel;
+    }
+
+    function getPropertyList(uint s_Id) constant returns(uint[]){
+        return stakeholdersGameData[s_Id].propertyId;
     }
 
     function getPropertyId(uint s_Id, uint index) constant returns(uint){
@@ -224,6 +234,7 @@ contract Congress is owned, tokenRecipient {
          stakeholdersGameData[_id].landSize = 3;
          stakeholdersGameData[_id].level = 0;
          stakeholdersGameData[_id].stamina = 100;
+         stakeholdersGameData[_id].lastLogin = 0;
 
          //stakeholders[_id].guardId = 0;
          //stakeholders[_id].thiefId = 0;
@@ -238,10 +249,14 @@ contract Congress is owned, tokenRecipient {
         stakeholdersGameData[u_Id].stamina = sta;
     }
 
-    function updateGameData(uint u_Id, uint _landSize, uint _level, uint _exp){
+    function updateStakeholderLastLogin(uint u_Id, bytes32 _lastLogin){
+        stakeholdersGameData[u_Id].lastLogin = _lastLogin;
+    }
+
+    function updateGameData(uint u_Id, uint _landSize, uint _level){
         stakeholdersGameData[u_Id].landSize = _landSize;
         stakeholdersGameData[u_Id].level = _level;
-        stakeholdersGameData[u_Id].exp = _exp;
+
 
     }
 
