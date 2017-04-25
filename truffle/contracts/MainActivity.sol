@@ -84,8 +84,6 @@ contract MainActivity{
 
         var (name, exp, totalExp, character, landSize, level, stamina) = congress.getStakeholder(u_Id);
         level += 1;
-        uint lvlCap = levelCap(level);
-        exp = totalExp - lvlCap;
         if (level % 5 == 0){
             landSize += 1;
             uint p_Id = property.getPropertyTypeId(random + (level*unlockCropNum));

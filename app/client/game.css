@@ -501,8 +501,8 @@ td img{
 }
 
 .animationTemp{
-  width:150px;
-  height:150px;
+  width:80px;
+  height:80px;
   position:absolute;
   z-index:6;
 
@@ -551,14 +551,93 @@ td img{
 }
 .loading{
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 50%;
+  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10;
   background: rgba(255,255,255,0.5);
   transition: opacity 1s;
+  border-radius: 10%;
+}
+
+.levelUp{
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  background: rgba(0,0,0,0.8);
+  transition: opacity 1s;
+  border-radius: 10%;
+  display:none;
+  opacity: 0;
+}
+
+.levelUp h2{
+  position: absolute;
+  top:10%;
+  color:white;
+  font-size: 36px;
+
+}
+
+.levelUp div{
+  position: absolute;
+  width:50%;
+  height: 50%;
+}
+
+.levelUpArrow{
+  z-index:11;
+  animation-name: levelUpArrow;
+  animation-iteration-count:infinite;
+  animation-duration: 5s;
+
+}
+
+.levelUp img{
+
+  animation-name: levelUpCircle;
+  animation-iteration-count:infinite;
+  animation-timing-function: linear;
+
+
+}
+
+.circleL img{
+  animation-duration: 8s;
+}
+
+.circleM img{
+  animation-duration: 6s;
+
+}
+
+.circleS img{
+  animation-duration: 4s;
+
+}
+
+.levelUpText{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+
+}
+
+@keyframes levelUpArrow {
+    0%   {transform: translateY(0px); opacity: 0;}
+    100% {transform: translateY(-150px); opacity: 1;}
+}
+
+@keyframes pCircle {
+    0%   {transform: rotateZ(0deg);}
+    100% {transform: rotateZ(360deg);}
 }
 
 .MissionOpen{

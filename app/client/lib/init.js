@@ -1,6 +1,6 @@
 import { Session } from 'meteor/session';
 
-var currentAccount = 3;
+var currentAccount = 1;
 var cropsPerLvl =3;
 
 var cropTypeList = [
@@ -17,7 +17,7 @@ var cropTypeList = [
       name: "Radish",
       img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
       count:4,
-      time:"0.0.0.30"
+      time:"0.0.0.5"
 
   },
   {
@@ -25,13 +25,29 @@ var cropTypeList = [
       name: "Lettuce",
       img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce"],
       count:4,
-      time:"0.0.10.0"
+      time:"0.0.0.3"
 
   },
   {
       id:3,
       name: "Cauliflower",
       img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
+      count:4,
+      time:"0.0.0.10"
+
+  },
+  {
+      id:4,
+      name: "Aubergine",
+      img: ["aubergine_seed", "aubergine_grow", "aubergine_harvest", "aubergine"],
+      count:4,
+      time:"0.0.0.10"
+
+  },
+  {
+      id:5,
+      name: "Blueberry",
+      img: ["blueberry_seed", "blueberry_grow", "blueberry_harvest", "blueberry"],
       count:4,
       time:"0.0.0.10"
 
@@ -93,8 +109,13 @@ window.onload = function() {
     init();
     Session.set('currentAccount', currentAccount);
     Session.set('cropsPerLvl', cropsPerLvl);
+    try{
+      var val = usingPropertyInstance.propertyTypeList(0);
+    }
+    catch(err) {
+      initGameConfig();
+    }
 
 
-    //initGameConfig();
 
 }
