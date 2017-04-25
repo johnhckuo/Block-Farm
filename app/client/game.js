@@ -133,6 +133,7 @@ Template.gameIndex.rendered = function() {
         console.log('gameArea render complete');
 
         loading(0);
+        console.log(fetchAllCropTypes());
     }
 }
 
@@ -154,7 +155,9 @@ Template.shop.rendered = function () {
     $('.shop_header').append(select);
 }
 
-
+//////////////////
+//    onLeave   //
+//////////////////
 
 $(window).on("beforeunload", function() {
     CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), {from:web3.eth.accounts[currentAccount], gas:2000000} );
@@ -738,6 +741,45 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+var fetchAllCropTypes = function(){
+
+    var cropData = [];
+    var typesList = [];
+
+    var flag = true;
+    var i = 0;
+    while (flag){
+      try{
+        cropData.push(usingPropertyInstance.propertyTypeList(i));
+        i++;
+      }
+      catch(err) {
+        flag = false;
+      }
+    }
+
+
+    for (var i = 0 ; i < cropData.length ; i++){
+        var tempImg = [];
+        for (var j = 0 ; j < 4; j++){
+            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(cropData[i][1].c[0], j, { from:web3.eth.accounts[currentAccount]})).toString();
+            tempImg.push(tempStr);
+            //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
+            //tempImg.push("carrot_grow");
+        }
+        typesList.push({
+          name : web3.toUtf8(cropData[i][0]),
+          id : cropData[i][1].c[0],
+          img: tempImg,
+          time: web3.toUtf8(cropData[i][3]),
+          count:cropData[i][4].c[0]
+
+        })
+    }
+
+    return typesList;
+}
+
 var loadCropList = function(s_Id){
     cropList = [];
     var data = usingPropertyInstance.getCropList(s_Id, { from:web3.eth.accounts[currentAccount]});
@@ -817,6 +859,11 @@ var getUserData = function(s_Id){
     lastLogin = new Date(lastLogin.split("\"")[1]);
     var difference = elapsedTime(lastLogin, new Date());
     currentUser.sta += Math.round(difference.getTime()/(1000*60));
+    var staCap = staminaCap(currentUser.level);
+
+    if (currentUser.sta >= staCap ){
+        currentUser.sta = staCap;
+    }
     // end = end.split("\"")[1];
 
 }
@@ -862,18 +909,6 @@ var fetchGameInitConfig = function(){
             count: userCropTypeData[1][i].c[0],
         });
     }
-    // var flag = true;
-    // var i = 0;
-    // while (flag){
-    //   try{
-    //     cropData.push(usingPropertyInstance.propertyTypeList(i));
-    //     i++;
-    //   }
-    //   catch(err) {
-    //     flag = false;
-    //   }
-    // }
-    //
 
     for (var i = 0 ; i < userCropType.length; i++){
         cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
@@ -1116,11 +1151,12 @@ var updateUserExp = function(exp){
 
   var lvlCap = levelCap(currentUser.level);
   var percent = (currentUser.exp/lvlCap)*100;
-  if  (percent >= 100){
+  if  (currentUser.exp >= lvlCap){
     currentUser.level += 1;
     currentUser.exp = currentUser.exp - lvlCap;
     $(".levelUpObject").attr("display", "inline");
     MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+    CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
     rerenderCropLand(s_Id);
 
   }
