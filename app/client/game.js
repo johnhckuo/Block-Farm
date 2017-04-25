@@ -155,7 +155,9 @@ Template.shop.rendered = function () {
     $('.shop_header').append(select);
 }
 
-
+//////////////////
+//    onLeave   //
+//////////////////
 
 $(window).on("beforeunload", function() {
     CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), {from:web3.eth.accounts[currentAccount], gas:2000000} );
@@ -857,6 +859,11 @@ var getUserData = function(s_Id){
     lastLogin = new Date(lastLogin.split("\"")[1]);
     var difference = elapsedTime(lastLogin, new Date());
     currentUser.sta += Math.round(difference.getTime()/(1000*60));
+    var staCap = staminaCap(currentUser.level);
+
+    if (currentUser.sta >= staCap ){
+        currentUser.sta = staCap;
+    }
     // end = end.split("\"")[1];
 
 }
@@ -1144,11 +1151,12 @@ var updateUserExp = function(exp){
 
   var lvlCap = levelCap(currentUser.level);
   var percent = (currentUser.exp/lvlCap)*100;
-  if  (percent >= 100){
+  if  (currentUser.exp >= lvlCap){
     currentUser.level += 1;
     currentUser.exp = currentUser.exp - lvlCap;
     $(".levelUpObject").attr("display", "inline");
     MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+    CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
     rerenderCropLand(s_Id);
 
   }
