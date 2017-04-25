@@ -6,71 +6,73 @@
 	.st0{display:none;}
 	.st1{display:inline;fill:none;stroke:#C15757;stroke-width:2;stroke-miterlimit:10;}
 	.st2{display:inline;fill:#A2D045;}
-	.st3{display:inline;}
-	.st4{display:none;fill:#E6AF78;}
-	.st5{display:none;fill:#D29B6E;}
-	.st6{display:none;fill:#704E46;}
-	.st7{fill:#704E46;}
-	.st8{display:none;fill:#736F7B;}
-	.st9{display:none;fill:#F0C087;}
-	.st10{display:inline;fill:#625D6B;}
-	.st11{fill:#FFCF65;}
-	.st12{fill:#FFB450;}
-	.st13{fill:#FFDC78;}
-	.st14{fill:#212121;}
-	.st15{fill:#545554;}
-	.st16{display:inline;fill:#212121;}
-	.st17{display:inline;fill:#F2F2F2;}
-	.st18{display:inline;fill:#FFFFFF;}
-	.st19{fill:#223F91;}
-	.st20{fill:#1A1782;}
-	.st21{clip-path:url(#SVGID_2_);}
-	.st22{fill:#172C65;}
-	.st23{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st24{fill:#FFFFFF;}
-	.st25{fill:#E5E4E3;}
-	.st26{fill:#D3D3D3;}
-	.st27{display:inline;fill:none;}
-	.st28{filter:url(#Adobe_OpacityMaskFilter);}
-	.st29{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st30{mask:url(#SVGID_3_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st31{filter:url(#Adobe_OpacityMaskFilter_1_);}
-	.st32{filter:url(#Adobe_OpacityMaskFilter_2_);}
-	.st33{mask:url(#SVGID_4_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st34{filter:url(#Adobe_OpacityMaskFilter_3_);}
-	.st35{filter:url(#Adobe_OpacityMaskFilter_4_);}
-	.st36{mask:url(#SVGID_5_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st37{display:inline;filter:url(#Adobe_OpacityMaskFilter_5_);}
-	.st38{display:inline;mask:url(#SVGID_6_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st39{display:inline;filter:url(#Adobe_OpacityMaskFilter_6_);}
-	.st40{filter:url(#Adobe_OpacityMaskFilter_7_);}
-	.st41{mask:url(#SVGID_7_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st42{display:inline;fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st43{display:inline;filter:url(#Adobe_OpacityMaskFilter_8_);}
-	.st44{filter:url(#Adobe_OpacityMaskFilter_9_);}
-	.st45{mask:url(#SVGID_8_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st46{display:inline;filter:url(#Adobe_OpacityMaskFilter_10_);}
-	.st47{display:inline;mask:url(#SVGID_9_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st48{display:inline;filter:url(#Adobe_OpacityMaskFilter_11_);}
-	.st49{filter:url(#Adobe_OpacityMaskFilter_12_);}
-	.st50{mask:url(#SVGID_10_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st51{display:inline;filter:url(#Adobe_OpacityMaskFilter_13_);}
-	.st52{filter:url(#Adobe_OpacityMaskFilter_14_);}
-	.st53{mask:url(#SVGID_11_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
-	.st54{fill:#D67554;}
-	.st55{font-family:'BritannicBold';}
-	.st56{font-size:90px;}
-	.st57{display:inline;fill:#D67554;}
-	.st58{opacity:0.43;}
-	.st59{fill:#FFC170;}
-	.st60{clip-path:url(#SVGID_13_);}
-	.st61{fill:#FFD6A0;}
-	.st62{display:inline;fill:#FFC170;}
-	.st63{display:inline;fill:#FFD6A0;}
-	.st64{opacity:0.71;}
-	.st65{clip-path:url(#SVGID_15_);}
-	.st66{clip-path:url(#SVGID_17_);}
-	.st67{font-size:100px;}
+	.st3{fill:#A2D045;}
+	.st4{display:inline;}
+	.st5{display:none;fill:#E6AF78;}
+	.st6{display:none;fill:#D29B6E;}
+	.st7{display:none;fill:#704E46;}
+	.st8{fill:#704E46;}
+	.st9{display:none;fill:#736F7B;}
+	.st10{display:none;fill:#F0C087;}
+	.st11{display:inline;fill:#625D6B;}
+	.st12{fill:#FFCF65;}
+	.st13{fill:#FFB450;}
+	.st14{fill:#FFDC78;}
+	.st15{fill:#212121;}
+	.st16{fill:#545554;}
+	.st17{display:inline;fill:#212121;}
+	.st18{display:inline;fill:#F2F2F2;}
+	.st19{display:inline;fill:#FFFFFF;}
+	.st20{fill:#223F91;}
+	.st21{fill:#1A1782;}
+	.st22{clip-path:url(#SVGID_2_);}
+	.st23{fill:#172C65;}
+	.st24{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st25{fill:#FFFFFF;}
+	.st26{fill:#E5E4E3;}
+	.st27{fill:#D3D3D3;}
+	.st28{display:inline;fill:none;}
+	.st29{display:inline;filter:url(#Adobe_OpacityMaskFilter);}
+	.st30{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st31{display:inline;mask:url(#SVGID_3_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st32{display:inline;filter:url(#Adobe_OpacityMaskFilter_1_);}
+	.st33{filter:url(#Adobe_OpacityMaskFilter_2_);}
+	.st34{mask:url(#SVGID_4_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st35{display:inline;fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st36{display:inline;filter:url(#Adobe_OpacityMaskFilter_3_);}
+	.st37{filter:url(#Adobe_OpacityMaskFilter_4_);}
+	.st38{mask:url(#SVGID_5_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st39{display:inline;filter:url(#Adobe_OpacityMaskFilter_5_);}
+	.st40{display:inline;mask:url(#SVGID_6_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st41{display:inline;filter:url(#Adobe_OpacityMaskFilter_6_);}
+	.st42{filter:url(#Adobe_OpacityMaskFilter_7_);}
+	.st43{mask:url(#SVGID_7_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st44{display:inline;filter:url(#Adobe_OpacityMaskFilter_8_);}
+	.st45{filter:url(#Adobe_OpacityMaskFilter_9_);}
+	.st46{mask:url(#SVGID_8_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st47{filter:url(#Adobe_OpacityMaskFilter_10_);}
+	.st48{display:none;mask:url(#SVGID_9_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st49{filter:url(#Adobe_OpacityMaskFilter_11_);}
+	.st50{filter:url(#Adobe_OpacityMaskFilter_12_);}
+	.st51{mask:url(#SVGID_10_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st52{display:none;fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st53{filter:url(#Adobe_OpacityMaskFilter_13_);}
+	.st54{filter:url(#Adobe_OpacityMaskFilter_14_);}
+	.st55{mask:url(#SVGID_11_);fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st56{fill:#D67554;}
+	.st57{font-family:'BritannicBold';}
+	.st58{font-size:90px;}
+	.st59{display:inline;fill:#D67554;}
+	.st60{opacity:0.43;}
+	.st61{fill:#FFC170;}
+	.st62{clip-path:url(#SVGID_13_);}
+	.st63{fill:#FFD6A0;}
+	.st64{display:inline;fill:#FFC170;}
+	.st65{display:inline;fill:#FFD6A0;}
+	.st66{opacity:0.71;}
+	.st67{clip-path:url(#SVGID_15_);}
+	.st68{clip-path:url(#SVGID_17_);}
+	.st69{font-size:100px;}
 </style>
 <g id="base_x5F_new" class="st0">
 	<polyline class="st1" points="511,390.8 29.8,666.9 -447.1,393.6 28.3,667.1 	"/>
@@ -85,104 +87,104 @@
 	<path class="st2" d="M38.9,111.9c-162,93.9-324,187.9-486,281.8c158.9,90.4,317.7,180.8,476.6,271.1
 		c161.1-92.6,322.1-185.2,483.2-277.8C354.7,295.4,196.8,203.7,38.9,111.9z"/>
 </g>
-<g id="圖層_8" class="st0">
-	<rect x="-223" y="225" class="st2" width="512" height="512"/>
+<g id="圖層_8">
+	<rect x="-223" y="225" class="st3" width="512" height="512"/>
 </g>
 <g id="farmer" class="st0">
-	<g class="st3">
-		<rect x="-37.6" y="547" class="st4" width="141.2" height="105.9"/>
-		<path class="st5" d="M-37.6,640.2c97.1,0,141.2-57.9,141.2-57.2v-36H-37.6V640.2z"/>
+	<g class="st4">
+		<rect x="-37.6" y="547" class="st5" width="141.2" height="105.9"/>
+		<path class="st6" d="M-37.6,640.2c97.1,0,141.2-57.9,141.2-57.2v-36H-37.6V640.2z"/>
 		<g>
-			<path class="st6" d="M33,731.9c-4.9,0-8.8-4.4-8.8-9.8V683h17.6v39.1C41.8,727.5,37.9,731.9,33,731.9z"/>
-			<path class="st7" d="M33,692.8c-92.4,0-167.5-92.1-167.5-205.2c2.2,2.1,4.5,4.1,6.7,6.2c0.4,16.4,3.9,75.4,45.5,126
+			<path class="st7" d="M33,731.9c-4.9,0-8.8-4.4-8.8-9.8V683h17.6v39.1C41.8,727.5,37.9,731.9,33,731.9z"/>
+			<path class="st8" d="M33,692.8c-92.4,0-167.5-92.1-167.5-205.2c2.2,2.1,4.5,4.1,6.7,6.2c0.4,16.4,3.9,75.4,45.5,126
 				c10,12.2,49.3,59.9,113.7,61.6c66.9,1.8,109.4-47.5,117.5-57.4c43.1-52.3,42.1-114.7,41.7-127.4c3.3-3,6.6-6,9.9-9
 				C200.5,600.7,125.4,692.8,33,692.8z"/>
 		</g>
-		<path class="st8" d="M104.2,618.5L33,652.9l-71.2-34.4l-103.2,20c-16.6,3.2-28.6,17.8-28.6,34.7v59.2c0,9.8,7.9,17.7,17.7,17.7
+		<path class="st9" d="M104.2,618.5L33,652.9l-71.2-34.4l-103.2,20c-16.6,3.2-28.6,17.8-28.6,34.7v59.2c0,9.8,7.9,17.7,17.7,17.7
 			h370.8c9.8,0,17.7-7.9,17.7-17.7v-59.2c0-16.9-12-31.4-28.6-34.7L104.2,618.5z"/>
-		<path class="st9" d="M-67.8,423.4l4.8,106.4c0.6,14.2,7.6,27.3,18.9,35.8l32.7,24.5c8.2,6.2,18.2,9.5,28.5,9.5h31.7
+		<path class="st10" d="M-67.8,423.4l4.8,106.4c0.6,14.2,7.6,27.3,18.9,35.8l32.7,24.5c8.2,6.2,18.2,9.5,28.5,9.5h31.7
 			c10.3,0,20.3-3.3,28.5-9.5l32.7-24.5c11.4-8.5,18.3-21.7,18.9-35.8l4.8-106.4H-67.8L-67.8,423.4z"/>
-		<path class="st4" d="M130.1,449.9v-26.5H-67.8l4.8,106.4c0.6,14.2,7.6,27.3,18.9,35.8l32.7,24.5c8.2,6.2,18.2,9.5,28.5,9.5H33
+		<path class="st5" d="M130.1,449.9v-26.5H-67.8l4.8,106.4c0.6,14.2,7.6,27.3,18.9,35.8l32.7,24.5c8.2,6.2,18.2,9.5,28.5,9.5H33
 			c-15.8,0-47.5-31.7-47.5-71.2v-69.7c0-4.9,4-8.8,8.8-8.8H130.1z"/>
 		<g class="st0">
-			<rect x="-81.8" y="423.4" class="st10" width="17.7" height="44.1"/>
-			<rect x="130.1" y="423.4" class="st10" width="17.7" height="44.1"/>
+			<rect x="-81.8" y="423.4" class="st11" width="17.7" height="44.1"/>
+			<rect x="130.1" y="423.4" class="st11" width="17.7" height="44.1"/>
 		</g>
-		<path class="st9" d="M151.2,477.5l-8.9,35.7c-1.1,4.2-4.9,7.2-9.2,7.2l0,0c-4.8,0-8.8-3.6-9.4-8.3l-4.6-36.6
+		<path class="st10" d="M151.2,477.5l-8.9,35.7c-1.1,4.2-4.9,7.2-9.2,7.2l0,0c-4.8,0-8.8-3.6-9.4-8.3l-4.6-36.6
 			c-1.2-9.8,6.4-18.4,16.3-18.4h0C146,457.2,153.8,467.2,151.2,477.5z"/>
-		<path class="st4" d="M-85.2,477.5l8.9,35.7c1.1,4.2,4.9,7.2,9.2,7.2l0,0c4.8,0,8.8-3.6,9.4-8.3l4.6-36.6
+		<path class="st5" d="M-85.2,477.5l8.9,35.7c1.1,4.2,4.9,7.2,9.2,7.2l0,0c4.8,0,8.8-3.6,9.4-8.3l4.6-36.6
 			c1.2-9.8-6.4-18.4-16.3-18.4h0C-80,457.2-87.8,467.2-85.2,477.5z"/>
 		<g class="st0">
-			<path class="st10" d="M-108.2,706.8l-57.1-51.3c-3.1,5.2-4.8,11.3-4.8,17.7v59.2c0,9.8,7.9,17.7,17.7,17.7h53v-23.5
+			<path class="st11" d="M-108.2,706.8l-57.1-51.3c-3.1,5.2-4.8,11.3-4.8,17.7v59.2c0,9.8,7.9,17.7,17.7,17.7h53v-23.5
 				C-99.4,719-102.6,711.8-108.2,706.8z"/>
-			<path class="st10" d="M174.2,706.8l57.1-51.3c3.1,5.2,4.8,11.3,4.8,17.7v59.2c0,9.8-7.9,17.7-17.7,17.7h-53v-23.5
+			<path class="st11" d="M174.2,706.8l57.1-51.3c3.1,5.2,4.8,11.3,4.8,17.7v59.2c0,9.8-7.9,17.7-17.7,17.7h-53v-23.5
 				C165.4,719,168.6,711.8,174.2,706.8z"/>
-			<path class="st10" d="M116.1,610.9c-1.8-5.5-8.4-7.8-13.3-4.6l-64.9,43.3c-3,2-6.8,2-9.8,0l-64.9-43.3c-4.8-3.2-11.4-1-13.3,4.6
+			<path class="st11" d="M116.1,610.9c-1.8-5.5-8.4-7.8-13.3-4.6l-64.9,43.3c-3,2-6.8,2-9.8,0l-64.9-43.3c-4.8-3.2-11.4-1-13.3,4.6
 				l-3.9,11.6c-0.8,2.5-0.5,5.2,0.9,7.5l36.1,57.7c3,4.8,9.7,5.6,13.7,1.6l22.1-22.1c2-2,5.3-0.6,5.3,2.2v45.4c0,4.9,4,8.8,8.8,8.8
 				s8.8-4,8.8-8.8v-45.4c0-2.8,3.4-4.2,5.3-2.2l22.1,22.1c4,4,10.7,3.3,13.7-1.6l36.1-57.7c1.4-2.2,1.7-5,0.9-7.5L116.1,610.9z"/>
 		</g>
-		<path class="st11" d="M286.1,481L44.1,278.7c-3.1-2.6-6.7-3.9-10.4-3.9v215h249.8C287.7,489.8,289.4,483.8,286.1,481z"/>
-		<path class="st12" d="M-218.5,481L23.4,278.7c3.1-2.6,6.7-3.9,10.4-3.9v215H-216C-220.1,489.8-221.9,483.8-218.5,481z"/>
-		<path class="st11" d="M44.1,278.7c-6.2-5.2-14.6-5.2-20.7,0l-2.1,1.7l-127.7,209.4H174L46.2,280.4L44.1,278.7z"/>
-		<path class="st13" d="M46.2,280.4l-2.1-1.7c-3.1-2.6-6.7-3.9-10.4-3.9v215H174L46.2,280.4z"/>
+		<path class="st12" d="M286.1,481L44.1,278.7c-3.1-2.6-6.7-3.9-10.4-3.9v215h249.8C287.7,489.8,289.4,483.8,286.1,481z"/>
+		<path class="st13" d="M-218.5,481L23.4,278.7c3.1-2.6,6.7-3.9,10.4-3.9v215H-216C-220.1,489.8-221.9,483.8-218.5,481z"/>
+		<path class="st12" d="M44.1,278.7c-6.2-5.2-14.6-5.2-20.7,0l-2.1,1.7l-127.7,209.4H174L46.2,280.4L44.1,278.7z"/>
+		<path class="st14" d="M46.2,280.4l-2.1-1.7c-3.1-2.6-6.7-3.9-10.4-3.9v215H174L46.2,280.4z"/>
 	</g>
 </g>
 <g id="thief" class="st0">
-	<g class="st3">
-		<path class="st14" d="M36.4,700.1c-92.4,0-167.5-92.1-167.5-205.2c2.2,2.1,4.5,4.1,6.7,6.2c0.4,16.4,3.9,75.4,45.5,126
+	<g class="st4">
+		<path class="st15" d="M36.4,700.1c-92.4,0-167.5-92.1-167.5-205.2c2.2,2.1,4.5,4.1,6.7,6.2c0.4,16.4,3.9,75.4,45.5,126
 			c10,12.2,49.3,59.9,113.7,61.6c66.9,1.8,109.4-47.5,117.5-57.4c43.1-52.3,42.1-114.7,41.7-127.4c3.3-3,6.6-6,9.9-9
 			C203.9,608.1,128.8,700.1,36.4,700.1z"/>
 	</g>
-	<g class="st3">
-		<path class="st14" d="M-130.2,422.8c0,0,0.1-167.2,166.6-156.7v244.2c-22.5-0.2-45.9-1.1-70.2-2.6c-39.7-2.5-77-6.7-111.6-11.9
+	<g class="st4">
+		<path class="st15" d="M-130.2,422.8c0,0,0.1-167.2,166.6-156.7v244.2c-22.5-0.2-45.9-1.1-70.2-2.6c-39.7-2.5-77-6.7-111.6-11.9
 			c-3.4-1.4-9-4.2-13.2-10c-5.5-7.4-5.5-15.3-5.5-24c0.1-13.9,0.1-27.1,10-34.7C-145.7,420.6-134.6,422-130.2,422.8z"/>
-		<path class="st15" d="M203,422.8c0,0-0.1-167.2-166.6-156.7v244.2c22.5-0.2,45.9-1.1,70.2-2.6c39.7-2.5,77-6.7,111.6-11.9
+		<path class="st16" d="M203,422.8c0,0-0.1-167.2-166.6-156.7v244.2c22.5-0.2,45.9-1.1,70.2-2.6c39.7-2.5,77-6.7,111.6-11.9
 			c3.4-1.4,9-4.2,13.2-10c5.5-7.4,5.5-15.3,5.5-24c-0.1-13.9-0.1-27.1-10-34.7C218.4,420.6,207.4,422,203,422.8z"/>
 	</g>
-	<path class="st16" d="M-141.4,494.9c0,0,2.2,69.1,88.5,81.5c0,0,58.1,8.5,89.3-44.8v-22.1C36.4,509.5-30.7,511-141.4,494.9z"/>
-	<path class="st17" d="M-86.2,525.6c0,0,1.8,18.4,36.8,20.2c0,0,27.1,5.1,40.9-20.2H-86.2z"/>
-	<path class="st16" d="M214.2,494.9c0,0-2.2,69.1-88.5,81.5c0,0-58.1,8.5-89.3-44.8v-22.1C36.4,509.5,103.5,511,214.2,494.9z"/>
-	<path class="st18" d="M158.9,525.6c0,0-1.8,18.4-36.8,20.2c0,0-27.1,5.1-40.9-20.2H158.9z"/>
+	<path class="st17" d="M-141.4,494.9c0,0,2.2,69.1,88.5,81.5c0,0,58.1,8.5,89.3-44.8v-22.1C36.4,509.5-30.7,511-141.4,494.9z"/>
+	<path class="st18" d="M-86.2,525.6c0,0,1.8,18.4,36.8,20.2c0,0,27.1,5.1,40.9-20.2H-86.2z"/>
+	<path class="st17" d="M214.2,494.9c0,0-2.2,69.1-88.5,81.5c0,0-58.1,8.5-89.3-44.8v-22.1C36.4,509.5,103.5,511,214.2,494.9z"/>
+	<path class="st19" d="M158.9,525.6c0,0-1.8,18.4-36.8,20.2c0,0-27.1,5.1-40.9-20.2H158.9z"/>
 </g>
 <g id="guard" class="st0">
-	<g id="bright" class="st3">
+	<g id="bright" class="st4">
 		<g>
 			<g>
-				<path class="st19" d="M-104.2,483.6c22.8,63.8,140.7,55.9,140.7,55.9s117.9,7.9,140.7-55.9c-32.4-17.4-83.9-28.9-140.7-28.9
+				<path class="st20" d="M-104.2,483.6c22.8,63.8,140.7,55.9,140.7,55.9s117.9,7.9,140.7-55.9c-32.4-17.4-83.9-28.9-140.7-28.9
 					C-20.3,454.7-71.9,466.1-104.2,483.6z"/>
-				<path class="st19" d="M177,323.5c-25.7-2.6-67.5-4.4-100.5-33.5c-33.1-29.2-40-24-40-24s-7-5.2-40.1,24
+				<path class="st20" d="M177,323.5c-25.7-2.6-67.5-4.4-100.5-33.5c-33.1-29.2-40-24-40-24s-7-5.2-40.1,24
 					c-33.1,29.2-74.9,30.9-100.6,33.5c-25.7,2.6-23.9,13.1-30.4,42.2s-28.3,37-21.3,44c4.9,4.8,27.3,23.3,40.6,34.1
 					c34.1-20.6,88.9-34.3,151.9-34.3c63,0,117.8,13.7,151.9,34.3c13.3-10.9,35.6-29.3,40.5-34.1c7-7-14.9-14.8-21.4-44
 					C201,336.5,202.7,326.1,177,323.5z M68.4,393.6l-32-23.1l-32,23.3l12.2-38l-32-23.7h39.5l12.2-37.6l12.2,37.6h39.5l-32,23.7
 					L68.4,393.6z"/>
-				<path class="st19" d="M178.4,452c-32.3-17.8-84.4-29.6-142-29.6c-57.5,0-109.7,11.8-142,29.6v18.6c34.3-17.5,84.8-28.8,142-28.8
+				<path class="st20" d="M178.4,452c-32.3-17.8-84.4-29.6-142-29.6c-57.5,0-109.7,11.8-142,29.6v18.6c34.3-17.5,84.8-28.8,142-28.8
 					c57.2,0,107.6,11.3,142,28.8V452z"/>
 			</g>
 		</g>
 	</g>
-	<g class="st3">
-		<path class="st20" d="M35,697.1c-92.4,0-167.5-92.1-167.5-205.2c2.2,2.1,4.5,4.1,6.7,6.2c0.4,16.4,3.9,75.4,45.5,126
+	<g class="st4">
+		<path class="st21" d="M35,697.1c-92.4,0-167.5-92.1-167.5-205.2c2.2,2.1,4.5,4.1,6.7,6.2c0.4,16.4,3.9,75.4,45.5,126
 			c10,12.2,49.3,59.9,113.7,61.6c66.9,1.8,109.4-47.5,117.5-57.4C194,576.1,193,513.7,192.6,501c3.3-3,6.6-6,9.9-9
 			C202.5,605.1,127.4,697.1,35,697.1z"/>
 	</g>
-	<g class="st3">
+	<g class="st4">
 		<defs>
 			<rect id="SVGID_1_" x="-157.4" y="265.6" width="193.8" height="273.8"/>
 		</defs>
 		<clipPath id="SVGID_2_">
 			<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
 		</clipPath>
-		<g id="dark" class="st21">
+		<g id="dark" class="st22">
 			<g>
 				<g>
-					<path class="st22" d="M-104.2,483.2c22.8,63.8,140.7,55.9,140.7,55.9s117.9,7.9,140.7-55.9c-32.4-17.4-83.9-28.9-140.7-28.9
+					<path class="st23" d="M-104.2,483.2c22.8,63.8,140.7,55.9,140.7,55.9s117.9,7.9,140.7-55.9c-32.4-17.4-83.9-28.9-140.7-28.9
 						C-20.3,454.3-71.9,465.8-104.2,483.2z"/>
-					<path class="st22" d="M177,323.1c-25.7-2.6-67.5-4.4-100.5-33.5c-33.1-29.2-40-24-40-24s-7-5.2-40.1,24
+					<path class="st23" d="M177,323.1c-25.7-2.6-67.5-4.4-100.5-33.5c-33.1-29.2-40-24-40-24s-7-5.2-40.1,24
 						c-33.1,29.2-74.9,30.9-100.6,33.5c-25.7,2.6-23.9,13.1-30.4,42.2c-6.5,29.2-28.3,37-21.3,44c4.9,4.8,27.3,23.3,40.6,34.1
 						c34.1-20.6,88.9-34.3,151.9-34.3c63,0,117.8,13.7,151.9,34.3c13.3-10.9,35.6-29.3,40.5-34.1c7-7-14.9-14.8-21.4-44
 						C201,336.2,202.7,325.7,177,323.1z M68.4,393.2l-32-23.1l-32,23.3l12.2-38l-32-23.7h39.5l12.2-37.6l12.2,37.6h39.5l-32,23.7
 						L68.4,393.2z"/>
-					<path class="st22" d="M178.4,451.7c-32.3-17.8-84.4-29.6-142-29.6c-57.5,0-109.7,11.8-142,29.6v18.6
+					<path class="st23" d="M178.4,451.7c-32.3-17.8-84.4-29.6-142-29.6c-57.5,0-109.7,11.8-142,29.6v18.6
 						c34.3-17.5,84.8-28.8,142-28.8c57.2,0,107.6,11.3,142,28.8V451.7z"/>
 				</g>
 			</g>
@@ -13552,29 +13554,29 @@ oDgAxjN33qAxKj2TUepcRSf3zv4JdEy/DMTOYZwe8+vxGH7D85pk+mX7du8KxgC/Wxh+IzbADz3x
 dGIgPTH8eiSdUzlK/NkTw++h19/f5+PHDKZ3z5w0Lgt3SXV4MLxUsr11qFqj/f3rLHbzO/T6/wcA
 z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)">
 	</image>
-	<g class="st3">
-		<path class="st23" d="M89.8,795.3c4.2-5.7,11.3-13.8,21.9-21c10.7-7.2,20.2-10.1,26.5-12.1c17-5.1,30.9-4.9,38.8-4.8
+	<g class="st4">
+		<path class="st24" d="M89.8,795.3c4.2-5.7,11.3-13.8,21.9-21c10.7-7.2,20.2-10.1,26.5-12.1c17-5.1,30.9-4.9,38.8-4.8
 			c8.4,0.2,22.9,1.3,40,6.8c11.5,3.7,34.8,11.5,55.6,33.4c7.5,7.9,22.7,24.2,28.4,50.2c1.7,7.8,4.8,22.6-0.2,40.4
 			c-5,17.6-15.2,28.6-20.3,34.1c-2.1,2.2-10,10.4-22.3,17.2c-26.4,14.8-53.8,12.8-65.9,11.1"/>
-		<path class="st23" d="M299.4,807.2c-11.1-13.7-37.9-43-82.2-56.6c-13.7-4.2-46.5-13.8-85.2-2.2c-13.5,4.1-39.2,11.8-58.6,37.2
+		<path class="st24" d="M299.4,807.2c-11.1-13.7-37.9-43-82.2-56.6c-13.7-4.2-46.5-13.8-85.2-2.2c-13.5,4.1-39.2,11.8-58.6,37.2
 			c-4,5.3-18.8,25.8-20.5,55.1c-3.2,55.7,43.9,93.8,54,102c42.1,34.1,88.9,33.2,100.7,32.6c50.4-2.6,84.8-30.9,93.7-41.3
 			c10.3-12.1,15.6-25.4,15.6-25.4c0.4-1.1,1.9-4.9,3.4-10.3c2-7.7,4.4-20.3,3.1-36.9"/>
-		<path class="st23" d="M180.3,904.6c33.4,12.1,67.4-2.1,78.9-27.7c11.6-25.9-4.2-53.1-5.7-55.5"/>
+		<path class="st24" d="M180.3,904.6c33.4,12.1,67.4-2.1,78.9-27.7c11.6-25.9-4.2-53.1-5.7-55.5"/>
 	</g>
-	<g class="st3">
-		<path class="st23" d="M-550.8,630.7c2.7-3.8,7.4-9.2,14.3-14.1c7-4.8,13.2-6.8,17.3-8.1c11.1-3.4,20.2-3.3,25.4-3.2
+	<g class="st4">
+		<path class="st24" d="M-550.8,630.7c2.7-3.8,7.4-9.2,14.3-14.1c7-4.8,13.2-6.8,17.3-8.1c11.1-3.4,20.2-3.3,25.4-3.2
 			c5.5,0.1,15,0.8,26.1,4.5c7.5,2.5,22.7,7.7,36.3,22.4c4.9,5.3,14.8,16.2,18.5,33.7c1.1,5.3,3.1,15.2-0.1,27.1
 			c-3.2,11.8-9.9,19.2-13.3,22.8c-1.4,1.5-6.5,6.9-14.6,11.5c-17.3,9.9-35.2,8.6-43,7.5"/>
-		<path class="st23" d="M-413.9,638.7c-7.2-9.2-24.7-28.8-53.7-38c-8.9-2.8-30.4-9.3-55.6-1.5c-8.8,2.7-25.6,7.9-38.3,24.9
+		<path class="st24" d="M-413.9,638.7c-7.2-9.2-24.7-28.8-53.7-38c-8.9-2.8-30.4-9.3-55.6-1.5c-8.8,2.7-25.6,7.9-38.3,24.9
 			c-2.6,3.6-12.3,17.3-13.4,36.9c-2.1,37.4,28.7,62.9,35.3,68.4c27.5,22.9,58.1,22.2,65.8,21.8c32.9-1.7,55.4-20.7,61.2-27.7
 			c6.7-8.1,10.2-17,10.2-17c0.3-0.7,1.3-3.3,2.2-6.9c1.3-5.2,2.9-13.6,2-24.8"/>
 	</g>
 </g>
 <g id="圖層_10" class="st0">
-	<g class="st3">
+	<g class="st4">
 		<g>
 			<g>
-				<path class="st24" d="M68,553.3l-30-30c-1.2-1.1-2.6-1.7-4.2-1.7c-1.6,0-3,0.6-4.1,1.7l-30,30c-1.2,1.2-1.8,2.6-1.8,4.2
+				<path class="st25" d="M68,553.3l-30-30c-1.2-1.1-2.6-1.7-4.2-1.7c-1.6,0-3,0.6-4.1,1.7l-30,30c-1.2,1.2-1.8,2.6-1.8,4.2
 					c0,1.7,0.6,3,1.8,4.1l3.5,3.5c1.1,1.2,2.5,1.8,4.1,1.8c1.7,0,3-0.6,4.1-1.8l22.4-22.4l22.4,22.4c1.1,1.2,2.5,1.8,4.1,1.8
 					c1.6,0,3-0.6,4.2-1.8l3.5-3.5c1.1-1.1,1.7-2.5,1.7-4.1C69.8,555.9,69.2,554.5,68,553.3z"/>
 			</g>
@@ -13611,7 +13613,7 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 		</g>
 		<g>
 			<g>
-				<path class="st25" d="M68,597.7l-30-30c-1.2-1.1-2.6-1.7-4.2-1.7c-1.6,0-3,0.6-4.1,1.7l-30,30c-1.2,1.2-1.8,2.6-1.8,4.2
+				<path class="st26" d="M68,597.7l-30-30c-1.2-1.1-2.6-1.7-4.2-1.7c-1.6,0-3,0.6-4.1,1.7l-30,30c-1.2,1.2-1.8,2.6-1.8,4.2
 					c0,1.7,0.6,3,1.8,4.1l3.5,3.5c1.1,1.2,2.5,1.8,4.1,1.8c1.7,0,3-0.6,4.1-1.8l22.4-22.4l22.4,22.4c1.1,1.2,2.5,1.8,4.1,1.8
 					c1.6,0,3-0.6,4.2-1.8l3.5-3.5c1.1-1.1,1.7-2.5,1.7-4.1C69.8,600.3,69.2,598.9,68,597.7z"/>
 			</g>
@@ -13648,7 +13650,7 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 		</g>
 		<g>
 			<g>
-				<path class="st26" d="M68,643l-30-30c-1.2-1.1-2.6-1.7-4.2-1.7c-1.6,0-3,0.6-4.1,1.7l-30,30c-1.2,1.2-1.8,2.6-1.8,4.2
+				<path class="st27" d="M68,643l-30-30c-1.2-1.1-2.6-1.7-4.2-1.7c-1.6,0-3,0.6-4.1,1.7l-30,30c-1.2,1.2-1.8,2.6-1.8,4.2
 					c0,1.7,0.6,3,1.8,4.1l3.5,3.5c1.1,1.2,2.5,1.8,4.1,1.8c1.7,0,3-0.6,4.1-1.8l22.4-22.4l22.4,22.4c1.1,1.2,2.5,1.8,4.1,1.8
 					c1.6,0,3-0.6,4.2-1.8l3.5-3.5c1.1-1.1,1.7-2.5,1.7-4.1C69.8,645.6,69.2,644.2,68,643z"/>
 			</g>
@@ -13684,10 +13686,10 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 			</g>
 		</g>
 	</g>
-	<line class="st27" x1="52.9" y1="-7710" x2="52.9" y2="8673"/>
+	<line class="st28" x1="52.9" y1="-7710" x2="52.9" y2="8673"/>
 </g>
 <g id="圖層_9">
-	<g>
+	<g class="st0">
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.7" height="319.7">
 				
@@ -13696,12 +13698,12 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				<feBlend  in="source" in2="back" mode="normal"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.7" height="319.7" id="SVGID_3_">
-			<g class="st28">
-				<circle class="st29" cx="139.6" cy="599" r="37.9"/>
+		<mask maskUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.7" height="319.7" id="SVGID_3_" class="st4">
+			<g style="filter:url(#Adobe_OpacityMaskFilter);">
+				<circle class="st30" cx="139.6" cy="599" r="37.9"/>
 			</g>
 		</mask>
-		<circle class="st30" cx="33.9" cy="481.5" r="157.3"/>
+		<circle class="st31" cx="33.9" cy="481.5" r="157.3"/>
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter_1_" filterUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5">
 				
@@ -13710,8 +13712,8 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				<feBlend  in="source" in2="back" mode="normal"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5" id="SVGID_4_">
-			<g class="st31">
+		<mask maskUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5" id="SVGID_4_" class="st4">
+			<g style="filter:url(#Adobe_OpacityMaskFilter_1_);">
 				<defs>
 					<filter id="Adobe_OpacityMaskFilter_2_" filterUnits="userSpaceOnUse" x="-119.6" y="462.4" width="175.3" height="175.3">
 						
@@ -13721,20 +13723,20 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 					</filter>
 				</defs>
 				<mask maskUnits="userSpaceOnUse" x="-119.6" y="462.4" width="175.3" height="175.3" id="SVGID_4_">
-					<g class="st32">
+					<g class="st33">
 					</g>
 				</mask>
-				<circle class="st33" cx="-32" cy="550.1" r="85.1"/>
+				<circle class="st34" cx="-32" cy="550.1" r="85.1"/>
 			</g>
 		</mask>
-		<circle class="st23" cx="33.9" cy="481.5" r="129.3"/>
+		<circle class="st35" cx="33.9" cy="481.5" r="129.3"/>
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter_3_" filterUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.2" height="191.2">
 				<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.2" height="191.2" id="SVGID_5_">
-			<g class="st34">
+		<mask maskUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.2" height="191.2" id="SVGID_5_" class="st4">
+			<g style="filter:url(#Adobe_OpacityMaskFilter_3_);">
 				<defs>
 					<filter id="Adobe_OpacityMaskFilter_4_" filterUnits="userSpaceOnUse" x="26.3" y="456.8" width="127.7" height="127.7">
 						
@@ -13744,13 +13746,13 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 					</filter>
 				</defs>
 				<mask maskUnits="userSpaceOnUse" x="26.3" y="456.8" width="127.7" height="127.7" id="SVGID_5_">
-					<g class="st35">
+					<g class="st37">
 					</g>
 				</mask>
-				<circle class="st36" cx="90.1" cy="520.7" r="61.3"/>
+				<circle class="st38" cx="90.1" cy="520.7" r="61.3"/>
 			</g>
 		</mask>
-		<circle class="st23" cx="33.9" cy="481.5" r="93.1"/>
+		<circle class="st35" cx="33.9" cy="481.5" r="93.1"/>
 	</g>
 	<g class="st0">
 		<defs>
@@ -13761,12 +13763,12 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				<feBlend  in="source" in2="back" mode="normal"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.6" height="319.6" id="SVGID_6_" class="st3">
+		<mask maskUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.6" height="319.6" id="SVGID_6_" class="st4">
 			<g style="filter:url(#Adobe_OpacityMaskFilter_5_);">
-				<circle class="st29" cx="143.7" cy="367.9" r="37.9"/>
+				<circle class="st30" cx="143.7" cy="367.9" r="37.9"/>
 			</g>
 		</mask>
-		<circle class="st38" cx="33.9" cy="481.5" r="157.3"/>
+		<circle class="st40" cx="33.9" cy="481.5" r="157.3"/>
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter_6_" filterUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5">
 				
@@ -13775,7 +13777,7 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				<feBlend  in="source" in2="back" mode="normal"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5" id="SVGID_7_" class="st3">
+		<mask maskUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5" id="SVGID_7_" class="st4">
 			<g style="filter:url(#Adobe_OpacityMaskFilter_6_);">
 				<defs>
 					<filter id="Adobe_OpacityMaskFilter_7_" filterUnits="userSpaceOnUse" x="19.3" y="454.8" width="175.3" height="175.3">
@@ -13786,19 +13788,19 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 					</filter>
 				</defs>
 				<mask maskUnits="userSpaceOnUse" x="19.3" y="454.8" width="175.3" height="175.3" id="SVGID_7_">
-					<g class="st40">
+					<g class="st42">
 					</g>
 				</mask>
-				<circle class="st41" cx="106.9" cy="542.4" r="85.1"/>
+				<circle class="st43" cx="106.9" cy="542.4" r="85.1"/>
 			</g>
 		</mask>
-		<circle class="st42" cx="33.9" cy="481.5" r="129.3"/>
+		<circle class="st35" cx="33.9" cy="481.5" r="129.3"/>
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter_8_" filterUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.3" height="191.3">
 				<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.3" height="191.3" id="SVGID_8_" class="st3">
+		<mask maskUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.3" height="191.3" id="SVGID_8_" class="st4">
 			<g style="filter:url(#Adobe_OpacityMaskFilter_8_);">
 				<defs>
 					<filter id="Adobe_OpacityMaskFilter_9_" filterUnits="userSpaceOnUse" x="5.2" y="358.9" width="127.7" height="127.7">
@@ -13809,15 +13811,15 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 					</filter>
 				</defs>
 				<mask maskUnits="userSpaceOnUse" x="5.2" y="358.9" width="127.7" height="127.7" id="SVGID_8_">
-					<g class="st44">
+					<g class="st45">
 					</g>
 				</mask>
-				<circle class="st45" cx="69" cy="422.7" r="61.3"/>
+				<circle class="st46" cx="69" cy="422.7" r="61.3"/>
 			</g>
 		</mask>
-		<circle class="st42" cx="33.9" cy="481.5" r="93.1"/>
+		<circle class="st35" cx="33.9" cy="481.5" r="93.1"/>
 	</g>
-	<g class="st0">
+	<g>
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter_10_" filterUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.6" height="319.6">
 				
@@ -13826,12 +13828,12 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				<feBlend  in="source" in2="back" mode="normal"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.6" height="319.6" id="SVGID_9_" class="st3">
-			<g style="filter:url(#Adobe_OpacityMaskFilter_10_);">
-				<circle class="st29" cx="-122.9" cy="500.7" r="37.9"/>
+		<mask maskUnits="userSpaceOnUse" x="-125.9" y="321.7" width="319.6" height="319.6" id="SVGID_9_">
+			<g class="st47">
+				<circle class="st30" cx="-122.9" cy="500.7" r="37.9"/>
 			</g>
 		</mask>
-		<circle class="st47" cx="33.9" cy="481.5" r="157.3"/>
+		<circle class="st48" cx="33.9" cy="481.5" r="157.3"/>
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter_11_" filterUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5">
 				
@@ -13840,8 +13842,8 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				<feBlend  in="source" in2="back" mode="normal"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5" id="SVGID_10_" class="st3">
-			<g style="filter:url(#Adobe_OpacityMaskFilter_11_);">
+		<mask maskUnits="userSpaceOnUse" x="-97.8" y="349.8" width="263.5" height="263.5" id="SVGID_10_">
+			<g class="st49">
 				<defs>
 					<filter id="Adobe_OpacityMaskFilter_12_" filterUnits="userSpaceOnUse" x="-72" y="300.6" width="175.3" height="175.3">
 						
@@ -13851,20 +13853,20 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 					</filter>
 				</defs>
 				<mask maskUnits="userSpaceOnUse" x="-72" y="300.6" width="175.3" height="175.3" id="SVGID_10_">
-					<g class="st49">
+					<g class="st50">
 					</g>
 				</mask>
-				<circle class="st50" cx="15.6" cy="388.3" r="85.1"/>
+				<circle class="st51" cx="15.6" cy="388.3" r="85.1"/>
 			</g>
 		</mask>
-		<circle class="st42" cx="33.9" cy="481.5" r="129.3"/>
+		<circle class="st52" cx="33.9" cy="481.5" r="129.3"/>
 		<defs>
 			<filter id="Adobe_OpacityMaskFilter_13_" filterUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.3" height="191.3">
 				<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
 			</filter>
 		</defs>
-		<mask maskUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.3" height="191.3" id="SVGID_11_" class="st3">
-			<g style="filter:url(#Adobe_OpacityMaskFilter_13_);">
+		<mask maskUnits="userSpaceOnUse" x="-61.7" y="385.9" width="191.3" height="191.3" id="SVGID_11_">
+			<g class="st53">
 				<defs>
 					<filter id="Adobe_OpacityMaskFilter_14_" filterUnits="userSpaceOnUse" x="-94.2" y="441.3" width="127.7" height="127.7">
 						
@@ -13874,23 +13876,29 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 					</filter>
 				</defs>
 				<mask maskUnits="userSpaceOnUse" x="-94.2" y="441.3" width="127.7" height="127.7" id="SVGID_11_">
-					<g class="st52">
+					<g class="st54">
 					</g>
 				</mask>
-				<circle class="st53" cx="-30.4" cy="505.1" r="61.3"/>
+				<circle class="st55" cx="-30.4" cy="505.1" r="61.3"/>
 			</g>
 		</mask>
-		<circle class="st42" cx="33.9" cy="481.5" r="93.1"/>
+		<circle class="st24" cx="33.9" cy="481.5" r="93.1"/>
 	</g>
 </g>
+<g id="圖層_13" class="st0">
+</g>
+<g id="圖層_11" class="st0">
+</g>
+<g id="圖層_12" class="st0">
+</g>
 <g id="圖層_6" class="st0">
-	<text transform="matrix(0.9185 0.3953 -0.3953 0.9185 -392.6823 532.287)" class="st54 st55 st56"> Up!</text>
-	<text transform="matrix(0.9296 -0.3686 0.3686 0.9296 -545.006 589.3925)" class="st54 st55 st56">Level</text>
-	<g class="st58">
-		<g class="st3">
+	<text transform="matrix(0.9185 0.3953 -0.3953 0.9185 -392.6823 532.287)" class="st56 st57 st58"> Up!</text>
+	<text transform="matrix(0.9296 -0.3686 0.3686 0.9296 -545.006 589.3925)" class="st56 st57 st58">Level</text>
+	<g class="st60">
+		<g class="st4">
 			<g>
 				<g>
-					<path class="st59" d="M-461.4,318.9c2.3-24.2-24.2-26.5-24.2-26.5c-7.6-21.9-27.2-10.6-27.2-10.6c-9.8-21.9-29.5-6.8-29.5-6.8
+					<path class="st61" d="M-461.4,318.9c2.3-24.2-24.2-26.5-24.2-26.5c-7.6-21.9-27.2-10.6-27.2-10.6c-9.8-21.9-29.5-6.8-29.5-6.8
 						c-28-8.3-31,15.9-31,15.9c-2,7.5-1.4,32-1.4,32c-1.9-14.4-13-4.7-13-4.7c-14.4,15.9-7.6,27.2-7.6,27.2
 						c12.1,21.2,40.8,49.2,40.8,49.2c10.6,9.1,4.5,14.4,4.5,14.4l73.4,0.8l4-13.6C-455.9,364.3-461.4,318.9-461.4,318.9z"/>
 				</g>
@@ -13926,17 +13934,17 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 			<g>
 			</g>
 		</g>
-		<g class="st3">
+		<g class="st4">
 			<defs>
 				<rect id="SVGID_12_" x="-528.7" y="270" width="68.2" height="139.7"/>
 			</defs>
 			<clipPath id="SVGID_13_">
 				<use xlink:href="#SVGID_12_"  style="overflow:visible;"/>
 			</clipPath>
-			<g class="st60">
+			<g class="st62">
 				<g>
 					<g>
-						<path class="st61" d="M-461.4,318.9c2.3-24.2-24.2-26.5-24.2-26.5c-7.6-21.9-27.2-10.6-27.2-10.6c-9.8-21.9-29.5-6.8-29.5-6.8
+						<path class="st63" d="M-461.4,318.9c2.3-24.2-24.2-26.5-24.2-26.5c-7.6-21.9-27.2-10.6-27.2-10.6c-9.8-21.9-29.5-6.8-29.5-6.8
 							c-28-8.3-31,15.9-31,15.9c-2,7.5-1.4,32-1.4,32c-1.9-14.4-13-4.7-13-4.7c-14.4,15.9-7.6,27.2-7.6,27.2
 							c12.1,21.2,40.8,49.2,40.8,49.2c10.6,9.1,4.5,14.4,4.5,14.4l73.4,0.8l4-13.6C-455.9,364.3-461.4,318.9-461.4,318.9z"/>
 					</g>
@@ -13973,16 +13981,16 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				</g>
 			</g>
 		</g>
-		<polygon id="XMLID_4_" class="st62" points="-549.4,413.6 -549.4,429.2 -539.1,429.2 -528.7,429.2 -528.7,413.6 -539.1,413.6 		
+		<polygon id="XMLID_4_" class="st64" points="-549.4,413.6 -549.4,429.2 -539.1,429.2 -528.7,429.2 -528.7,413.6 -539.1,413.6 		
 			"/>
-		<polygon id="XMLID_3_" class="st63" points="-528.7,413.6 -528.7,429.2 -502.9,429.2 -477.2,429.2 -477.2,413.6 -502.9,413.6 		
+		<polygon id="XMLID_3_" class="st65" points="-528.7,413.6 -528.7,429.2 -502.9,429.2 -477.2,429.2 -477.2,413.6 -502.9,413.6 		
 			"/>
 	</g>
-	<g class="st64">
-		<g class="st3">
+	<g class="st66">
+		<g class="st4">
 			<g>
 				<g>
-					<path class="st59" d="M-393.7,285.2c2.7-29.1-29.1-31.8-29.1-31.8c-9.1-26.4-32.7-12.7-32.7-12.7c-11.8-26.4-35.5-8.2-35.5-8.2
+					<path class="st61" d="M-393.7,285.2c2.7-29.1-29.1-31.8-29.1-31.8c-9.1-26.4-32.7-12.7-32.7-12.7c-11.8-26.4-35.5-8.2-35.5-8.2
 						c-33.7-10-37.3,19.1-37.3,19.1c-2.4,9-1.6,38.4-1.6,38.4c-2.3-17.3-15.7-5.7-15.7-5.7c-17.3,19.1-9.1,32.7-9.1,32.7
 						c14.6,25.5,49.1,59.1,49.1,59.1c12.7,10.9,5.5,17.3,5.5,17.3l88.2,0.9l4.9-16.4C-387.1,339.7-393.7,285.2-393.7,285.2z"/>
 				</g>
@@ -14018,17 +14026,17 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 			<g>
 			</g>
 		</g>
-		<g class="st3">
+		<g class="st4">
 			<defs>
 				<rect id="SVGID_14_" x="-474.7" y="226.3" width="82" height="168"/>
 			</defs>
 			<clipPath id="SVGID_15_">
 				<use xlink:href="#SVGID_14_"  style="overflow:visible;"/>
 			</clipPath>
-			<g class="st65">
+			<g class="st67">
 				<g>
 					<g>
-						<path class="st61" d="M-393.7,285.1c2.7-29.1-29.1-31.8-29.1-31.8c-9.1-26.4-32.7-12.7-32.7-12.7
+						<path class="st63" d="M-393.7,285.1c2.7-29.1-29.1-31.8-29.1-31.8c-9.1-26.4-32.7-12.7-32.7-12.7
 							c-11.8-26.4-35.5-8.2-35.5-8.2c-33.7-10-37.3,19.1-37.3,19.1c-2.4,9-1.6,38.4-1.6,38.4c-2.3-17.3-15.7-5.7-15.7-5.7
 							c-17.3,19.1-9.1,32.7-9.1,32.7c14.6,25.5,49.1,59.1,49.1,59.1c12.7,10.9,5.5,17.3,5.5,17.3l88.2,0.9l4.9-16.4
 							C-387.1,339.7-393.7,285.1-393.7,285.1z"/>
@@ -14066,16 +14074,16 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				</g>
 			</g>
 		</g>
-		<polygon id="XMLID_2_" class="st62" points="-499.6,399.1 -499.6,417.7 -487.1,417.7 -474.7,417.7 -474.7,399.1 -487.1,399.1 		
+		<polygon id="XMLID_2_" class="st64" points="-499.6,399.1 -499.6,417.7 -487.1,417.7 -474.7,417.7 -474.7,399.1 -487.1,399.1 		
 			"/>
-		<polygon id="XMLID_1_" class="st63" points="-474.7,399.1 -474.7,417.7 -443.7,417.7 -412.7,417.7 -412.7,399.1 -443.7,399.1 		
+		<polygon id="XMLID_1_" class="st65" points="-474.7,399.1 -474.7,417.7 -443.7,417.7 -412.7,417.7 -412.7,399.1 -443.7,399.1 		
 			"/>
 	</g>
 	<g>
-		<g class="st3">
+		<g class="st4">
 			<g>
 				<g>
-					<path class="st59" d="M-310.9,626.6c3.7-39.5-39.5-43.2-39.5-43.2c-12.3-35.8-44.4-17.3-44.4-17.3
+					<path class="st61" d="M-310.9,626.6c3.7-39.5-39.5-43.2-39.5-43.2c-12.3-35.8-44.4-17.3-44.4-17.3
 						c-16-35.8-48.1-11.1-48.1-11.1c-45.7-13.6-50.6,25.9-50.6,25.9c-3.2,12.3-2.2,52.2-2.2,52.2c-3.1-23.4-21.2-7.7-21.2-7.7
 						c-23.4,25.9-12.3,44.4-12.3,44.4c19.7,34.6,66.6,80.2,66.6,80.2c17.3,14.8,7.4,23.4,7.4,23.4l119.7,1.2l6.6-22.2
 						C-301.9,700.7-310.9,626.6-310.9,626.6z"/>
@@ -14112,17 +14120,17 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 			<g>
 			</g>
 		</g>
-		<g class="st3">
+		<g class="st4">
 			<defs>
 				<rect id="SVGID_16_" x="-420.7" y="546.8" width="111.3" height="227.9"/>
 			</defs>
 			<clipPath id="SVGID_17_">
 				<use xlink:href="#SVGID_16_"  style="overflow:visible;"/>
 			</clipPath>
-			<g class="st66">
+			<g class="st68">
 				<g>
 					<g>
-						<path class="st61" d="M-310.9,626.6c3.7-39.5-39.5-43.2-39.5-43.2c-12.3-35.8-44.4-17.3-44.4-17.3
+						<path class="st63" d="M-310.9,626.6c3.7-39.5-39.5-43.2-39.5-43.2c-12.3-35.8-44.4-17.3-44.4-17.3
 							c-16-35.8-48.1-11.1-48.1-11.1c-45.7-13.6-50.6,25.9-50.6,25.9c-3.2,12.3-2.2,52.2-2.2,52.2c-3.1-23.4-21.2-7.7-21.2-7.7
 							c-23.4,25.9-12.3,44.4-12.3,44.4c19.7,34.6,66.6,80.2,66.6,80.2c17.3,14.8,7.4,23.4,7.4,23.4l119.7,1.2l6.6-22.2
 							C-301.9,700.7-310.9,626.6-310.9,626.6z"/>
@@ -14160,11 +14168,11 @@ z7LcV52ClUMAAAAASUVORK5CYII=" transform="matrix(0.5 0 0 0.5 -615.0686 787.2114)"
 				</g>
 			</g>
 		</g>
-		<polygon id="XMLID_6_" class="st62" points="-454.5,781.2 -454.5,806.5 -437.6,806.5 -420.7,806.5 -420.7,781.2 -437.6,781.2 		
+		<polygon id="XMLID_6_" class="st64" points="-454.5,781.2 -454.5,806.5 -437.6,806.5 -420.7,806.5 -420.7,781.2 -437.6,781.2 		
 			"/>
-		<polygon id="XMLID_5_" class="st63" points="-420.7,781.2 -420.7,806.5 -378.6,806.5 -336.6,806.5 -336.6,781.2 -378.6,781.2 		
+		<polygon id="XMLID_5_" class="st65" points="-420.7,781.2 -420.7,806.5 -378.6,806.5 -336.6,806.5 -336.6,781.2 -378.6,781.2 		
 			"/>
 	</g>
-	<text transform="matrix(1 0 0 1 -27.1005 509.7151)" class="st24 st55 st67">20</text>
+	<text transform="matrix(1 0 0 1 -27.1005 509.7151)" class="st25 st57 st69">20</text>
 </g>
 </svg>

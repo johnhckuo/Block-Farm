@@ -20,6 +20,10 @@ var s_Id;
 
 
 var _dep = new Tracker.Dependency;
+var _crop = new Tracker.Dependency;
+var _character = new Tracker.Dependency;
+
+
 var cursorX;
 var cursorY;
 
@@ -122,18 +126,20 @@ Template.gameIndex.rendered = function() {
         Session.set('userExp', currentUser.exp);
         Session.set('userSta', currentUser.sta);
         Session.set('userCharacter', currentUser.type);
-
+        Session.set('userLevel', currentUser.level);
         //farmObjectLoader();
 
         setInterval(checkMission, 1000);
         setInterval(cropSummaryUpdate, 1000);
-        setInterval(updateUserStamina, 1000*60);
+        //setInterval(updateUserStamina, 1000*60);
+        setInterval(updateUserStamina, 500);
 
         //initCropLand(otherUser, otherUserLandConfiguration);
         console.log('gameArea render complete');
 
         loading(0);
-        console.log(fetchAllCropTypes());
+        //console.log(fetchAllCropTypes());
+            //levelUp();
     }
 }
 
@@ -155,7 +161,9 @@ Template.shop.rendered = function () {
     $('.shop_header').append(select);
 }
 
-
+//////////////////
+//    onLeave   //
+//////////////////
 
 $(window).on("beforeunload", function() {
     CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), {from:web3.eth.accounts[currentAccount], gas:2000000} );
@@ -180,6 +188,12 @@ display_field = [];
 //for testing
 Template.shop.helpers({
 
+});
+
+Template.gamingArea.helpers({
+    currentLevel: function() {
+      return Session.get('userLevel');
+    }
 });
 
 Template.characterList.helpers({
@@ -209,6 +223,7 @@ Template.statusList.helpers({
                 "content": data.name
             });
         }
+        _crop.depend();
         return cropsData;
     },
     cropsSummary: function(){
@@ -739,6 +754,7 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+//call with caution, this will consume lots of loading time
 var fetchAllCropTypes = function(){
 
     var cropData = [];
@@ -855,8 +871,17 @@ var getUserData = function(s_Id){
     lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
     //
     lastLogin = new Date(lastLogin.split("\"")[1]);
+    console.log(lastLogin);
+
     var difference = elapsedTime(lastLogin, new Date());
+    console.log(Math.round(difference.getTime()/(1000*60)));
+
     currentUser.sta += Math.round(difference.getTime()/(1000*60));
+    var staCap = staminaCap(currentUser.level);
+
+    if (currentUser.sta >= staCap ){
+        currentUser.sta = staCap;
+    }
     // end = end.split("\"")[1];
 
 }
@@ -903,6 +928,7 @@ var fetchGameInitConfig = function(){
         });
     }
 
+    console.log(userCropTypeData)
     for (var i = 0 ; i < userCropType.length; i++){
         cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
     }
@@ -937,6 +963,8 @@ var fetchGameInitConfig = function(){
 
         })
     }
+    _crop.changed();
+
     console.log(cropTypeList);
 
     for (var i = 0 ; i < landData.length ; i++){
@@ -1144,16 +1172,40 @@ var updateUserExp = function(exp){
 
   var lvlCap = levelCap(currentUser.level);
   var percent = (currentUser.exp/lvlCap)*100;
-  if  (percent >= 100){
+  if  (currentUser.exp >= lvlCap){
+
     currentUser.level += 1;
+    Session.set('userLevel', currentUser.level);
+
     currentUser.exp = currentUser.exp - lvlCap;
     $(".levelUpObject").attr("display", "inline");
     MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+    CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+    levelUp();
     rerenderCropLand(s_Id);
 
   }
   $(".expProgressBar").css("width", percent + "%");
   $(".expText").text(currentUser.exp+"/"+lvlCap);
+
+}
+
+var levelUp = function(){
+    var opacity;
+    $(".levelUp").css("display", "flex");
+    $(".levelUp").css("opacity", 1);
+
+
+    setTimeout(function(){
+      $(".levelUp").css("opacity", 0);
+
+      setTimeout(function(){
+        $(".levelUp").css("display", "none");
+
+      }, 5000);
+
+    },5000);
+
 
 }
 
