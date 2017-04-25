@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="1 38 512 512" style="enable-background:new 1 38 512 512;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;filter:url(#Adobe_OpacityMaskFilter);}
+	.st2{stroke:#000000;stroke-width:5;stroke-miterlimit:10;}
+	.st3{display:inline;mask:url(#SVGID_1_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st4{filter:url(#Adobe_OpacityMaskFilter_1_);}
+	.st5{mask:url(#SVGID_2_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st6{display:inline;filter:url(#Adobe_OpacityMaskFilter_2_);}
+	.st7{display:inline;mask:url(#SVGID_3_);fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+</style>
+<g id="圖層_2" class="st0">
+	<defs>
+		<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="78.8" y="115.8" width="356.4" height="356.4">
+			<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+			<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+		</filter>
+	</defs>
+	<mask maskUnits="userSpaceOnUse" x="78.8" y="115.8" width="356.4" height="356.4" id="SVGID_1_" style="display:inline;">
+		<g style="filter:url(#Adobe_OpacityMaskFilter);">
+			<ellipse class="st2" cx="92.3" cy="353.2" rx="80" ry="79"/>
+		</g>
+	</mask>
+	<circle class="st3" cx="257" cy="294" r="175.7"/>
+</g>
+<g id="圖層_3">
+	<defs>
+		<filter id="Adobe_OpacityMaskFilter_1_" filterUnits="userSpaceOnUse" x="113" y="150" width="288.1" height="288.1">
+			<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+			<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+		</filter>
+	</defs>
+	<mask maskUnits="userSpaceOnUse" x="113" y="150" width="288.1" height="288.1" id="SVGID_2_">
+		<g class="st4">
+			<ellipse transform="matrix(-0.5 -0.866 0.866 -0.5 213.4874 893.2891)" class="st2" cx="364.6" cy="385" rx="64.4" ry="63.7"/>
+		</g>
+	</mask>
+	<circle class="st5" cx="257" cy="294" r="141.5"/>
+</g>
+<g id="圖層_4" class="st0">
+	<defs>
+		<filter id="Adobe_OpacityMaskFilter_2_" filterUnits="userSpaceOnUse" x="151.3" y="190.9" width="213.4" height="213.4">
+			<feFlood  style="flood-color:white;flood-opacity:1" result="back"/>
+			<feBlend  in="SourceGraphic" in2="back" mode="normal"/>
+		</filter>
+	</defs>
+	<mask maskUnits="userSpaceOnUse" x="151.3" y="190.9" width="213.4" height="213.4" id="SVGID_3_" style="display:inline;">
+		<g style="filter:url(#Adobe_OpacityMaskFilter_2_);">
+			<ellipse transform="matrix(-0.5 0.866 -0.866 -0.5 583.8932 53.8965)" class="st2" cx="276.4" cy="195.5" rx="47.4" ry="46.9"/>
+		</g>
+	</mask>
+	<circle class="st7" cx="258" cy="297.6" r="104.2"/>
+</g>
+</svg>
