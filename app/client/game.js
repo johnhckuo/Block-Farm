@@ -738,6 +738,12 @@ Template.characterList.events({
         $(".mission_template").css("display", "inline");
         mission_rending();
     },
+    'click .test': function(event){
+        MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+        levelUp();
+        rerenderCropLand(s_Id);
+    },
+
 
 })
 
@@ -1178,7 +1184,6 @@ var updateUserExp = function(exp){
     Session.set('userLevel', currentUser.level);
 
     currentUser.exp = currentUser.exp - lvlCap;
-    $(".levelUpObject").attr("display", "inline");
     MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
     levelUp();
