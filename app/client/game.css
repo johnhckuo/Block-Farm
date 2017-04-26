@@ -41,13 +41,58 @@
   /*transform: translateY(0vw);
   transition: all 1s;*/
   opacity: 1;
-
 }
 .statusPanelList{
   margin-top: -20vh;
 }
 
+.operationList{
+    position: absolute;
+    width: 10vw;
+    height: 45vh;
+    z-index: 20000;
+    background: rgba(0, 0, 0, 0);
+    right: 0px;
+    color:white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow-y: hidden;
+}
+.menuButton{
+  height: 50px;
+  width: 50px;
+}
+.menuButton button{
+  border-style: none;
+  background-color: rgba(255, 255, 255, 0);
+}
+.menuButton img{
+  width: 100%;
+  height: 100%;
+}
+.rightMenuIcon{
+  height: 45vh;
+  width: 10vw;
+  background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  position: relative;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
 
+}
+.rightMenuIcon button{
+  height: 15vh;
+  width: 10vw;
+  background-color: rgba(255,255,255,0.45);
+  border-style: none;
+}
+.rightMenuIcon img{
+  height: 70%;
+  width: 70%;
+}
 .gamingArea{
   position: relative;
   height:100%;
@@ -241,38 +286,57 @@
   position:absolute;
   z-index: 6;
   height:80vh;
-  width:30vw;
+  width:50vw;
   margin-top:50px;
-  background-color:#337ab7;
+  margin-left: 15vw;
+  background-color:rgba(255,255,255,0.7);
   display:none;
   text-align:center;
  color:white;
 }
-
+.mission_template input{
+  background-color: rgba(255, 255, 255, 0);
+}
 .property_shop{
   position:absolute;
   z-index: 6;
   height:80vh;
-  width:30vw;
+  width:50vw;
   margin-top:50px;
-  background-color:#337ab7;
+  margin-left: 15vw;
+  background-color:rgba(255,255,255,0.7);
   display:none;
   text-align:center;
- color:white;
+
 }
 
-    .property_shop select {
-         color:black;
-    }
-
+.property_shop select {
+  color:black;
+}
+.property_shop>.shop_header{
+    background-color: rgb(164, 209, 151);
+    height: 5vh;
+    display: flex;
+    justify-content: space-around;
+}
+.property_shop input{
+  background-color: rgba(255, 255, 255, 0);
+  color: black;
+  border-style: none;
+}
+.property_shop tbody{
+  color: black;
+  border-style: none;
+}
 .shop_content{
   text-align:center;
-  margin-top:10px;
-  margin-left:120px;
+  margin-top:5vh;
+  height: 70vh;
 }
 
 .property_shop_table{
-    border: 1px solid black;
+  height: 70vh;
+  width: 50vw;
 }
 
 .expProgress{
@@ -364,17 +428,19 @@
 .controlButtons button:hover{
   background-color: rgba(255, 255, 255, 0.65);
 }
-.controlButtons button:active{
-  background-color: rgb(0,0,0,0.65);
-}
+
 .controlButtons img{
   height: 100%;
   width: 100%;
 }
+.landList{
+  display: flex;
+  flex-direction: column;
+}
 .cropLand{
   display: flex;
-  justify-content: cneter;
-  align-items: center;
+  justify-content: space-between;
+  align-items:center;
   flex-direction: row;
   margin-bottom:30px;
 }

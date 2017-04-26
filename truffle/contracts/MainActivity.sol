@@ -42,6 +42,7 @@ contract MainActivity{
     address PropertyAddress;
 
     uint unlockCropNum = 3;
+    uint unlockCropLevel = 5;
 
     struct Match{
         uint id;
@@ -86,8 +87,14 @@ contract MainActivity{
         level += 1;
         if (level % 5 == 0){
             landSize += 1;
-            uint p_Id = property.getPropertyTypeId(random + (level*unlockCropNum));
+
+            uint p_Id = property.getPropertyTypeId(random + ((level/unlockCropLevel)*unlockCropNum));
             property.addUserPropertyType(u_Id, p_Id);
+
+            uint difference = (landSize*landSize) - ((landSize-1)*(landSize-1)) +1;
+            for (uint i = 0 ; i < difference ; i++){
+                property.addUserLandConfiguration(u_Id);
+            }
         }
 
         congress.updateGameData(u_Id, landSize, level);
