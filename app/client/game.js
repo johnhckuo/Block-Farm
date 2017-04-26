@@ -21,6 +21,7 @@ var s_Id;
 
 const _dep = new Tracker.Dependency;
 const _crop = new Tracker.Dependency;
+const _character = new Tracker.Dependency;
 
 
 var cursorX;
@@ -87,7 +88,7 @@ Template.gameIndex.created = function() {
     loadCropList(s_Id);
     getUserStockList(s_Id);
 
-    fetchGameInitConfig();
+    fetchGameInitConfig(s_Id);
     console.log(cropTypeList);
     // Tracker.autorun(() => {
     //   Meteor.subscribe('characterList', { userName: Session.get('userName') });
@@ -199,7 +200,10 @@ Template.shop.helpers({
 });
 
 Template.gamingArea.helpers({
-    currentLevel: currentUser.level
+    currentLevel: function(){
+      _character.depend();
+      return currentUser.level;
+    }
 });
 
 Template.characterList.helpers({
@@ -926,9 +930,12 @@ var getLandConfiguration = function(s_Id){
 
 }
 
-var fetchGameInitConfig = function(){
+var fetchGameInitConfig = function(s_Id){
     var cropData = [];
     var landData = [];
+    userCropType = [];
+    cropTypeList = [];
+    landTypeList = [];
 
     var userCropTypeData = usingPropertyInstance.getUserPropertyType(s_Id, { from:web3.eth.accounts[currentAccount]});
     for (var i = 0 ; i < userCropTypeData[0].length ; i++){
@@ -1020,6 +1027,7 @@ var rerenderCropLand = function(id){
   getUserData(id);
   getLandConfiguration(id);
   loadCropList(id);
+  fetchGameInitConfig(id);
   initCropLand(id);
 
   getUserStockList(id);
@@ -1183,6 +1191,7 @@ var updateUserExp = function(exp){
   if  (currentUser.exp >= lvlCap){
 
     currentUser.level += 1;
+    _character.changed();
     Session.set('userLevel', currentUser.level);
 
     currentUser.exp = currentUser.exp - lvlCap;
