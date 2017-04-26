@@ -377,7 +377,6 @@ contract usingProperty{
 
     function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
         uint _id = propertyTypeList.length++;
-
         uint length = congress.getStakeholdersLength();
         for (uint j = 0 ; j < length ; j++){
             propertyTypeList[_id].rating.push(0);
