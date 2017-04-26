@@ -1,6 +1,6 @@
 import { Session } from 'meteor/session';
 
-var currentAccount = 0;
+var currentAccount = 6;
 var cropsPerLvl =3;
 
 var cropTypeList = [
@@ -38,8 +38,8 @@ var cropTypeList = [
   },
   {
       id:4,
-      name: "Aubergine",
-      img: ["aubergine_seed", "aubergine_grow", "aubergine_harvest", "aubergine"],
+      name: "Eggplant",
+      img: ["eggplant_seed", "eggplant_grow", "eggplant_harvest", "eggplant"],
       count:4,
       time:"0.0.0.10"
 
@@ -105,17 +105,28 @@ function initGameConfig(){
 
 }
 
-window.onload = function() {
+Template.index.created = function() {
     init();
     Session.set('currentAccount', currentAccount);
     Session.set('cropsPerLvl', cropsPerLvl);
+
     try{
-      console.log("data inited");
       var val = usingPropertyInstance.propertyTypeList(0);
+      console.log("=========== Data Inited ===========");
+
     }
-    catch(err) {
+    catch(err){
       initGameConfig();
+      console.log(err);
     }
+    // try{
+    //   console.log("data inited");
+    //   var val = usingPropertyInstance.propertyTypeList(0);
+    // }
+    // catch(err) {
+    //   initGameConfig();
+    // }
+
 
 
 

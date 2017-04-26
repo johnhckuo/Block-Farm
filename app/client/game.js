@@ -19,9 +19,8 @@ var audio;
 var s_Id;
 
 
-var _dep = new Tracker.Dependency;
-var _crop = new Tracker.Dependency;
-var _character = new Tracker.Dependency;
+const _dep = new Tracker.Dependency;
+const _crop = new Tracker.Dependency;
 
 
 var cursorX;
@@ -69,13 +68,16 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 
 Template.gameIndex.created = function() {
     currentAccount = Session.get('currentAccount');
-    s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
+    console.log(currentAccount);
+    s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
+    console.log(s_Id);
+    s_Id = s_Id.c[0];
     if (s_Id == 0){
         alert("Please Register First");
         Router.go('/');
-
+        return;
     }
-    s_Id = s_Id.c[0];
+
 
     loading(1);
 
@@ -197,17 +199,12 @@ Template.shop.helpers({
 });
 
 Template.gamingArea.helpers({
-    currentLevel: function() {
-      return Session.get('userLevel');
-    }
+    currentLevel: currentUser.level
 });
 
 Template.characterList.helpers({
     userName: function() {
       return Session.get('userName');
-    },
-    userExp: function() {
-      return Session.get('userExp');
     },
     characterType: function() {
       return Session.get('userCharacter');
@@ -745,7 +742,7 @@ Template.characterList.events({
         mission_rending();
     },
     'click .test': function(event){
-        MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+        MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
         levelUp();
         rerenderCropLand(s_Id);
     },
@@ -906,7 +903,6 @@ var getLandConfiguration = function(s_Id){
     var contractCropData = data[1];
 
     var landSize = currentUser.landSize;
-
     for (var i = 0 ; i < landSize*landSize ; i++){
         if (contractLandData[i].s != -1){
             contractLandData[i].s = contractLandData[i].c[0];
@@ -1180,22 +1176,27 @@ var updateUserStamina = function(){
 var updateUserExp = function(exp){
   currentUser.exp += parseInt(exp);
   currentUser.totalExp += currentUser.exp;
-  CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-  var lvlCap = levelCap(currentUser.level);
-  var percent = (currentUser.exp/lvlCap)*100;
+
   if  (currentUser.exp >= lvlCap){
 
     currentUser.level += 1;
     Session.set('userLevel', currentUser.level);
 
     currentUser.exp = currentUser.exp - lvlCap;
-    MainActivityInstance.playerLevelUp(s_Id, Math.random()*3+1, {from:web3.eth.accounts[currentAccount]});
+
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+    MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
     levelUp();
     rerenderCropLand(s_Id);
 
+  }else{
+    CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
   }
+
+  var lvlCap = levelCap(currentUser.level);
+  var percent = (currentUser.exp/lvlCap)*100;
   $(".expProgressBar").css("width", percent + "%");
   $(".expText").text(currentUser.exp+"/"+lvlCap);
 
