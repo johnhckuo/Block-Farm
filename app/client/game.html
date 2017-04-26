@@ -4,6 +4,7 @@
     {{> gamingArea}}
     {{> shop}}
     {{> mission}}
+    {{> operationList}}
   </div>
 </template>
 
@@ -39,7 +40,7 @@
     <div class="statusList">
         {{> characterList}}
         <!-- <div class="cropListButton statusListButton"> -->
-        <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
+        <div class="plantPanel statusPanel listbutton" style="z-index:-1;">
           <div class="statusPanelList">
               <h2>Crop List</h2>
               <hr>
@@ -86,13 +87,15 @@
           </div>
         </div>
         <!-- <div class="landListButton statusListButton"> -->
-        <div class="landPanel statusPanel listbutton" style="z-index:-1;">
+        <div class="landPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
               <h2>Land List</h2>
               <hr>
+              <div class="landList">
               {{#each lands}}
                       {{> land}}
               {{/each}}
+              </div>
               <!-- {{> cropSelectingBtns}} -->
           </div>
           <div>
@@ -104,9 +107,9 @@
 
 <template name="cropSelectingBtns">
   <div class="controlButtons">
+    <button type="button" class="btn btnSelect crop4" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/harvest.svg" alt=""></button>
     <button type="button" class="btn btnSelect crop2" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
     <button type="button" class="btn btnSelect crop3" name="button"><img src="/img/game/sprout.svg" alt=""></button>
-    <button type="button" class="btn btnSelect crop4" name="button"><img src="/img/game/harvest.svg" alt=""></button>
     <button type="button" class="btn btnSelect crop5" name="button"><img src="/img/game/barn.svg" alt=""></button>
   </div>
 
@@ -241,4 +244,17 @@
     <div class="mission_template">
 
     </div>
+</template>
+
+<template name="operationList">
+  <div class="operationList">
+    <div class="menuButton">
+      <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
+    </div>
+    <div class="rightMenuIcon">
+      <button type="button" class="btn btnSelect btnMission" name="button"><img src="/img/game/envelope.svg" alt=""></button>
+      <button type="button" class="btn btnSelect btnShop" name="button"><img src="/img/game/grocery.svg" alt=""></button>
+      <button type="button" class="btn btnSelect btnRank" name="button"><img src="/img/game/quality.svg" alt=""></button>
+    </div>
+  </div>
 </template>
