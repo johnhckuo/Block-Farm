@@ -1,6 +1,6 @@
 import { Session } from 'meteor/session';
 
-var currentAccount = 1;
+var currentAccount = 0;
 var cropsPerLvl =3;
 
 var cropTypeList = [
@@ -94,7 +94,7 @@ function init(event){
 
 function initGameConfig(){
     for (var i = 0 ; i < cropTypeList.length ; i++){
-        usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
+       usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
     }
 
     for (var i = 0 ; i < landTypeList.length ; i++){
@@ -110,6 +110,7 @@ window.onload = function() {
     Session.set('currentAccount', currentAccount);
     Session.set('cropsPerLvl', cropsPerLvl);
     try{
+      console.log("data inited");
       var val = usingPropertyInstance.propertyTypeList(0);
     }
     catch(err) {
