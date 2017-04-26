@@ -26,7 +26,7 @@ const _crop = new Tracker.Dependency;
 var cursorX;
 var cursorY;
 
-var panelCounter = 2, panelCount = 3;
+var panelCounter = 4, panelCount = 3;
 
 var cropList = [];
 var stockList = [];
@@ -664,21 +664,19 @@ Template.statusList.events({
         var temp = panelCounter; // default:2
         $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
         $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
-
+        $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
         // setTimeout(function(){
         //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
         // },1000);
         if(e.target.className==""){
           panelCounter=$(e.target).parent().prop('className').split("crop")[1];
+          $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
         }else{
           panelCounter = e.target.className.split("crop")[1];
+          $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
         }
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
-
-
-
-
 
 
     },
@@ -750,7 +748,11 @@ Template.characterList.events({
 
 })
 
+Template.operationList.events({
+    'click .menuButton': function(event) {
 
+    }
+})
 
 
 /////////////////////////
