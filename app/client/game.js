@@ -69,11 +69,17 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 
 Template.gameIndex.created = function() {
     currentAccount = Session.get('currentAccount');
+    s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
+    if (s_Id == 0){
+        alert("Please Register First");
+        Router.go('/');
+
+    }
+    s_Id = s_Id.c[0];
 
     loading(1);
 
-    s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
-    s_Id = s_Id.c[0];
+
     getUserData(s_Id);
     getLandConfiguration(s_Id);
     loadCropList(s_Id);
