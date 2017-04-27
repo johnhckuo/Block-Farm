@@ -58,6 +58,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden;
     overflow-y: hidden;
 }
 .menuButton{
@@ -666,16 +667,13 @@ td img{
 }
 
 .levelUp img{
-
   animation-name: levelUpCircle;
   animation-iteration-count:infinite;
   animation-timing-function: linear;
-
-
 }
 
 .circleL img{
-  animation-duration: 8s;
+  animation-duration: 10s;
 }
 
 .circleM img{
@@ -696,12 +694,21 @@ td img{
 
 }
 
+.levelUpText h2{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 80px;
+}
+
 @keyframes levelUpArrow {
     0%   {transform: translateY(0px); opacity: 0;}
     100% {transform: translateY(-150px); opacity: 1;}
 }
 
-@keyframes pCircle {
+@keyframes levelUpCircle {
     0%   {transform: rotateZ(0deg);}
     100% {transform: rotateZ(360deg);}
 }

@@ -24,7 +24,7 @@ Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
       currentAccount = Session.get('currentAccount');
-      $('#fullpage').fullpage();
+      //$('#fullpage').fullpage();
       renderChecked = true;
 
       // MainActivityInstance.matchSuccess().watch(function(error, result){

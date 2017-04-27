@@ -21,9 +21,73 @@ contract('Congress', function (accounts) {
    // return Congress.deployed().then(function (instance){
    // 	return instance.initGameData("Bill", "Guard", {from:accounts[1]});
    // });
-	
+
    //});
 
+
+    //  it("level up", function () {
+    //      return MainActivity.deployed().then(function (instance) {
+    //          return instance.playerLevelUp(1, 2, {from:accounts[0], gas:2000000});
+    //      }).then(function (res) {
+    //          console.log(res);
+    //      });
+    //  });
+// property.getPropertyTypeId(random + (level*unlockCropNum))
+//
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+        });
+    });
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+        });
+    });
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
+        });
+    });
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+        });
+    });
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+        });
+    });
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
+        });
+    });
+
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.getPropertyType.call(0, { from: accounts[0]});
+        });
+    });
+
+    it("get propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            //console.log(Math.random()*3+1 + ((5/5)*3);
+            return instance.getPropertyType.call(Math.floor(Math.random()*3) + (5/5)*3, { from: accounts[0]});
+        }).then(function(res){
+          console.log(res[0]);
+        });
+    });
+
+    //property.getPropertyTypeId(random + (level*unlockCropNum));
+
+/*
     it("check stakeholders length", function () {
         return Congress.deployed().then(function (instance) {
             return instance.getStakeholdersLength.call();
@@ -90,7 +154,7 @@ contract('Congress', function (accounts) {
         });
     });
 
-    
+
 
     it("get property length", function () {
         return usingProperty.deployed().then(function (instance) {
@@ -139,6 +203,8 @@ contract('Congress', function (accounts) {
             console.log(res);
         });
     });
-    
+
+    */
+
 
 });

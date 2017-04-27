@@ -366,7 +366,6 @@ contract usingProperty{
             //        propertyList[i].averageRating = propertyTypeList[_id].averageRating;
             //    }
             //}
-
         }else if (StringUtils.equal(operation,"new")){
 
             for (uint j = 0 ; j < _id ; j++){
@@ -397,6 +396,7 @@ contract usingProperty{
         prop.harvestUnit = _harvestUnit;
 
         //propertyTypeAdded(true);
+
     }
 
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
