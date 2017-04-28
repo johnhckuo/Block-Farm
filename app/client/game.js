@@ -687,11 +687,6 @@ Template.statusList.events({
 })
 
 Template.characterList.events({
-    'click .shopOpen': function (e) {
-        $(".property_shop").css("display", "inline");
-
-    },
-
     'click .characterSwitch': function (event) {
 
         loading(1);
@@ -738,11 +733,6 @@ Template.characterList.events({
         }
 
     },
-
-    'click .MissionOpen': function(event){
-        $(".mission_template").css("display", "inline");
-        mission_rending();
-    },
     'click .test': function(event){
         MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
         levelUp();
@@ -754,7 +744,22 @@ Template.characterList.events({
 
 Template.operationList.events({
     'click .menuButton': function(event) {
+      if($(".menuButton").hasClass("open")===true){
+        $(".rightMenuIcon").fadeOut('normal');
+        $(".menuButton").removeClass("open");
+      }else{
+        $(".rightMenuIcon").fadeIn('normal');
+        $(".menuButton").fadeTo("slow", 0.7);
+        $(".menuButton").addClass("open");
+      }
+    },
+    'click .shopOpen': function (e) {
+        $(".property_shop").css("display", "inline");
 
+    },
+    'click .MissionOpen': function(event){
+        $(".mission_template").css("display", "inline");
+        mission_rending();
     }
 })
 
