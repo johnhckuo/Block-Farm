@@ -23,7 +23,6 @@
 }
 
 .statusPanel{
-  /*transform: translateY(100px);*/
   position: absolute;
   height: 100%;
   width: 100%;
@@ -36,15 +35,21 @@
   opacity: 0;
   background-color: rgba(255,255,255,0.65);
 }
-
 .statusPanelShow{
-  /*transform: translateY(0vw);
-  transition: all 1s;*/
   opacity: 1;
 }
+
+/* for transform animation*/
 .statusPanelList{
   margin-top: -20vh;
+  transform: translateY(100px);
 }
+.statusPanelShow>.statusPanelList{
+  transform: translateY(0vw);
+  transition: all 1s;
+  opacity: 1;
+}
+/****************/
 
 .operationList{
     position: absolute;
@@ -65,7 +70,7 @@
   height: 50px;
   width: 50px;
 }
-.menuButton button{
+.menuBtn button{
   border-style: none;
   background-color: rgba(255, 255, 255, 0);
 }
@@ -82,7 +87,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-
+  display: none;
 }
 .rightMenuIcon button{
   height: 15vh;
@@ -293,10 +298,12 @@
   background-color:rgba(255,255,255,0.7);
   display:none;
   text-align:center;
- color:white;
+  color: black;
 }
 .mission_template input{
   background-color: rgba(255, 255, 255, 0);
+  color: black;
+  border-style: none;
 }
 .property_shop{
   position:absolute;
