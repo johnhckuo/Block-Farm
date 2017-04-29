@@ -1370,7 +1370,8 @@
       "address": "0xe2c976a0823aacd7830839db278099d18b490e6a",
       "updated_at": 1493219367264
     },
-    "1493449813798": {
+
+    "1493446182087": {
       "events": {
         "0x6e98a67d07b1236151193da1b1a71c35ff356fb2dfcb683e46f63b6abf4becef": {
           "anonymous": false,
@@ -1452,12 +1453,13 @@
         }
       },
       "links": {
-        "StringUtils": "0x6f0e41a004d36cb89136d21af404a5052be05722"
+
+        "StringUtils": "0x6237957d3213094aa3dbd98b36b08f3cad54d315"
       },
-      "address": "0xa9f54a1a8e0b38531d460a7312f65e712a9d5a32",
-      "updated_at": 1493451581827
+      "address": "0xf8b65c47ec02348d6044542ea387017e5d251ce9",
+      "updated_at": 1493446234220
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1493451581827
+  "updated_at": 1493446234220
 }

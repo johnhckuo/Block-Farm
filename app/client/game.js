@@ -47,6 +47,9 @@ var landTypeList = [];
 
 var userCropType = [];
 
+var currentClickedCrop = null;
+var currentClickedLand = null;
+
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -561,6 +564,7 @@ Template.crop.events({
 
         plantMode = true;
 
+        currentClickedCrop = event.target;
         var btns = $(".crop").find("button");
 
         for (var i = 0 ; i < btns.length; i++){
@@ -599,13 +603,15 @@ Template.land.events({
             $(event.target).css("background", "gray");
             $(event.target).css("border-color", "gray");
             $(event.target).text("Done");
+            currentClickedLand = event.target;
+
+
         }else{
-            $(".farmObject").css("display", "none");
 
             $(event.target).css("background", "#337ab7");
             $(event.target).css("border-color", "#337ab7");
             $(event.target).text("Specify");
-
+            $(".farmObject").css("display", "none");
         }
     },
 
@@ -681,6 +687,27 @@ Template.statusList.events({
         }
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
+
+        // cancel plant/place mode when switching between tag
+        if (plantMode){
+          $(".cropObject").css("display", "none");
+
+          $(currentClickedCrop).css("background", "#337ab7");
+          $(currentClickedCrop).css("border-color", "#337ab7");
+          $(currentClickedCrop).text("Specify");
+          $(currentClickedCrop).data('pressed', false);
+          plantMode = false;
+        }else if (placeMode){
+          $(".farmObject").css("display", "none");
+
+          $(currentClickedLand).css("background", "#337ab7");
+          $(currentClickedLand).css("border-color", "#337ab7");
+          $(currentClickedLand).text("Specify");
+          $(currentClickedLand).data('pressed', false);
+          placeMode = false;
+
+        }
+
 
 
     },

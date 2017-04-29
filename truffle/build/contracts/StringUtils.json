@@ -94,13 +94,14 @@
       "address": "0x2217d1f3341e9656a464f3465e484c1f827c8346",
       "updated_at": 1493219367295
     },
-    "1493449813798": {
+
+    "1493446182087": {
       "events": {},
       "links": {},
-      "address": "0x6f0e41a004d36cb89136d21af404a5052be05722",
-      "updated_at": 1493451581831
+      "address": "0x6237957d3213094aa3dbd98b36b08f3cad54d315",
+      "updated_at": 1493446234253
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1493451581831
+  "updated_at": 1493446234253
 }
