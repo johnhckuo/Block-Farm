@@ -9,6 +9,7 @@ contract Congress{
     function getStakeholdersLength() constant returns(uint);
 
     function getStakeholder(uint s_Id) constant returns(bytes32, uint256, uint256, uint, address, uint, bytes32);
+    function getStakeholder_Mission(uint s_Id) constant returns(uint);
 }
 
 contract usingProperty{
@@ -76,7 +77,9 @@ contract GameCore{
         Mission obj = MissionList[mId];
 
         uint s_Id = congress.stakeholderId(msg.sender);
-        if(MissionList[mId].missionStatus){
+        uint user_level = congress.getStakeholder_Mission(s_Id);
+
+        if((MissionList[mId].missionStatus)&&(user_level >= obj.lvl_limitation)){
             return (obj.name, obj.exp, obj.lvl_limitation, obj.accountStatus[s_Id]);
         }
         else{
@@ -84,11 +87,11 @@ contract GameCore{
         }
     }
 
-    function getMissionItems(uint mId, uint itemId) constant returns(uint ,bytes32, uint){
+    function getMissionItems(uint mId, uint itemId) constant returns(uint ,bytes32, uint, bytes32){
         Mission obj = MissionList[mId];
        
         var (name, id, img) = usingPropertyInstance.getPropertyType_forMission(obj.cropId[itemId], 3);
-        return (obj.cropId[itemId], name, obj.quantity[itemId]);      
+        return (obj.cropId[itemId], name, obj.quantity[itemId], img);      
     }
 
     function getMissionsLength() constant returns(uint){
@@ -104,7 +107,7 @@ contract GameCore{
         uint propertyLength = usingPropertyInstance.getPropertiesLength();
         for(uint i = 0; i < missionItemLength; i++){
             
-            var (cropId, name, quantity) = getMissionItems(mId, i);
+            var (cropId, name, quantity, img) = getMissionItems(mId, i);
             
             for(uint j = 0; j < propertyLength; j++){
                 var (propertyType, propertyOwner, propertyCount) = usingPropertyInstance.getProperty_MissionSubmit(j);
