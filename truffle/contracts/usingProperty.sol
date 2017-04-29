@@ -76,7 +76,7 @@ contract usingProperty{
         uint tradeable; //可被交易的數量
 
     }
-
+    
     Property[] public propertyList;
 
     struct CropList{
@@ -202,13 +202,13 @@ contract usingProperty{
         return (propertyList[p_Id].propertyType, propertyList[p_Id].owner, propertyList[p_Id].propertyCount);
     }
 
+
     function getPartialProperty(uint p_Id) constant returns(address){
         return (propertyList[p_Id].owner);
     }
 
-    function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint){
-        return propertyTypeList[propertyList[p_Id].propertyType].rating[s_Id];
-    }
+
+
 
     function getPropertyRatingLength(uint p_Id) constant returns(uint){
         propertyRatinglength_testing(propertyTypeList[p_Id].rating.length);
@@ -230,6 +230,22 @@ contract usingProperty{
         propertyList[_id].propertyCount = _propertyCount;
     }
 
+    // for match making
+
+
+    function getPropertyTypeRating(uint p_Id, uint s_Id) constant returns(uint){
+        return propertyTypeList[propertyList[p_Id].propertyType].rating[s_Id];
+    }
+
+    function getPropertyTypeAverageRating(uint p_Id, uint s_Id) constant returns(uint){
+        return propertyTypeList[propertyList[p_Id].propertyType].averageRating;
+    }
+
+    function checkTradeable(uint p_Id) constant returns(uint){
+        return propertyList[p_Id].tradeable;
+    }
+
+
 
     /*  ----------------------------------
         |                                |
@@ -240,17 +256,14 @@ contract usingProperty{
     function addUserPropertyType(uint u_Id, uint p_Id){
         userPropertyTypeList[u_Id].id.push(p_Id);
         userPropertyTypeList[u_Id].count.push(0);
-
     }
 
     function updateUserPropertyType(uint u_Id, uint level){
         userPropertyTypeList[u_Id].count[level]++;
-
     }
 
     function getUserPropertyType(uint u_Id) constant returns(uint[], uint[]){
         return (userPropertyTypeList[u_Id].id, userPropertyTypeList[u_Id].count);
-
     }
 
     /*  ----------------------------------

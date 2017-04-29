@@ -13,12 +13,15 @@ contract Congress{
 
 contract usingProperty{
     function getPropertiesLength() constant returns(uint);
-    function getPartialProperty(uint p_Id) returns(address, uint);
+    function getPartialProperty(uint p_Id) returns(address);
     function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint);
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint);
     function addUserPropertyType(uint u_Id, uint p_Id);
     function getPropertyTypeId(uint p_Id) constant returns(uint);
     function addUserLandConfiguration(uint u_Id);
+    function getPropertyTypeAverageRating(uint p_Id, uint s_Id) constant returns(uint);
+    function getPropertyTypeRating(uint p_Id, uint s_Id) constant returns(uint);
+    function checkTradeable(uint p_Id) constant returns(uint);
 }
 
 contract MainActivity{
@@ -34,7 +37,7 @@ contract MainActivity{
     event matchFail();
     event test(uint);
     event returnOrigin(uint);
-
+    
     Congress congress;
     usingProperty property;
 
@@ -139,9 +142,13 @@ contract MainActivity{
         visitedPriority.length = 0;
 
         for (uint i = 0 ; i < length ; i++){
-            var (owner, averageRating) = property.getPartialProperty(i);
-
-            uint self_Importance = property.getPropertyRating(i, congress.stakeholderId(owner));
+            uint access = property.checkTradeable(i);
+            if (access == 0){
+                continue;
+            }
+            address owner = property.getPartialProperty(i);
+            uint averageRating = property.getPropertyTypeAverageRating(i, congress.stakeholderId(owner));
+            uint self_Importance = property.getPropertyTypeRating(i, congress.stakeholderId(owner));
             int256 diff = int256(averageRating - self_Importance);
 
             priorityList[i] = diff;
@@ -173,9 +180,11 @@ contract MainActivity{
 
     function returnPriority(uint visitNode, uint i) constant returns(int256){
 
-        var (owner, averageRating) = property.getPartialProperty(visitNode);
-        uint self_Importance = property.getPropertyRating(visitNode, congress.stakeholderId(owner));
-        uint currentRating = property.getPropertyRating(i, congress.stakeholderId(owner));
+        address owner = property.getPartialProperty(visitNode);
+
+        uint self_Importance = property.getPropertyTypeRating(visitNode, congress.stakeholderId(owner));
+        uint currentRating = property.getPropertyTypeRating(i, congress.stakeholderId(owner));
+
         int256 diff = int256(currentRating - self_Importance);
 
         return diff;
@@ -189,8 +198,13 @@ contract MainActivity{
         int256[] memory diffList = new int256[](length);
 
         for (uint i = 0 ; i < length ; i++){
-            var (newOwner, newAverageRating) = property.getPartialProperty(i);
-            var (currentOwner, currentAverageRating) = property.getPartialProperty(visitNode);
+
+            if (property.checkTradeable(i) == 0){
+                continue;
+            }
+
+            address newOwner = property.getPartialProperty(i);
+            address currentOwner = property.getPartialProperty(visitNode);
 
             if (i == visitNode || (newOwner == currentOwner && i != origin)){
                 continue;
@@ -205,7 +219,13 @@ contract MainActivity{
         uint visitIndex;
 
         for (uint j = 0 ; j< length ; j++){
+
+            if (property.checkTradeable(j) == 0){
+                continue;
+            }
+
             flag = checkExist(goThroughList[j], visitedProperty);
+
             if (flag){
                 visitIndex = j;
                 break;

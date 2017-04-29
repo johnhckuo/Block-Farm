@@ -191,6 +191,7 @@ contract Congress is owned, tokenRecipient {
         uint id;
         address targetStakeholder = msg.sender;
 
+
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
            id = stakeholders.length++;
@@ -244,6 +245,7 @@ contract Congress is owned, tokenRecipient {
         stakeholdersGameData[u_Id].exp = exp;
         stakeholdersGameData[u_Id].totalExp += exp;
     }
+
 
     function updateUserStamina(uint u_Id, uint sta){
         stakeholdersGameData[u_Id].stamina = sta;
