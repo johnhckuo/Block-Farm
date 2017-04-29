@@ -154,6 +154,7 @@ contract Congress is owned, tokenRecipient {
     //     owner = msg.sender;
     // }
 
+
     function getStakeholdersLength() constant returns(uint){
         return stakeholders.length;
     }

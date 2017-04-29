@@ -76,7 +76,7 @@ contract usingProperty{
         uint tradeable; //可被交易的數量
 
     }
-    
+
     Property[] public propertyList;
 
     struct CropList{
@@ -226,12 +226,12 @@ contract usingProperty{
         }
     }
 
+
     function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount){
         propertyList[_id].propertyCount = _propertyCount;
     }
 
     // for match making
-
 
     function getPropertyTypeRating(uint p_Id, uint s_Id) constant returns(uint){
         return propertyTypeList[propertyList[p_Id].propertyType].rating[s_Id];
@@ -243,6 +243,10 @@ contract usingProperty{
 
     function checkTradeable(uint p_Id) constant returns(uint){
         return propertyList[p_Id].tradeable;
+    }
+
+    function getPropertyType_Matchmaking(uint p_Id) constant returns(uint){
+        return propertyList[p_Id].propertyType;
     }
 
 
@@ -372,6 +376,7 @@ contract usingProperty{
             uint s_Id = congress.stakeholderId(msg.sender);
 
             propertyTypeList[_id].rating[s_Id] = rate;
+
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
 
             //for (uint i = 0 ; i < propertyList.length; i++){

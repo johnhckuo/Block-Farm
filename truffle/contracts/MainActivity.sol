@@ -22,6 +22,7 @@ contract usingProperty{
     function getPropertyTypeAverageRating(uint p_Id, uint s_Id) constant returns(uint);
     function getPropertyTypeRating(uint p_Id, uint s_Id) constant returns(uint);
     function checkTradeable(uint p_Id) constant returns(uint);
+    function getPropertyType_Matchmaking(uint p_Id) constant returns(uint);
 }
 
 contract MainActivity{
@@ -37,7 +38,7 @@ contract MainActivity{
     event matchFail();
     event test(uint);
     event returnOrigin(uint);
-    
+
     Congress congress;
     usingProperty property;
 
@@ -206,7 +207,10 @@ contract MainActivity{
             address newOwner = property.getPartialProperty(i);
             address currentOwner = property.getPartialProperty(visitNode);
 
-            if (i == visitNode || (newOwner == currentOwner && i != origin)){
+            uint currentType = property.getPropertyType_Matchmaking(i);
+            uint newType = property.getPropertyType_Matchmaking(visitNode);
+
+            if (i == visitNode || (newOwner == currentOwner && i != origin) || currentType == newType){
                 continue;
             }
 
