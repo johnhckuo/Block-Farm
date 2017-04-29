@@ -1452,7 +1452,7 @@ set_property_table = function(){
         id: 'btn_property_cancel',
         value: 'CANCEL'
     }).on('click', function () {
-        alert('cancel');
+        //
     }));
     tr.append(td);
     table.append(tr);
@@ -1518,7 +1518,7 @@ set_propertyType_table = function () {
         id: 'btn_property_cancel',
         value: 'CANCEL'
     }).on('click', function () {
-        alert('cancel');
+        set_propertyType_table();
     }));
     tr.append(td);
     table.append(tr);
@@ -1594,7 +1594,7 @@ get_mission_list = function(){
         else{
             for(j = 0; j < item_length;j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0]};
+                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1659,7 +1659,7 @@ mission_rending = function(){
         td = $('<td></td>');
         for(j = 0; j < mission_list[i].items.length; j++){
             td.append($('<img></img>',{
-                src: prefix + cropTypeList[mission_list[i].items[j].crop_id].img[3]+postfix,
+                src: prefix + mission_list[i].items[j].img+postfix,
                 alt:mission_list[i].items[j].crop_name
             }));
             td.append($('<span></span>',{

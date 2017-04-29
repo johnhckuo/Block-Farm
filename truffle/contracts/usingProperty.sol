@@ -412,6 +412,7 @@ contract usingProperty{
 
     }
 
+
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].time, propertyTypeList[p_Id].harvestUnit);
     }

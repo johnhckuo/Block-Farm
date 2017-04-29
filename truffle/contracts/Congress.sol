@@ -356,6 +356,7 @@ contract Congress is owned, tokenRecipient {
            - Has a minimum quorum?
         */
 
+
         if (now < p.votingDeadline
             || p.executed
             || p.proposalHash != sha3(p.recipient, p.amount, transactionBytecode)
