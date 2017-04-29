@@ -146,17 +146,16 @@
             </div>
         </div>
         <div class="functionSwitch">
-              <button type="button" name="button" class="btn btn-primary shopOpen">Shop</button>
               <!-- <button type="button" name="button" class="btn btn-primary test">Test</button> -->
 
               <button type="button" name="button" class="btn btn-primary characterSwitch">{{characterType}}</button>
-              <button type="button" name="button" class="btn btn-primary MissionOpen">
+              <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
                 <div class="missionIndicator">
                   !
                 </div>
                 Mission
 
-              </button>
+              </button> -->
 
               <span class="musicSwitch">
                   <img src="/img/game/speaker_off.svg" alt="">
@@ -248,12 +247,12 @@
 
 <template name="operationList">
   <div class="operationList">
-    <div class="menuButton">
+    <div class="menuBtn">
       <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
     </div>
-    <div class="rightMenuIcon">
-      <button type="button" class="btn btnSelect btnMission" name="button"><img src="/img/game/envelope.svg" alt=""></button>
-      <button type="button" class="btn btnSelect btnShop" name="button"><img src="/img/game/grocery.svg" alt=""></button>
+    <div class="rightMenuIcon" >
+      <button type="button" class="btn btnSelect btnMission MissionOpen" name="button"><img src="/img/game/envelope.svg" alt=""></button>
+      <button type="button" class="btn btnSelect btnShop shopOpen" name="button"><img src="/img/game/grocery.svg" alt=""></button>
       <button type="button" class="btn btnSelect btnRank" name="button"><img src="/img/game/quality.svg" alt=""></button>
     </div>
   </div>
