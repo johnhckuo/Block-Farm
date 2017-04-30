@@ -16,6 +16,7 @@ var placeMode = false;
 var currentCropLand;
 var audio;
 
+var visitNode;
 var s_Id;
 
 var gameMode = "Farmer";
@@ -458,7 +459,7 @@ Template.gameIndex.events({
                     tradeable: 0
                 });
                 console.log(cropTypeList);
-                var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount], gas:2000000});
+                var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
                 for(var i = 0 ; i < propertyLength.c[0]; i++){
                     usingPropertyInstance.updatePropertyCount_Cropped(i, parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
                 }
@@ -490,39 +491,55 @@ Template.gameIndex.events({
                 set_property_table();
             }
             else if(gameMode == "Thief"){
-                var stolenFlag;
-                stolenFlag = $(event.target).parent().attr("stolenFlag");
-                if ((cropList[id].ripe)&&(stolenFlag == "f")){
-                    $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
-                    $(".scoreObject").html("+" + 5 +"XP");
+                var stolenFlag, stealCount, judgement;
+                judgement = Math.random();
+                if(judgement >= 0.5){
+                    stolenFlag = $(event.target).parent().attr("stolenFlag");
+                    if ((cropList[id].ripe)&&(stolenFlag == "f")){
+                        $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+                        $(".scoreObject").html("+" + 5 +"XP");
+                    }
+                    else{
+                        alert("Don't be so greedy");
+                        return;
+                    }
+                    var landTop = $(".land").position().top;
+                    var landLeft = $(".land").position().left;
+
+                    var areaLeft = $(".gamingArea").position().left;
+
+                    var divHeight =$(".farmObject").height()/5;
+                    var divWidth = $(".farmObject").width()/4;
+
+                    var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
+                    temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
+                    temp.addClass("animationTempShow");
+
+                    setTimeout(function(){
+                        temp.css({opacity:0, transform:"translateY(0px)"});
+                        setTimeout(function(){
+                            temp.css({display: "none"});
+                            temp.remove();
+                        },1000);
+                    },1000);
+            
+                    stealCount = Math.round(cropCount / 2);
+                    cropCount = cropCount - stealCount;
+                    var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+                    for(var i= 0; i < propertyLength;i++){
+                        usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
+                    }
+                    usingPropertyInstance.updateCropCount(visitNode, id, cropCount, {from:web3.eth.accounts[currentAccount], gas:2000000});
+                    $(event.target).parent().attr("cropcount", parseInt(cropCount));
+                    $(event.target).parent().attr("stolenFlag", "t");
+                    $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+                    //reload propertyTable
+                    set_property_table();
                 }
                 else{
-                    alert("");
-                    return;
+                    alert("You are under arrest!");
                 }
-                var landTop = $(".land").position().top;
-                var landLeft = $(".land").position().left;
-
-                var areaLeft = $(".gamingArea").position().left;
-
-                var divHeight =$(".farmObject").height()/5;
-                var divWidth = $(".farmObject").width()/4;
-
-                var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
-                temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
-                temp.addClass("animationTempShow");
-
-                setTimeout(function(){
-                    temp.css({opacity:0, transform:"translateY(0px)"});
-                    setTimeout(function(){
-                        temp.css({display: "none"});
-                        temp.remove();
-                    },1000);
-                },1000);
             }
-            cropcount = cropcount / 2;
-            $(event.target).parent().attr("cropcount", parseInt(cropcount));
-            $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
     },
 })
 
@@ -792,7 +809,7 @@ document.onmousemove = function(e){
 var getVisitNode = function(){
     var s_Length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
 
-    var visitNode = currentAccount;
+    visitNode = currentAccount;
     while (visitNode == currentAccount){
         visitNode = Math.floor(s_Length*Math.random());
     }
@@ -1352,7 +1369,7 @@ var elapsedTime = function(start, end){
 
 get_user_property_setting = function () {
     user_property = [];
-    var propertyLength = usingPropertyInstance.getPropertiesLength.call();
+    var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
     for(i = 0; i < propertyLength;i++){
         var property_data = usingPropertyInstance.getProperty_Shop(i, {from:web3.eth.accounts[currentAccount]});
         if(web3.eth.accounts[currentAccount] == property_data[2]){
@@ -1599,14 +1616,14 @@ get_mission_list = function(){
     var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]});
     mission_list = [];
 
-    for(i = 0; i < mission_count; i++){
+    for(i = 0; i < mission_count.c[0]; i++){
         mission_source = GameCoreInstance.getMission.call(i, {from:web3.eth.accounts[currentAccount]});
         item_length = GameCoreInstance.getMissionItemsLength.call(i, {from:web3.eth.accounts[currentAccount]});
         mission = {id: i, name:$.trim(hex2a(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
 
         if(mission.lvl_limitation ===999){}
         else{
-            for(j = 0; j < item_length;j++){
+            for(j = 0; j < item_length.c[0];j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
                 item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
                 mission.items.push(item);
@@ -1617,7 +1634,7 @@ get_mission_list = function(){
 }
 mission_rending = function(){
 
-    get_mission_list();
+    //get_mission_list();
     $('.mission_template').html('');
     $('.mission_template').append($('<input></input>',{
         type:'button',
@@ -1631,26 +1648,23 @@ mission_rending = function(){
     })
 .on('click', function(){
     GameCoreInstance.addMission('Mission1', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission2', 300, 4, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission3', 200, 2, false, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission4', 500, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission2', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission3', 100, 0, true, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission4', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission5', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMission('Mission6', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
-    //GameCoreInstance.addMission('Mission5', 567, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //GameCoreInstance.addMission('Mission6', 600, 7, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //GameCoreInstance.addMission('Mission7', 700, 9, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //GameCoreInstance.addMission('Mission8', 880, 8, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(0, 0, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(1, 1, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(2, 2, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(3, 0, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(3, 1, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(4, 2, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(4, 0, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(5, 1, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(5, 2, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    GameCoreInstance.addMissionItem(5, 3, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
-    GameCoreInstance.addMissionItem(0, 0, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(0, 1, 4, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(1, 1, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(1, 3, 2, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(2, 0, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(2, 1, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(2, 2, 3, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 0, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 1, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 2, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 3, 5, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 })
 );
     var table, tr, td;
