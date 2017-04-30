@@ -681,6 +681,9 @@ Template.statusList.events({
         }
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
+        if(panelCounter==5){
+          set_property_table();
+        }
 
 
     },
@@ -754,10 +757,12 @@ Template.operationList.events({
       }
     },
     'click .shopOpen': function (e) {
+        $(".mission_template").css("display", "none");
         $(".property_shop").css("display", "inline");
 
     },
     'click .MissionOpen': function(event){
+        $('.property_shop').css('display', 'none');
         $(".mission_template").css("display", "inline");
         mission_rending();
     }
@@ -1340,14 +1345,14 @@ get_propertyType_setting = function(){
         display_field.push(data);
     }
 }
-
+// left tradeable
 set_property_table = function(){
     get_user_property_setting();
     var table, tr, td, heart_path, heart_status;
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
-    $('.shop_content').html('');
-    table = $('<table></table>').attr('id', 'property_table')
+    $('.tradeable_content').html('');
+    table = $('<table></table>').attr('id', 'property_trade_table')
                                 .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
@@ -1430,14 +1435,15 @@ set_property_table = function(){
     tr.append(td);
     table.append(tr);
     //control bar
-    $('.shop_content').append(table);
+    // $('.shop_content').append(table);
+    $('.tradeable_content').append(table);
 }
 
 index_finder = function(_source, _mask){
     var res = _source.substring(_mask.length, _source.length);
     return res;
 }
-
+//rightMenuIcon
 set_propertyType_table = function () {
 
     var table, tr, td, property_index;
@@ -1447,7 +1453,7 @@ set_propertyType_table = function () {
     table = $('<table></table>').attr('id', 'property_table')
                                 .attr('class', 'property_shop_table');
     //header
-    tr = $('<tr></tr>');
+    tr = $('<tr"></tr>');
     tr.append($('<th></th>').text('Property'));
     tr.append($('<th></th>').text('Rating'));
     tr.append($('<th></th>').text('AVG Rating'));

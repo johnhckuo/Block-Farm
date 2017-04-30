@@ -49,6 +49,7 @@
   transition: all 1s;
   opacity: 1;
 }
+
 /****************/
 
 .operationList{
@@ -342,11 +343,36 @@
   height: 70vh;
 }
 
-.property_shop_table{
+.property_shop.property_shop_table{
   height: 70vh;
   width: 50vw;
 }
 
+/*rightMenuIcon btnShop shopOpen*/
+#property_table{
+  width: 45vw;
+  height: 70vh;
+}
+
+/*property stock tradable in the fourth controlButtons*/
+#property_trade_table{
+  display: flex;
+  justify-content: center;
+  width: 25vw;
+  font-size: 20px;
+  text-align: center;
+  border-spacing: 100px;
+}
+#property_trade_table td{
+  width:50vw;
+  vertical-align:middle;
+}
+.shop_tradable_input{
+  width: 1vw;
+  background-color: rgba(255, 255, 255, 0);
+  color: rgb(0, 0, 0);
+  border-style: none;
+}
 .expProgress{
   position: relative;
   width: 100px;
@@ -461,10 +487,10 @@
   height:50px;
 }
 
-td{
+/*td{
   width:100px;
   text-align: center;
-}
+}*/
 
 td img{
   width:50px;
