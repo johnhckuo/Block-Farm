@@ -157,15 +157,15 @@ Template.gameIndex.rendered = function() {
 
 Template.shop.rendered = function () {
     var stakeholder_length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]});
-    var select = $('<select>></select>');
-    for (i = 0; i < stakeholder_length; i++) {
-        var stakeholder_info = CongressInstance.getStakeholder.call(i,{from:web3.eth.accounts[currentAccount]});
-        option = $('<option>', {
-            value: i,
-            text: hex2a(stakeholder_info[0])
-        });
-        select.append(option);
-    }
+    // var select = $('<select>></select>');
+    // for (i = 0; i < stakeholder_length; i++) {
+    //     var stakeholder_info = CongressInstance.getStakeholder.call(i,{from:web3.eth.accounts[currentAccount]});
+    //     option = $('<option>', {
+    //         value: i,
+    //         text: hex2a(stakeholder_info[0])
+    //     });
+    //     select.append(option);
+    // }
     select.on('change', function () {
         currentAccount = $(this).val();
         set_propertyType_table();
@@ -592,7 +592,15 @@ Template.crop.events({
 
 Template.land.events({
     'click .cropLand button': function (event){
-        var id = $(event.target).parent()[0].className.split("farmLand")[1];
+        clickTarget=null;
+        if(event.target.className==""){
+          clickTarget=$(event.target).parent();
+        }else{
+          clickTarget=$(event.target);
+        }
+
+        var id = clickTarget.parent()[0].className.split("farmLand")[1];
+
         $(".farmObject").html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />");
         currentLandId = id;
 
@@ -600,17 +608,19 @@ Template.land.events({
         if (placeMode){
             $(".farmObject").css("display", "inline");
 
-            $(event.target).css("background", "gray");
-            $(event.target).css("border-color", "gray");
-            $(event.target).text("Done");
-            currentClickedLand = event.target;
+            // $(event.target).css("background", "gray");
+            // $(event.target).css("border-color", "gray");
+            // $(event.target).text("Done");
+            clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>")
+            currentClickedLand = clickTarget;
 
 
         }else{
-
-            $(event.target).css("background", "#337ab7");
-            $(event.target).css("border-color", "#337ab7");
-            $(event.target).text("Specify");
+            // $(event.target).css("background", "#337ab7");
+            // $(event.target).css("border-color", "#337ab7");
+            // $(event.target).text("Specify");
+            $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
+            clickTarget.html("<img src='/img/game/shovel.svg'>")
             $(".farmObject").css("display", "none");
         }
     },
@@ -703,9 +713,10 @@ Template.statusList.events({
         }else if (placeMode){
           $(".farmObject").css("display", "none");
 
-          $(currentClickedLand).css("background", "#337ab7");
-          $(currentClickedLand).css("border-color", "#337ab7");
-          $(currentClickedLand).text("Specify");
+          // $(currentClickedLand).css("background", "#337ab7");
+          // $(currentClickedLand).css("border-color", "#337ab7");
+          $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
+          // $(currentClickedLand).text("Specify");
           $(currentClickedLand).data('pressed', false);
           placeMode = false;
 
@@ -1611,9 +1622,10 @@ mission_rending = function(){
 
     get_mission_list();
     $('.mission_template').html('');
-    $('.mission_template').append($('<input></input>',{
+    $('.mission_template').append($('<button></button>',{
         type:'button',
-        value:'Close',
+        id:'btn_mission_close',
+        html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
     })
     .on('click', function(){ $('.mission_template').css('display','none'); })
     );
