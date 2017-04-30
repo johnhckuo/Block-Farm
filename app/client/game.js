@@ -18,6 +18,8 @@ var audio;
 
 var s_Id;
 
+var gameMode = "Farmer";
+
 
 const _dep = new Tracker.Dependency;
 const _crop = new Tracker.Dependency;
@@ -46,6 +48,11 @@ var cropTypeList = [];
 var landTypeList = [];
 
 var userCropType = [];
+
+var property_log = [];
+var user_property = [];
+var property_database = [];
+var display_field = [];
 
 ///////////////////////////
 //  prototype functions  //
@@ -153,21 +160,7 @@ Template.gameIndex.rendered = function() {
 }
 
 Template.shop.rendered = function () {
-    var stakeholder_length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]});
-    var select = $('<select>></select>');
-    for (i = 0; i < stakeholder_length; i++) {
-        var stakeholder_info = CongressInstance.getStakeholder.call(i,{from:web3.eth.accounts[currentAccount]});
-        option = $('<option>', {
-            value: i,
-            text: hex2a(stakeholder_info[0])
-        });
-        select.append(option);
-    }
-    select.on('change', function () {
-        currentAccount = $(this).val();
-        set_propertyType_table();
-    })
-    $('.shop_header').append(select);
+
 }
 
 //////////////////
@@ -186,15 +179,6 @@ $(window).on("beforeunload", function() {
 //  Helpers  //
 ///////////////
 
-var activated_account = 2;
-var account_index;
-property_log = [];
-user_property = [];
-property_database = [];
-display_field = [];
-//for testing
-//currentAccount = activated_account;
-//for testing
 Template.shop.helpers({
 
 });
@@ -287,56 +271,7 @@ Template.shop.events({
     'click #btn_shop_close': function () {
         $('.property_shop').css('display', 'none');
     },
-    'click #btn_shop_add':function(){
-        CongressInstance.initPlayerData('John', 'Guard',  { from: web3.eth.accounts[0], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[0], gas: 2000000 });
-        CongressInstance.initPlayerData('Bryant', 'Guard',  { from: web3.eth.accounts[1], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[1], gas: 2000000 });
-        CongressInstance.initPlayerData('Claire', 'Thief',  { from: web3.eth.accounts[2], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[2], gas: 2000000 });
-        CongressInstance.initPlayerData('Po-Wei', 'Thief',  { from: web3.eth.accounts[3], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[3], gas: 2000000 });
-        CongressInstance.initPlayerData('Ping', 'Guard',  { from: web3.eth.accounts[4], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[4], gas: 2000000 });
-        CongressInstance.initPlayerData('Chi', 'Thief',  { from: web3.eth.accounts[5], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[5], gas: 2000000 });
-        CongressInstance.initPlayerData('Nina', 'Guard',  { from: web3.eth.accounts[6], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[6], gas: 2000000 });
-        CongressInstance.initPlayerData('Jackie', 'Thief',  { from: web3.eth.accounts[7], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[7], gas: 2000000 });
-        CongressInstance.initPlayerData('Charlie', 'Guard',  { from: web3.eth.accounts[8], gas: 2000000 });
-        CongressInstance.addMember(10, 1000, 1, { from: web3.eth.accounts[8], gas: 2000000 });
 
-
-        usingPropertyInstance.addPropertyType('Carrot', ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"], '0.0.0.10', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('Radish',["radish_seed", "radish_grow", "radish_harvest", "radish"], '0.0.0.30', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('Lettuce',["lettuce_seed", "lettucet_grow", "lettuce_harvest", "lettuce"], '0.0.10.0', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        usingPropertyInstance.addPropertyType('Cauliflower', ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"], '0.0.0.10', 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-
-
-        usingPropertyInstance.addProperty('Carrot', 4, 1, '', 0, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 4, 1, '', 1, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 2, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 3, 1, '', 3, 0, { from: web3.eth.accounts[0], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot', 8, 1, '', 0, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 5, 1, '', 1, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 9, 1, '', 2, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower',10, 1, '', 3, 0, { from: web3.eth.accounts[1], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot',10, 1, '', 0, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 9, 1, '', 1, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 7, 1, '', 2, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 6, 1, '', 3, 0, { from: web3.eth.accounts[2], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot', 14, 1, '', 0, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 14, 1, '', 1, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 13, 1, '', 2, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 13, 1, '', 3, 0, { from: web3.eth.accounts[3], gas: 2000000 });
-        usingPropertyInstance.addProperty('Carrot', 1, 1, '', 0, 0, { from: web3.eth.accounts[4], gas: 2000000 });
-        usingPropertyInstance.addProperty('Radish', 2, 1, '', 1, 0, { from: web3.eth.accounts[4], gas: 2000000 });
-        usingPropertyInstance.addProperty('Lettuce', 3, 1, '', 2, 0, { from: web3.eth.accounts[4], gas: 2000000 });
-        usingPropertyInstance.addProperty('Cauliflower', 4, 1, '', 3, 0, { from: web3.eth.accounts[4], gas: 2000000 });
-        //var id = usingPropertyInstance.gets_id.call({ from: web3.eth.accounts[currentAccount], gas: 2000000 });
-        //alert(id);
-    },
     'click #btn_property_tradeable':function(){
         set_property_table();
     }
@@ -690,24 +625,24 @@ Template.characterList.events({
     'click .characterSwitch': function (event) {
 
         loading(1);
-        var s_Length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
 
-        var visitNode = currentAccount;
-        while (visitNode == currentAccount){
-            visitNode = Math.floor(s_Length*Math.random());
-        }
-        console.log(visitNode);
-        console.log(s_Length);
         if ($(event.target).html() == "Guard"){
             showThief = true;
-
+            visitNode = getVisitNode();
             rerenderCropLand(visitNode);
             $(event.target).html("Home");
+            gameMode = "Guard";
         }else if ($(event.target).html() == "Thief"){
+            visitNode = getVisitNode();
             rerenderCropLand(visitNode);
             $(event.target).html("Home");
-            $(event.target).parent().append("<button type='button' name='button' class='btn btn-primary nextHome'>Next</button>");
-
+            $(event.target).parent().append($('<input></input>',{
+                                                type:'button',
+                                                name:'button',
+                                                class:'btn btn-primary nextHome',
+                                                value:'Next'
+                                            }));
+            gameMode = "Thief";
         }else if ($(event.target).html() == "Home"){
             $(event.target).html(Session.get('userCharacter'));
             showThief = false;
@@ -715,11 +650,14 @@ Template.characterList.events({
 
             rerenderCropLand(currentAccount);
             $(event.target).parent().find(".nextHome").remove();
+            gameMode = "Farmer"
         }
     },
     'click .nextHome': function (event) {
 
         // ===== wait for further testing
+        visitNode = getVisitNode();
+        rerenderCropLand(visitNode);
 
     },
     'click .musicSwitch': function (event) {
@@ -772,6 +710,18 @@ Template.operationList.events({
 document.onmousemove = function(e){
     cursorX = e.pageX;
     cursorY = e.pageY;
+}
+
+var getVisitNode = function(){
+    var s_Length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+
+    var visitNode = currentAccount;
+    while (visitNode == currentAccount){
+        visitNode = Math.floor(s_Length*Math.random());
+    }
+    console.log(visitNode);
+    console.log(s_Length);
+    return visitNode;
 }
 
 //call with caution, this will consume lots of loading time
@@ -1624,37 +1574,38 @@ mission_rending = function(){
     //header
     //content
     for(i = 0; i < mission_list.length;i++){
-        tr = $('<tr></tr>');
-        td = $('<td></td>',{
-            text:mission_list[i].name
-        });
-        tr.append(td);
-        td = $('<td></td>');
-        for(j = 0; j < mission_list[i].items.length; j++){
-            td.append($('<img></img>',{
-                src: prefix + mission_list[i].items[j].img+postfix,
-                alt:mission_list[i].items[j].crop_name
-            }));
-            td.append($('<span></span>',{
-                text: ' X ' + mission_list[i].items[j].quantity
-            }));
-        }
-        tr.append(td);
-        td = $('<td></td>',{
-            text:  mission_list[i].exp
-        });
-        tr.append(td);
-        td = $('<td></td>');
-        td.append($('<input></input>',{
-            type:'hidden',
-            id:'mission_exp_' + mission_list[i].id,
-            value:mission_list[i].exp
-        }));
-        td.append($('<input></input>',{
-            type:'hidden',
-            id:'mission_id_' + mission_list[i].id
-        }));
         if(!mission_list[i].solved){
+            tr = $('<tr></tr>');
+            td = $('<td></td>',{
+                text:mission_list[i].name
+            });
+            tr.append(td);
+            td = $('<td></td>');
+            for(j = 0; j < mission_list[i].items.length; j++){
+                td.append($('<img></img>',{
+                    src: prefix + mission_list[i].items[j].img+postfix,
+                    alt:mission_list[i].items[j].crop_name
+                }));
+                td.append($('<span></span>',{
+                    text: ' X ' + mission_list[i].items[j].quantity
+                }));
+            }
+            tr.append(td);
+            td = $('<td></td>',{
+                text:  mission_list[i].exp
+            });
+            tr.append(td);
+            td = $('<td></td>');
+            td.append($('<input></input>',{
+                type:'hidden',
+                id:'mission_exp_' + mission_list[i].id,
+                value:mission_list[i].exp
+            }));
+            td.append($('<input></input>',{
+                type:'hidden',
+                id:'mission_id_' + mission_list[i].id
+            }));
+        
             td.append($('<input></input>',{
                 type:'button',
                 value:'Submit',
