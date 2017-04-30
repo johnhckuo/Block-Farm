@@ -87,6 +87,7 @@ contract usingProperty{
         bytes32[] end;
         uint[] cropType;
         bool[] ripe;
+        uint[] count;
     }
 
     mapping (uint => CropList) cropList;
@@ -120,6 +121,22 @@ contract usingProperty{
         |            property            |
         |                                |
         ----------------------------------  */
+
+    function initUserProperty(uint p_Id){
+        uint _id = propertyList.length++;
+        Property prop = propertyList[_id];
+        PropertyType pt = propertyTypeList[p_Id];
+
+        prop.name = pt.name;
+        prop.id= _id;
+        prop.propertyCount= 0;
+        prop.since= now;
+        prop.minUnit= 0;
+        prop.owner= msg.sender;
+        prop.extraData= "";
+        prop.propertyType = pt.id;
+        prop.tradeable = 0;
+    }
 
     function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
         bool flag = true;
@@ -193,8 +210,8 @@ contract usingProperty{
         return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
-    function getProperty_Shop(uint p_Id) constant returns(uint, bytes32, address, uint256, uint){
-        return (propertyList[p_Id].propertyType, propertyTypeList[propertyList[p_Id].propertyType].name, propertyList[p_Id].owner, propertyList[p_Id].propertyCount, propertyList[p_Id].tradeable);
+    function getProperty_Shop(uint p_Id) constant returns(uint, bytes32, address, uint256, uint, bytes32){
+        return (propertyList[p_Id].propertyType, propertyTypeList[propertyList[p_Id].propertyType].name, propertyList[p_Id].owner, propertyList[p_Id].propertyCount, propertyList[p_Id].tradeable, propertyTypeList[propertyList[p_Id].propertyType].img[3]);
     }
 
     function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint){
@@ -205,9 +222,6 @@ contract usingProperty{
     function getPartialProperty(uint p_Id) constant returns(address){
         return (propertyList[p_Id].owner);
     }
-
-
-
 
     function getPropertyRatingLength(uint p_Id) constant returns(uint){
         propertyRatinglength_testing(propertyTypeList[p_Id].rating.length);
@@ -222,6 +236,16 @@ contract usingProperty{
         }
         else{
             throw;
+        }
+    }
+
+    function updatePropertyCount_Cropped(uint _id, uint _pt_Id, uint _croppedCount){
+        if((propertyList[_id].owner == msg.sender)&&(propertyList[_id].propertyType == _pt_Id)){
+            uint currentCount = propertyList[_id].propertyCount;
+            propertyList[_id].propertyCount = currentCount + _croppedCount;
+        }
+        else{
+           // throw;
         }
     }
 
@@ -275,7 +299,7 @@ contract usingProperty{
         |                                |
         ----------------------------------  */
 
-        function addCropList(uint u_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe){
+        function addCropList(uint u_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
             uint _id = cropList[u_Id].id.length++;
             cropList[u_Id].id[_id] = _id;
             cropList[u_Id].name.push(_name);
@@ -284,11 +308,11 @@ contract usingProperty{
             cropList[u_Id].end.push(_end);
             cropList[u_Id].cropType.push(_cropType);
             cropList[u_Id].ripe.push(_ripe);
-
+            cropList[u_Id].count.push(_count);
 
         }
 
-        function updateCropList(uint u_Id, uint p_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe){
+        function updateCropList(uint u_Id, uint p_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
 
             cropList[u_Id].name[p_Id] = _name;
             cropList[u_Id].img[p_Id] = _img;
@@ -296,10 +320,15 @@ contract usingProperty{
             cropList[u_Id].end[p_Id] = _end;
             cropList[u_Id].cropType[p_Id] = _cropType;
             cropList[u_Id].ripe[p_Id] = _ripe;
+            cropList[u_Id].count[p_Id] = _count;
         }
 
         function getCropList(uint u_Id) constant returns( uint[], bytes32[], bytes32[], bytes32[], bytes32[], uint[], bool[]){
             return (cropList[u_Id].id, cropList[u_Id].name, cropList[u_Id].img, cropList[u_Id].start, cropList[u_Id].end, cropList[u_Id].cropType, cropList[u_Id].ripe);
+        }
+
+        function getCropListCount(uint u_Id) constant returns(uint[]){
+            return cropList[u_Id].count;
         }
 
         function getCropListLength(uint u_Id) constant returns(uint){
