@@ -1,4 +1,6 @@
 pragma solidity ^0.4.4;
+import "./StringUtils.sol";
+import "./usingOraclize.sol";
 
 contract Congress{
     mapping (address => uint) public stakeholderId;
@@ -20,12 +22,12 @@ contract usingProperty{
     function getPropertyTypeId(uint p_Id) constant returns(uint);
     function addUserLandConfiguration(uint u_Id);
     function getPropertyTypeAverageRating(uint p_Id, uint s_Id) constant returns(uint);
-    function getPropertyTypeRating(uint p_Id, uint s_Id) constant returns(uint);
+    function getPropertyTypeRating_Matchmaking(uint p_Id, uint s_Id) constant returns(uint);
     function checkTradeable(uint p_Id) constant returns(uint);
     function getPropertyType_Matchmaking(uint p_Id) constant returns(uint);
 }
 
-contract MainActivity{
+contract MainActivity is usingOraclize{
 
     uint[] visitedProperty;
     int256[] visitedPriority;
@@ -35,9 +37,16 @@ contract MainActivity{
     uint origin;
 
     event matchSuccess(uint[] id, int256[] priority);
-    event matchFail();
+    event matchFail(uint);
     event test(uint);
     event returnOrigin(uint);
+    event debug(uint[]);
+    event debug2(int256[]);
+    event debug3(uint[]);
+    event debug4(uint, uint);
+    event debug5(uint, uint);
+    event debug6(bytes32);
+
 
     Congress congress;
     usingProperty property;
@@ -65,6 +74,8 @@ contract MainActivity{
 
       congress.addMember(0, 0, 0);
       initGameData(0, "Moderator", "guard");
+      //matchmaking(0);    // start executing matchmaking algo
+
     }
 
     function initGameData(uint s_Id, bytes32 _name, bytes32 _character){
@@ -132,7 +143,7 @@ contract MainActivity{
         return property.getPropertiesLength();
     }
 
-    function findOrigin() returns(bytes32 success){
+    function findOrigin() returns(string success){
 
         uint length = property.getPropertiesLength();
         int256[] memory priorityList = new int256[](length);
@@ -149,7 +160,7 @@ contract MainActivity{
             }
             address owner = property.getPartialProperty(i);
             uint averageRating = property.getPropertyTypeAverageRating(i, congress.stakeholderId(owner));
-            uint self_Importance = property.getPropertyTypeRating(i, congress.stakeholderId(owner));
+            uint self_Importance = property.getPropertyTypeRating_Matchmaking(i, congress.stakeholderId(owner));
             int256 diff = int256(averageRating - self_Importance);
 
             priorityList[i] = diff;
@@ -181,26 +192,27 @@ contract MainActivity{
 
     function returnPriority(uint visitNode, uint i) constant returns(int256){
 
-        address owner = property.getPartialProperty(visitNode);
+        address owner = property.getPartialProperty(i);
 
-        uint self_Importance = property.getPropertyTypeRating(visitNode, congress.stakeholderId(owner));
-        uint currentRating = property.getPropertyTypeRating(i, congress.stakeholderId(owner));
-
+        uint self_Importance = property.getPropertyTypeRating_Matchmaking(i, congress.stakeholderId(owner));
+        uint currentRating = property.getPropertyTypeRating_Matchmaking(visitNode, congress.stakeholderId(owner));
+        debug5(self_Importance, currentRating);
         int256 diff = int256(currentRating - self_Importance);
 
         return diff;
     }
 
-    function findVisitNode(uint visitNode) returns(bytes32){
-
+    function searchNeighborNodes(uint visitNode) constant returns(int256[], uint[]){
         uint length = property.getPropertiesLength();
         uint[] memory goThroughList = new uint[](length);
-
         int256[] memory diffList = new int256[](length);
+        uint k = 0;
 
         for (uint i = 0 ; i < length ; i++){
 
-            if (property.checkTradeable(i) == 0){
+            if (i == visitNode || property.checkTradeable(i) == 0){
+                k++;
+                diffList[i] = -10000;
                 continue;
             }
 
@@ -210,23 +222,46 @@ contract MainActivity{
             uint currentType = property.getPropertyType_Matchmaking(i);
             uint newType = property.getPropertyType_Matchmaking(visitNode);
 
-            if (i == visitNode || (newOwner == currentOwner && i != origin) || currentType == newType){
+            if (newOwner == currentOwner || currentType == newType){
+                k++;
+                diffList[i] = -10000;
                 continue;
             }
 
+            if (k == length-1){
+                matchFail(k);
+            }
+
+            debug4(visitNode, i);
+
             diffList[i] = returnPriority(visitNode, i);
             goThroughList[i] = i;
+            //test(i);
         }
+        return (diffList, goThroughList);
+    }
+
+    function findVisitNode(uint visitNode) returns(string){
+
+        uint length = property.getPropertiesLength();
+
+
+        var (diffList, goThroughList) = searchNeighborNodes(visitNode);
         (diffList, goThroughList) = sort(diffList, goThroughList);
+        debug(goThroughList);
+        debug2(diffList);
+
+//----------
+        if (diffList[0] <= 0){
+            return "Fail";
+        }
+
+//------------
 
         bool flag = false;
         uint visitIndex;
 
         for (uint j = 0 ; j< length ; j++){
-
-            if (property.checkTradeable(j) == 0){
-                continue;
-            }
 
             flag = checkExist(goThroughList[j], visitedProperty);
 
@@ -235,13 +270,14 @@ contract MainActivity{
                 break;
             }
             if (!flag && j == length-1){
-                matchFail();
+                matchFail(j);
                 return "Fail";
             }
         }
 
         visitedProperty.length++;
         visitedProperty[++visitedCount] = goThroughList[visitIndex];
+        debug3(visitedProperty);
 
         visitedPriority.length++;
         visitedPriority[visitedCount] = diffList[visitIndex];
@@ -251,9 +287,29 @@ contract MainActivity{
              test(visitedCount);
              return "Success";
         }else{
-            findVisitNode(goThroughList[visitIndex]);
+            //findVisitNode(goThroughList[visitIndex]);
+            //--------
+            debug6("hihih");
+            while (StringUtils.equal(findVisitNode(goThroughList[visitIndex++]),"Fail")){
+                matchFail(visitIndex);
+            }
+            matchSuccess(visitedProperty, visitedPriority);
+
+            //---------
+
         }
 
+    }
+
+
+    function __callback(bytes32 myid, string result) {
+        if (msg.sender != oraclize_cbAddress()) throw;
+        findOrigin();
+        matchmaking(60*60*3); // execute every 3 hours
+    }
+
+    function matchmaking(uint delay) {
+        oraclize_query(delay, 'URL', '');
     }
 
 
