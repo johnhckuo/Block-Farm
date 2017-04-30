@@ -49,10 +49,15 @@ var landTypeList = [];
 
 var userCropType = [];
 
+
 var property_log = [];
 var user_property = [];
 var property_database = [];
 var display_field = [];
+
+var currentClickedCrop = null;
+var currentClickedLand = null;
+
 
 ///////////////////////////
 //  prototype functions  //
@@ -496,6 +501,7 @@ Template.crop.events({
 
         plantMode = true;
 
+        currentClickedCrop = event.target;
         var btns = $(".crop").find("button");
 
         for (var i = 0 ; i < btns.length; i++){
@@ -534,13 +540,15 @@ Template.land.events({
             $(event.target).css("background", "gray");
             $(event.target).css("border-color", "gray");
             $(event.target).text("Done");
+            currentClickedLand = event.target;
+
+
         }else{
-            $(".farmObject").css("display", "none");
 
             $(event.target).css("background", "#337ab7");
             $(event.target).css("border-color", "#337ab7");
             $(event.target).text("Specify");
-
+            $(".farmObject").css("display", "none");
         }
     },
 
@@ -616,6 +624,30 @@ Template.statusList.events({
         }
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
+        if(panelCounter==5){
+          set_property_table();
+        }
+
+        // cancel plant/place mode when switching between tag
+        if (plantMode){
+          $(".cropObject").css("display", "none");
+
+          $(currentClickedCrop).css("background", "#337ab7");
+          $(currentClickedCrop).css("border-color", "#337ab7");
+          $(currentClickedCrop).text("Specify");
+          $(currentClickedCrop).data('pressed', false);
+          plantMode = false;
+        }else if (placeMode){
+          $(".farmObject").css("display", "none");
+
+          $(currentClickedLand).css("background", "#337ab7");
+          $(currentClickedLand).css("border-color", "#337ab7");
+          $(currentClickedLand).text("Specify");
+          $(currentClickedLand).data('pressed', false);
+          placeMode = false;
+
+        }
+
 
 
     },
@@ -692,10 +724,12 @@ Template.operationList.events({
       }
     },
     'click .shopOpen': function (e) {
+        $(".mission_template").css("display", "none");
         $(".property_shop").css("display", "inline");
 
     },
     'click .MissionOpen': function(event){
+        $('.property_shop').css('display', 'none');
         $(".mission_template").css("display", "inline");
         mission_rending();
     }
@@ -1290,14 +1324,14 @@ get_propertyType_setting = function(){
         display_field.push(data);
     }
 }
-
+// left tradeable
 set_property_table = function(){
     get_user_property_setting();
     var table, tr, td, heart_path, heart_status;
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
-    $('.shop_content').html('');
-    table = $('<table></table>').attr('id', 'property_table')
+    $('.tradeable_content').html('');
+    table = $('<table></table>').attr('id', 'property_trade_table')
                                 .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
@@ -1380,14 +1414,15 @@ set_property_table = function(){
     tr.append(td);
     table.append(tr);
     //control bar
-    $('.shop_content').append(table);
+    // $('.shop_content').append(table);
+    $('.tradeable_content').append(table);
 }
 
 index_finder = function(_source, _mask){
     var res = _source.substring(_mask.length, _source.length);
     return res;
 }
-
+//rightMenuIcon
 set_propertyType_table = function () {
 
     var table, tr, td, property_index;
@@ -1397,7 +1432,7 @@ set_propertyType_table = function () {
     table = $('<table></table>').attr('id', 'property_table')
                                 .attr('class', 'property_shop_table');
     //header
-    tr = $('<tr></tr>');
+    tr = $('<tr"></tr>');
     tr.append($('<th></th>').text('Property'));
     tr.append($('<th></th>').text('Rating'));
     tr.append($('<th></th>').text('AVG Rating'));
