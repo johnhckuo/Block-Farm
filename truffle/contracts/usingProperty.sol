@@ -122,7 +122,6 @@ contract usingProperty{
         ----------------------------------  */
 
     function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
-
         bool flag = true;
         for (uint w = 0 ; w < propertyTypeList.length ; w++){
             if (_type == propertyTypeList[w].id){
@@ -233,7 +232,7 @@ contract usingProperty{
 
     // for match making
 
-    function getPropertyTypeRating(uint p_Id, uint s_Id) constant returns(uint){
+    function getPropertyTypeRating_Matchmaking(uint p_Id, uint s_Id) constant returns(uint){
         return propertyTypeList[propertyList[p_Id].propertyType].rating[s_Id];
     }
 
