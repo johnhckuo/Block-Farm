@@ -49,6 +49,7 @@ var userCropType = [];
 
 var currentClickedCrop = null;
 var currentClickedLand = null;
+var removeMode = false;
 
 ///////////////////////////
 //  prototype functions  //
@@ -544,6 +545,29 @@ Template.gameIndex.events({
 
 
     },
+
+    'click .farm img': function(event){
+        if (removeMode){
+            var parentClass = $(event.target).parent()[0].className;
+            var _landId = parentClass.split("cropLand")[1];
+
+            if (userLandConfiguration[_landId].land == -1){
+                alert("Its already empty !");
+                return;
+            }
+
+
+            $($(event.target).parent()[0]).css("border", "1px solid black");
+            $(event.target).remove();
+
+            userLandConfiguration[_landId].land = -1;
+            usingPropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, -1, 'land', {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+
+        }
+
+    },
+
 })
 
 
@@ -596,7 +620,6 @@ Template.land.events({
         $(".farmObject").html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />");
         currentLandId = id;
 
-        placeMode = !placeMode;
         if (placeMode){
             $(".farmObject").css("display", "inline");
 
@@ -605,15 +628,16 @@ Template.land.events({
             $(event.target).text("Done");
             currentClickedLand = event.target;
 
-
         }else{
+            $(".farmObject").css("display", "none");
 
             $(event.target).css("background", "#337ab7");
             $(event.target).css("border-color", "#337ab7");
             $(event.target).text("Specify");
-            $(".farmObject").css("display", "none");
+
         }
     },
+
 
 })
 
@@ -687,11 +711,8 @@ Template.statusList.events({
         }
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
-        if(panelCounter==5){
-          set_property_table();
-        }
 
-        // cancel plant/place mode when switching between tag
+
         if (plantMode){
           $(".cropObject").css("display", "none");
 
@@ -701,7 +722,7 @@ Template.statusList.events({
           $(currentClickedCrop).data('pressed', false);
           plantMode = false;
         }else if (placeMode){
-          $(".farmObject").css("display", "none");
+          $(".cropObject").css("display", "none");
 
           $(currentClickedLand).css("background", "#337ab7");
           $(currentClickedLand).css("border-color", "#337ab7");
@@ -713,6 +734,10 @@ Template.statusList.events({
 
 
 
+    },
+    'click .removeLand button': function (event){
+          removeMode = !removeMode;
+          console.log(removeMode);
     },
 })
 
@@ -784,12 +809,10 @@ Template.operationList.events({
       }
     },
     'click .shopOpen': function (e) {
-        $(".mission_template").css("display", "none");
         $(".property_shop").css("display", "inline");
 
     },
     'click .MissionOpen': function(event){
-        $('.property_shop').css('display', 'none');
         $(".mission_template").css("display", "inline");
         mission_rending();
     }
@@ -1372,14 +1395,14 @@ get_propertyType_setting = function(){
         display_field.push(data);
     }
 }
-// left tradeable
+
 set_property_table = function(){
     get_user_property_setting();
     var table, tr, td, heart_path, heart_status;
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
-    $('.tradeable_content').html('');
-    table = $('<table></table>').attr('id', 'property_trade_table')
+    $('.shop_content').html('');
+    table = $('<table></table>').attr('id', 'property_table')
                                 .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
@@ -1457,20 +1480,19 @@ set_property_table = function(){
         id: 'btn_property_cancel',
         value: 'CANCEL'
     }).on('click', function () {
-        //
+        alert('cancel');
     }));
     tr.append(td);
     table.append(tr);
     //control bar
-    // $('.shop_content').append(table);
-    $('.tradeable_content').append(table);
+    $('.shop_content').append(table);
 }
 
 index_finder = function(_source, _mask){
     var res = _source.substring(_mask.length, _source.length);
     return res;
 }
-//rightMenuIcon
+
 set_propertyType_table = function () {
 
     var table, tr, td, property_index;
@@ -1480,7 +1502,7 @@ set_propertyType_table = function () {
     table = $('<table></table>').attr('id', 'property_table')
                                 .attr('class', 'property_shop_table');
     //header
-    tr = $('<tr"></tr>');
+    tr = $('<tr></tr>');
     tr.append($('<th></th>').text('Property'));
     tr.append($('<th></th>').text('Rating'));
     tr.append($('<th></th>').text('AVG Rating'));
@@ -1524,7 +1546,7 @@ set_propertyType_table = function () {
         id: 'btn_property_cancel',
         value: 'CANCEL'
     }).on('click', function () {
-        set_propertyType_table();
+        alert('cancel');
     }));
     tr.append(td);
     table.append(tr);
@@ -1600,7 +1622,7 @@ get_mission_list = function(){
         else{
             for(j = 0; j < item_length;j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
+                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0]};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1665,7 +1687,7 @@ mission_rending = function(){
         td = $('<td></td>');
         for(j = 0; j < mission_list[i].items.length; j++){
             td.append($('<img></img>',{
-                src: prefix + mission_list[i].items[j].img+postfix,
+                src: prefix + cropTypeList[mission_list[i].items[j].crop_id].img[3]+postfix,
                 alt:mission_list[i].items[j].crop_name
             }));
             td.append($('<span></span>',{
