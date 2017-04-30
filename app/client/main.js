@@ -357,6 +357,10 @@ if (Meteor.isClient) {
         var length = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
         console.log(length);
         var tx = usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:251468});
+        //create user's property at first time 4/30 kokokon
+        for(i = 0; i < length; i++){
+            usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468});
+        }
 
         //console.log(name, threshold, fund, rate, character);
         var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
