@@ -24,7 +24,7 @@
         <div class="landContent">
           {{content}}
         </div>
-        <button class="btn btn-primary placeButton" data-pressed = "false" >Specify</button>
+        <button class="placeButton" data-pressed = "false" ><img src="/img/game/shovel.svg" alt=""></button>
     </div>
 </template>
 
@@ -238,11 +238,12 @@
 
 <template name="shop">
     <div class="property_shop" >
+        <button type="button" id="btn_shop_close" value="close"><img src="/img/game/cancel.svg" alt=""></button>
         <div class="shop_header">
             <input type="button" id="btn_show_property" value="Ratings" />
             <!-- <input type="button" id="btn_property_tradeable" value="Tradable" /> -->
-            <input type="button" id="btn_shop_close" value="close" />
-            <input type="button" id="btn_shop_add" value="add" />
+            <!-- <input type="button" id="btn_shop_close" value="close" /> -->
+            <!-- <input type="button" id="btn_shop_add" value="add" /> -->
         </div>
         <div class="shop_content">
 
