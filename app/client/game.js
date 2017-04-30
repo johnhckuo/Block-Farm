@@ -393,7 +393,7 @@ Template.gameIndex.events({
     'click .croppedObject': function (event){
         // var left = $(event.target).position().left;
         // var top = $(event.target).position().top;
-        
+
             var id, cropClass, cropCount;
 
             if (event.target.className == ""){
@@ -886,7 +886,7 @@ var fetchAllCropTypes = function(){
 var loadCropList = function(s_Id){
     cropList = [];
     var data = usingPropertyInstance.getCropList(s_Id, { from:web3.eth.accounts[currentAccount]});
-    //var countData = usingPropertyInstance.getCropListCount(s_Id, {from:web3.eth.accounts[currentAccount]});
+    var countData = usingPropertyInstance.getCropListCount(s_Id, {from:web3.eth.accounts[currentAccount]});
     var length = usingPropertyInstance.getCropListLength(s_Id, { from:web3.eth.accounts[currentAccount]});
     for (var i = 0 ; i < length ; i++){
       var start = web3.toUtf8(data[3][i]).split(".")[0]+"Z";
@@ -903,7 +903,7 @@ var loadCropList = function(s_Id){
             end: new Date(end),
             type: data[5][i].c[0],
             ripe: data[6][i],
-            //ycount: countData[i].c[0]
+            count: countData[i].c[0]
         });
     }
     console.log(cropList);
