@@ -392,7 +392,7 @@ Template.gameIndex.events({
     'click .croppedObject': function (event){
         // var left = $(event.target).position().left;
         // var top = $(event.target).position().top;
-        if(gameMode == "Farmer"){
+        
             var id, cropClass, cropCount;
 
             if (event.target.className == ""){
@@ -412,87 +412,117 @@ Template.gameIndex.events({
                     typeIndex = j;
                 }
             }
+            if(gameMode == "Farmer"){
+                if (cropList[id].ripe){
 
-            if (cropList[id].ripe){
+                    $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+                    //var exp = cropTypeList[cropList[id].type].exp;
 
-                $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
-                //var exp = cropTypeList[cropList[id].type].exp;
-
-                var difference = elapsedTime(cropList[id].start, cropList[id].end);
-                var exp = (difference/(1000*30))*20;
-                updateUserExp(exp);
-                $(".scoreObject").html("+" + exp +"XP");
-            }else{
-                alert("Patience is a virtue <3");
-                return;
-            }
-
-            var landTop = $(".land").position().top;
-            var landLeft = $(".land").position().left;
-
-            var areaLeft = $(".gamingArea").position().left;
-
-            var divHeight =$(".farmObject").height()/5;
-            var divWidth = $(".farmObject").width()/4;
-
-            var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
-            temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
-            temp.addClass("animationTempShow");
-
-            setTimeout(function(){
-                temp.css({opacity:0, transform:"translateY(0px)"});
-                setTimeout(function(){
-                    temp.css({display: "none"});
-                    temp.remove();
-                },1000);
-            },1000);
-
-            var stockId = stockList.length;
-            stockList.push({
-                id: stockId,
-                name: cropList[id].name,
-                minUnit: 1,
-                extraData: cropList[id].name,
-                type: cropList[id].type,
-                count: cropCount,
-                tradeable: 0
-            });
-            console.log(cropTypeList);
-            var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount], gas:2000000});
-            for(var i = 0 ; i < propertyLength.c[0]; i++){
-                usingPropertyInstance.updatePropertyCount_Cropped(i, parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
-            }
-            //usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
-
-            var configId;
-            for (var i = 0 ; i < userLandConfiguration.length ; i++){
-                if (userLandConfiguration[i].crop == id){
-                    userLandConfiguration[i].crop = -1;
-                    configId = i;
+                    var difference = elapsedTime(cropList[id].start, cropList[id].end);
+                    var exp = (difference/(1000*30))*20;
+                    updateUserExp(exp);
+                    $(".scoreObject").html("+" + exp +"XP");
+                }else{
+                    alert("Patience is a virtue <3");
+                    return;
                 }
+
+                var landTop = $(".land").position().top;
+                var landLeft = $(".land").position().left;
+
+                var areaLeft = $(".gamingArea").position().left;
+
+                var divHeight =$(".farmObject").height()/5;
+                var divWidth = $(".farmObject").width()/4;
+
+                var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
+                temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
+                temp.addClass("animationTempShow");
+
+                setTimeout(function(){
+                    temp.css({opacity:0, transform:"translateY(0px)"});
+                    setTimeout(function(){
+                        temp.css({display: "none"});
+                        temp.remove();
+                    },1000);
+                },1000);
+
+                var stockId = stockList.length;
+                stockList.push({
+                    id: stockId,
+                    name: cropList[id].name,
+                    minUnit: 1,
+                    extraData: cropList[id].name,
+                    type: cropList[id].type,
+                    count: cropCount,
+                    tradeable: 0
+                });
+                console.log(cropTypeList);
+                var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount], gas:2000000});
+                for(var i = 0 ; i < propertyLength.c[0]; i++){
+                    usingPropertyInstance.updatePropertyCount_Cropped(i, parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
+                }
+                //usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+                var configId;
+                for (var i = 0 ; i < userLandConfiguration.length ; i++){
+                    if (userLandConfiguration[i].crop == id){
+                        userLandConfiguration[i].crop = -1;
+                        configId = i;
+                    }
+                }
+
+                usingPropertyInstance.updateUserLandConfiguration(s_Id, configId, -1, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+                cropList[id].name = 0;
+                cropList[id].img = 0;
+                cropList[id].start = 0;
+                cropList[id].end = 0;
+                cropList[id].type = 0;
+                cropList[id].ripe = 0;
+
+                usingPropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+                //cropList.splice(id, 1);
+                $("."+cropClass).remove();
+
+                //reload propertyTable
+                set_property_table();
             }
+            else if(gameMode == "Thief"){
+                var stolenFlag;
+                stolenFlag = $(event.target).parent().attr("stolenFlag");
+                if ((cropList[id].ripe)&&(stolenFlag == "f")){
+                    $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+                    $(".scoreObject").html("+" + 5 +"XP");
+                }
+                else{
+                    alert("");
+                    return;
+                }
+                var landTop = $(".land").position().top;
+                var landLeft = $(".land").position().left;
 
-            usingPropertyInstance.updateUserLandConfiguration(s_Id, configId, -1, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
+                var areaLeft = $(".gamingArea").position().left;
 
-            cropList[id].name = 0;
-            cropList[id].img = 0;
-            cropList[id].start = 0;
-            cropList[id].end = 0;
-            cropList[id].type = 0;
-            cropList[id].ripe = 0;
+                var divHeight =$(".farmObject").height()/5;
+                var divWidth = $(".farmObject").width()/4;
 
-            usingPropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
+                var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
+                temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
+                temp.addClass("animationTempShow");
 
-            //cropList.splice(id, 1);
-            $("."+cropClass).remove();
-
-            //reload propertyTable
-            set_property_table();
-        }
-        else if(gameMode == "Thief"){
-
-        }
-
+                setTimeout(function(){
+                    temp.css({opacity:0, transform:"translateY(0px)"});
+                    setTimeout(function(){
+                        temp.css({display: "none"});
+                        temp.remove();
+                    },1000);
+                },1000);
+            }
+            cropcount = cropcount / 2;
+            $(event.target).parent().attr("cropcount", parseInt(cropcount));
+            $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
     },
 })
 
@@ -1119,13 +1149,19 @@ var initCropLand = function(id){
             $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[2] + postfix +"' />");
             //cropList[i].ripe = 1;
         }
+        //0430 wait to change stolen svg
+        var stolenFlag = "f";
+        if(cropList[index].count != cropTypeList[typeIndex].count){
+            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+            stolenFlag = "t";
+        }
 
         //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
         //$(".currentCrop"+index).html(diffData);
 
 
         //$(".cropObject").html("<img src = '" + prefix+ cropTypeList[config[i].crop].img[0] + postfix +"' />");
-        $( ".cropObject" ).clone().attr("class","croppedObject croppedObject"+index).attr("cropCount", cropList[index].count).appendTo(".surfaceObject").css(styles);
+        $( ".cropObject" ).clone().attr("class","croppedObject croppedObject"+index).attr("cropCount", cropList[index].count).attr("stolenFlag", stolenFlag).appendTo(".surfaceObject").css(styles);
 
         console.log(showThief)
         if (showThief){
