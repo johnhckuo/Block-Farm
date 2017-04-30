@@ -47,6 +47,9 @@ var landTypeList = [];
 
 var userCropType = [];
 
+var currentClickedCrop = null;
+var currentClickedLand = null;
+
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -561,6 +564,7 @@ Template.crop.events({
 
         plantMode = true;
 
+        currentClickedCrop = event.target;
         var btns = $(".crop").find("button");
 
         for (var i = 0 ; i < btns.length; i++){
@@ -599,13 +603,15 @@ Template.land.events({
             $(event.target).css("background", "gray");
             $(event.target).css("border-color", "gray");
             $(event.target).text("Done");
+            currentClickedLand = event.target;
+
+
         }else{
-            $(".farmObject").css("display", "none");
 
             $(event.target).css("background", "#337ab7");
             $(event.target).css("border-color", "#337ab7");
             $(event.target).text("Specify");
-
+            $(".farmObject").css("display", "none");
         }
     },
 
@@ -684,6 +690,27 @@ Template.statusList.events({
         if(panelCounter==5){
           set_property_table();
         }
+
+        // cancel plant/place mode when switching between tag
+        if (plantMode){
+          $(".cropObject").css("display", "none");
+
+          $(currentClickedCrop).css("background", "#337ab7");
+          $(currentClickedCrop).css("border-color", "#337ab7");
+          $(currentClickedCrop).text("Specify");
+          $(currentClickedCrop).data('pressed', false);
+          plantMode = false;
+        }else if (placeMode){
+          $(".farmObject").css("display", "none");
+
+          $(currentClickedLand).css("background", "#337ab7");
+          $(currentClickedLand).css("border-color", "#337ab7");
+          $(currentClickedLand).text("Specify");
+          $(currentClickedLand).data('pressed', false);
+          placeMode = false;
+
+        }
+
 
 
     },
@@ -1430,7 +1457,7 @@ set_property_table = function(){
         id: 'btn_property_cancel',
         value: 'CANCEL'
     }).on('click', function () {
-        alert('cancel');
+        //
     }));
     tr.append(td);
     table.append(tr);
@@ -1497,7 +1524,7 @@ set_propertyType_table = function () {
         id: 'btn_property_cancel',
         value: 'CANCEL'
     }).on('click', function () {
-        alert('cancel');
+        set_propertyType_table();
     }));
     tr.append(td);
     table.append(tr);
@@ -1573,7 +1600,7 @@ get_mission_list = function(){
         else{
             for(j = 0; j < item_length;j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0]};
+                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1638,7 +1665,7 @@ mission_rending = function(){
         td = $('<td></td>');
         for(j = 0; j < mission_list[i].items.length; j++){
             td.append($('<img></img>',{
-                src: prefix + cropTypeList[mission_list[i].items[j].crop_id].img[3]+postfix,
+                src: prefix + mission_list[i].items[j].img+postfix,
                 alt:mission_list[i].items[j].crop_name
             }));
             td.append($('<span></span>',{

@@ -202,13 +202,13 @@ contract usingProperty{
         return (propertyList[p_Id].propertyType, propertyList[p_Id].owner, propertyList[p_Id].propertyCount);
     }
 
+
     function getPartialProperty(uint p_Id) constant returns(address){
         return (propertyList[p_Id].owner);
     }
 
-    function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint){
-        return propertyTypeList[propertyList[p_Id].propertyType].rating[s_Id];
-    }
+
+
 
     function getPropertyRatingLength(uint p_Id) constant returns(uint){
         propertyRatinglength_testing(propertyTypeList[p_Id].rating.length);
@@ -226,9 +226,29 @@ contract usingProperty{
         }
     }
 
+
     function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount){
         propertyList[_id].propertyCount = _propertyCount;
     }
+
+    // for match making
+
+    function getPropertyTypeRating(uint p_Id, uint s_Id) constant returns(uint){
+        return propertyTypeList[propertyList[p_Id].propertyType].rating[s_Id];
+    }
+
+    function getPropertyTypeAverageRating(uint p_Id, uint s_Id) constant returns(uint){
+        return propertyTypeList[propertyList[p_Id].propertyType].averageRating;
+    }
+
+    function checkTradeable(uint p_Id) constant returns(uint){
+        return propertyList[p_Id].tradeable;
+    }
+
+    function getPropertyType_Matchmaking(uint p_Id) constant returns(uint){
+        return propertyList[p_Id].propertyType;
+    }
+
 
 
     /*  ----------------------------------
@@ -240,17 +260,14 @@ contract usingProperty{
     function addUserPropertyType(uint u_Id, uint p_Id){
         userPropertyTypeList[u_Id].id.push(p_Id);
         userPropertyTypeList[u_Id].count.push(0);
-
     }
 
     function updateUserPropertyType(uint u_Id, uint level){
         userPropertyTypeList[u_Id].count[level]++;
-
     }
 
     function getUserPropertyType(uint u_Id) constant returns(uint[], uint[]){
         return (userPropertyTypeList[u_Id].id, userPropertyTypeList[u_Id].count);
-
     }
 
     /*  ----------------------------------
@@ -359,6 +376,7 @@ contract usingProperty{
             uint s_Id = congress.stakeholderId(msg.sender);
 
             propertyTypeList[_id].rating[s_Id] = rate;
+
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
 
             //for (uint i = 0 ; i < propertyList.length; i++){
@@ -398,6 +416,7 @@ contract usingProperty{
         //propertyTypeAdded(true);
 
     }
+
 
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].time, propertyTypeList[p_Id].harvestUnit);

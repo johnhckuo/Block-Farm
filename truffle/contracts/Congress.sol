@@ -154,6 +154,7 @@ contract Congress is owned, tokenRecipient {
     //     owner = msg.sender;
     // }
 
+
     function getStakeholdersLength() constant returns(uint){
         return stakeholders.length;
     }
@@ -190,6 +191,7 @@ contract Congress is owned, tokenRecipient {
     function addMember(uint256 _threshold, uint256 _fund, uint _rate){
         uint id;
         address targetStakeholder = msg.sender;
+
 
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
@@ -244,6 +246,7 @@ contract Congress is owned, tokenRecipient {
         stakeholdersGameData[u_Id].exp = exp;
         stakeholdersGameData[u_Id].totalExp += exp;
     }
+
 
     function updateUserStamina(uint u_Id, uint sta){
         stakeholdersGameData[u_Id].stamina = sta;
@@ -353,6 +356,7 @@ contract Congress is owned, tokenRecipient {
            - Does the transaction code match the proposal?
            - Has a minimum quorum?
         */
+
 
         if (now < p.votingDeadline
             || p.executed
