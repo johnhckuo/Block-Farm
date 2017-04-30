@@ -21,7 +21,3 @@ contract Migrations {
     upgraded.setCompleted(last_completed_migration);
   }
 }
-
-
-//  測試ＣＯＮＴＲＡＣＴ 改合約 truffle compile  truffle migrate truffle test
-//  meteor站 truffle compile truffle migrate testrpc 
