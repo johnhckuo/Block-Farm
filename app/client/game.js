@@ -1666,7 +1666,7 @@ get_mission_list = function(){
         else{
             for(j = 0; j < item_length.c[0];j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0]};
+                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1675,7 +1675,7 @@ get_mission_list = function(){
 }
 mission_rending = function(){
 
-    //get_mission_list();
+    get_mission_list();
     $('.mission_template').html('');
     $('.mission_template').append($('<button></button>',{
         type:'button',
