@@ -829,7 +829,7 @@ Template.operationList.events({
     },
     'click .shopOpen': function (e) {
         $(".property_shop").css("display", "inline");
-
+        set_propertyType_table();
     },
     'click .MissionOpen': function(event){
         $(".mission_template").css("display", "inline");
@@ -1660,13 +1660,13 @@ get_mission_list = function(){
     for(i = 0; i < mission_count.c[0]; i++){
         mission_source = GameCoreInstance.getMission.call(i, {from:web3.eth.accounts[currentAccount]});
         item_length = GameCoreInstance.getMissionItemsLength.call(i, {from:web3.eth.accounts[currentAccount]});
-        mission = {id: i, name:$.trim(hex2a(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
+        mission = {id: i, name:$.trim(web3.toUtf8(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
 
         if(mission.lvl_limitation ===999){}
         else{
             for(j = 0; j < item_length.c[0];j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
+                item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1684,31 +1684,7 @@ mission_rending = function(){
     })
     .on('click', function(){ $('.mission_template').css('display','none'); })
     );
-    $('.mission_template').append($('<input></input>',{
-        type:'button',
-        value:'add',
-    })
-.on('click', function(){
-    GameCoreInstance.addMission('Mission1', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission2', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission3', 100, 0, true, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission4', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission5', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission6', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
-    GameCoreInstance.addMissionItem(0, 0, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(1, 1, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(2, 2, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 0, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 1, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(4, 2, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(4, 0, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(5, 1, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(5, 2, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(5, 3, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-
-})
-);
     var table, tr, td;
     table = $('<table></table>');
     //header
@@ -1774,7 +1750,6 @@ mission_rending = function(){
     //content
     $('.mission_template').append(table);
     get_user_property_setting();
-    get_mission_list();
     for(k = 0; k < mission_list.length;k++){
         mission_qualify_check(mission_list[k].id);
     }
@@ -1816,7 +1791,6 @@ mission_qualify_check = function(_id){
 
     if(qualify){
         $('#btn_mission_submit_' + _id).css('display', 'block');
-        updateUserExp(target_mission.exp);
         return (true);
     }
     else {
