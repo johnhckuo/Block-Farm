@@ -523,7 +523,7 @@ Template.gameIndex.events({
                             temp.remove();
                         },1000);
                     },1000);
-            
+
                     stealCount = Math.round(cropCount / 2);
                     cropCount = cropCount - stealCount;
                     var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
@@ -573,9 +573,10 @@ Template.crop.events({
         if ($(event.target).data('pressed')){
             $(".cropObject").css("display", "none");
 
-            $(event.target).css("background", "#337ab7");
-            $(event.target).css("border-color", "#337ab7");
-            $(event.target).text("Specify");
+            // $(event.target).css("background", "#337ab7");
+            // $(event.target).css("border-color", "#337ab7");
+            // $(event.target).text("Specify");
+            $(event.target).html("<img src='/img/game/rake.svg'>")
             $(event.target).data('pressed', false);
             plantMode = false;
             return;
@@ -588,9 +589,10 @@ Template.crop.events({
 
         for (var i = 0 ; i < btns.length; i++){
             if ($(btns[i]).data('pressed')){
-                $(btns[i]).css("background", "#337ab7");
-                $(btns[i]).css("border-color", "#337ab7");
-                $(btns[i]).text("Specify");
+                // $(btns[i]).css("background", "#337ab7");
+                // $(btns[i]).css("border-color", "#337ab7");
+                // $(btns[i]).text("Specify");
+                $(btns[i]).html("<img src='/img/game/rake.svg'>")
                 $(btns[i]).data('pressed', false);
             }
         }
@@ -601,9 +603,10 @@ Template.crop.events({
 
         $(".cropObject").css("display", "inline");
 
-        $(event.target).css("background", "gray");
-        $(event.target).css("border-color", "gray");
-        $(event.target).text("Done");
+        // $(event.target).css("background", "gray");
+        // $(event.target).css("border-color", "gray");
+        // $(event.target).text("Done");
+        $(event.target).html("<img src='/img/game/cancel2.svg' width='50%'>")
 
     },
 
@@ -716,13 +719,16 @@ Template.statusList.events({
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
 
-
+        if(panelCounter==5){
+          set_property_table();
+        }
         if (plantMode){
           $(".cropObject").css("display", "none");
 
-          $(currentClickedCrop).css("background", "#337ab7");
-          $(currentClickedCrop).css("border-color", "#337ab7");
-          $(currentClickedCrop).text("Specify");
+          // $(currentClickedCrop).css("background", "#337ab7");
+          // $(currentClickedCrop).css("border-color", "#337ab7");
+          // $(currentClickedCrop).text("Specify");
+          $(currentClickedCrop).html("<img src='/img/game/shovel.svg'>")
           $(currentClickedCrop).data('pressed', false);
           plantMode = false;
         }else if (placeMode){
@@ -743,14 +749,16 @@ Template.statusList.events({
     'click .removeLand button': function (event){
           removeMode = !removeMode;
           if (removeMode){
-              $(event.target).css("background", "gray");
-              $(event.target).css("border-color", "gray");
-              $(event.target).text("Done");
+              // $(event.target).css("background", "gray");
+              // $(event.target).css("border-color", "gray");
+              // $(event.target).text("Done");
+              $(event.target).html("<img src='/img/game/cancel2.svg' width='30px' height='50px'>");
 
           }else{
-              $(event.target).css("background", "#337ab7");
-              $(event.target).css("border-color", "#337ab7");
-              $(event.target).text("Specify");
+              // $(event.target).css("background", "#337ab7");
+              // $(event.target).css("border-color", "#337ab7");
+              // $(event.target).text("Specify");
+              $(event.target).html("<img src='/img/game/shovel.svg'>");
 
           }
           console.log(removeMode);
@@ -829,7 +837,7 @@ Template.operationList.events({
     },
     'click .shopOpen': function (e) {
         $(".property_shop").css("display", "inline");
-
+        set_propertyType_table();
     },
     'click .MissionOpen': function(event){
         $(".mission_template").css("display", "inline");
@@ -1440,8 +1448,8 @@ set_property_table = function(){
     var table, tr, td, heart_path, heart_status;
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
-    $('.shop_content').html('');
-    table = $('<table></table>').attr('id', 'property_table')
+    $('.tradeable_content').html('');
+    table = $('<table></table>').attr('id', 'property_trade_table')
                                 .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
@@ -1529,7 +1537,7 @@ set_property_table = function(){
     tr.append(td);
     table.append(tr);
     //control bar
-    $('.shop_content').append(table);
+    $('.tradeable_content').append(table);
 }
 
 index_finder = function(_source, _mask){
@@ -1660,13 +1668,13 @@ get_mission_list = function(){
     for(i = 0; i < mission_count.c[0]; i++){
         mission_source = GameCoreInstance.getMission.call(i, {from:web3.eth.accounts[currentAccount]});
         item_length = GameCoreInstance.getMissionItemsLength.call(i, {from:web3.eth.accounts[currentAccount]});
-        mission = {id: i, name:$.trim(hex2a(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
+        mission = {id: i, name:$.trim(web3.toUtf8(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
 
         if(mission.lvl_limitation ===999){}
         else{
             for(j = 0; j < item_length.c[0];j++){
                 item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0].c[0], crop_name: hex2a(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
+                item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
                 mission.items.push(item);
             }
             mission_list.push(mission);
@@ -1684,31 +1692,7 @@ mission_rending = function(){
     })
     .on('click', function(){ $('.mission_template').css('display','none'); })
     );
-    $('.mission_template').append($('<input></input>',{
-        type:'button',
-        value:'add',
-    })
-.on('click', function(){
-    GameCoreInstance.addMission('Mission1', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission2', 100, 0, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission3', 100, 0, true, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission4', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission5', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMission('Mission6', 150, 1, true,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
-    GameCoreInstance.addMissionItem(0, 0, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(1, 1, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(2, 2, 4, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 0, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(3, 1, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(4, 2, 3, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(4, 0, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(5, 1, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(5, 2, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    GameCoreInstance.addMissionItem(5, 3, 5, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-
-})
-);
     var table, tr, td;
     table = $('<table></table>');
     //header
@@ -1774,7 +1758,6 @@ mission_rending = function(){
     //content
     $('.mission_template').append(table);
     get_user_property_setting();
-    get_mission_list();
     for(k = 0; k < mission_list.length;k++){
         mission_qualify_check(mission_list[k].id);
     }
@@ -1816,7 +1799,6 @@ mission_qualify_check = function(_id){
 
     if(qualify){
         $('#btn_mission_submit_' + _id).css('display', 'block');
-        updateUserExp(target_mission.exp);
         return (true);
     }
     else {

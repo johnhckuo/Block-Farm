@@ -45,10 +45,25 @@ contract GameCore{
         congress = Congress(CongressAddress);
         usingPropertyInstanceAddress = _usingPropertyInstanceAddress;
         usingPropertyInstance = usingProperty(usingPropertyInstanceAddress);
+
+        addMission("Mission0", 9999, 9999, false);
     }
 
     function getPropertyTypeLength() constant returns(uint){
         return usingPropertyInstance.getPropertyTypeLength();
+    }
+
+    function pushMissionAccountStatus(){
+        uint currentLength = MissionList[0].accountStatus.length;
+        uint stakeholderLength = congress.getStakeholdersLength();
+        uint diff = stakeholderLength - currentLength;
+        if(diff > 0){
+            for(uint i = 1; i <= diff; i++){
+                for(uint j = 0; j < MissionList.length; j++){
+                    MissionList[j].accountStatus.push(false);
+                }
+            }
+        }
     }
 
     function addMission(bytes32 _name, uint _exp, uint _lvl_limitation, bool _missionStatus){
@@ -101,7 +116,7 @@ contract GameCore{
     function getMissionItemsLength(uint mId) constant returns(uint){
         return MissionList[mId].cropId.length;
     }
-        event status(bool);
+
     function submitMission(uint mId){
         uint missionItemLength = getMissionItemsLength(mId);
         uint propertyLength = usingPropertyInstance.getPropertiesLength();
@@ -121,9 +136,7 @@ contract GameCore{
             }
         }
     uint s_Id = congress.stakeholderId(msg.sender);
-    status( MissionList[mId].accountStatus[s_Id]);
     MissionList[mId].accountStatus[s_Id] = true;
-    status( MissionList[mId].accountStatus[s_Id]);
     }
 
 }

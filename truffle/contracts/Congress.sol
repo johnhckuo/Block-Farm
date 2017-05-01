@@ -67,7 +67,7 @@ contract Congress{
     }
 
     function getStakeholder_Mission(uint s_Id) constant returns(uint){
-        return stakeholders[s_Id].farmerLevel;
+        return stakeholdersGameData[s_Id].level;
     }
 
     function getPropertyList(uint s_Id) constant returns(uint[]){

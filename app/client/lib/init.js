@@ -1,6 +1,7 @@
 import { Session } from 'meteor/session';
 
-var currentAccount = 3;
+
+var currentAccount = 2;
 var cropsPerLvl =3;
 
 var cropTypeList = [
@@ -72,6 +73,88 @@ var landTypeList = [
 
 ];
 
+var MissionList = [
+    {
+        name: "Mission1",
+        exp: 100,
+        lvl_limitation:0,
+        status:true
+    },
+    {
+        name: "Mission2",
+        exp: 100,
+        lvl_limitation:0,
+        status:true
+    },
+    {
+        name: "Mission3",
+        exp: 100,
+        lvl_limitation:0,
+        status:true
+    },
+    {
+        name: "Mission4",
+        exp: 200,
+        lvl_limitation:1,
+        status:true
+    },
+    {
+        name: "Mission5",
+        exp: 200,
+        lvl_limitation:1,
+        status:true
+    },
+    {
+        name: "Mission6",
+        exp: 200,
+        lvl_limitation:1,
+        status:true
+    },
+];
+
+var missionItem = [
+    {
+        missionId: 1,
+        propertyId :0,
+        quantity: 4
+    },
+    {
+        missionId: 2,
+        propertyId :1,
+        quantity: 4
+    },
+    {
+        missionId: 3,
+        propertyId :2,
+        quantity: 4
+    },
+    {
+        missionId: 4,
+        propertyId :0,
+        quantity: 8
+    },
+    {
+        missionId: 5,
+        propertyId :1,
+        quantity: 8
+    },
+    {
+        missionId: 6,
+        propertyId :2,
+        quantity: 8
+    },
+    {
+        missionId: 6,
+        propertyId :1,
+        quantity: 8
+    },
+    {
+        missionId: 6,
+        propertyId :0,
+        quantity: 8
+    },
+];
+
 
 function init(event){
   web3.eth.getAccounts(function(err, accs) {
@@ -93,6 +176,15 @@ function init(event){
 
 
 function initGameConfig(){
+
+    for(var i = 0 ; i < MissionList.length; i++){
+        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    }
+    for(var i = 0; i < missionItem.length; i++){
+        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    }
+    console.log("Mission added");
+
     for (var i = 0 ; i < cropTypeList.length ; i++){
        usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
     }
