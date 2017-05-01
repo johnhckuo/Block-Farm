@@ -523,7 +523,7 @@ Template.gameIndex.events({
                             temp.remove();
                         },1000);
                     },1000);
-            
+
                     stealCount = Math.round(cropCount / 2);
                     cropCount = cropCount - stealCount;
                     var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
@@ -573,9 +573,10 @@ Template.crop.events({
         if ($(event.target).data('pressed')){
             $(".cropObject").css("display", "none");
 
-            $(event.target).css("background", "#337ab7");
-            $(event.target).css("border-color", "#337ab7");
-            $(event.target).text("Specify");
+            // $(event.target).css("background", "#337ab7");
+            // $(event.target).css("border-color", "#337ab7");
+            // $(event.target).text("Specify");
+            $(event.target).html("<img src='/img/game/rake.svg'>")
             $(event.target).data('pressed', false);
             plantMode = false;
             return;
@@ -588,9 +589,10 @@ Template.crop.events({
 
         for (var i = 0 ; i < btns.length; i++){
             if ($(btns[i]).data('pressed')){
-                $(btns[i]).css("background", "#337ab7");
-                $(btns[i]).css("border-color", "#337ab7");
-                $(btns[i]).text("Specify");
+                // $(btns[i]).css("background", "#337ab7");
+                // $(btns[i]).css("border-color", "#337ab7");
+                // $(btns[i]).text("Specify");
+                $(btns[i]).html("<img src='/img/game/rake.svg'>")
                 $(btns[i]).data('pressed', false);
             }
         }
@@ -601,9 +603,10 @@ Template.crop.events({
 
         $(".cropObject").css("display", "inline");
 
-        $(event.target).css("background", "gray");
-        $(event.target).css("border-color", "gray");
-        $(event.target).text("Done");
+        // $(event.target).css("background", "gray");
+        // $(event.target).css("border-color", "gray");
+        // $(event.target).text("Done");
+        $(event.target).html("<img src='/img/game/cancel2.svg' width='50%'>")
 
     },
 
@@ -716,13 +719,16 @@ Template.statusList.events({
         $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
         $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
 
-
+        if(panelCounter==5){
+          set_property_table();
+        }
         if (plantMode){
           $(".cropObject").css("display", "none");
 
-          $(currentClickedCrop).css("background", "#337ab7");
-          $(currentClickedCrop).css("border-color", "#337ab7");
-          $(currentClickedCrop).text("Specify");
+          // $(currentClickedCrop).css("background", "#337ab7");
+          // $(currentClickedCrop).css("border-color", "#337ab7");
+          // $(currentClickedCrop).text("Specify");
+          $(currentClickedCrop).html("<img src='/img/game/shovel.svg'>")
           $(currentClickedCrop).data('pressed', false);
           plantMode = false;
         }else if (placeMode){
@@ -743,14 +749,16 @@ Template.statusList.events({
     'click .removeLand button': function (event){
           removeMode = !removeMode;
           if (removeMode){
-              $(event.target).css("background", "gray");
-              $(event.target).css("border-color", "gray");
-              $(event.target).text("Done");
+              // $(event.target).css("background", "gray");
+              // $(event.target).css("border-color", "gray");
+              // $(event.target).text("Done");
+              $(event.target).html("<img src='/img/game/cancel2.svg' width='30px' height='50px'>");
 
           }else{
-              $(event.target).css("background", "#337ab7");
-              $(event.target).css("border-color", "#337ab7");
-              $(event.target).text("Specify");
+              // $(event.target).css("background", "#337ab7");
+              // $(event.target).css("border-color", "#337ab7");
+              // $(event.target).text("Specify");
+              $(event.target).html("<img src='/img/game/shovel.svg'>");
 
           }
           console.log(removeMode);
@@ -1440,8 +1448,8 @@ set_property_table = function(){
     var table, tr, td, heart_path, heart_status;
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
-    $('.shop_content').html('');
-    table = $('<table></table>').attr('id', 'property_table')
+    $('.tradeable_content').html('');
+    table = $('<table></table>').attr('id', 'property_trade_table')
                                 .attr('class', 'property_shop_table');
     //header
     tr = $('<tr></tr>');
@@ -1529,7 +1537,7 @@ set_property_table = function(){
     tr.append(td);
     table.append(tr);
     //control bar
-    $('.shop_content').append(table);
+    $('.tradeable_content').append(table);
 }
 
 index_finder = function(_source, _mask){
