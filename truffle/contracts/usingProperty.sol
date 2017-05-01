@@ -160,7 +160,6 @@ contract usingProperty{
 
         Property prop = propertyList[_id];
 
-
         //uint length = congress.getStakeholdersLength();
         //for (uint j = 0 ; j < length ; j++){
         //    updatePropertiesRating(_id, 0, "init");
@@ -175,8 +174,6 @@ contract usingProperty{
         prop.extraData= _extraData;
         prop.propertyType = _type;
         prop.tradeable = _tradeable;
-
-
 
         //propertyAdded("Success");
     }
@@ -411,11 +408,6 @@ contract usingProperty{
 
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
 
-            //for (uint i = 0 ; i < propertyList.length; i++){
-            //    if (propertyList[i].propertyType == _id){
-            //        propertyList[i].averageRating = propertyTypeList[_id].averageRating;
-            //    }
-            //}
         }else if (StringUtils.equal(operation,"new")){
 
             for (uint j = 0 ; j < _id ; j++){
@@ -444,9 +436,6 @@ contract usingProperty{
 
         prop.time = _time;
         prop.harvestUnit = _harvestUnit;
-
-        //propertyTypeAdded(true);
-
     }
 
 
