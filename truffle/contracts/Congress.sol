@@ -26,7 +26,6 @@ contract Congress{
     struct StakeholderGameData {
         bytes32 name;
         bytes32 character;
-
         uint exp;
         uint totalExp;
         uint landSize;
