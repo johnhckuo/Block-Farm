@@ -322,6 +322,10 @@ contract usingProperty{
             cropList[u_Id].ripe[p_Id] = _ripe;
             cropList[u_Id].count[p_Id] = _count;
         }
+        //for thief
+        function updateCropCount(uint u_Id, uint p_Id, uint _count){
+            cropList[u_Id].count[p_Id] = _count;
+        }
 
         function getCropList(uint u_Id) constant returns( uint[], bytes32[], bytes32[], bytes32[], bytes32[], uint[], bool[]){
             return (cropList[u_Id].id, cropList[u_Id].name, cropList[u_Id].img, cropList[u_Id].start, cropList[u_Id].end, cropList[u_Id].cropType, cropList[u_Id].ripe);
