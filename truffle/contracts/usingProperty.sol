@@ -68,13 +68,13 @@ contract usingProperty{
         bytes32 name;
         uint id;
         uint since;
-        uint256 propertyCount;
+        uint propertyCount;
         uint256 minUnit; //可拆分最小單位
         address owner;
         bytes32 extraData;
         uint propertyType;
         uint tradeable; //可被交易的數量
-
+        bool isTrading;
     }
 
     Property[] public propertyList;
@@ -138,7 +138,7 @@ contract usingProperty{
         prop.tradeable = 0;
     }
 
-    function addProperty(bytes32 _name, uint256 _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
+    function addProperty(bytes32 _name, uint _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
         bool flag = true;
         for (uint w = 0 ; w < propertyTypeList.length ; w++){
             if (_type == propertyTypeList[w].id){
@@ -160,7 +160,6 @@ contract usingProperty{
 
         Property prop = propertyList[_id];
 
-
         //uint length = congress.getStakeholdersLength();
         //for (uint j = 0 ; j < length ; j++){
         //    updatePropertiesRating(_id, 0, "init");
@@ -176,13 +175,11 @@ contract usingProperty{
         prop.propertyType = _type;
         prop.tradeable = _tradeable;
 
-
-
         //propertyAdded("Success");
     }
 
 
-    function getPropertyByOwner(uint p_Id) constant returns (uint, bytes32, uint256, uint256, bytes32, uint, uint){
+    function getPropertyByOwner(uint p_Id) constant returns (uint, bytes32, uint, uint256, bytes32, uint, uint){
         if(propertyList[p_Id].owner == msg.sender){
             return (propertyList[p_Id].id, propertyList[p_Id].name, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].extraData, propertyList[p_Id].propertyType, propertyList[p_Id].tradeable);
         }else{
@@ -206,11 +203,11 @@ contract usingProperty{
         return propertyList.length;
     }
 
-    function getProperty(uint p_Id) constant returns(bytes32, uint, uint256, uint256, address, bytes32){
+    function getProperty(uint p_Id) constant returns(bytes32, uint, uint, uint256, address, bytes32){
         return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
-    function getProperty_Shop(uint p_Id) constant returns(uint, bytes32, address, uint256, uint, bytes32){
+    function getProperty_Shop(uint p_Id) constant returns(uint, bytes32, address, uint, uint, bytes32){
         return (propertyList[p_Id].propertyType, propertyTypeList[propertyList[p_Id].propertyType].name, propertyList[p_Id].owner, propertyList[p_Id].propertyCount, propertyList[p_Id].tradeable, propertyTypeList[propertyList[p_Id].propertyType].img[3]);
     }
 
@@ -226,6 +223,10 @@ contract usingProperty{
     function getPropertyRatingLength(uint p_Id) constant returns(uint){
         propertyRatinglength_testing(propertyTypeList[p_Id].rating.length);
         return propertyTypeList[p_Id].rating.length;
+    }
+
+    function getPropertyCount(uint _id) constant returns(uint){
+        return propertyList[_id].propertyCount;
     }
 
     function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
@@ -268,6 +269,10 @@ contract usingProperty{
         return propertyList[p_Id].tradeable;
     }
 
+    function updateTradingStatus(uint p_Id, bool isTrading){
+        propertyList[p_Id].isTrading = isTrading;
+    }
+
     function getPropertyType_Matchmaking(uint p_Id) constant returns(uint){
         return propertyList[p_Id].propertyType;
     }
@@ -299,45 +304,45 @@ contract usingProperty{
         |                                |
         ----------------------------------  */
 
-        function addCropList(uint u_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
-            uint _id = cropList[u_Id].id.length++;
-            cropList[u_Id].id[_id] = _id;
-            cropList[u_Id].name.push(_name);
-            cropList[u_Id].img.push(_img);
-            cropList[u_Id].start.push(_start);
-            cropList[u_Id].end.push(_end);
-            cropList[u_Id].cropType.push(_cropType);
-            cropList[u_Id].ripe.push(_ripe);
-            cropList[u_Id].count.push(_count);
+    function addCropList(uint u_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
+        uint _id = cropList[u_Id].id.length++;
+        cropList[u_Id].id[_id] = _id;
+        cropList[u_Id].name.push(_name);
+        cropList[u_Id].img.push(_img);
+        cropList[u_Id].start.push(_start);
+        cropList[u_Id].end.push(_end);
+        cropList[u_Id].cropType.push(_cropType);
+        cropList[u_Id].ripe.push(_ripe);
+        cropList[u_Id].count.push(_count);
 
-        }
+    }
 
-        function updateCropList(uint u_Id, uint p_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
+    function updateCropList(uint u_Id, uint p_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
 
-            cropList[u_Id].name[p_Id] = _name;
-            cropList[u_Id].img[p_Id] = _img;
-            cropList[u_Id].start[p_Id] = _start;
-            cropList[u_Id].end[p_Id] = _end;
-            cropList[u_Id].cropType[p_Id] = _cropType;
-            cropList[u_Id].ripe[p_Id] = _ripe;
-            cropList[u_Id].count[p_Id] = _count;
-        }
-        //for thief
-        function updateCropCount(uint u_Id, uint p_Id, uint _count){
-            cropList[u_Id].count[p_Id] = _count;
-        }
+        cropList[u_Id].name[p_Id] = _name;
+        cropList[u_Id].img[p_Id] = _img;
+        cropList[u_Id].start[p_Id] = _start;
+        cropList[u_Id].end[p_Id] = _end;
+        cropList[u_Id].cropType[p_Id] = _cropType;
+        cropList[u_Id].ripe[p_Id] = _ripe;
+        cropList[u_Id].count[p_Id] = _count;
+    }
+    //for thief
+    function updateCropCount(uint u_Id, uint p_Id, uint _count){
+        cropList[u_Id].count[p_Id] = _count;
+    }
 
-        function getCropList(uint u_Id) constant returns( uint[], bytes32[], bytes32[], bytes32[], bytes32[], uint[], bool[]){
-            return (cropList[u_Id].id, cropList[u_Id].name, cropList[u_Id].img, cropList[u_Id].start, cropList[u_Id].end, cropList[u_Id].cropType, cropList[u_Id].ripe);
-        }
+    function getCropList(uint u_Id) constant returns( uint[], bytes32[], bytes32[], bytes32[], bytes32[], uint[], bool[]){
+        return (cropList[u_Id].id, cropList[u_Id].name, cropList[u_Id].img, cropList[u_Id].start, cropList[u_Id].end, cropList[u_Id].cropType, cropList[u_Id].ripe);
+    }
 
-        function getCropListCount(uint u_Id) constant returns(uint[]){
-            return cropList[u_Id].count;
-        }
+    function getCropListCount(uint u_Id) constant returns(uint[]){
+        return cropList[u_Id].count;
+    }
 
-        function getCropListLength(uint u_Id) constant returns(uint){
-            return cropList[u_Id].id.length;
-        }
+    function getCropListLength(uint u_Id) constant returns(uint){
+        return cropList[u_Id].id.length;
+    }
 
 
 
@@ -411,11 +416,6 @@ contract usingProperty{
 
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
 
-            //for (uint i = 0 ; i < propertyList.length; i++){
-            //    if (propertyList[i].propertyType == _id){
-            //        propertyList[i].averageRating = propertyTypeList[_id].averageRating;
-            //    }
-            //}
         }else if (StringUtils.equal(operation,"new")){
 
             for (uint j = 0 ; j < _id ; j++){
@@ -444,9 +444,6 @@ contract usingProperty{
 
         prop.time = _time;
         prop.harvestUnit = _harvestUnit;
-
-        //propertyTypeAdded(true);
-
     }
 
 

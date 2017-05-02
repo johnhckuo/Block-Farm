@@ -1,6 +1,6 @@
 pragma solidity ^0.4.4;
 import "./StringUtils.sol";
-import "./usingOraclize.sol";
+//import "./usingOraclize.sol";
 
 contract Congress{
     mapping (address => uint) public stakeholderId;
@@ -25,9 +25,15 @@ contract usingProperty{
     function getPropertyTypeRating_Matchmaking(uint p_Id, uint s_Id) constant returns(uint);
     function checkTradeable(uint p_Id) constant returns(uint);
     function getPropertyType_Matchmaking(uint p_Id) constant returns(uint);
+    function getPropertyTypeLength() constant returns(uint);
+    function updatePropertyTypeRating(uint _id, uint rate, string operation);
+    function initUserProperty(uint p_Id);
+    function updateTradingStatus(uint p_Id, bool isTrading);
+    function getPropertyCount(uint _id) constant returns(uint);
+    function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable);
 }
 
-contract MainActivity is usingOraclize{
+contract MainActivity{
 
     uint[] visitedProperty;
     int256[] visitedPriority;
@@ -45,8 +51,6 @@ contract MainActivity is usingOraclize{
     event debug3(uint[]);
     event debug4(uint, uint);
     event debug5(uint, uint);
-    event debug6(bytes32);
-
 
     Congress congress;
     usingProperty property;
@@ -56,11 +60,18 @@ contract MainActivity is usingOraclize{
 
     uint unlockCropNum = 3;
     uint unlockCropLevel = 5;
+    uint floatOffset = 1000;
+    uint matchMakingThreshold = 500;
+    uint matchMakingInterval = 1800;
 
     struct Match{
         uint id;
-        uint[] actualVisitIndex;
-        uint[] involvePropertyId;
+        uint[] visitedOwners;
+        uint[] visitedProperties;
+        int256[] visitedPriorities;
+        uint[] confirmation;
+        uint visitedCount;
+        string result;
     }
 
     Match[] public matches;
@@ -72,8 +83,10 @@ contract MainActivity is usingOraclize{
       congress = Congress(CongressAddress);
       property = usingProperty(PropertyAddress);
 
+
       congress.addMember(0, 0, 0);
       initGameData(0, "Moderator", "guard");
+
       //matchmaking(0);    // start executing matchmaking algo
 
     }
@@ -283,13 +296,28 @@ contract MainActivity is usingOraclize{
         visitedPriority[visitedCount] = diffList[visitIndex];
 
         if (goThroughList[visitIndex] == origin){
-             matchSuccess(visitedProperty, visitedPriority);
              test(visitedCount);
+             uint matchId = matches.length++;
+
+             var visitedOwner = getPropertiesOwner(visitedProperty);
+             matches[matchId].id = matchId;
+             matches[matchId].visitedPriorities = visitedPriority;
+             matches[matchId].visitedOwners = getPropertiesOwner(visitedProperty);
+             matches[matchId].visitedProperties = visitedProperty;
+             matches[matchId].visitedCount = visitedCount;
+             matches[matchId].result = "null";
+
+             for (uint i = 0 ; i < visitedOwner.length ; i++){
+                matches[matchId].confirmation.push(1);
+                property.updateTradingStatus(visitedProperty[i], true);
+             }
+
+             matchSuccess(visitedProperty, visitedPriority);
+
              return "Success";
         }else{
             //findVisitNode(goThroughList[visitIndex]);
             //--------
-            debug6("hihih");
             while (StringUtils.equal(findVisitNode(goThroughList[visitIndex++]),"Fail")){
                 matchFail(visitIndex);
             }
@@ -301,16 +329,108 @@ contract MainActivity is usingOraclize{
 
     }
 
+    function getPropertiesOwner(uint[] visitedProperties) constant returns(uint[]){
+        uint length = visitedProperties.length;
+        uint[] memory visitedOwners = new uint[](length);
+        for (uint i = 0 ; i < length ; i++){
+            address owner = property.getPartialProperty(visitedProperties[i]);
+            visitedOwners[i] = congress.stakeholderId(owner);
+         }
+         return visitedOwners;
+    }
 
+    function getMatchMaking(uint m_Id) constant returns(uint, int256[], uint[], uint[], uint[], uint, string){
+        return (matches[m_Id].id, matches[m_Id].visitedPriorities, matches[m_Id].visitedOwners, matches[m_Id].visitedProperties, matches[m_Id].confirmation, matches[m_Id].visitedCount, matches[m_Id].result);
+    }
+
+    function checkConfirmation(uint m_Id) constant returns(bool){
+        uint confirm = 0;
+        for (uint i = 0 ; i < matches[m_Id].confirmation.length; i++){
+            if (matches[m_Id].confirmation[i] == 1){
+                confirm++;
+            }
+        }
+
+        confirm = confirm*floatOffset;
+        uint totalCount = matches[m_Id].visitedCount;
+        if (confirm/totalCount <= matchMakingThreshold){
+            matches[m_Id].result = "false";
+            return false;
+        }else{
+            matches[m_Id].result = "true";
+            transferOwnership(m_Id);
+            return true;
+        }
+    }
+
+    function updateOwnershipStatus(uint receivedPID, uint currentPID){
+        uint receivedCount = property.getPropertyCount(receivedPID);
+        uint currentCount = property.getPropertyCount(currentPID);
+
+        property.updatePropertyCount(receivedPID, receivedCount + property.checkTradeable(currentPID), property.checkTradeable(receivedPID));
+        property.updatePropertyCount(currentPID, currentCount - property.checkTradeable(currentPID), 0);
+
+    }
+
+    function transferOwnership(uint m_Id){
+        uint length = property.getPropertyTypeLength();
+        uint visitedLength = matches[m_Id].visitedOwners.length-1;
+        for (uint i = 0 ; i < visitedLength; i++){
+            uint s_Id = matches[m_Id].visitedOwners[i+1];
+            uint currentPID = matches[m_Id].visitedProperties[i];
+            uint propertyType = currentPID % length;
+            uint receivedPID = s_Id*length + propertyType;
+            updateOwnershipStatus(receivedPID, currentPID);
+
+            //cancel isTrading status
+            property.updateTradingStatus(currentPID, false);
+
+        }
+
+    }
+
+/*
+    function transferOwnership(uint m_Id){
+        uint length = property.getPropertyTypeLength();
+        uint receivedCount = property.getPropertyCount(0);
+        uint currentCount = property.getPropertyCount(0);
+        for (uint i = 0 ; i < length; i++){
+
+
+
+
+            property.updatePropertyCount(receivedPID, receivedCount + property.checkTradeable(currentPID), property.checkTradeable(receivedPID));
+            property.updatePropertyCount(currentPID, currentCount - property.checkTradeable(currentPID), 0);
+
+            //cancel isTrading status
+            property.updateTradingStatus(currentPID, false);
+
+        }
+
+    }
+    */
+
+    function updateConfirmation(uint m_Id, uint s_Id, uint confirmation){
+        uint s_Index;
+        for (uint i = 0 ; i < matches[m_Id].visitedOwners.length; i++){
+            if (matches[m_Id].visitedOwners[i] == s_Id){
+                s_Index = i;
+                break;
+            }
+        }
+        matches[m_Id].confirmation[s_Index] = confirmation;
+
+    }
+/*
     function __callback(bytes32 myid, string result) {
         if (msg.sender != oraclize_cbAddress()) throw;
         findOrigin();
-        matchmaking(60*60*3); // execute every 3 hours
+        matchmaking(matchMakingInterval); // execute every 3 hours
     }
 
     function matchmaking(uint delay) {
         oraclize_query(delay, 'URL', '');
     }
-
+*/
 
 }

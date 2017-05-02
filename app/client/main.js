@@ -361,6 +361,7 @@ if (Meteor.isClient) {
         for(i = 0; i < length; i++){
             usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468});
         }
+        GameCoreInstance.pushMissionAccountStatus({from:web3.eth.accounts[currentAccount], gas:2201468});
 
         //console.log(name, threshold, fund, rate, character);
         var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());

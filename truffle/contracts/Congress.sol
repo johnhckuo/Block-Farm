@@ -26,7 +26,6 @@ contract Congress{
     struct StakeholderGameData {
         bytes32 name;
         bytes32 character;
-
         uint exp;
         uint totalExp;
         uint landSize;
@@ -68,7 +67,7 @@ contract Congress{
     }
 
     function getStakeholder_Mission(uint s_Id) constant returns(uint){
-        return stakeholders[s_Id].farmerLevel;
+        return stakeholdersGameData[s_Id].level;
     }
 
     function getPropertyList(uint s_Id) constant returns(uint[]){
