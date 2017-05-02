@@ -5,32 +5,35 @@ import "./StringUtils.sol";
 contract Congress{
     mapping (address => uint) public stakeholderId;
     function getStakeholdersLength() constant returns(uint);
-    function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
-    function updateGameData(uint u_Id, uint _landSize, uint _level);
-    function initPlayerData(bytes32 _name, bytes32 _character);
-    function addMember(uint256 _threshold, uint256 _fund, uint _rate);
+    function getStakeholder(uint) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
+    function updateGameData(uint, uint, uint);
+    function initPlayerData(bytes32, bytes32);
+    function addMember(uint256, uint256, uint);
 
 
 }
 
 contract usingProperty{
     function getPropertiesLength() constant returns(uint);
-    function getPartialProperty(uint p_Id) returns(address);
-    function getPropertyRating(uint p_Id, uint s_Id) constant returns(uint);
-    function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint);
-    function addUserPropertyType(uint u_Id, uint p_Id);
-    function getPropertyTypeId(uint p_Id) constant returns(uint);
-    function addUserLandConfiguration(uint u_Id);
-    function getPropertyTypeAverageRating(uint p_Id, uint s_Id) constant returns(uint);
-    function getPropertyTypeRating_Matchmaking(uint p_Id, uint s_Id) constant returns(uint);
-    function checkTradeable(uint p_Id) constant returns(uint);
-    function getPropertyType_Matchmaking(uint p_Id) constant returns(uint);
+    function getPartialProperty(uint) returns(address);
+    function getPropertyRating(uint, uint) constant returns(uint);
+    function getPropertyType(uint) constant returns(bytes32, uint, uint, bytes32, uint);
+    function addUserPropertyType(uint, uint);
+    function getPropertyTypeId(uint) constant returns(uint);
+    function addUserLandConfiguration(uint);
+    function getPropertyTypeAverageRating(uint, uint) constant returns(uint);
+    function getPropertyTypeRating_Matchmaking(uint, uint) constant returns(uint);
+    function checkTradeable(uint) constant returns(uint);
+    function getPropertyType_Matchmaking(uint) constant returns(uint);
     function getPropertyTypeLength() constant returns(uint);
-    function updatePropertyTypeRating(uint _id, uint rate, string operation);
-    function initUserProperty(uint p_Id);
-    function updateTradingStatus(uint p_Id, bool isTrading);
-    function getPropertyCount(uint _id) constant returns(uint);
-    function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable);
+    function updatePropertyTypeRating(uint, uint, string);
+    function initUserProperty(uint);
+    function updateTradingStatus(uint, bool);
+    function getPropertyCount(uint) constant returns(uint);
+    function updatePropertyCount(uint, uint, uint);
+    function updateOwnershipStatus(uint, uint);
+    function getPropertiesOwner(uint[]) constant returns(uint[]);
+
 }
 
 contract MainActivity{
@@ -150,10 +153,6 @@ contract MainActivity{
             visitList[max_index] = temp2;
         }
         return (priorityList, visitList);
-    }
-
-    function getPropertiesLength() returns(uint){
-        return property.getPropertiesLength();
     }
 
     function findOrigin() returns(string success){
@@ -295,11 +294,13 @@ contract MainActivity{
         visitedPriority.length++;
         visitedPriority[visitedCount] = diffList[visitIndex];
 
+
+
         if (goThroughList[visitIndex] == origin){
+
              test(visitedCount);
              uint matchId = matches.length++;
 
-             var visitedOwner = getPropertiesOwner(visitedProperty);
              matches[matchId].id = matchId;
              matches[matchId].visitedPriorities = visitedPriority;
              matches[matchId].visitedOwners = getPropertiesOwner(visitedProperty);
@@ -307,7 +308,7 @@ contract MainActivity{
              matches[matchId].visitedCount = visitedCount;
              matches[matchId].result = "null";
 
-             for (uint i = 0 ; i < visitedOwner.length ; i++){
+             for (uint i = 0 ; i < matches[matchId].visitedOwners.length ; i++){
                 matches[matchId].confirmation.push(1);
                 property.updateTradingStatus(visitedProperty[i], true);
              }
@@ -339,6 +340,7 @@ contract MainActivity{
          return visitedOwners;
     }
 
+
     function getMatchMaking(uint m_Id) constant returns(uint, int256[], uint[], uint[], uint[], uint, string){
         return (matches[m_Id].id, matches[m_Id].visitedPriorities, matches[m_Id].visitedOwners, matches[m_Id].visitedProperties, matches[m_Id].confirmation, matches[m_Id].visitedCount, matches[m_Id].result);
     }
@@ -363,15 +365,6 @@ contract MainActivity{
         }
     }
 
-    function updateOwnershipStatus(uint receivedPID, uint currentPID){
-        uint receivedCount = property.getPropertyCount(receivedPID);
-        uint currentCount = property.getPropertyCount(currentPID);
-
-        property.updatePropertyCount(receivedPID, receivedCount + property.checkTradeable(currentPID), property.checkTradeable(receivedPID));
-        property.updatePropertyCount(currentPID, currentCount - property.checkTradeable(currentPID), 0);
-
-    }
-
     function transferOwnership(uint m_Id){
         uint length = property.getPropertyTypeLength();
         uint visitedLength = matches[m_Id].visitedOwners.length-1;
@@ -380,7 +373,7 @@ contract MainActivity{
             uint currentPID = matches[m_Id].visitedProperties[i];
             uint propertyType = currentPID % length;
             uint receivedPID = s_Id*length + propertyType;
-            updateOwnershipStatus(receivedPID, currentPID);
+            property.updateOwnershipStatus(receivedPID, currentPID);
 
             //cancel isTrading status
             property.updateTradingStatus(currentPID, false);
@@ -388,27 +381,6 @@ contract MainActivity{
         }
 
     }
-
-/*
-    function transferOwnership(uint m_Id){
-        uint length = property.getPropertyTypeLength();
-        uint receivedCount = property.getPropertyCount(0);
-        uint currentCount = property.getPropertyCount(0);
-        for (uint i = 0 ; i < length; i++){
-
-
-
-
-            property.updatePropertyCount(receivedPID, receivedCount + property.checkTradeable(currentPID), property.checkTradeable(receivedPID));
-            property.updatePropertyCount(currentPID, currentCount - property.checkTradeable(currentPID), 0);
-
-            //cancel isTrading status
-            property.updateTradingStatus(currentPID, false);
-
-        }
-
-    }
-    */
 
     function updateConfirmation(uint m_Id, uint s_Id, uint confirmation){
         uint s_Index;

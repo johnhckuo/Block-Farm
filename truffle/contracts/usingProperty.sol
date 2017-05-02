@@ -278,6 +278,15 @@ contract usingProperty{
     }
 
 
+    function updateOwnershipStatus(uint receivedPID, uint currentPID){
+        uint receivedCount = getPropertyCount(receivedPID);
+        uint currentCount = getPropertyCount(currentPID);
+
+        updatePropertyCount(receivedPID, receivedCount + checkTradeable(currentPID), checkTradeable(receivedPID));
+        updatePropertyCount(currentPID, currentCount - checkTradeable(currentPID), 0);
+
+    }
+
 
     /*  ----------------------------------
         |                                |
