@@ -565,7 +565,7 @@ contract('Congress', function (accounts) {
 
     it("update matchmaking", function () {
         return MainActivity.deployed("","").then(function (instance) {
-            return instance.updateConfirmation(0, 1, 1, { from: accounts[0] });
+            return instance.updateConfirmation(0, 1, 0, { from: accounts[0] });
 
         }).then(function(txs){
             console.log(txs);

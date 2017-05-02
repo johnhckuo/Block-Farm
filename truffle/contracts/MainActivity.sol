@@ -53,7 +53,8 @@ contract MainActivity{
     event debug2(int256[]);
     event debug3(uint[]);
     event debug4(uint, uint);
-    event debug5(uint, uint);
+    event debug6(uint);
+
 
     Congress congress;
     usingProperty property;
@@ -208,7 +209,6 @@ contract MainActivity{
 
         uint self_Importance = property.getPropertyTypeRating_Matchmaking(i, congress.stakeholderId(owner));
         uint currentRating = property.getPropertyTypeRating_Matchmaking(visitNode, congress.stakeholderId(owner));
-        debug5(self_Importance, currentRating);
         int256 diff = int256(currentRating - self_Importance);
 
         return diff;
@@ -347,7 +347,7 @@ contract MainActivity{
 
     function checkConfirmation(uint m_Id) constant returns(bool){
         uint confirm = 0;
-        for (uint i = 0 ; i < matches[m_Id].confirmation.length; i++){
+        for (uint i = 0 ; i < matches[m_Id].confirmation.length-1; i++){
             if (matches[m_Id].confirmation[i] == 1){
                 confirm++;
             }
@@ -373,6 +373,7 @@ contract MainActivity{
             uint currentPID = matches[m_Id].visitedProperties[i];
             uint propertyType = currentPID % length;
             uint receivedPID = s_Id*length + propertyType;
+
             property.updateOwnershipStatus(receivedPID, currentPID);
 
             //cancel isTrading status
