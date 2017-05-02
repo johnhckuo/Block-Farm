@@ -94,12 +94,13 @@ contract usingProperty{
 
     address CongressAddress;
     Congress congress;
-
+    address owner;
 
 
     function usingProperty(address _congressAddress){
         CongressAddress = _congressAddress;
         congress = Congress(CongressAddress);
+        owner = msg.sender;
     }
 
     /*  ----------------------------------
@@ -229,6 +230,13 @@ contract usingProperty{
         return propertyList[_id].propertyCount;
     }
 
+    function updatePropertyCount_Sudo(uint _id, uint _propertyCount, uint _tradeable){
+
+        propertyList[_id].propertyCount = _propertyCount;
+        propertyList[_id].tradeable = _tradeable;
+
+    }
+
     function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
 
         if(propertyList[_id].owner == msg.sender){
@@ -277,13 +285,15 @@ contract usingProperty{
         return propertyList[p_Id].propertyType;
     }
 
-
     function updateOwnershipStatus(uint receivedPID, uint currentPID){
         uint receivedCount = getPropertyCount(receivedPID);
         uint currentCount = getPropertyCount(currentPID);
 
-        updatePropertyCount(receivedPID, receivedCount + checkTradeable(currentPID), checkTradeable(receivedPID));
-        updatePropertyCount(currentPID, currentCount - checkTradeable(currentPID), 0);
+        uint currentTradeable = checkTradeable(currentPID);
+        uint receivedTradeable = checkTradeable(receivedPID);
+
+        updatePropertyCount_Sudo(receivedPID, receivedCount + currentTradeable, receivedTradeable);
+        updatePropertyCount_Sudo(currentPID, currentCount, 0);
 
     }
 

@@ -51,8 +51,6 @@ contract MainActivity{
     event returnOrigin(uint);
     event debug(uint[]);
     event debug2(int256[]);
-    event debug3(uint[]);
-    event debug4(uint, uint);
     event debug6(uint);
 
 
@@ -244,8 +242,6 @@ contract MainActivity{
                 matchFail(k);
             }
 
-            debug4(visitNode, i);
-
             diffList[i] = returnPriority(visitNode, i);
             goThroughList[i] = i;
             //test(i);
@@ -289,7 +285,6 @@ contract MainActivity{
 
         visitedProperty.length++;
         visitedProperty[++visitedCount] = goThroughList[visitIndex];
-        debug3(visitedProperty);
 
         visitedPriority.length++;
         visitedPriority[visitedCount] = diffList[visitIndex];
@@ -345,7 +340,7 @@ contract MainActivity{
         return (matches[m_Id].id, matches[m_Id].visitedPriorities, matches[m_Id].visitedOwners, matches[m_Id].visitedProperties, matches[m_Id].confirmation, matches[m_Id].visitedCount, matches[m_Id].result);
     }
 
-    function checkConfirmation(uint m_Id) constant returns(bool){
+    function checkConfirmation(uint m_Id) returns(bool){
         uint confirm = 0;
         for (uint i = 0 ; i < matches[m_Id].confirmation.length-1; i++){
             if (matches[m_Id].confirmation[i] == 1){

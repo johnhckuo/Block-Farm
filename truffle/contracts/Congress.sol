@@ -8,10 +8,6 @@ contract Congress{
     StakeholderGameData[] public stakeholdersGameData;
     address owner;
 
-    event addmember_test(bytes32);
-    event int_test(uint);
-    event int256_test(uint256);
-
     struct Stakeholder {
         uint256 threshold;
         uint256 fund;
@@ -20,7 +16,6 @@ contract Congress{
         address addr;
         uint since;
         uint farmerLevel;
-
     }
 
     struct StakeholderGameData {
@@ -100,8 +95,6 @@ contract Congress{
            stakeholders[id].rate=_rate;
            stakeholders[id].addr=msg.sender;
            stakeholders[id].since=now;
-
-
            stakeholders[id].farmerLevel = 0;
 
             //04.21 Powei
