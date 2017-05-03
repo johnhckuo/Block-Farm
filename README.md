@@ -27,13 +27,6 @@ curl https://install.meteor.com/ | sh
 
 Please read [CONTRIBUTING.md](https://gist.github.com/johnhckuo/a08fc77a28d2addd0082a8bf54178421) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Authors
-
-* **Bryant Chen** - (https://github.com/cjybryant)
-* **John Kuo** - (https://github.com/johnhckuo)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
