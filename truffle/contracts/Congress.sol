@@ -6,6 +6,8 @@ contract Congress{
     Stakeholder[] public stakeholders;
 
     StakeholderGameData[] public stakeholdersGameData;
+
+    Syndicate[] public SyndicateData;
     address owner;
 
     struct Stakeholder {
@@ -123,14 +125,14 @@ contract Congress{
     }
 
     function initSyndicateData(bytes32 _character){
-        uint _id = Syndicate.length++;
-        Syndicate[_id].id = _id;
-        Syndicate[_id].exp = 0;
-        Syndicate[_id].totalExp = 0;
-        Syndicate[_id].level = 1;
-        Syndicate[_id].success = 0;
-        Syndicate[_id].fail = 0;
-        Syndicate[_id].character = _character;
+        uint _id = SyndicateData.length++;
+        SyndicateData[_id].id = _id;
+        SyndicateData[_id].exp = 0;
+        SyndicateData[_id].totalExp = 0;
+        SyndicateData[_id].level = 1;
+        SyndicateData[_id].success = 0;
+        SyndicateData[_id].fail = 0;
+        SyndicateData[_id].character = _character;
     }
 
     function updateUserExp(uint u_Id, uint exp){
