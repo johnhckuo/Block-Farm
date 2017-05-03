@@ -41,7 +41,7 @@
 
 /* for transform animation*/
 .statusPanelList{
-  margin-top: -20vh;
+  margin-top: -10vh;
   transform: translateY(100px);
 }
 .statusPanelShow>.statusPanelList{
@@ -85,7 +85,18 @@
   width: 72px;
   height: 59px;
 }
-
+.removeButton{
+  background-color: rgba(255, 255, 255, 0);
+  border-style: none;
+  width: 72px;
+  height: 59px;
+}
+.plantButton{
+  background-color: rgba(255, 255, 255, 0);
+  border-style: none;
+  width: 72px;
+  height: 59px;
+}
 .rightMenuIcon{
   height: 45vh;
   width: 10vw;
@@ -852,9 +863,4 @@ td img{
 
 .removeLand *{
   margin-right: 10px;
-}
-
-.removeLand img{
-  width:50px;
-  height:50px;
 }
