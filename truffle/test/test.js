@@ -595,7 +595,7 @@ contract('Congress', function (accounts) {
 
     it("check confirmation", function () {
         return usingProperty.deployed("","").then(function (instance) {
-            return instance.getProperty_Shop(13, { from: accounts[0] });
+            return instance.getProperty_Shop(6, { from: accounts[0] });
 
         }).then(function(txs){
             console.log(txs);
@@ -607,14 +607,14 @@ contract('Congress', function (accounts) {
             return instance.checkConfirmation(0, { from: accounts[0] });
 
         }).then(function(txs){
-            console.log(txs);
+            //console.log(txs);
         });
     });
 
 
     it("check confirmation", function () {
         return usingProperty.deployed("","").then(function (instance) {
-            return instance.getProperty_Shop(13, { from: accounts[0] });
+            return instance.getProperty_Shop(6, { from: accounts[0] });
 
         }).then(function(txs){
             console.log(txs);
