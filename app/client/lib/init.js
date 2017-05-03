@@ -1,5 +1,6 @@
 import { Session } from 'meteor/session';
 
+
 var currentAccount = 2;
 var cropsPerLvl =3;
 
@@ -192,7 +193,16 @@ function initGameConfig(){
         usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
 
     }
+
+
+    var length = usingPropertyInstance.getPropertyTypeLength({ from:web3.eth.accounts[currentAccount]});
+    usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", { from:web3.eth.accounts[currentAccount], gas:2000000});
+
+    for(var i = 0; i < length; i++){
+        usingPropertyInstance.initUserProperty(i, { from:web3.eth.accounts[currentAccount], gas:2000000});
+    }
     console.log("Init Complete");
+
 
 }
 

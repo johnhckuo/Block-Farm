@@ -526,9 +526,7 @@ Template.gameIndex.events({
                             temp.css({display: "none"});
                             temp.remove();
                         },1000);
-                    },1000);
-<<<<<<< HEAD
-            
+                    },1000);            
                     //stealCount = Math.round(cropCount / 2);
                     //cropCount = cropCount - stealCount;
                     //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
@@ -538,18 +536,7 @@ Template.gameIndex.events({
                     //usingPropertyInstance.updateCropCount(visitNode, id, cropCount, {from:web3.eth.accounts[currentAccount], gas:2000000});
                     //$(event.target).parent().attr("cropcount", parseInt(cropCount));
                     //$(event.target).parent().attr("stolenFlag", "t");
-=======
 
-                    stealCount = Math.round(cropCount / 2);
-                    cropCount = cropCount - stealCount;
-                    var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-                    for(var i= 0; i < propertyLength;i++){
-                        usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
-                    }
-                    usingPropertyInstance.updateCropCount(visitNode, id, cropCount, {from:web3.eth.accounts[currentAccount], gas:2000000});
-                    $(event.target).parent().attr("cropcount", parseInt(cropCount));
-                    $(event.target).parent().attr("stolenFlag", "t");
->>>>>>> refs/remotes/johnhckuo/master
                     $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                     //reload propertyTable
                     //set_property_table();
