@@ -49,9 +49,7 @@ contract MainActivity{
     event matchFail(uint);
     event test(uint);
     event returnOrigin(uint);
-    event debug(uint[]);
-    event debug2(int256[]);
-    event debug6(uint);
+
 
 
     Congress congress;
@@ -256,8 +254,6 @@ contract MainActivity{
 
         var (diffList, goThroughList) = searchNeighborNodes(visitNode);
         (diffList, goThroughList) = sort(diffList, goThroughList);
-        debug(goThroughList);
-        debug2(diffList);
 
 //----------
         if (diffList[0] <= 0){
