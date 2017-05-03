@@ -565,7 +565,7 @@ contract('Congress', function (accounts) {
 
     it("update matchmaking", function () {
         return MainActivity.deployed("","").then(function (instance) {
-            return instance.updateConfirmation(0, 1, 1, { from: accounts[0] });
+            return instance.updateConfirmation(0, 1, 0, { from: accounts[0] });
 
         }).then(function(txs){
             console.log(txs);
@@ -590,6 +590,18 @@ contract('Congress', function (accounts) {
         });
     });
 
+
+
+
+    it("check confirmation", function () {
+        return usingProperty.deployed("","").then(function (instance) {
+            return instance.getProperty_Shop(13, { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+
     it("check confirmation", function () {
         return MainActivity.deployed("","").then(function (instance) {
             return instance.checkConfirmation(0, { from: accounts[0] });
@@ -600,7 +612,14 @@ contract('Congress', function (accounts) {
     });
 
 
+    it("check confirmation", function () {
+        return usingProperty.deployed("","").then(function (instance) {
+            return instance.getProperty_Shop(13, { from: accounts[0] });
 
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
 
 
 });

@@ -6,11 +6,9 @@ contract Congress{
     Stakeholder[] public stakeholders;
 
     StakeholderGameData[] public stakeholdersGameData;
-    address owner;
 
-    event addmember_test(bytes32);
-    event int_test(uint);
-    event int256_test(uint256);
+    Syndicate[] public SyndicateData;
+    address owner;
 
     struct Stakeholder {
         uint256 threshold;
@@ -20,7 +18,6 @@ contract Congress{
         address addr;
         uint since;
         uint farmerLevel;
-
     }
 
     struct StakeholderGameData {
@@ -40,8 +37,7 @@ contract Congress{
 
     struct Syndicate{
         uint id;
-        uint characterId;
-        int256 progress;
+        //int256 progress;
         uint exp;
         uint totalExp;
         uint level;
@@ -100,8 +96,6 @@ contract Congress{
            stakeholders[id].rate=_rate;
            stakeholders[id].addr=msg.sender;
            stakeholders[id].since=now;
-
-
            stakeholders[id].farmerLevel = 0;
 
             //04.21 Powei
@@ -125,8 +119,20 @@ contract Congress{
          stakeholdersGameData[_id].stamina = 100;
          stakeholdersGameData[_id].lastLogin = 0;
 
+         initSyndicateData(_character);
          //stakeholders[_id].guardId = 0;
          //stakeholders[_id].thiefId = 0;
+    }
+
+    function initSyndicateData(bytes32 _character){
+        uint _id = SyndicateData.length++;
+        SyndicateData[_id].id = _id;
+        SyndicateData[_id].exp = 0;
+        SyndicateData[_id].totalExp = 0;
+        SyndicateData[_id].level = 1;
+        SyndicateData[_id].success = 0;
+        SyndicateData[_id].fail = 0;
+        SyndicateData[_id].character = _character;
     }
 
     function updateUserExp(uint u_Id, uint exp){
