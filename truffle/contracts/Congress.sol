@@ -35,8 +35,7 @@ contract Congress{
 
     struct Syndicate{
         uint id;
-        uint characterId;
-        int256 progress;
+        //int256 progress;
         uint exp;
         uint totalExp;
         uint level;
@@ -118,8 +117,20 @@ contract Congress{
          stakeholdersGameData[_id].stamina = 100;
          stakeholdersGameData[_id].lastLogin = 0;
 
+         initSyndicateData(_character);
          //stakeholders[_id].guardId = 0;
          //stakeholders[_id].thiefId = 0;
+    }
+
+    function initSyndicateData(bytes32 _character){
+        uint _id = Syndicate.length++;
+        Syndicate[_id].id = _id;
+        Syndicate[_id].exp = 0;
+        Syndicate[_id].totalExp = 0;
+        Syndicate[_id].level = 1;
+        Syndicate[_id].success = 0;
+        Syndicate[_id].fail = 0;
+        Syndicate[_id].character = _character;
     }
 
     function updateUserExp(uint u_Id, uint exp){

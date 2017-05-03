@@ -441,6 +441,41 @@
   margin-right: auto;
 }
 
+.SyndicateExp{
+    visibility:collapse;
+    position: absolute;
+}
+
+.SyndicateExpProgress{
+  position: relative;
+  width: 100px;
+  height: 20px;
+
+  background-color: grey;
+  color:black;
+  text-align: center;
+}
+
+.SyndicateExpProgressBar{
+  position: absolute;
+  left:0px;
+  width: 0%;
+  height: 100%;
+  background-color: #BBFF00;
+  transition: all 1s;
+
+
+}
+
+.SyndicateExpText{
+  position: relative;
+  top:0px;
+  left:0px;
+  float:none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
 .staProgress{
   position: relative;
