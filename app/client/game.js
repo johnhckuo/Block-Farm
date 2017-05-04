@@ -83,8 +83,6 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 /////////////////
 
 Template.gameIndex.created = function() {
-    currentAccount = Session.get('currentAccount');
-    console.log(currentAccount);
     s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
     console.log(s_Id);
     s_Id = s_Id.c[0];
@@ -486,7 +484,7 @@ Template.gameIndex.events({
                 $("."+cropClass).remove();
 
                 //reload propertyTable
-                set_property_table();
+                //set_property_table();
             }
             else if(gameMode == "Thief"){
                 var stolenFlag, stealCount, judgement;

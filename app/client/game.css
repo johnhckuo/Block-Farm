@@ -177,12 +177,12 @@
 .gamingArea .canvas{
   width:100%;
   height: 100%;
-  background: white;
+  background: #99CB34;
   transform-style:3d;
   -moz-transform-style:3d;
   -webkit-transform-style:3d;
   background-image: url("/img/game/background.svg");
-  background-size: 100px 100px;
+  background-size: 200px 200px;
 }
 
 .land{
@@ -671,9 +671,9 @@ td img{
   align-items: center;
   z-index:5;
 
-  background: white;
+  background: #99CB34;
   background-image: url("/img/game/background.svg");
-  background-size: 100px 100px;
+  background-size: 200px 200px;
 
 }
 

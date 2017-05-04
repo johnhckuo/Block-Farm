@@ -18,12 +18,10 @@ import './game.js';
 
 var stakeholderLength;
 var ownerAccount = 0;
-var currentAccount;
 var renderChecked = false;
 Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
-      currentAccount = Session.get('currentAccount');
       //$('#fullpage').fullpage();
       renderChecked = true;
 
