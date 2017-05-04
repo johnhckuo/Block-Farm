@@ -11,10 +11,8 @@ contract Congress{
     address owner;
 
     struct Stakeholder {
-        uint256 threshold;
-        uint256 fund;
+
         uint256 id;
-        uint rate;
         address addr;
         uint since;
         uint farmerLevel;
@@ -83,17 +81,14 @@ contract Congress{
         stakeholdersGameData[_id].propertyId.push(p_Id);
     }
 
-    function addMember(uint256 _threshold, uint256 _fund, uint _rate){
+    function addMember(){
         uint id;
         address targetStakeholder = msg.sender;
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
            id = stakeholders.length++;
 
-           stakeholders[id].threshold=_threshold;
-           stakeholders[id].fund=_fund;
            stakeholders[id].id=id;
-           stakeholders[id].rate=_rate;
            stakeholders[id].addr=msg.sender;
            stakeholders[id].since=now;
            stakeholders[id].farmerLevel = 0;
