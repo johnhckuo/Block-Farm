@@ -1,11 +1,11 @@
 if(typeof web3 === 'undefined')
     web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
-CongressAddr = "0xd28c62b55707abc6ca62a502371cd10056bd4565";
-usingPropertyAddr = "0x585b29e7714210d5ec6c03ef86b6f626a489ee61";
-MainActivityAddr = "0x779e8404c07b5f12618f638df68808cc8e90154d";
+CongressAddr = "0x8a1f75dc5915c0e8dbde52d25062f0f0ac418ed1";
+usingPropertyAddr = "0xa64244fcae4e9bbb40bf7cb0606f4e4a47c3342d";
+MainActivityAddr = "0xd19d6608b7748ecd09e77060df3e40dfcb99a538";
 ActivityInterfaceAddr = "0x009416e755e97f53754539b5e927e7b911b2e398";
-StringUtilsAddr = "0x06802cc647d41b79b23a5087b453be07dc75977b";
+StringUtilsAddr = "0xda1f0550be86412112070d9bfe19630bb8788119";
 GameCoreAddr = "0xcf5a0226cbbc4e4c098b68d4eb8ac9b8b391187e";
 OraclizeAddr = "0xd8b59e22d9c568b0ed3fae4504e788c23d624b0f";
 

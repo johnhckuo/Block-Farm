@@ -60,6 +60,7 @@ var currentClickedCrop = null;
 var currentClickedLand = null;
 var removeMode = false;
 
+var floatOffset = 1000;
 
 ///////////////////////////
 //  prototype functions  //
@@ -104,6 +105,8 @@ Template.gameIndex.created = function() {
 
     fetchGameInitConfig(s_Id);
     console.log(cropTypeList);
+
+    eventListener();
     // Tracker.autorun(() => {
     //   Meteor.subscribe('characterList', { userName: Session.get('userName') });
     // });
@@ -881,6 +884,50 @@ Template.operationList.events({
 document.onmousemove = function(e){
     cursorX = e.pageX;
     cursorY = e.pageY;
+}
+
+function eventListener(){
+
+  // var events = MainActivityInstance.allEvents([{fromBlock: 0, toBlock: 'latest'}]);
+  //
+  // // watch for changes
+  // events.watch(function(error, event){
+  //   if (!error)
+  //     console.log(event);
+  // });
+
+  // Or pass a callback to start watching immediately
+var event = MainActivityInstance.matchSuccess({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
+  if (!error)
+    console.log(result);
+});
+
+var event = MainActivityInstance.matchFail({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
+  if (!error)
+    console.log(result);
+});
+
+  // MainActivityInstance.matchSuccess({}, { fromBlock: 0, toBlock: 'latest' }).get((error, eventResult) => {
+  //   if (error)
+  //     console.log('Error in myEvent event handler: ' + error);
+  //   else
+  //     console.log('myEvent: ' + JSON.stringify(eventResult.args));
+  // });
+
+
+  // MainActivityInstance.matchSuccess().watch(function(error, result){
+  //     if (!error){
+  //         console.log(result);
+  //     }
+  //     console.log(error);
+  // });
+  //
+  // MainActivityInstance.matchFail().watch(function(error, result){
+  //     if (!error){
+  //         console.log(result);
+  //     }
+  //     console.log(error);
+  // });
 }
 
 var getVisitNode = function(){

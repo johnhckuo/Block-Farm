@@ -510,13 +510,13 @@
       "address": "0x9058acd068f8e40c945a3882ba28feb4ca9fc43d",
       "updated_at": 1493741025999
     },
-    "1493899191148": {
+    "1493912115577": {
       "events": {},
       "links": {},
-      "address": "0xd28c62b55707abc6ca62a502371cd10056bd4565",
-      "updated_at": 1493899270188
+      "address": "0x8a1f75dc5915c0e8dbde52d25062f0f0ac418ed1",
+      "updated_at": 1493912190441
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1493899270188
+  "updated_at": 1493912190441
 }
