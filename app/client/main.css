@@ -378,6 +378,7 @@ h3{
 }
 #tutorial h1{
   font-weight: 600;
+  margin-bottom: 50px;
 }
 
 #tutorial h2{
@@ -447,6 +448,10 @@ h3{
 .formElement{
   display: flex;
   flex-direction: row;
+}
+
+.formElement label{
+  line-height: 2;
 }
 
 #next{
