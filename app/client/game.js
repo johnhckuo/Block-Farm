@@ -502,7 +502,7 @@ Template.gameIndex.events({
                         $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                         $(".scoreObject").html("+" + 5 +"XP");
                         updateStaminaBar(staminaList["steal"]);
-                        
+
                     }
                     else{
                         alert("Don't be so greedy");
@@ -526,7 +526,7 @@ Template.gameIndex.events({
                             temp.css({display: "none"});
                             temp.remove();
                         },1000);
-                    },1000);            
+                    },1000);
                     //stealCount = Math.round(cropCount / 2);
                     //cropCount = cropCount - stealCount;
                     //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
@@ -573,23 +573,29 @@ Template.gameIndex.events({
 
 Template.crop.events({
     'click .crop button': function (event){
-        var id = $(event.target).parent()[0].className.split("property")[1];
+        clickTarget=null;
+        if(event.target.className==""){
+          clickTarget=$(event.target).parent();
+        }else{
+          clickTarget=$(event.target);
+        }
+        var id = clickTarget.parent()[0].className.split("property")[1];
 
-        if ($(event.target).data('pressed')){
+        if (clickTarget.data('pressed')){
             $(".cropObject").css("display", "none");
 
             // $(event.target).css("background", "#337ab7");
             // $(event.target).css("border-color", "#337ab7");
             // $(event.target).text("Specify");
-            $(event.target).html("<img src='/img/game/rake.svg'>")
-            $(event.target).data('pressed', false);
+            clickTarget.html("<img src='/img/game/rake.svg'>")
+            clickTarget.data('pressed', false);
             plantMode = false;
             return;
         }
 
         plantMode = true;
 
-        currentClickedCrop = event.target;
+        currentClickedCrop = clickTarget;
         var btns = $(".crop").find("button");
 
         for (var i = 0 ; i < btns.length; i++){
@@ -601,7 +607,7 @@ Template.crop.events({
                 $(btns[i]).data('pressed', false);
             }
         }
-        $(event.target).data('pressed', true);
+        clickTarget.data('pressed', true);
 
         $(".cropObject").html("<img src = '" + prefix+ cropTypeList[id].img[0] + postfix +"' />");
         currentCropId = id;
@@ -611,7 +617,7 @@ Template.crop.events({
         // $(event.target).css("background", "gray");
         // $(event.target).css("border-color", "gray");
         // $(event.target).text("Done");
-        $(event.target).html("<img src='/img/game/cancel2.svg' width='50%'>")
+        clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>")
 
     },
 
@@ -804,7 +810,7 @@ Template.characterList.events({
             showThief = false;
             $(".missionObject").html("<div class='thiefObject'></div>");
             $('.SyndicateExp').css('visibility', 'collapse');
-            $('.userExp').css('visibility', 'visible');     
+            $('.userExp').css('visibility', 'visible');
             $('.crop4').css('display','block');
             $('.crop2').css('display','block');
             $('.crop3').css('display','block');
@@ -832,7 +838,7 @@ Template.characterList.events({
 
     },
     'click .test': function(event){
-        MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
+        MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
         levelUp();
         rerenderCropLand(s_Id);
     },
@@ -852,10 +858,12 @@ Template.operationList.events({
       }
     },
     'click .shopOpen': function (e) {
+        $(".mission_template").css("display", "none");
         $(".property_shop").css("display", "inline");
         set_propertyType_table();
     },
     'click .MissionOpen': function(event){
+        $(".property_shop").css("display", "none");
         $(".mission_template").css("display", "inline");
         mission_rending();
     }
@@ -1638,6 +1646,7 @@ set_propertyType_table = function () {
         value: 'SAVE'
     }).on('click', function () {
         save_rating_setting();
+        $('.property_shop').css('display', 'none');
     }));
     td.append($('<input>').attr( {
         type: 'button',
@@ -1739,8 +1748,9 @@ mission_rending = function(){
     .on('click', function(){ $('.mission_template').css('display','none'); })
     );
 
-    var table, tr, td;
-    table = $('<table></table>');
+    var div, table, tr, td;
+    div=$('<div></div>',{class:'mission_content'})
+    table = $('<table></table>',{id:'mission_table'});
     //header
     tr = $('<tr></tr>');
     tr.append($('<th></th>').text('Mission'));
@@ -1800,9 +1810,10 @@ mission_rending = function(){
         }
         tr.append(td);
         table.append(tr);
+        div.append(table);
     }
     //content
-    $('.mission_template').append(table);
+    $('.mission_template').append(div);
     get_user_property_setting();
     for(k = 0; k < mission_list.length;k++){
         mission_qualify_check(mission_list[k].id);
