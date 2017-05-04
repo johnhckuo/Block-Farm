@@ -121,17 +121,9 @@ Template.gameIndex.created = function() {
     audio = new Audio('/music/background_music.mp3');
     //audio.play();
 
-    // for (var i = 0 ; i < currentUser.landSize*currentUser.landSize ; i++){
-    //     userLandConfiguration.push(
-    //       {
-    //           id: i,
-    //           land: null,
-    //           crop:null
-    //       }
-    //     );
-    // }
-    //
-
+    $(window).resize(function(evt) {
+        initCropLand(s_Id);
+    });
 
 
 }
@@ -738,7 +730,7 @@ Template.statusList.events({
         }
         if (plantMode){
           $(".cropObject").css("display", "none");
-
+          $(".farmObject").css("display", "none");
           // $(currentClickedCrop).css("background", "#337ab7");
           // $(currentClickedCrop).css("border-color", "#337ab7");
           // $(currentClickedCrop).text("Specify");
@@ -747,7 +739,7 @@ Template.statusList.events({
           plantMode = false;
         }else if (placeMode){
           $(".cropObject").css("display", "none");
-
+          $(".farmObject").css("display", "none");
           // $(currentClickedLand).css("background", "#337ab7");
           // $(currentClickedLand).css("border-color", "#337ab7");
           $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
@@ -1306,7 +1298,6 @@ var initCropLand = function(id){
         //$(".cropObject").html("<img src = '" + prefix+ cropTypeList[config[i].crop].img[0] + postfix +"' />");
         $( ".cropObject" ).clone().attr("class","croppedObject croppedObject"+index).attr("cropCount", cropList[index].count).attr("stolenFlag", stolenFlag).appendTo(".surfaceObject").css(styles);
 
-        console.log(showThief)
         if (showThief){
           var missionStyles = {
               top: top-divHeight,
@@ -1542,7 +1533,7 @@ get_propertyType_setting = function(){
         var property_type_rating = usingPropertyInstance.getPropertyTypeRating.call(i,{from:web3.eth.accounts[currentAccount]});
         console.log(property_type_rating);
 
-        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0],"averageRating":property_type[2].c[0]};
+        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0]/floatOffset,"averageRating":property_type[2].c[0]/floatOffset};
         display_field.push(data);
     }
 }
@@ -1730,7 +1721,7 @@ save_rating_setting = function () {
     for(i = 0; i < display_field.length;i++){
         var _id = parseInt(display_field[i].id,10);
         var _rate = parseInt($('#rating' + i).val(),10);
-        usingPropertyInstance.updatePropertyTypeRating(_id, _rate, "update", {from:web3.eth.accounts[currentAccount],gas:200000});
+        usingPropertyInstance.updatePropertyTypeRating(_id, _rate*floatOffset, "update", {from:web3.eth.accounts[currentAccount],gas:200000});
     }
 
 
