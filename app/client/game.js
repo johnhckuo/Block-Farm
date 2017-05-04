@@ -502,7 +502,7 @@ Template.gameIndex.events({
                         $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                         $(".scoreObject").html("+" + 5 +"XP");
                         updateStaminaBar(staminaList["steal"]);
-                        
+
                     }
                     else{
                         alert("Don't be so greedy");
@@ -526,7 +526,7 @@ Template.gameIndex.events({
                             temp.css({display: "none"});
                             temp.remove();
                         },1000);
-                    },1000);            
+                    },1000);
                     //stealCount = Math.round(cropCount / 2);
                     //cropCount = cropCount - stealCount;
                     //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
@@ -804,7 +804,7 @@ Template.characterList.events({
             showThief = false;
             $(".missionObject").html("<div class='thiefObject'></div>");
             $('.SyndicateExp').css('visibility', 'collapse');
-            $('.userExp').css('visibility', 'visible');     
+            $('.userExp').css('visibility', 'visible');
             $('.crop4').css('display','block');
             $('.crop2').css('display','block');
             $('.crop3').css('display','block');
@@ -835,6 +835,9 @@ Template.characterList.events({
         MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
         levelUp();
         rerenderCropLand(s_Id);
+    },
+    'click .matchmaking': function(event){
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:2000000});
     },
 
 

@@ -45,13 +45,11 @@ contract MainActivity{
     uint[] actualVisitIndex;
     uint origin;
 
-    event matchSuccess(uint[] id, int256[] priority);
+    event matchSuccess(uint[], uint[]);
     event matchFail(uint);
     event test(uint);
     event returnOrigin(uint);
-    event debug(uint[]);
-    event debug2(int256[]);
-    event debug6(uint);
+
 
 
     Congress congress;
@@ -256,8 +254,6 @@ contract MainActivity{
 
         var (diffList, goThroughList) = searchNeighborNodes(visitNode);
         (diffList, goThroughList) = sort(diffList, goThroughList);
-        debug(goThroughList);
-        debug2(diffList);
 
 //----------
         if (diffList[0] <= 0){
@@ -308,18 +304,15 @@ contract MainActivity{
                 property.updateTradingStatus(visitedProperty[i], true);
              }
 
-             matchSuccess(visitedProperty, visitedPriority);
+             matchSuccess(visitedProperty, matches[matchId].visitedOwners);
 
              return "Success";
         }else{
-            //findVisitNode(goThroughList[visitIndex]);
-            //--------
             while (StringUtils.equal(findVisitNode(goThroughList[visitIndex++]),"Fail")){
                 matchFail(visitIndex);
             }
-            matchSuccess(visitedProperty, visitedPriority);
+            matchSuccess(visitedProperty, matches[matchId].visitedOwners);
 
-            //---------
 
         }
 
