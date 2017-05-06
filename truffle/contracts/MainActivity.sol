@@ -8,7 +8,7 @@ contract Congress{
     function getStakeholder(uint) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
     function updateGameData(uint, uint, uint);
     function initPlayerData(bytes32, bytes32);
-    function addMember(uint256, uint256, uint);
+    function addMember();
 
 
 }
@@ -84,7 +84,7 @@ contract MainActivity{
       property = usingProperty(PropertyAddress);
 
 
-      congress.addMember(0, 0, 0);
+      congress.addMember();
       initGameData(0, "Moderator", "guard");
 
       //matchmaking(0);    // start executing matchmaking algo

@@ -14,53 +14,12 @@
       <div><img src="/img/logo_bartering.png" alt=""></div>
       <li>Hi! {{currentAccount}}</li>
       <li><a href="/">Home</a></li>
-      <li><a href="/transaction">Transaction</a></li>
       <li><a href="/game">Game</a></li>
-      <li><a href="/update">Update Data</a></li>
-      <li><a href="/switch">Switch Stakeholder</a></li>
+      <li><a href="/aboutus">About Us</a></li>
+      <li><a href="/policy">Policy</a></li>
+
     </ul>
   </div>
-</template>
-
-
-<template name="switchButton">
-  <button type="button" class="btn btn-info stakeholderSwitch" name="button" id={{id}}>Switch</button>
-</template>
-
-<template name="matchingResult">
-  <td>{{id}}</td>
-  <td>{{name}}</td>
-  <td>{{owner}}</td>
-  <td>{{to}}</td>
-  <td>{{importance}}</td>
-</template>
-
-<template name="property">
-  <td>{{name}}</td>
-  <td>{{count}}</td>
-  <td>{{unit}}</td>
-  <td>{{minUnit}}</td>
-  <td>{{owner}}</td>
-  <td>{{extraData}}</td>
-</template>
-
-<template name="currentRating">
-  <td><input type="text" name="" value= {{currentRating}} id={{ratingId}}></td>
-</template>
-
-<template name="stakeholder">
-  <td>{{name}}</td>
-  <td>{{threshold}}</td>
-  <td>{{fund}}</td>
-  <td>{{rate}}</td>
-  <td>{{address}}</td>
-  <td>{{since}}</td>
-  <td>{{character}}</td>
-</template>
-
-<template name="account">
-  <td>{{id}}</td>
-  <td>{{address}}</td>
 </template>
 
 <!--
@@ -69,181 +28,6 @@
 ***********************
 -->
 
-
-<template name="transaction">
-  {{> header}}
-  <div class="transaction" style="color:white;"></div>
-  <button class='press' style="position:relative; top:300px;">press</button>
-</template>
-
-<template name="testtt">
-  hehe
-
-</template>
-
-<template name="manage">
-  {{> header}}
-  <div class="manageContent flex">
-    <table id="manageTable" class="manage table table-hover">
-      <h2>Stakeholders</h2>
-      <thead>
-      </thead>
-      <tbody>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Threshold</th>
-          <th>Fund</th>
-          <th>Rate</th>
-          <th>Address</th>
-          <th>Since</th>
-          <th>Character</th>
-        </tr>
-        {{#each stakeholders}}
-          <tr>
-            <th scope='row'>#</th>
-            {{> stakeholder}}
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-
-    <table id="propertyTable" class="manage table table-hover">
-      <h2>Properties</h2>
-      <thead>
-      </thead>
-      <tbody>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Count</th>
-          <th>Unit</th>
-          <th>Min Unit</th>
-          <th>Onwer</th>
-          <th>Extra Data</th>
-        </tr>
-        {{#each properties}}
-          <tr>
-            <th scope='row'>#</th>
-            {{> property}}
-          </tr>
-        {{/each}}
-      </tbody>
-      <button type="button" class="btn btn-primary" id="matchMake" name="button">Match Making</button>
-    </table>
-  </div>
-
-    <table id="matchingTable" class="table table-hover">
-      <h2>Matching Result</h2>
-      <thead>
-      </thead>
-      <tbody>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Owner</th>
-          <th>Average Importance</th>
-        </tr>
-        {{#each matchingResults}}
-          <tr>
-            <td>{{id}}</td>
-            <td>{{name}}</td>
-            <td>{{owner}}</td>
-            <td>{{importance}}</td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-
-  {{> init}}
-
-</template>
-
-<template name="switchStakeholder">
-  {{> init}}
-
-  {{> header}}
-
-  <div class="stakeholderList flex">
-    <table class="stakeholderTable table table-hover">
-      <h2>Stakeholders</h2>
-
-      <thead>
-      </thead>
-      <tbody>
-        <tr>
-          <th>Name</th>
-          <th>Threshold</th>
-          <th>Fund</th>
-          <th>Rate</th>
-          <th>Address</th>
-          <th>Since</th>
-          <th>Character</th>
-        </tr>
-        {{#each stakeholders}}
-          <tr>
-            {{> stakeholder}}
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-
-    <table class="web3AccountsTable table table-hover">
-      <h2>Web3.eth.accounts List</h2>
-
-      <thead>
-      </thead>
-      <tbody>
-        <tr>
-          <th>#</th>
-          <th>Address</th>
-        </tr>
-        {{#each web3Accounts}}
-          <tr>
-            {{> account}}
-            {{> switchButton}}
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  </div>
-
-</template>
-
-<template name="updateData">
-  {{> init}}
-
-  {{> header}}
-  <div class="updateRating flex">
-    <table class="updateRatingTable table table-hover">
-      <h2>Properties</h2>
-      <thead>
-      </thead>
-      <tbody>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Count</th>
-          <th>Unit</th>
-          <th>Min Unit</th>
-          <th>Onwer</th>
-          <th>Extra Data</th>
-          <th>Rating</th>
-        </tr>
-        {{#each properties}}
-          <tr>
-            <th scope='row'>#</th>
-            {{> property}}
-            {{> currentRating}}
-          </tr>
-        {{/each}}
-      </tbody>
-      <button type="button" class="btn btn-primary" id="updateRating" name="button">update</button>
-
-    </table>
-  </div>
-
-</template>
 
 <template name="index">
   {{> header}}
@@ -323,12 +107,6 @@
 
       <div id="tutorial" class="layout section" >
 
-          <div class="getStarted">
-            <!-- {{> hello}}
-            {{> info}} -->
-            <img src="/img/getStart.png" alt="">
-            <h1>"Get Started"</h1>
-          </div>
           <div id="form" class="flexbox flip-container">
               <div class="flipper" id="flipper">
                   <div class="front flexbox">
@@ -348,155 +126,24 @@
                             <label for="address">Address</label>
                             <div class="input-group">
                               <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                              <input type="text" class="form-control" value={{currentAddress}}>
+                              <input type="text" class="form-control" value={{currentAddress}} disabled>
                             </div>
                         </div>
                         <br>
                         <div class='formElement'>
-                            <label for="name">Name</label>
+                            <label for="name">Username</label>
                             <div class="input-group">
                               <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
                               <input type="text" class="form-control s_Name" placeholder="">
                             </div>
                         </div>
                         <br>
-                        <div class='formElement'>
-                            <label for="threshold">Threshold</label>
-                            <div class="input-group">
-                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
-                              <input type="text" class="form-control s_Threshold" placeholder="USD dollars">
-                            </div>
-                        </div>
-                        <br>
-                        <div class='formElement'>
-                            <label for="fund">Fund</label>
-                            <div class="input-group">
-                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
-                              <input type="text" class="form-control s_Fund" placeholder="USD dollars">
-                            </div>
-                        </div>
-                        <br>
-                        <div class='formElement'>
-                            <label for="rate">Rate</label>
-                            <div class="input-group">
-                              <span class="input-group-addon glyphicon glyphicon-eth" id="basic-addon3">$</span>
-                              <input type="text" class="form-control s_Rate" placeholder="">
-                            </div>
-                        </div>
-                        <br>
                         <button type="submit" class="btn btn-success" id='next'>Start Farming !</button>
-                        <button type="button" class="btn btn-danger" id='test'>TEST</button>
-
                     </form>
-                </div>
-                <div class="back flexbox">
-                    <div id="sellerInfo">
-                      <form class="navbar-form navbar-left" role="search">
-                          <h2>Add Property</h2>
-                          <br>
-                          <label for="name">Name</label>
-                          <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                            <input type="text" class="form-control p_Name" placeholder="Property name">
-                          </div>
-                          <br>
-                          <label for="count">Property Count</label>
-                          <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                            <input type="text" class="form-control p_Count" placeholder="How many(much) are there?">
-                          </div>
-                          <br>
-                          <label for="count">Access Stakeholders</label>
-                          <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                            <input type="text" class="form-control p_AccessStakeholders" placeholder="Address">
-                          </div>
-                          <br>
-                          <label for="count">Unit</label>
-                          <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                            <input type="text" class="form-control p_Unit" placeholder="">
-                          </div>
-                          <br>
-                          <label for="count">Atomic Unit</label>
-                          <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                            <input type="text" class="form-control p_AtomicUnit" placeholder="Smallest unit">
-                          </div>
-                          <br>
-                          <label for="data">Additional Data</label>
-                          <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-eth" id="data"></span>
-                            <input type="text" class="form-control p_Data" placeholder="Further info">
-                          </div>
-                          <br>
-                          <label for="count">Rating</label>
-                          <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-user" id="count"></span>
-                            <input type="text" class="form-control p_Rating" placeholder="Your personal ratin">
-                          </div>
-                          <br>
-                          <div class="submitButtons flexbox">
-                            <button type="submit" class="btn btn-danger" id='previous'>Back</button>
-                            <button type="button" class="btn btn-primary" id='submit'>Register</button>
-                            <button type="button" class="btn btn-danger" id='test'>TEST</button>
-
-                          </div>
-                      </form>
-                    </div>
-                    <div id="buyerInfo">
-                        <form class="navbar-form navbar-left" role="search">
-                            <h2>Current Bidding Query</h2>
-                            <br>
-                            <label for="bidId">Bidding ID</label>
-                            <div class="input-group">
-                              <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                              <input type="text" class="form-control" placeholder="ID">
-                            </div>
-                            <br>
-                            <div class="submitButtons flexbox">
-                              <button type="submit" class="btn btn-danger" id='previous'>Back</button>
-                              <button type="button" class="btn btn-primary" id='submit'>Register</button>
-
-                            </div>
-                        </form>
-                    </div>
-
                 </div>
             </div>
         </div>
       </div>
-
-  <div id="aboutUs" class="flexbox layout section">
-    <div id="aboutUs_head" class="flexbox">
-      <div class=""><h1>"ABOUT US"</h1></div>
-      <div class=""><h1>團隊介紹</h1></div>
-      <div class="underLine" id="underLine"></div>
-    </div>
-
-    <div id="teamInfo" class="flexbox">
-      <div class="member flexbox memeberBox">
-        <div class="teamCircle"></div>
-        <div class="teamPic"><img src="/img/user-male-black-shape.png" width="15%" height="15%" alt=""></div>
-        <div class="memeberInfo">
-          <h1>Professor Yuan</h1>
-          <p>NCCU, MIS</p>
-          <p>Service Science Research Center</p>
-          <p>ssrc@nccu.edu.tw</p>
-        </div>
-      </div>
-      <div class="member flexbox memeberBox">
-        <div class="teamCircle"></div>
-        <div class="teamPic"><img src="/img/user-male-black-shape.png" width="15%" height="15%" alt=""></div>
-        <div class="memeberInfo">
-          <h1>Professor Yuan</h1>
-          <p>NCCU, MIS</p>
-          <p>Service Science Research Center</p>
-          <p>ssrc@nccu.edu.tw</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div id="footer" class="flexbox">
     <div>
