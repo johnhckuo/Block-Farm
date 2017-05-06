@@ -876,7 +876,7 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
-function eventListener(){
+var eventListener = function(){
 
   // var events = MainActivityInstance.allEvents([{fromBlock: 0, toBlock: 'latest'}]);
   //
@@ -887,24 +887,53 @@ function eventListener(){
   // });
 
   // Or pass a callback to start watching immediately
-var event = MainActivityInstance.matchSuccess({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
-  if (!error)
-    console.log(result);
+  // var event = MainActivityInstance.matchSuccess({} , [{from: 0, to: 'latest'}] , function(error, result){
+  //   if (!error)
+  //     console.log(result);
+  // });
+  //
+  // var event = MainActivityInstance.matchFail({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
+  //   if (!error)
+  //     console.log(result);
+  // });
+
+  // watch for an event with {some: 'args'}
+var events = MainActivityInstance.matchSuccess({fromBlock: 0, toBlock: 'latest'});
+events.watch(function(error, result){
+  console.log(result);
 });
 
-var event = MainActivityInstance.matchFail({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
-  if (!error)
-    console.log(result);
+// would get all past logs again.
+events.get(function(error, logs){
+    console.log(logs);
 });
 
-  // MainActivityInstance.matchSuccess({}, { fromBlock: 0, toBlock: 'latest' }).get((error, eventResult) => {
+
+// would stop and uninstall the filter
+//myEvent.stopWatching();
+
+  // MainActivityInstance.matchSuccess({from : 1, to : 'latest'}, { fromBlock: 0, toBlock: 'latest' }).get((error, eventResult) => {
   //   if (error)
   //     console.log('Error in myEvent event handler: ' + error);
   //   else
   //     console.log('myEvent: ' + JSON.stringify(eventResult.args));
   // });
 
-
+//   var filter = web3.eth.filter({
+//     address: MainActivityInstance.address,
+//     from: 1,
+//     to: 'latest'
+//   });
+//
+//   filter.watch(function (error, log) {
+//   console.log(log); //  {"address":"0x0000000000000000000000000000000000000000", "data":"0x0000000000000000000000000000000000000000000000000000000000000000", ...}
+// });
+//
+//   var res = filter.get(function (err, result) {
+//       console.log(result);
+//   });
+//
+//   console.log(res);
   // MainActivityInstance.matchSuccess().watch(function(error, result){
   //     if (!error){
   //         console.log(result);
@@ -918,6 +947,11 @@ var event = MainActivityInstance.matchFail({} , [{fromBlock: 0, toBlock: 'latest
   //     }
   //     console.log(error);
   // });
+}
+
+var checkTradeStatus = function(){
+
+
 }
 
 var getVisitNode = function(){
@@ -1028,6 +1062,8 @@ var getUserData = function(s_Id){
 
     var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
 
+    var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
     currentUser = {
       id:s_Id,
       address:web3.eth.accounts[currentAccount],
@@ -1043,7 +1079,8 @@ var getUserData = function(s_Id){
       thiefId: null,
       SyndicateExp:0,
       SyndicateTotalExp:0,
-      SyndicateLevel:1
+      SyndicateLevel:1,
+      matchesId : matches
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
 

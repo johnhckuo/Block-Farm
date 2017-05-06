@@ -9,7 +9,8 @@ contract Congress{
     function updateGameData(uint, uint, uint);
     function initPlayerData(bytes32, bytes32);
     function addMember();
-
+    function insertMatchesId(uint, uint);
+    function deleteMatchesId(uint, uint);
 
 }
 
@@ -304,6 +305,10 @@ contract MainActivity{
                 property.updateTradingStatus(visitedProperty[i], true);
              }
 
+             for (uint k = 0 ; k < matches[matchId].visitedOwners.length ; k++){
+                  congress.insertMatchesId(matches[matchId].visitedOwners[k], matchId);
+             }
+
              matchSuccess(visitedProperty, matches[matchId].visitedOwners);
 
              return "Success";
@@ -311,8 +316,6 @@ contract MainActivity{
             while (StringUtils.equal(findVisitNode(goThroughList[visitIndex++]),"Fail")){
                 matchFail(visitIndex);
             }
-            matchSuccess(visitedProperty, matches[matchId].visitedOwners);
-
 
         }
 
@@ -380,7 +383,7 @@ contract MainActivity{
             }
         }
         matches[m_Id].confirmation[s_Index] = confirmation;
-
+        congress.deleteMatchesId(s_Id, matches[m_Id].id);
     }
 /*
     function __callback(bytes32 myid, string result) {

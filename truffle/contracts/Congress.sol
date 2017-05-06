@@ -31,6 +31,7 @@ contract Congress{
         uint propertyCount;
         uint[] propertyId;
         bytes32 lastLogin;
+        uint[] matchesId;
     }
 
     struct Syndicate{
@@ -54,6 +55,10 @@ contract Congress{
 
     function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint){
         return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
+    }
+
+    function getStakeholderMatches(uint s_Id) constant returns(uint[]){
+        return (stakeholdersGameData[s_Id].matchesId);
     }
 
     function getStakeholderLastLogin(uint s_Id) constant returns(bytes32){
@@ -149,6 +154,20 @@ contract Congress{
         stakeholdersGameData[u_Id].level = _level;
 
 
+    }
+
+    function insertMatchesId(uint s_Id, uint m_Id){
+        stakeholdersGameData[s_Id].matchesId.push(m_Id);
+
+    }
+
+    function deleteMatchesId(uint s_Id, uint m_Id){
+        uint length = stakeholdersGameData[s_Id].matchesId.length;
+        for (uint i = stakeholdersGameData[s_Id].matchesId[m_Id]; i<length-1; i++){
+            stakeholdersGameData[s_Id].matchesId[i] = stakeholdersGameData[s_Id].matchesId[i+1];
+        }
+        delete stakeholdersGameData[s_Id].matchesId[length-1];
+        stakeholdersGameData[s_Id].matchesId.length--;
     }
 
     function removeStakeholder(address targetStakeholder){
