@@ -195,7 +195,8 @@ Template.shop.helpers({
 Template.gamingArea.helpers({
     currentLevel: function(){
       _character.depend();
-      return currentUser.level;
+        //return currentUser.level;
+      return Session.get('Levelup');
     }
 });
 
@@ -494,56 +495,62 @@ Template.gameIndex.events({
                 set_property_table();
             }
             else if(gameMode == "Thief"){
-                var stolenFlag, stealCount, judgement;
-                judgement = Math.random();
-                if(judgement >= 0.5){
-                    stolenFlag = $(event.target).parent().attr("stolenFlag");
-                    if ((cropList[id].ripe)&&(stolenFlag == "f")){
-                        $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
-                        $(".scoreObject").html("+" + 5 +"XP");
-                        updateStaminaBar(staminaList["steal"]);
-
-                    }
-                    else{
-                        alert("Don't be so greedy");
-                        return;
-                    }
-                    var landTop = $(".land").position().top;
-                    var landLeft = $(".land").position().left;
-
-                    var areaLeft = $(".gamingArea").position().left;
-
-                    var divHeight =$(".farmObject").height()/5;
-                    var divWidth = $(".farmObject").width()/4;
-
-                    var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
-                    temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
-                    temp.addClass("animationTempShow");
-
-                    setTimeout(function(){
-                        temp.css({opacity:0, transform:"translateY(0px)"});
-                        setTimeout(function(){
-                            temp.css({display: "none"});
-                            temp.remove();
-                        },1000);
-                    },1000);
-                    //stealCount = Math.round(cropCount / 2);
-                    //cropCount = cropCount - stealCount;
-                    //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-                    //for(var i= 0; i < propertyLength;i++){
-                    //    usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
-                    //}
-                    //usingPropertyInstance.updateCropCount(visitNode, id, cropCount, {from:web3.eth.accounts[currentAccount], gas:2000000});
-                    //$(event.target).parent().attr("cropcount", parseInt(cropCount));
-                    //$(event.target).parent().attr("stolenFlag", "t");
-
-                    $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
-                    //reload propertyTable
-                    //set_property_table();
+                if(currentUser.sta < staminaList["steal"]){
+                    alert("not enough stamina");
+                    return;
                 }
                 else{
-                    alert("You are under arrest!");
-                    updateStaminaBar(staminaList["stealFail"]);
+                    var stolenFlag, stealCount, judgement;
+                    judgement = Math.random();
+                    if(judgement >= 0.5){
+                        stolenFlag = $(event.target).parent().attr("stolenFlag");
+                        if ((cropList[id].ripe)&&(stolenFlag == "f")){
+                            $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+                            $(".scoreObject").html("+" + 5 +"XP");
+                            updateStaminaBar(staminaList["steal"]);
+                            updateSyndicateExp(5);
+                        }
+                        else{
+                            alert("Don't be so greedy");
+                            return;
+                        }
+                        var landTop = $(".land").position().top;
+                        var landLeft = $(".land").position().left;
+
+                        var areaLeft = $(".gamingArea").position().left;
+
+                        var divHeight =$(".farmObject").height()/5;
+                        var divWidth = $(".farmObject").width()/4;
+
+                        var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
+                        temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
+                        temp.addClass("animationTempShow");
+
+                        setTimeout(function(){
+                            temp.css({opacity:0, transform:"translateY(0px)"});
+                            setTimeout(function(){
+                                temp.css({display: "none"});
+                                temp.remove();
+                            },1000);
+                        },1000);
+                        stealCount = Math.round(cropCount / 2);
+                        cropCount = cropCount - stealCount;
+                        var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+                        for(var i= 0; i < propertyLength;i++){
+                            usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
+                        }
+                        usingPropertyInstance.updateCropCount(visitNode, id, cropCount, {from:web3.eth.accounts[currentAccount], gas:2000000});
+                        $(event.target).parent().attr("cropcount", parseInt(cropCount));
+                        $(event.target).parent().attr("stolenFlag", "t");
+
+                        $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+                        //reload propertyTable
+                        //set_property_table();
+                    }
+                    else{
+                        alert("You are under arrest!");
+                        updateStaminaBar(staminaList["stealFail"]);
+                    }
                 }
             }
     },
@@ -839,7 +846,7 @@ Template.characterList.events({
     },
     'click .test': function(event){
         MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
-        levelUp();
+        levelUp('userLevel');
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
@@ -990,7 +997,7 @@ var getUserStockList = function(s_Id){
 var getUserData = function(s_Id){
 
     var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
-
+    var syndicateData = CongressInstance.getSyndicateData.call(s_Id, {from:web3.eth.accounts[currentAccount]});
     currentUser = {
       id:s_Id,
       address:web3.eth.accounts[currentAccount],
@@ -1004,9 +1011,9 @@ var getUserData = function(s_Id){
       sta: data[6].c[0],
       guardId: null,
       thiefId: null,
-      SyndicateExp:0,
-      SyndicateTotalExp:0,
-      SyndicateLevel:1
+      SyndicateExp:syndicateData[0].c[0],
+      SyndicateTotalExp:syndicateData[1].c[0],
+      SyndicateLevel:syndicateData[2].c[0]
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
 
@@ -1336,7 +1343,7 @@ var updateUserExp = function(exp){
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
     MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
-    levelUp();
+    levelUp('userLevel');
     rerenderCropLand(s_Id);
     lvlCap = levelCap(currentUser.level);
   }else{
@@ -1362,26 +1369,28 @@ var updateSyndicateExp = function(exp){
 
         currentUser.SyndicateExp = currentUser.SyndicateExp - lvlCap;
 
-       // CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
-       // MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
-        levelUp();
-        //rerenderCropLand(s_Id);
-        lvlCap = levelCap(currentUser.SyndicateLevel);
-    }else{
-       // CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+        levelUp('Syndicate');
+        lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
     }
+    CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
+
 
     var percent = (currentUser.SyndicateExp/lvlCap)*100;
     $(".SyndicateExpProgressBar").css("width", percent + "%");
-    $(".SyndicateExpText").text(currentUser.exp+"/"+lvlCap);
+    $(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
 
 }
 
-var levelUp = function(){
+var levelUp = function(_type){
+    if(_type == 'userLevel'){
+        Session.set('Levelup', currentUser.level);
+    }
+    else{
+        Session.set('Levelup', currentUser.SyndicateLevel);
+    }
     var opacity;
     $(".levelUp").css("display", "flex");
     $(".levelUp").css("opacity", 1);
-
 
     setTimeout(function(){
       $(".levelUp").css("opacity", 0);

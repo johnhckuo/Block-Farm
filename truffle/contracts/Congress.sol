@@ -124,6 +124,7 @@ contract Congress{
          //stakeholders[_id].thiefId = 0;
     }
 
+
     function initSyndicateData(bytes32 _character){
         uint _id = SyndicateData.length++;
         SyndicateData[_id].id = _id;
@@ -135,11 +136,20 @@ contract Congress{
         SyndicateData[_id].character = _character;
     }
 
+    function getSyndicateData(uint u_Id) constant returns(uint, uint, uint){
+        return (SyndicateData[u_Id].exp, SyndicateData[u_Id].totalExp, SyndicateData[u_Id].level);
+    }
+
     function updateUserExp(uint u_Id, uint exp){
         stakeholdersGameData[u_Id].exp = exp;
         stakeholdersGameData[u_Id].totalExp += exp;
     }
-
+    
+    function updateSyndicateExp(uint u_Id, uint exp, uint level){
+        SyndicateData[u_Id].exp = exp;
+        SyndicateData[u_Id].totalExp += exp;
+        SyndicateData[u_Id].level = level;
+    }
 
     function updateUserStamina(uint u_Id, uint sta){
         stakeholdersGameData[u_Id].stamina = sta;
