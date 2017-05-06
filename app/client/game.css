@@ -1,3 +1,7 @@
+*:focus {
+    outline: 0;
+}
+
 .gameContainer{
   display:flex;
   flex-direction: row;
@@ -950,4 +954,15 @@ td img{
 
 .removeLand *{
   margin-right: 10px;
+}
+
+.matches{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding:50px;
+}
+.matches *{
+  margin-right:10px;
 }

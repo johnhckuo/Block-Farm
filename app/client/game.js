@@ -137,8 +137,9 @@ Template.gameIndex.rendered = function() {
         updateSyndicateExp(0);
         updateStaminaBar(0);
 
-        initCropLand(currentAccount);
+        initCropLand(s_Id);
 
+        showConfirmation(s_Id);
         Session.set('userName', currentUser.name);
         Session.set('userExp', currentUser.exp);
         Session.set('userSta', currentUser.sta);
@@ -701,6 +702,15 @@ Template.gamingArea.events({
         }
 
     },
+    'click .matchesBtn':function(event){
+        var m_Id = $(event.target).attr("class").split("matchBtn")[1];
+        console.log(m_Id);
+        MainActivityInstance.updateConfirmation(m_Id, s_Id, 1, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+        $(event.target).prop("value", "Waiting");
+        $(event.target).prop("disabled", true);
+
+    }
 })
 
 Template.statusList.events({
@@ -831,13 +841,17 @@ Template.characterList.events({
 
     },
     'click .test': function(event){
-        MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
+        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
         levelUp();
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
         MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:2000000});
     },
+    'click .confirmMatches':function(event){
+        MainActivityInstance.checkConfirmation(0, s_Id, {from:web3.eth.accounts[0], gas:2000000});
+
+    }
 
 
 })
@@ -949,8 +963,61 @@ events.get(function(error, logs){
   // });
 }
 
-var checkTradeStatus = function(){
+var showConfirmation = function(s_Id){
+    var length = currentUser.matches.length;
+    if (length > 0){
+        $(".systemInfo").css("opacity", "1");
+    }else{
+      return;
+    }
 
+    for (var i = 0 ; i < length ; i++){
+
+        var data = MainActivityInstance.getMatchMaking.call(currentUser.matches[i], {from:web3.eth.accounts[currentAccount]});
+        var owners = data[1];
+        var properties = data[2];
+        var tradeables = data[3];
+
+
+        var index;
+
+        for (var j = 0 ; j < owners.length ; j++){
+            if (s_Id == owners[j].c[0]){
+                index = j;
+            }
+        }
+
+        var previousIndex = (index-1+owners.length)%owners.length
+
+
+        var previousName = web3.toUtf8(CongressInstance.getStakeholder.call(parseInt(owners[previousIndex].c[0]), {from:web3.eth.accounts[currentAccount]})[0]);
+        var type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[previousIndex].c[0]), {from:web3.eth.accounts[currentAccount]});
+        var receiveProperty = usingPropertyInstance.getPropertyType.call(type_Id, {from:web3.eth.accounts[currentAccount]});
+
+        type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[index].c[0]), {from:web3.eth.accounts[currentAccount]});
+        var provideProperty = usingPropertyInstance.getPropertyType.call(type_Id, {from:web3.eth.accounts[currentAccount]});
+
+        var row = $("<div>").attr("class", "matches match"+i);
+        var fromAddr = $("<div>").text("from "+previousName);
+        var receive = $("<div>").text("for " +web3.toUtf8(receiveProperty[0]) + "X" + tradeables[previousIndex].c[0]);
+        var provide = $("<div>").text("You exchange " + web3.toUtf8(provideProperty[0]) + "X" + tradeables[index].c[0]);
+        row.append(provide).append(receive).append(fromAddr).append($('input').attr( {
+            type: 'button',
+            class: "btn btn-info matchesBtn matchBtn"+currentUser.matches[i].c[0],
+            value: 'Confirm'
+        }));
+
+
+
+        $(".systemInfo").append(row);
+
+        var confirmed = MainActivityInstance.getMatchMakingConfirmed.call(currentUser.matches[i], s_Id, {from:web3.eth.accounts[currentAccount]});
+        if (confirmed){
+            $(".matchBtn"+currentUser.matches[i].c[0]).prop("value", "Waiting");
+            $(".matchBtn"+currentUser.matches[i].c[0]).prop("disabled", true);
+
+        }
+    }
 
 }
 
@@ -1080,7 +1147,7 @@ var getUserData = function(s_Id){
       SyndicateExp:0,
       SyndicateTotalExp:0,
       SyndicateLevel:1,
-      matchesId : matches
+      matches : matches
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
 
@@ -1408,7 +1475,7 @@ var updateUserExp = function(exp){
     currentUser.exp = currentUser.exp - lvlCap;
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
-    MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
     levelUp();
     rerenderCropLand(s_Id);
     lvlCap = levelCap(currentUser.level);

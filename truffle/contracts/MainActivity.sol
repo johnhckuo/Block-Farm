@@ -4,9 +4,6 @@ import "./StringUtils.sol";
 
 contract Congress{
     mapping (address => uint) public stakeholderId;
-    function getStakeholdersLength() constant returns(uint);
-    function getStakeholder(uint) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
-    function updateGameData(uint, uint, uint);
     function initPlayerData(bytes32, bytes32);
     function addMember();
     function insertMatchesId(uint, uint);
@@ -17,24 +14,15 @@ contract Congress{
 contract usingProperty{
     function getPropertiesLength() constant returns(uint);
     function getPartialProperty(uint) returns(address);
-    function getPropertyRating(uint, uint) constant returns(uint);
-    function getPropertyType(uint) constant returns(bytes32, uint, uint, bytes32, uint);
-    function addUserPropertyType(uint, uint);
-    function getPropertyTypeId(uint) constant returns(uint);
     function addUserLandConfiguration(uint);
     function getPropertyTypeAverageRating(uint, uint) constant returns(uint);
     function getPropertyTypeRating_Matchmaking(uint, uint) constant returns(uint);
     function checkTradeable(uint) constant returns(uint);
     function getPropertyType_Matchmaking(uint) constant returns(uint);
     function getPropertyTypeLength() constant returns(uint);
-    function updatePropertyTypeRating(uint, uint, string);
-    function initUserProperty(uint);
     function updateTradingStatus(uint, bool);
-    function getPropertyCount(uint) constant returns(uint);
-    function updatePropertyCount(uint, uint, uint);
     function updateOwnershipStatus(uint, uint);
-    function getPropertiesOwner(uint[]) constant returns(uint[]);
-
+    function getPropertiesOwner(uint visitedProperty) constant returns(uint);
 }
 
 contract MainActivity{
@@ -59,8 +47,7 @@ contract MainActivity{
     address CongressAddress;
     address PropertyAddress;
 
-    uint unlockCropNum = 3;
-    uint unlockCropLevel = 5;
+
     uint floatOffset = 1000;
     uint matchMakingThreshold = 500;
     uint matchMakingInterval = 1800;
@@ -69,6 +56,9 @@ contract MainActivity{
         uint id;
         uint[] visitedOwners;
         uint[] visitedProperties;
+        uint[] visitedTradeable;
+        bool[] confirmed;
+
         int256[] visitedPriorities;
         uint[] confirmation;
         uint visitedCount;
@@ -96,39 +86,7 @@ contract MainActivity{
         congress.initPlayerData(_name, _character);
         for (uint i = 0 ; i < 9 ; i++){
             property.addUserLandConfiguration(s_Id);
-
         }
-
-
-    }
-
-    function levelCap(uint _level) constant returns(uint){
-        uint powerResult = 1;
-        for (uint i = 0 ; i < _level ; i++){
-            powerResult *= 2;
-        }
-        return powerResult*100;
-    }
-
-    function playerLevelUp(uint u_Id, uint random){
-
-        var (name, exp, totalExp, character, landSize, level, stamina) = congress.getStakeholder(u_Id);
-        level += 1;
-        if (level % 5 == 0){
-            landSize += 1;
-
-            uint p_Id = property.getPropertyTypeId(random + ((level/unlockCropLevel)*unlockCropNum));
-            property.addUserPropertyType(u_Id, p_Id);
-
-            uint difference = (landSize*landSize) - ((landSize-1)*(landSize-1)) +1;
-            for (uint i = 0 ; i < difference ; i++){
-                property.addUserLandConfiguration(u_Id);
-            }
-        }
-
-        congress.updateGameData(u_Id, landSize, level);
-        //congress.updateUserExp(u_Id, exp);
-
     }
 
     function sort(int256[] priorityList, uint[] visitList) returns(int256[], uint[]){
@@ -208,6 +166,11 @@ contract MainActivity{
         uint currentRating = property.getPropertyTypeRating_Matchmaking(visitNode, congress.stakeholderId(owner));
         int256 diff = int256(currentRating - self_Importance);
 
+        int256 tradeableCount = int256(property.checkTradeable(i));
+
+        tradeableCount = (tradeableCount/10)%10;
+        diff += diff/10*tradeableCount;
+
         return diff;
     }
 
@@ -256,12 +219,10 @@ contract MainActivity{
         var (diffList, goThroughList) = searchNeighborNodes(visitNode);
         (diffList, goThroughList) = sort(diffList, goThroughList);
 
-//----------
         if (diffList[0] <= 0){
+            matchFail(0);
             return "Fail";
         }
-
-//------------
 
         bool flag = false;
         uint visitIndex;
@@ -286,7 +247,10 @@ contract MainActivity{
         visitedPriority.length++;
         visitedPriority[visitedCount] = diffList[visitIndex];
 
-
+        uint[] memory visitedOwners = new uint[](visitedProperty.length);
+        for (uint h = 0 ; h < visitedProperty.length ; h++){
+            visitedOwners[h] = property.getPropertiesOwner(visitedProperty[h]);
+        }
 
         if (goThroughList[visitIndex] == origin){
 
@@ -295,18 +259,24 @@ contract MainActivity{
 
              matches[matchId].id = matchId;
              matches[matchId].visitedPriorities = visitedPriority;
-             matches[matchId].visitedOwners = getPropertiesOwner(visitedProperty);
+             matches[matchId].visitedOwners = visitedOwners;
              matches[matchId].visitedProperties = visitedProperty;
              matches[matchId].visitedCount = visitedCount;
              matches[matchId].result = "null";
 
              for (uint i = 0 ; i < matches[matchId].visitedOwners.length ; i++){
                 matches[matchId].confirmation.push(1);
+                matches[matchId].confirmed.push(false);
+
                 property.updateTradingStatus(visitedProperty[i], true);
              }
 
-             for (uint k = 0 ; k < matches[matchId].visitedOwners.length ; k++){
+             for (uint k = 0 ; k < matches[matchId].visitedOwners.length-1 ; k++){
                   congress.insertMatchesId(matches[matchId].visitedOwners[k], matchId);
+             }
+
+             for (uint l = 0 ; l < matches[matchId].visitedProperties.length ; l++){
+                  matches[matchId].visitedTradeable.push(property.checkTradeable(matches[matchId].visitedProperties[l]));
              }
 
              matchSuccess(visitedProperty, matches[matchId].visitedOwners);
@@ -321,22 +291,15 @@ contract MainActivity{
 
     }
 
-    function getPropertiesOwner(uint[] visitedProperties) constant returns(uint[]){
-        uint length = visitedProperties.length;
-        uint[] memory visitedOwners = new uint[](length);
-        for (uint i = 0 ; i < length ; i++){
-            address owner = property.getPartialProperty(visitedProperties[i]);
-            visitedOwners[i] = congress.stakeholderId(owner);
-         }
-         return visitedOwners;
+    function getMatchMaking(uint m_Id) constant returns(int256[], uint[], uint[], uint[], uint[], uint, string){
+        return (matches[m_Id].visitedPriorities, matches[m_Id].visitedOwners, matches[m_Id].visitedProperties, matches[m_Id].visitedTradeable, matches[m_Id].confirmation, matches[m_Id].visitedCount, matches[m_Id].result);
     }
 
-
-    function getMatchMaking(uint m_Id) constant returns(uint, int256[], uint[], uint[], uint[], uint, string){
-        return (matches[m_Id].id, matches[m_Id].visitedPriorities, matches[m_Id].visitedOwners, matches[m_Id].visitedProperties, matches[m_Id].confirmation, matches[m_Id].visitedCount, matches[m_Id].result);
+    function getMatchMakingConfirmed(uint m_Id, uint s_Id) constant returns(bool){
+        return (matches[m_Id].confirmed[s_Id]);
     }
 
-    function checkConfirmation(uint m_Id) returns(bool){
+    function checkConfirmation(uint m_Id, uint s_Id) returns(bool){
         uint confirm = 0;
         for (uint i = 0 ; i < matches[m_Id].confirmation.length-1; i++){
             if (matches[m_Id].confirmation[i] == 1){
@@ -346,6 +309,8 @@ contract MainActivity{
 
         confirm = confirm*floatOffset;
         uint totalCount = matches[m_Id].visitedCount;
+
+        congress.deleteMatchesId(s_Id, matches[m_Id].id);
         if (confirm/totalCount <= matchMakingThreshold){
             matches[m_Id].result = "false";
             return false;
@@ -383,7 +348,7 @@ contract MainActivity{
             }
         }
         matches[m_Id].confirmation[s_Index] = confirmation;
-        congress.deleteMatchesId(s_Id, matches[m_Id].id);
+        matches[m_Id].confirmed[s_Id] = true;
     }
 /*
     function __callback(bytes32 myid, string result) {

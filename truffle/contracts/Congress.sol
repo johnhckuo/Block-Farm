@@ -4,9 +4,7 @@ contract Congress{
 
     mapping (address => uint) public stakeholderId;
     Stakeholder[] public stakeholders;
-
     StakeholderGameData[] public stakeholdersGameData;
-
     Syndicate[] public SyndicateData;
     address owner;
 
@@ -55,6 +53,10 @@ contract Congress{
 
     function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint){
         return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
+    }
+
+    function getStakeholderAddr(uint s_Id) constant returns(address){
+        return stakeholders[s_Id].addr;
     }
 
     function getStakeholderMatches(uint s_Id) constant returns(uint[]){
