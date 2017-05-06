@@ -603,16 +603,6 @@ contract('Congress', function (accounts) {
     });
 
     it("check confirmation", function () {
-        return MainActivity.deployed("","").then(function (instance) {
-            return instance.checkConfirmation(0, { from: accounts[0] });
-
-        }).then(function(txs){
-            //console.log(txs);
-        });
-    });
-
-
-    it("check confirmation", function () {
         return usingProperty.deployed("","").then(function (instance) {
             return instance.getProperty_Shop(6, { from: accounts[0] });
 

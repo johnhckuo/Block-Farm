@@ -137,8 +137,9 @@ Template.gameIndex.rendered = function() {
         updateSyndicateExp(0);
         updateStaminaBar(0);
 
-        initCropLand(currentAccount);
+        initCropLand(s_Id);
 
+        showConfirmation(s_Id);
         Session.set('userName', currentUser.name);
         Session.set('userExp', currentUser.exp);
         Session.set('userSta', currentUser.sta);
@@ -277,7 +278,7 @@ Template.shop.events({
 
     'click #btn_property_tradeable':function(){
         set_property_table();
-    }
+    },
 });
 
 
@@ -708,6 +709,15 @@ Template.gamingArea.events({
         }
 
     },
+    'click .matchesBtn':function(event){
+        var m_Id = $(event.target).attr("class").split("matchBtn")[1];
+        console.log(m_Id);
+        MainActivityInstance.updateConfirmation(m_Id, s_Id, 1, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+        $(event.target).prop("value", "Waiting");
+        $(event.target).prop("disabled", true);
+
+    }
 })
 
 Template.statusList.events({
@@ -739,7 +749,7 @@ Template.statusList.events({
           // $(currentClickedCrop).css("background", "#337ab7");
           // $(currentClickedCrop).css("border-color", "#337ab7");
           // $(currentClickedCrop).text("Specify");
-          $(currentClickedCrop).html("<img src='/img/game/shovel.svg'>")
+          $(currentClickedCrop).html("<img src='/img/game/rake.svg'>")
           $(currentClickedCrop).data('pressed', false);
           plantMode = false;
         }else if (placeMode){
@@ -771,6 +781,13 @@ Template.statusList.events({
           }
           console.log(removeMode);
     },
+    // for tradable table to save
+    'click #btn_tradeable_save':function(){
+      save_tradable_setting();
+    },
+    'click #btn_tradeable_cancel':function(){
+      alert('cancel');
+    }
 })
 
 Template.characterList.events({
@@ -838,14 +855,17 @@ Template.characterList.events({
 
     },
     'click .test': function(event){
-        MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
-        levelUp('userLevel');
+        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
+        levelUp();
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
         MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:2000000});
     },
+    'click .confirmMatches':function(event){
+        MainActivityInstance.checkConfirmation(0, s_Id, {from:web3.eth.accounts[0], gas:2000000});
 
+    }
 
 })
 
@@ -883,7 +903,7 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
-function eventListener(){
+var eventListener = function(){
 
   // var events = MainActivityInstance.allEvents([{fromBlock: 0, toBlock: 'latest'}]);
   //
@@ -894,24 +914,53 @@ function eventListener(){
   // });
 
   // Or pass a callback to start watching immediately
-var event = MainActivityInstance.matchSuccess({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
-  if (!error)
-    console.log(result);
+  // var event = MainActivityInstance.matchSuccess({} , [{from: 0, to: 'latest'}] , function(error, result){
+  //   if (!error)
+  //     console.log(result);
+  // });
+  //
+  // var event = MainActivityInstance.matchFail({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
+  //   if (!error)
+  //     console.log(result);
+  // });
+
+  // watch for an event with {some: 'args'}
+var events = MainActivityInstance.matchSuccess({fromBlock: 0, toBlock: 'latest'});
+events.watch(function(error, result){
+  console.log(result);
 });
 
-var event = MainActivityInstance.matchFail({} , [{fromBlock: 0, toBlock: 'latest'}] , function(error, result){
-  if (!error)
-    console.log(result);
+// would get all past logs again.
+events.get(function(error, logs){
+    console.log(logs);
 });
 
-  // MainActivityInstance.matchSuccess({}, { fromBlock: 0, toBlock: 'latest' }).get((error, eventResult) => {
+
+// would stop and uninstall the filter
+//myEvent.stopWatching();
+
+  // MainActivityInstance.matchSuccess({from : 1, to : 'latest'}, { fromBlock: 0, toBlock: 'latest' }).get((error, eventResult) => {
   //   if (error)
   //     console.log('Error in myEvent event handler: ' + error);
   //   else
   //     console.log('myEvent: ' + JSON.stringify(eventResult.args));
   // });
 
-
+//   var filter = web3.eth.filter({
+//     address: MainActivityInstance.address,
+//     from: 1,
+//     to: 'latest'
+//   });
+//
+//   filter.watch(function (error, log) {
+//   console.log(log); //  {"address":"0x0000000000000000000000000000000000000000", "data":"0x0000000000000000000000000000000000000000000000000000000000000000", ...}
+// });
+//
+//   var res = filter.get(function (err, result) {
+//       console.log(result);
+//   });
+//
+//   console.log(res);
   // MainActivityInstance.matchSuccess().watch(function(error, result){
   //     if (!error){
   //         console.log(result);
@@ -925,6 +974,64 @@ var event = MainActivityInstance.matchFail({} , [{fromBlock: 0, toBlock: 'latest
   //     }
   //     console.log(error);
   // });
+}
+
+var showConfirmation = function(s_Id){
+    var length = currentUser.matches.length;
+    if (length > 0){
+        $(".systemInfo").css("opacity", "1");
+    }else{
+      return;
+    }
+
+    for (var i = 0 ; i < length ; i++){
+
+        var data = MainActivityInstance.getMatchMaking.call(currentUser.matches[i], {from:web3.eth.accounts[currentAccount]});
+        var owners = data[1];
+        var properties = data[2];
+        var tradeables = data[3];
+
+
+        var index;
+
+        for (var j = 0 ; j < owners.length ; j++){
+            if (s_Id == owners[j].c[0]){
+                index = j;
+            }
+        }
+
+        var previousIndex = (index-1+owners.length)%owners.length
+
+
+        var previousName = web3.toUtf8(CongressInstance.getStakeholder.call(parseInt(owners[previousIndex].c[0]), {from:web3.eth.accounts[currentAccount]})[0]);
+        var type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[previousIndex].c[0]), {from:web3.eth.accounts[currentAccount]});
+        var receiveProperty = usingPropertyInstance.getPropertyType.call(type_Id, {from:web3.eth.accounts[currentAccount]});
+
+        type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[index].c[0]), {from:web3.eth.accounts[currentAccount]});
+        var provideProperty = usingPropertyInstance.getPropertyType.call(type_Id, {from:web3.eth.accounts[currentAccount]});
+
+        var row = $("<div>").attr("class", "matches match"+i);
+        var fromAddr = $("<div>").text("from "+previousName);
+        var receive = $("<div>").text("for " +web3.toUtf8(receiveProperty[0]) + "X" + tradeables[previousIndex].c[0]);
+        var provide = $("<div>").text("You exchange " + web3.toUtf8(provideProperty[0]) + "X" + tradeables[index].c[0]);
+        row.append(provide).append(receive).append(fromAddr).append($('input').attr( {
+            type: 'button',
+            class: "btn btn-info matchesBtn matchBtn"+currentUser.matches[i].c[0],
+            value: 'Confirm'
+        }));
+
+
+
+        $(".systemInfo").append(row);
+
+        var confirmed = MainActivityInstance.getMatchMakingConfirmed.call(currentUser.matches[i], s_Id, {from:web3.eth.accounts[currentAccount]});
+        if (confirmed){
+            $(".matchBtn"+currentUser.matches[i].c[0]).prop("value", "Waiting");
+            $(".matchBtn"+currentUser.matches[i].c[0]).prop("disabled", true);
+
+        }
+    }
+
 }
 
 var getVisitNode = function(){
@@ -1035,6 +1142,8 @@ var getUserData = function(s_Id){
 
     var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
     var syndicateData = CongressInstance.getSyndicateData.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+    var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
     currentUser = {
       id:s_Id,
       address:web3.eth.accounts[currentAccount],
@@ -1050,7 +1159,8 @@ var getUserData = function(s_Id){
       thiefId: null,
       SyndicateExp:syndicateData[0].c[0],
       SyndicateTotalExp:syndicateData[1].c[0],
-      SyndicateLevel:syndicateData[2].c[0]
+      SyndicateLevel:syndicateData[2].c[0],
+      matches : matches
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
 
@@ -1378,8 +1488,9 @@ var updateUserExp = function(exp){
     currentUser.exp = currentUser.exp - lvlCap;
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
-    MainActivityInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
-    levelUp('userLevel');
+
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
+    levelUp();
     rerenderCropLand(s_Id);
     lvlCap = levelCap(currentUser.level);
   }else{
@@ -1481,7 +1592,8 @@ var cropSummaryUpdate = function(){
             continue;
         }
 
-        var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
+        //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
+        var diffData = (difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
         $(".currentCrop"+i).html(diffData);
     }
 }
@@ -1620,23 +1732,23 @@ set_property_table = function(){
     }
     //content
     //control bar
-    tr = $('<tr></tr>');
-    td = $('<td></td>').attr('colspan', 4).attr('style','textalign=cneter;');
-    td.append($('<input>').attr( {
-        type: 'button',
-        id: 'btn_property_save',
-        value: 'SAVE'
-    }).on('click', function () {
-        save_tradable_setting();
-    }));
-    td.append($('<input>').attr( {
-        type: 'button',
-        id: 'btn_property_cancel',
-        value: 'CANCEL'
-    }).on('click', function () {
-        alert('cancel');
-    }));
-    tr.append(td);
+    // tr = $('<tr></tr>');
+    // td = $('<td></td>').attr('colspan', 4).attr('style','textalign=cneter;');
+    // td.append($('<input>').attr( {
+    //     type: 'button',
+    //     id: 'btn_property_save',
+    //     value: 'SAVE'
+    // }).on('click', function () {
+    //     save_tradable_setting();
+    // }));
+    // td.append($('<input>').attr( {
+    //     type: 'button',
+    //     id: 'btn_property_cancel',
+    //     value: 'CANCEL'
+    // }).on('click', function () {
+    //     alert('cancel');
+    // }));
+    // tr.append(td);
     table.append(tr);
     //control bar
     $('.tradeable_content').append(table);
@@ -1691,7 +1803,8 @@ set_propertyType_table = function () {
     td.append($('<input>').attr( {
         type: 'button',
         id: 'btn_property_save',
-        value: 'SAVE'
+        value: 'SAVE',
+        class:'hvr-rectangle-out'
     }).on('click', function () {
         save_rating_setting();
         $('.property_shop').css('display', 'none');
@@ -1699,7 +1812,8 @@ set_propertyType_table = function () {
     td.append($('<input>').attr( {
         type: 'button',
         id: 'btn_property_cancel',
-        value: 'CANCEL'
+        value: 'CANCEL',
+        class:'hvr-rectangle-out'
     }).on('click', function () {
         alert('cancel');
     }));

@@ -6,18 +6,29 @@ contract Congress{
     mapping (address => uint) public stakeholderId;
 
     function addProperty(uint _id, uint p_Id);
-    function getStakeholdersLength() constant returns(uint);
-
-    function getStakeholder(uint s_Id) constant returns(bytes32, uint256, uint256, uint, address, uint, bytes32);
     function getStakeholder_Mission(uint s_Id) constant returns(uint);
+    function getStakeholdersLength() constant returns(uint);
+    function getStakeholder(uint) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
+    function updateGameData(uint, uint, uint);
+
 }
 
 contract usingProperty{
+    function addUserLandConfiguration(uint);
     function getPropertyTypeLength() constant returns(uint);
     function getPropertyType_forMission(uint p_id, uint cropStage) constant returns(bytes32, uint, bytes32);
     function getPropertiesLength() constant returns(uint);
     function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount);
     function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint);
+    function getPropertyRating(uint, uint) constant returns(uint);
+    function getPropertyType(uint) constant returns(bytes32, uint, uint, bytes32, uint);
+    function addUserPropertyType(uint, uint);
+    function getPropertyTypeId(uint) constant returns(uint);
+    function updatePropertyCount(uint, uint, uint);
+    function getPropertyCount(uint) constant returns(uint);
+    function initUserProperty(uint);
+    function updatePropertyTypeRating(uint, uint, string);
+
 }
 
 contract GameCore{
@@ -39,6 +50,8 @@ contract GameCore{
     Congress congress;
     address usingPropertyInstanceAddress;
     usingProperty usingPropertyInstance;
+    uint unlockCropNum = 3;
+    uint unlockCropLevel = 5;
 
     function GameCore(address _congressAddress, address _usingPropertyInstanceAddress){
         CongressAddress = _congressAddress;
@@ -70,7 +83,7 @@ contract GameCore{
         uint stakeholderLength = congress.getStakeholdersLength();
         uint _id = MissionList.length++;
         Mission obj = MissionList[_id];
-        
+
         for(uint i = 0; i < stakeholderLength; i++){
             obj.accountStatus.push(false);
         }
@@ -104,9 +117,9 @@ contract GameCore{
 
     function getMissionItems(uint mId, uint itemId) constant returns(uint ,bytes32, uint, bytes32){
         Mission obj = MissionList[mId];
-       
+
         var (name, id, img) = usingPropertyInstance.getPropertyType_forMission(obj.cropId[itemId], 3);
-        return (obj.cropId[itemId], name, obj.quantity[itemId], img);      
+        return (obj.cropId[itemId], name, obj.quantity[itemId], img);
     }
 
     function getMissionsLength() constant returns(uint){
@@ -121,9 +134,9 @@ contract GameCore{
         uint missionItemLength = getMissionItemsLength(mId);
         uint propertyLength = usingPropertyInstance.getPropertiesLength();
         for(uint i = 0; i < missionItemLength; i++){
-            
+
             var (cropId, name, quantity, img) = getMissionItems(mId, i);
-            
+
             for(uint j = 0; j < propertyLength; j++){
                 var (propertyType, propertyOwner, propertyCount) = usingPropertyInstance.getProperty_MissionSubmit(j);
                 if((propertyOwner == msg.sender)&&(propertyType == cropId)){
@@ -137,6 +150,40 @@ contract GameCore{
         }
     uint s_Id = congress.stakeholderId(msg.sender);
     MissionList[mId].accountStatus[s_Id] = true;
+    }
+
+
+    //  from match Making
+
+
+
+    function levelCap(uint _level) constant returns(uint){
+        uint powerResult = 1;
+        for (uint i = 0 ; i < _level ; i++){
+            powerResult *= 2;
+        }
+        return powerResult*100;
+    }
+
+    function playerLevelUp(uint u_Id, uint random){
+
+        var (name, exp, totalExp, character, landSize, level, stamina) = congress.getStakeholder(u_Id);
+        level += 1;
+        if (level % 5 == 0){
+            landSize += 1;
+
+            uint p_Id = usingPropertyInstance.getPropertyTypeId(random + ((level/unlockCropLevel)*unlockCropNum));
+            usingPropertyInstance.addUserPropertyType(u_Id, p_Id);
+
+            uint difference = (landSize*landSize) - ((landSize-1)*(landSize-1)) +1;
+            for (uint i = 0 ; i < difference ; i++){
+                usingPropertyInstance.addUserLandConfiguration(u_Id);
+            }
+        }
+
+        congress.updateGameData(u_Id, landSize, level);
+        //congress.updateUserExp(u_Id, exp);
+
     }
 
 }

@@ -44,10 +44,12 @@
           <div class="statusPanelList">
               <h2>Crop List</h2>
               <hr>
+              <div class="cropListDiv">
               {{#each crops}}
                       {{> crop}}
               {{/each}}
               <!-- {{> cropSelectingBtns}} -->
+              </div>
           </div>
           <div>
             {{> cropSelectingBtns}}
@@ -59,21 +61,22 @@
             <div class="statusPanelList">
               <div class="summaryBoard">
                   <h2>Current Crop Summary</h2>
-
+                  <!-- <table id="cropTableTittle">
+                    <tr>
+                      <th> </th>
+                      <th>Name</th>
+                      <th>Time Left</th>
+                    </tr>
+                  </table> -->
                   <table id="cropTable" class="">
-                    <thead>
-                    </thead>
                     <tbody>
                       <tr>
-                        <th>#</th>
-                        <th>Img</th>
+                        <th> </th>
                         <th>Name</th>
                         <th>Time Left</th>
-
                       </tr>
                       {{#each cropsSummary}}
                         <tr>
-                          <th scope='row'>#</th>
                           {{> cropSummary}}
                         </tr>
                       {{/each}}
@@ -114,6 +117,10 @@
           <div class="statusPanelList">
             <div class="tradeable_content">
 
+            </div>
+            <div class="btn_tradeable">
+              <button class="hvr-rectangle-out " id="btn_tradeable_save">Save</button>
+              <button class="hvr-rectangle-out " id="btn_tradeable_cancel">Cancel</button>
             </div>
           </div>
           <div>
@@ -175,6 +182,8 @@
 
               <button type="button" name="button" class="btn btn-primary characterSwitch">{{characterType}}</button>
               <button type="button" name="button" class="btn btn-primary matchmaking">Matching Making</button>
+              <button type="button" name="button" class="btn btn-primary confirmMatches">Check</button>
+
               <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
 
               <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
@@ -246,7 +255,9 @@
             <div class = "land">
 
             </div>
+            <div class="systemInfo">
 
+            </div>
         </div>
 
     </div>
