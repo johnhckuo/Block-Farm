@@ -1055,7 +1055,8 @@ td img{
 .hvr-rectangle-out:hover:before, .hvr-rectangle-out:focus:before, .hvr-rectangle-out:active:before {
   -webkit-transform: scale(1);
   transform: scale(1);
-  
+}
+
 .matches{
   display: flex;
   flex-direction: row;
@@ -1063,7 +1064,7 @@ td img{
   align-items: center;
   padding:50px;
 }
-  
+
 .matches *{
   margin-right:10px;
 }

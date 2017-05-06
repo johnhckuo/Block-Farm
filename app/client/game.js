@@ -1159,7 +1159,7 @@ var getUserData = function(s_Id){
       thiefId: null,
       SyndicateExp:syndicateData[0].c[0],
       SyndicateTotalExp:syndicateData[1].c[0],
-      SyndicateLevel:syndicateData[2].c[0]
+      SyndicateLevel:syndicateData[2].c[0],
       matches : matches
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
