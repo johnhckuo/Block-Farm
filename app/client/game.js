@@ -278,7 +278,7 @@ Template.shop.events({
 
     'click #btn_property_tradeable':function(){
         set_property_table();
-    }
+    },
 });
 
 
@@ -749,7 +749,7 @@ Template.statusList.events({
           // $(currentClickedCrop).css("background", "#337ab7");
           // $(currentClickedCrop).css("border-color", "#337ab7");
           // $(currentClickedCrop).text("Specify");
-          $(currentClickedCrop).html("<img src='/img/game/shovel.svg'>")
+          $(currentClickedCrop).html("<img src='/img/game/rake.svg'>")
           $(currentClickedCrop).data('pressed', false);
           plantMode = false;
         }else if (placeMode){
@@ -781,6 +781,13 @@ Template.statusList.events({
           }
           console.log(removeMode);
     },
+    // for tradable table to save
+    'click #btn_tradeable_save':function(){
+      save_tradable_setting();
+    },
+    'click #btn_tradeable_cancel':function(){
+      alert('cancel');
+    }
 })
 
 Template.characterList.events({
@@ -859,7 +866,6 @@ Template.characterList.events({
         MainActivityInstance.checkConfirmation(0, s_Id, {from:web3.eth.accounts[0], gas:2000000});
 
     }
-
 
 })
 
@@ -1586,7 +1592,8 @@ var cropSummaryUpdate = function(){
             continue;
         }
 
-        var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
+        //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
+        var diffData = (difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
         $(".currentCrop"+i).html(diffData);
     }
 }
@@ -1725,23 +1732,23 @@ set_property_table = function(){
     }
     //content
     //control bar
-    tr = $('<tr></tr>');
-    td = $('<td></td>').attr('colspan', 4).attr('style','textalign=cneter;');
-    td.append($('<input>').attr( {
-        type: 'button',
-        id: 'btn_property_save',
-        value: 'SAVE'
-    }).on('click', function () {
-        save_tradable_setting();
-    }));
-    td.append($('<input>').attr( {
-        type: 'button',
-        id: 'btn_property_cancel',
-        value: 'CANCEL'
-    }).on('click', function () {
-        alert('cancel');
-    }));
-    tr.append(td);
+    // tr = $('<tr></tr>');
+    // td = $('<td></td>').attr('colspan', 4).attr('style','textalign=cneter;');
+    // td.append($('<input>').attr( {
+    //     type: 'button',
+    //     id: 'btn_property_save',
+    //     value: 'SAVE'
+    // }).on('click', function () {
+    //     save_tradable_setting();
+    // }));
+    // td.append($('<input>').attr( {
+    //     type: 'button',
+    //     id: 'btn_property_cancel',
+    //     value: 'CANCEL'
+    // }).on('click', function () {
+    //     alert('cancel');
+    // }));
+    // tr.append(td);
     table.append(tr);
     //control bar
     $('.tradeable_content').append(table);
@@ -1796,7 +1803,8 @@ set_propertyType_table = function () {
     td.append($('<input>').attr( {
         type: 'button',
         id: 'btn_property_save',
-        value: 'SAVE'
+        value: 'SAVE',
+        class:'hvr-rectangle-out'
     }).on('click', function () {
         save_rating_setting();
         $('.property_shop').css('display', 'none');
@@ -1804,7 +1812,8 @@ set_propertyType_table = function () {
     td.append($('<input>').attr( {
         type: 'button',
         id: 'btn_property_cancel',
-        value: 'CANCEL'
+        value: 'CANCEL',
+        class:'hvr-rectangle-out'
     }).on('click', function () {
         alert('cancel');
     }));
