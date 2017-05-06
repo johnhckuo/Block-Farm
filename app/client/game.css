@@ -1,6 +1,7 @@
 *:focus{
   outline: 0;
 }
+
 .gameContainer{
   display:flex;
   flex-direction: row;
@@ -16,9 +17,9 @@
   height:100%;
   width: 30vw;
   /*background: #513F31;*/
-  background: white;
+  background: #99CB34;
   background-image: url("/img/game/background.svg");
-  background-size: 100px 100px;
+  background-size: 200px 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -181,12 +182,12 @@
 .gamingArea .canvas{
   width:100%;
   height: 100%;
-  background: white;
+  background: #99CB34;
   transform-style:3d;
   -moz-transform-style:3d;
   -webkit-transform-style:3d;
   background-image: url("/img/game/background.svg");
-  background-size: 100px 100px;
+  background-size: 200px 200px;
 }
 
 .land{
@@ -320,7 +321,6 @@
   height: 10vh;
   z-index: 20000;
   /*background: rgba(0,0,0,0.5);*/
-  border: 1px solid black;
   right: 0px;
   color:white;
   display: flex;
@@ -733,9 +733,9 @@ td img{
   align-items: center;
   z-index:5;
 
-  background: white;
+  background: #99CB34;
   background-image: url("/img/game/background.svg");
-  background-size: 100px 100px;
+  background-size: 200px 200px;
 
 }
 
@@ -1015,7 +1015,6 @@ td img{
   margin-right: 10px;
 }
 
-
 .hvr-rectangle-out {
   display: inline-block;
   vertical-align: middle;
@@ -1056,4 +1055,15 @@ td img{
 .hvr-rectangle-out:hover:before, .hvr-rectangle-out:focus:before, .hvr-rectangle-out:active:before {
   -webkit-transform: scale(1);
   transform: scale(1);
+  
+.matches{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding:50px;
+}
+  
+.matches *{
+  margin-right:10px;
 }

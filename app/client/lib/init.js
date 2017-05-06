@@ -1,7 +1,7 @@
 import { Session } from 'meteor/session';
 
 
-var currentAccount = 1;
+currentAccount = 2;
 var cropsPerLvl =3;
 
 var cropTypeList = [
@@ -156,6 +156,8 @@ var missionItem = [
 ];
 
 
+
+
 function init(event){
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
@@ -220,6 +222,7 @@ Template.index.created = function() {
       initGameConfig();
       console.log(err);
     }
+
     // try{
     //   console.log("data inited");
     //   var val = usingPropertyInstance.propertyTypeList(0);

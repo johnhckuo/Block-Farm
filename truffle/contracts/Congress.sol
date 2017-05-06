@@ -4,17 +4,13 @@ contract Congress{
 
     mapping (address => uint) public stakeholderId;
     Stakeholder[] public stakeholders;
-
     StakeholderGameData[] public stakeholdersGameData;
-
     Syndicate[] public SyndicateData;
     address owner;
 
     struct Stakeholder {
-        uint256 threshold;
-        uint256 fund;
+
         uint256 id;
-        uint rate;
         address addr;
         uint since;
         uint farmerLevel;
@@ -33,6 +29,7 @@ contract Congress{
         uint propertyCount;
         uint[] propertyId;
         bytes32 lastLogin;
+        uint[] matchesId;
     }
 
     struct Syndicate{
@@ -56,6 +53,14 @@ contract Congress{
 
     function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint){
         return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
+    }
+
+    function getStakeholderAddr(uint s_Id) constant returns(address){
+        return stakeholders[s_Id].addr;
+    }
+
+    function getStakeholderMatches(uint s_Id) constant returns(uint[]){
+        return (stakeholdersGameData[s_Id].matchesId);
     }
 
     function getStakeholderLastLogin(uint s_Id) constant returns(bytes32){
@@ -83,17 +88,14 @@ contract Congress{
         stakeholdersGameData[_id].propertyId.push(p_Id);
     }
 
-    function addMember(uint256 _threshold, uint256 _fund, uint _rate){
+    function addMember(){
         uint id;
         address targetStakeholder = msg.sender;
         if (stakeholderId[targetStakeholder] == 0) {
            stakeholderId[targetStakeholder] = stakeholders.length;
            id = stakeholders.length++;
 
-           stakeholders[id].threshold=_threshold;
-           stakeholders[id].fund=_fund;
            stakeholders[id].id=id;
-           stakeholders[id].rate=_rate;
            stakeholders[id].addr=msg.sender;
            stakeholders[id].since=now;
            stakeholders[id].farmerLevel = 0;
@@ -124,6 +126,7 @@ contract Congress{
          //stakeholders[_id].thiefId = 0;
     }
 
+
     function initSyndicateData(bytes32 _character){
         uint _id = SyndicateData.length++;
         SyndicateData[_id].id = _id;
@@ -135,11 +138,20 @@ contract Congress{
         SyndicateData[_id].character = _character;
     }
 
+    function getSyndicateData(uint u_Id) constant returns(uint, uint, uint){
+        return (SyndicateData[u_Id].exp, SyndicateData[u_Id].totalExp, SyndicateData[u_Id].level);
+    }
+
     function updateUserExp(uint u_Id, uint exp){
         stakeholdersGameData[u_Id].exp = exp;
         stakeholdersGameData[u_Id].totalExp += exp;
     }
-
+    
+    function updateSyndicateExp(uint u_Id, uint exp, uint level){
+        SyndicateData[u_Id].exp = exp;
+        SyndicateData[u_Id].totalExp += exp;
+        SyndicateData[u_Id].level = level;
+    }
 
     function updateUserStamina(uint u_Id, uint sta){
         stakeholdersGameData[u_Id].stamina = sta;
@@ -154,6 +166,20 @@ contract Congress{
         stakeholdersGameData[u_Id].level = _level;
 
 
+    }
+
+    function insertMatchesId(uint s_Id, uint m_Id){
+        stakeholdersGameData[s_Id].matchesId.push(m_Id);
+
+    }
+
+    function deleteMatchesId(uint s_Id, uint m_Id){
+        uint length = stakeholdersGameData[s_Id].matchesId.length;
+        for (uint i = stakeholdersGameData[s_Id].matchesId[m_Id]; i<length-1; i++){
+            stakeholdersGameData[s_Id].matchesId[i] = stakeholdersGameData[s_Id].matchesId[i+1];
+        }
+        delete stakeholdersGameData[s_Id].matchesId[length-1];
+        stakeholdersGameData[s_Id].matchesId.length--;
     }
 
     function removeStakeholder(address targetStakeholder){

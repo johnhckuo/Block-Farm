@@ -13,7 +13,6 @@ contract Congress{
     function getPropertyId(uint s_Id, uint index) constant returns(uint);
 
     function getStakeholderPropertyCount(uint s_Id) constant returns(uint);
-
 }
 
 contract usingProperty{
@@ -297,6 +296,15 @@ contract usingProperty{
 
     }
 
+    function getPropertiesOwner(uint visitedProperty) constant returns(uint){
+
+         uint visitedOwner;
+         address owner = getPartialProperty(visitedProperty);
+         visitedOwner = congress.stakeholderId(owner);
+         return visitedOwner;
+
+    }
+
 
     /*  ----------------------------------
         |                                |
@@ -490,5 +498,7 @@ contract usingProperty{
     function getPropertyTypeLength() constant returns(uint){
         return propertyTypeList.length;
     }
+
+
 
 }
