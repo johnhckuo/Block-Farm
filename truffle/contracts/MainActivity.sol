@@ -8,7 +8,6 @@ contract Congress{
     function addMember();
     function insertMatchesId(uint, uint);
     function deleteMatchesId(uint, uint);
-
 }
 
 contract usingProperty{
@@ -24,11 +23,9 @@ contract usingProperty{
     function updateOwnershipStatus(uint, uint);
     function getPropertiesOwner(uint visitedProperty) constant returns(uint);
     function checkTradingStatus(uint p_Id) constant returns (bool);
-
 }
 
 contract MainActivity{
-
     uint[] visitedProperty;
     int256[] visitedPriority;
 
@@ -42,10 +39,6 @@ contract MainActivity{
 
     Congress congress;
     usingProperty property;
-
-    address CongressAddress;
-    address PropertyAddress;
-
 
     uint floatOffset = 1000;
     uint matchMakingThreshold = 500;
@@ -67,12 +60,9 @@ contract MainActivity{
     Match[] public matches;
 
     function MainActivity(address _congressAddress, address _propertyAddress){
-      CongressAddress = _congressAddress;
-      PropertyAddress = _propertyAddress;
 
-      congress = Congress(CongressAddress);
-      property = usingProperty(PropertyAddress);
-
+      congress = Congress(_congressAddress);
+      property = usingProperty(_propertyAddress);
 
       congress.addMember();
       initGameData(0, "Moderator", "guard");

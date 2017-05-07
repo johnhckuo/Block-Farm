@@ -150,11 +150,15 @@ Template.gameIndex.rendered = function() {
         Session.set('userLevel', currentUser.level);
         Session.set('SyndicateLevel', currentUser.SyndicateLevel);
 
-        
+
         setInterval(cropSummaryUpdate, 1000);
         setInterval(updateUserStamina, 500);
 
         $(document).on('input', '#farmResizer', function() {
+            //$(".land").css("transform", "scale("+ (1 + ($(this).val()/100)) +") rotateX(55deg) rotateZ(45deg)");
+            $(".canvas").css("transform", "scale("+ (1 + ($(this).val()/100)) +")");
+
+            //$(".land").css("transform", "scale(1) rotateX(55deg) rotateZ(45deg)");
 
             console.log( $(this).val() );
         });
@@ -830,7 +834,7 @@ Template.characterList.events({
             landInfo = [];
             for (var i = 0 ; i < userLandConfiguration.length ; i++){
                 var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
-                var left = $('.cropLand'+i)[0].getBoundingClientRect().left;               
+                var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
                 var info = {top:top,left:left, showed:0};
                 landInfo.push(info);
             }
@@ -1366,15 +1370,16 @@ var loading = function(on){
     $(".cropObject").css("display", "none");
     if (on){
         $(".loading").css("display", "flex");
-        opacity = 0.7;
+        $(".loading").css("opacity", 0.7);
     }else{
         setTimeout(function(){
-            $(".loading").css("display", "none");
+            $(".loading").css("opacity", 0);
+            setTimeout(function(){
+                $(".loading").css("display", "none");
+            }, 1000);
         },1000);
-        opacity = 0;
 
     }
-    $(".loading").css("opacity", opacity);
 
 
 }
@@ -1631,7 +1636,7 @@ var checkMission = function(){
             };
 
             var prob = Math.random()*3;
-            
+
             if (prob > 2){
                 $(".thiefObject").html("<img src = '/img/game/thief.gif' />");
                 $( ".thiefObject" ).clone().attr("class","thief thief"+theifId++).appendTo(".missionObject").css(missionStyles).attr('bindIndex', rand);
