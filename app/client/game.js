@@ -62,6 +62,10 @@ var removeMode = false;
 
 var floatOffset = 1000;
 
+var checkMissionInterval = null;
+var theifId = 0;
+var landInfo = [];
+
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -146,7 +150,7 @@ Template.gameIndex.rendered = function() {
         Session.set('userLevel', currentUser.level);
         Session.set('SyndicateLevel', currentUser.SyndicateLevel);
 
-        setInterval(checkMission, 1000);
+        
         setInterval(cropSummaryUpdate, 1000);
         setInterval(updateUserStamina, 500);
 
@@ -382,11 +386,22 @@ Template.gameIndex.events({
     },
     'click .thief': function(event){
         $(event.target).parent().css({opacity:0, transform:"translateY(50px)"});
+        updateSyndicateExp(2);
+        currentUser.SyndicateProgress -= 1;
+        CongressInstance.updateSyndicateProgress(s_Id, currentUser.SyndicateProgress, {from: web3.eth.accounts[currentAccount], gas:2000000});
         setTimeout(function(){
             $(event.target).parent().remove();
         },1000);
+        if(currentUser.SyndicateProgress <= 0){
+            clearInterval(checkMissionInterval);
+            var leftThieives = $('.thief').length;
+            for(i = 0; i < leftThieives; i++){
+                $('.thief:eq(' + i + ')').css({opacity:0, transform:"translateY(50px)"});
+                $('.thief:eq(' + i + ')').remove();
+            }
+            alert("Mission Completed!");
 
-
+        }
     },
     'click .croppedObject': function (event){
         // var left = $(event.target).position().left;
@@ -494,9 +509,10 @@ Template.gameIndex.events({
                     return;
                 }
                 else{
-                    var stolenFlag, stealCount, judgement;
+                    var stolenFlag, stealCount, judgement, stealResult;
                     judgement = Math.random();
                     if(judgement >= 0.5){
+                        stealResult = true;
                         stolenFlag = $(event.target).parent().attr("stolenFlag");
                         if ((cropList[id].ripe)&&(stolenFlag == "f")){
                             $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
@@ -542,10 +558,14 @@ Template.gameIndex.events({
                         //set_property_table();
                     }
                     else{
+                        stealResult = false;
                         alert("You are under arrest!");
                         updateStaminaBar(staminaList["stealFail"]);
                     }
+                    CongressInstance.updateStealRecord(s_Id, stealResult, {from:web3.eth.accounts[currentAccount], gas:2000000});
                 }
+            }
+            else if(gameMode == "Guard"){
             }
     },
 
@@ -794,13 +814,36 @@ Template.characterList.events({
     'click .characterSwitch': function (event) {
 
         loading(1);
-
+        //need to check boss' id
         if ($(event.target).html() == "Guard"){
             showThief = true;
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
             $(event.target).html("Home");
             gameMode = "Guard";
+            $('.SyndicateExp').css('visibility', 'visible');
+            $('.userExp').css('visibility', 'collapse');
+            $('.crop4').css('display','none');
+            $('.crop2').css('display','none');
+            $('.crop3').css('display','none');
+
+            landInfo = [];
+            for (var i = 0 ; i < userLandConfiguration.length ; i++){
+                var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+                var left = $('.cropLand'+i)[0].getBoundingClientRect().left;               
+                var info = {top:top,left:left, showed:0};
+                landInfo.push(info);
+            }
+            var progress = thiefNumber(currentUser.SyndicateLevel);
+            currentUser.SyndicateProgress = progress;
+            CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
+
+            if(currentUser.SyndicateProgress > 0){
+                checkMissionInterval = setInterval(checkMission, 1000);
+            }
+            else{
+                clearInterval(checkMissionInterval);
+            }
         }else if ($(event.target).html() == "Thief"){
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
@@ -1169,6 +1212,7 @@ var getUserData = function(s_Id){
       SyndicateExp:syndicateData[0].c[0],
       SyndicateTotalExp:syndicateData[1].c[0],
       SyndicateLevel:syndicateData[2].c[0],
+      SyndicateProgress:syndicateData[3].c[0],
       matches : matches
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
@@ -1363,7 +1407,7 @@ var initCropLand = function(id){
         //$('.land').append("<div></div>");
     }
 
-    var theifId = 0;
+
     for (var i = 0 ; i < userLandConfiguration.length ; i++){
 
         if (userLandConfiguration[i].land == -1){
@@ -1440,27 +1484,6 @@ var initCropLand = function(id){
         //$(".cropObject").html("<img src = '" + prefix+ cropTypeList[config[i].crop].img[0] + postfix +"' />");
         $( ".cropObject" ).clone().attr("class","croppedObject croppedObject"+index).attr("cropCount", cropList[index].count).attr("stolenFlag", stolenFlag).appendTo(".surfaceObject").css(styles);
 
-        if (showThief){
-          var missionStyles = {
-              top: top-divHeight,
-              left: left-areaLeft+divWidth,
-              width:"150px",
-              height:"150px",
-              position:"absolute",
-              opacity:1,
-              "z-index":5,
-              display:'inline'
-          };
-
-
-          var prob = Math.random()*3;
-          if (prob > 2){
-            $(".thiefObject").html("<img src = '/img/game/thief.gif' />");
-            $( ".thiefObject" ).clone().attr("class","thief thief"+theifId++).appendTo(".missionObject").css(missionStyles);
-          }
-        }else{
-            $(".missionObject").html("<div class='thiefObject'></div>");
-        }
 
     }
 }
@@ -1479,6 +1502,10 @@ var SyndicateLevelCap = function(n){
 
 var staminaCap = function(n){
     return 100+n*10;
+}
+
+var thiefNumber = function(n){
+    return n * 5;
 }
 
 var updateStaminaBar = function(consumedSta){
@@ -1569,11 +1596,53 @@ var levelUp = function(_type){
 }
 
 var checkMission = function(){
-
     if (showThief){
+        var maxCount = (thiefNumber(currentUser.SyndicateLevel) / 2);
+        if($('.thief').length > maxCount)
+        {
+            do{
+                var removeRand = Math.round(Math.random() * maxCount);
+            }while(removeRand >= $('.thief').length);
+            var removeObj = $('.thief:eq('+ removeRand +')');
+            var removeIndex = removeObj.attr('bindIndex');
+            landInfo[removeIndex].showed = 0;
+            removeObj.css({opacity:0, transform:"translateY(50px)"});
+            removeObj.remove();
+        }
+        else{
+            var show;
+            do{
+                var rand = Math.round(Math.random() * userLandConfiguration.length);
+                show = landInfo[rand].showed;
+            }while(show != 0);
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()/4;
+            var areaLeft = $(".gamingArea").position().left;
 
+            var missionStyles = {
+                top: landInfo[rand].top-divHeight,
+                left: landInfo[rand].left-areaLeft+divWidth,
+                width:"150px",
+                height:"150px",
+                position:"absolute",
+                opacity:1,
+                "z-index":5,
+                display:'inline'
+            };
 
+            var prob = Math.random()*3;
+            
+            if (prob > 2){
+                $(".thiefObject").html("<img src = '/img/game/thief.gif' />");
+                $( ".thiefObject" ).clone().attr("class","thief thief"+theifId++).appendTo(".missionObject").css(missionStyles).attr('bindIndex', rand);
+                landInfo[rand].showed = 1;
+            }
+        }
     }
+    else{
+        $(".missionObject").html("<div class='thiefObject'></div>");
+    }
+
 }
 
 var cropSummaryUpdate = function(){
