@@ -1828,8 +1828,14 @@ save_tradable_setting = function(){
         var _id = index_finder( $('.shop_tradable_input')[i].id, 'tradable_input_');
         var _tradable = $('#tradable_input_' + _id).val();
         var _propertyCount = parseInt($('#shop_stock_' + _id).val(),10) - parseInt(_tradable,10);
-        usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000});
+        usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000}).catch(function(err){
+          if (err)
+          console.log(err)
+        }).then(function(res){
+          console.log(res);
+        })
     }
+    console.log("gg");
 }
 
 save_rating_setting = function () {
