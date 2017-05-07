@@ -280,6 +280,10 @@ contract usingProperty{
         propertyList[p_Id].isTrading = isTrading;
     }
 
+    function checkTradingStatus(uint p_Id) constant returns (bool){
+        return propertyList[p_Id].isTrading;
+    }
+
     function getPropertyType_Matchmaking(uint p_Id) constant returns(uint){
         return propertyList[p_Id].propertyType;
     }

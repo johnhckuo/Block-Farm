@@ -23,6 +23,8 @@ contract usingProperty{
     function updateTradingStatus(uint, bool);
     function updateOwnershipStatus(uint, uint);
     function getPropertiesOwner(uint visitedProperty) constant returns(uint);
+    function checkTradingStatus(uint p_Id) constant returns (bool);
+
 }
 
 contract MainActivity{
@@ -35,11 +37,8 @@ contract MainActivity{
     uint origin;
 
     event matchSuccess(uint[], uint[]);
-    event matchFail(uint);
-    event test(uint);
+    event matchFail();
     event returnOrigin(uint);
-
-
 
     Congress congress;
     usingProperty property;
@@ -123,7 +122,8 @@ contract MainActivity{
 
         for (uint i = 0 ; i < length ; i++){
             uint access = property.checkTradeable(i);
-            if (access == 0){
+            bool isTrading = property.checkTradingStatus(i);
+            if (access == 0 || isTrading){
                 continue;
             }
             address owner = property.getPartialProperty(i);
@@ -182,9 +182,9 @@ contract MainActivity{
 
         for (uint i = 0 ; i < length ; i++){
 
-            if (i == visitNode || property.checkTradeable(i) == 0){
+            if (i == visitNode || property.checkTradeable(i) == 0 || property.checkTradingStatus(i)){
                 k++;
-                diffList[i] = -10000;
+                diffList[i] = -100000;
                 continue;
             }
 
@@ -201,12 +201,11 @@ contract MainActivity{
             }
 
             if (k == length-1){
-                matchFail(k);
+                matchFail();
             }
 
             diffList[i] = returnPriority(visitNode, i);
             goThroughList[i] = i;
-            //test(i);
         }
         return (diffList, goThroughList);
     }
@@ -220,7 +219,7 @@ contract MainActivity{
         (diffList, goThroughList) = sort(diffList, goThroughList);
 
         if (diffList[0] <= 0){
-            matchFail(0);
+            matchFail();
             return "Fail";
         }
 
@@ -236,7 +235,7 @@ contract MainActivity{
                 break;
             }
             if (!flag && j == length-1){
-                matchFail(j);
+                matchFail();
                 return "Fail";
             }
         }
@@ -254,7 +253,6 @@ contract MainActivity{
 
         if (goThroughList[visitIndex] == origin){
 
-             test(visitedCount);
              uint matchId = matches.length++;
 
              matches[matchId].id = matchId;
@@ -284,7 +282,7 @@ contract MainActivity{
              return "Success";
         }else{
             while (StringUtils.equal(findVisitNode(goThroughList[visitIndex++]),"Fail")){
-                matchFail(visitIndex);
+                matchFail();
             }
 
         }
@@ -299,26 +297,30 @@ contract MainActivity{
         return (matches[m_Id].confirmed[s_Id]);
     }
 
-    function checkConfirmation(uint m_Id, uint s_Id) returns(bool){
-        uint confirm = 0;
-        for (uint i = 0 ; i < matches[m_Id].confirmation.length-1; i++){
-            if (matches[m_Id].confirmation[i] == 1){
-                confirm++;
+    function checkConfirmation() returns(bool){
+        for (uint j = 0 ; j < matches.length ; j++){
+            uint confirm = 0;
+            for (uint i = 0 ; i < matches[j].confirmation.length-1; i++){
+                if (matches[j].confirmation[i] == 1){
+                    confirm++;
+                }
+                congress.deleteMatchesId(matches[j].visitedOwners[i], matches[j].id);
             }
+
+            confirm = confirm*floatOffset;
+            uint totalCount = matches[j].visitedCount;
+
+            if (confirm/totalCount <= matchMakingThreshold){
+                matches[j].result = "false";
+                return false;
+            }else{
+                matches[j].result = "true";
+                transferOwnership(j);
+                return true;
+            }
+
         }
 
-        confirm = confirm*floatOffset;
-        uint totalCount = matches[m_Id].visitedCount;
-
-        congress.deleteMatchesId(s_Id, matches[m_Id].id);
-        if (confirm/totalCount <= matchMakingThreshold){
-            matches[m_Id].result = "false";
-            return false;
-        }else{
-            matches[m_Id].result = "true";
-            transferOwnership(m_Id);
-            return true;
-        }
     }
 
     function transferOwnership(uint m_Id){
