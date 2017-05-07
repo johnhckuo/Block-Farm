@@ -279,6 +279,10 @@ Template.shop.events({
     'click #btn_property_tradeable':function(){
         set_property_table();
     },
+    'change input[type="range"]':function(e){
+      var eTarget=$(e.target);
+      eTarget.css({'background-image':'-webkit-linear-gradient(left ,#82cbd1 0%,#82cbd1 '+eTarget.val()+'%,#C7FFEF '+eTarget.val()+'%, #C7FFEF 100%)'});
+    }
 });
 
 
@@ -1658,7 +1662,9 @@ get_propertyType_setting = function(){
 }
 
 set_property_table = function(){
+    loading(1);
     get_user_property_setting();
+    loading(0);
     var table, tr, td, heart_path, heart_status;
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
@@ -1780,6 +1786,7 @@ set_propertyType_table = function () {
         tr.append($('<td></td>').text(display_field[i].name));
         //tr.append($('<td></td>').text(display_field[i].propertyCount));
         td = $('<td></td>');
+        td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
         td.append($('<input>', {
             type: 'range',
             value: display_field[i].rating,
@@ -1791,7 +1798,6 @@ set_propertyType_table = function () {
             $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
         })
         );
-        td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
         tr.append(td);
         tr.append($('<td></td>').text(display_field[i].averageRating));
         table.append(tr);
@@ -1800,21 +1806,21 @@ set_propertyType_table = function () {
     //control bar
     tr = $('<tr></tr>');
     td = $('<td></td>').attr('colspan', 3);
-    td.append($('<input>').attr( {
-        type: 'button',
+    td.append($('<button></button>').attr( {
+        // type: 'button',
         id: 'btn_property_save',
         value: 'SAVE',
-        class:'hvr-rectangle-out'
-    }).on('click', function () {
+        class:'hvr-rectangle-out',
+    }).append('SAVE').on('click', function () {
         save_rating_setting();
         $('.property_shop').css('display', 'none');
     }));
-    td.append($('<input>').attr( {
-        type: 'button',
+    td.append($('<button></button>').attr( {
+        // type: 'button',
         id: 'btn_property_cancel',
         value: 'CANCEL',
         class:'hvr-rectangle-out'
-    }).on('click', function () {
+    }).append('CANCEL').on('click', function () {
         alert('cancel');
     }));
     tr.append(td);
@@ -1905,16 +1911,21 @@ get_mission_list = function(){
     }
 }
 mission_rending = function(){
-
+    loading(1);
     get_mission_list();
+    loading(0);
     $('.mission_template').html('');
     $('.mission_template').append($('<button></button>',{
         type:'button',
         id:'btn_mission_close',
-        html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
+        class:'btnClose'
+        // html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
     })
-    .on('click', function(){ $('.mission_template').css('display','none'); })
-    );
+    .on('click', function(){ $('.mission_template').css('display','none'); }).text('X')
+  ).append($('<div></div>',{
+    class:'mission_header'
+  }).text('Mission'));
+
 
     var div, table, tr, td;
     div=$('<div></div>',{class:'mission_content'})
