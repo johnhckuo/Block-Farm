@@ -281,7 +281,7 @@ Template.shop.events({
     },
 
     'click #btn_property_tradeable':function(){
-        set_property_table();
+        //set_property_table();
     },
     'change input[type="range"]':function(e){
       var eTarget=$(e.target);
@@ -744,49 +744,62 @@ Template.gamingArea.events({
     }
 })
 
+function PanelControl(panelIndex){
+    var temp = panelCounter; // default:2
+    $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
+    $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
+    $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
+    // setTimeout(function(){
+    //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
+    // },1000);
+    panelCounter = panelIndex;
+        $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
+    $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
+    $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
+
+    if(panelCounter==5){
+        set_property_table();
+    }
+    if (plantMode){
+        $(".cropObject").css("display", "none");
+        $(".farmObject").css("display", "none");
+        // $(currentClickedCrop).css("background", "#337ab7");
+        // $(currentClickedCrop).css("border-color", "#337ab7");
+        // $(currentClickedCrop).text("Specify");
+        $(currentClickedCrop).html("<img src='/img/game/rake.svg'>")
+        $(currentClickedCrop).data('pressed', false);
+        plantMode = false;
+    }else if (placeMode){
+        $(".cropObject").css("display", "none");
+        $(".farmObject").css("display", "none");
+        // $(currentClickedLand).css("background", "#337ab7");
+        // $(currentClickedLand).css("border-color", "#337ab7");
+        $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
+        // $(currentClickedLand).text("Specify");
+        $(currentClickedLand).data('pressed', false);
+        placeMode = false;
+
+    }
+}
+
 Template.statusList.events({
-    'click .btnSelect': function (e) {
-
-        var temp = panelCounter; // default:2
-        $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
-        $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
-        $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
-        // setTimeout(function(){
-        //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
-        // },1000);
-        if(e.target.className==""){
-          panelCounter=$(e.target).parent().prop('className').split("crop")[1];
-          $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
-        }else{
-          panelCounter = e.target.className.split("crop")[1];
-          $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
-        }
-        $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
-        $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
-
-        if(panelCounter==5){
-          set_property_table();
-        }
-        if (plantMode){
-          $(".cropObject").css("display", "none");
-          $(".farmObject").css("display", "none");
-          // $(currentClickedCrop).css("background", "#337ab7");
-          // $(currentClickedCrop).css("border-color", "#337ab7");
-          // $(currentClickedCrop).text("Specify");
-          $(currentClickedCrop).html("<img src='/img/game/rake.svg'>")
-          $(currentClickedCrop).data('pressed', false);
-          plantMode = false;
-        }else if (placeMode){
-          $(".cropObject").css("display", "none");
-          $(".farmObject").css("display", "none");
-          // $(currentClickedLand).css("background", "#337ab7");
-          // $(currentClickedLand).css("border-color", "#337ab7");
-          $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
-          // $(currentClickedLand).text("Specify");
-          $(currentClickedLand).data('pressed', false);
-          placeMode = false;
-
-        }
+    //'click .btnSelect': function (e) {
+    //    test(e);
+    //},
+    'click .crop2' :function(){
+        PanelControl(2);
+    },
+    'click .crop3' :function(){
+        PanelControl(3);
+    },
+    'click .crop4' :function(){
+        PanelControl(4);
+    },
+    'click .crop5' :function(){
+        PanelControl(5);
+    },
+    'click .crop2' :function(){
+        PanelControl(2);
     },
     'click .removeLand button': function (event){
           removeMode = !removeMode;
@@ -816,7 +829,7 @@ Template.statusList.events({
 
 Template.characterList.events({
     'click .characterSwitch': function (event) {
-
+        PanelControl(5);
         loading(1);
         //need to check boss' id
         if ($(event.target).html() == "Guard"){
