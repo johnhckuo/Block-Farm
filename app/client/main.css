@@ -614,15 +614,3 @@ input, textarea{
   height:100vh;
   width:100vw;
 }
-
-.systemInfo{
-  position:absolute;
-  right:5px;
-  bottom:5px;
-  width: 400px;
-  height:150px;
-  background: rgba(255, 255, 255, 0.6);
-  transition: opacity 1s;
-  opacity: 0;
-  border-radius: 5px;
-}

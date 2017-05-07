@@ -62,6 +62,10 @@ var removeMode = false;
 
 var floatOffset = 1000;
 
+var checkMissionInterval = null;
+var theifId = 0;
+var landInfo = [];
+
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -91,8 +95,6 @@ Template.gameIndex.created = function() {
         Router.go('/');
         return;
     }
-
-
     loading(1);
 
 
@@ -132,33 +134,35 @@ Template.gameIndex.created = function() {
 
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
+        $(".levelUp").hide();
 
         updateUserExp(0);
         updateSyndicateExp(0);
         updateStaminaBar(0);
 
         initCropLand(s_Id);
-
         showConfirmation(s_Id);
+
         Session.set('userName', currentUser.name);
         Session.set('userExp', currentUser.exp);
         Session.set('userSta', currentUser.sta);
         Session.set('userCharacter', currentUser.type);
         Session.set('userLevel', currentUser.level);
         Session.set('SyndicateLevel', currentUser.SyndicateLevel);
-        //farmObjectLoader();
 
-        setInterval(checkMission, 1000);
+        
         setInterval(cropSummaryUpdate, 1000);
-        //setInterval(updateUserStamina, 1000*60);
         setInterval(updateUserStamina, 500);
 
-        //initCropLand(otherUser, otherUserLandConfiguration);
+        $(document).on('input', '#farmResizer', function() {
+
+            console.log( $(this).val() );
+        });
         console.log('gameArea render complete');
 
         loading(0);
-        //console.log(fetchAllCropTypes());
-            //levelUp();
+
+
     }
 }
 
@@ -386,11 +390,22 @@ Template.gameIndex.events({
     },
     'click .thief': function(event){
         $(event.target).parent().css({opacity:0, transform:"translateY(50px)"});
+        updateSyndicateExp(2);
+        currentUser.SyndicateProgress -= 1;
+        CongressInstance.updateSyndicateProgress(s_Id, currentUser.SyndicateProgress, {from: web3.eth.accounts[currentAccount], gas:2000000});
         setTimeout(function(){
             $(event.target).parent().remove();
         },1000);
+        if(currentUser.SyndicateProgress <= 0){
+            clearInterval(checkMissionInterval);
+            var leftThieives = $('.thief').length;
+            for(i = 0; i < leftThieives; i++){
+                $('.thief:eq(' + i + ')').css({opacity:0, transform:"translateY(50px)"});
+                $('.thief:eq(' + i + ')').remove();
+            }
+            alert("Mission Completed!");
 
-
+        }
     },
     'click .croppedObject': function (event){
         // var left = $(event.target).position().left;
@@ -498,9 +513,10 @@ Template.gameIndex.events({
                     return;
                 }
                 else{
-                    var stolenFlag, stealCount, judgement;
+                    var stolenFlag, stealCount, judgement, stealResult;
                     judgement = Math.random();
                     if(judgement >= 0.5){
+                        stealResult = true;
                         stolenFlag = $(event.target).parent().attr("stolenFlag");
                         if ((cropList[id].ripe)&&(stolenFlag == "f")){
                             $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
@@ -546,10 +562,14 @@ Template.gameIndex.events({
                         //set_property_table();
                     }
                     else{
+                        stealResult = false;
                         alert("You are under arrest!");
                         updateStaminaBar(staminaList["stealFail"]);
                     }
+                    CongressInstance.updateStealRecord(s_Id, stealResult, {from:web3.eth.accounts[currentAccount], gas:2000000});
                 }
+            }
+            else if(gameMode == "Guard"){
             }
     },
 
@@ -798,13 +818,36 @@ Template.characterList.events({
     'click .characterSwitch': function (event) {
 
         loading(1);
-
+        //need to check boss' id
         if ($(event.target).html() == "Guard"){
             showThief = true;
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
             $(event.target).html("Home");
             gameMode = "Guard";
+            $('.SyndicateExp').css('visibility', 'visible');
+            $('.userExp').css('visibility', 'collapse');
+            $('.crop4').css('display','none');
+            $('.crop2').css('display','none');
+            $('.crop3').css('display','none');
+
+            landInfo = [];
+            for (var i = 0 ; i < userLandConfiguration.length ; i++){
+                var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+                var left = $('.cropLand'+i)[0].getBoundingClientRect().left;               
+                var info = {top:top,left:left, showed:0};
+                landInfo.push(info);
+            }
+            var progress = thiefNumber(currentUser.SyndicateLevel);
+            currentUser.SyndicateProgress = progress;
+            CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
+
+            if(currentUser.SyndicateProgress > 0){
+                checkMissionInterval = setInterval(checkMission, 1000);
+            }
+            else{
+                clearInterval(checkMissionInterval);
+            }
         }else if ($(event.target).html() == "Thief"){
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
@@ -860,14 +903,20 @@ Template.characterList.events({
     },
     'click .test': function(event){
         GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
-        levelUp();
+        currentUser.level+=1;
+        levelUp("userLevel");
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
         MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:2000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+
     },
     'click .confirmMatches':function(event){
-        MainActivityInstance.checkConfirmation(0, s_Id, {from:web3.eth.accounts[0], gas:2000000});
+        MainActivityInstance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
 
     }
 
@@ -932,6 +981,8 @@ var eventListener = function(){
 var events = MainActivityInstance.matchSuccess({fromBlock: 0, toBlock: 'latest'});
 events.watch(function(error, result){
   console.log(result);
+  updateUserData(s_Id);
+  showConfirmation(s_Id);
 });
 
 // would get all past logs again.
@@ -983,10 +1034,12 @@ events.get(function(error, logs){
 var showConfirmation = function(s_Id){
     var length = currentUser.matches.length;
     if (length > 0){
-        $(".systemInfo").css("opacity", "1");
+        $(".systemInfo").css("transform", "translateX(0px)");
     }else{
-      return;
+        $(".systemInfo").css("transform", "translateX(600px)");
+        return;
     }
+    $(".matches").remove();
 
     for (var i = 0 ; i < length ; i++){
 
@@ -994,8 +1047,6 @@ var showConfirmation = function(s_Id){
         var owners = data[1];
         var properties = data[2];
         var tradeables = data[3];
-
-
         var index;
 
         for (var j = 0 ; j < owners.length ; j++){
@@ -1018,11 +1069,12 @@ var showConfirmation = function(s_Id){
         var fromAddr = $("<div>").text("from "+previousName);
         var receive = $("<div>").text("for " +web3.toUtf8(receiveProperty[0]) + "X" + tradeables[previousIndex].c[0]);
         var provide = $("<div>").text("You exchange " + web3.toUtf8(provideProperty[0]) + "X" + tradeables[index].c[0]);
-        row.append(provide).append(receive).append(fromAddr).append($('input').attr( {
+        var checkBtn = $('<input>').attr( {
             type: 'button',
             class: "btn btn-info matchesBtn matchBtn"+currentUser.matches[i].c[0],
             value: 'Confirm'
-        }));
+        });
+        row.append(provide).append(receive).append(fromAddr).append(checkBtn);
 
 
 
@@ -1164,6 +1216,7 @@ var getUserData = function(s_Id){
       SyndicateExp:syndicateData[0].c[0],
       SyndicateTotalExp:syndicateData[1].c[0],
       SyndicateLevel:syndicateData[2].c[0],
+      SyndicateProgress:syndicateData[3].c[0],
       matches : matches
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
@@ -1186,6 +1239,24 @@ var getUserData = function(s_Id){
     if (currentUser.sta >= staCap ){
         currentUser.sta = staCap;
     }
+    // end = end.split("\"")[1];
+
+}
+
+var updateUserData = function(s_Id){
+
+    var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var syndicateData = CongressInstance.getSyndicateData.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+    var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    currentUser.exp =  data[1].c[0];
+    currentUser.totalExp = data[2].c[0];
+    currentUser.landSize = data[4].c[0];
+    currentUser.level = data[5].c[0];
+    currentUser.SyndicateExp = syndicateData[0].c[0];
+    currentUser.SyndicateTotalExp = syndicateData[1].c[0];
+    currentUser.SyndicateLevel = syndicateData[2].c[0];
+    currentUser.matches = matches;
     // end = end.split("\"")[1];
 
 }
@@ -1340,7 +1411,7 @@ var initCropLand = function(id){
         //$('.land').append("<div></div>");
     }
 
-    var theifId = 0;
+
     for (var i = 0 ; i < userLandConfiguration.length ; i++){
 
         if (userLandConfiguration[i].land == -1){
@@ -1417,27 +1488,6 @@ var initCropLand = function(id){
         //$(".cropObject").html("<img src = '" + prefix+ cropTypeList[config[i].crop].img[0] + postfix +"' />");
         $( ".cropObject" ).clone().attr("class","croppedObject croppedObject"+index).attr("cropCount", cropList[index].count).attr("stolenFlag", stolenFlag).appendTo(".surfaceObject").css(styles);
 
-        if (showThief){
-          var missionStyles = {
-              top: top-divHeight,
-              left: left-areaLeft+divWidth,
-              width:"150px",
-              height:"150px",
-              position:"absolute",
-              opacity:1,
-              "z-index":5,
-              display:'inline'
-          };
-
-
-          var prob = Math.random()*3;
-          if (prob > 2){
-            $(".thiefObject").html("<img src = '/img/game/thief.gif' />");
-            $( ".thiefObject" ).clone().attr("class","thief thief"+theifId++).appendTo(".missionObject").css(missionStyles);
-          }
-        }else{
-            $(".missionObject").html("<div class='thiefObject'></div>");
-        }
 
     }
 }
@@ -1456,6 +1506,10 @@ var SyndicateLevelCap = function(n){
 
 var staminaCap = function(n){
     return 100+n*10;
+}
+
+var thiefNumber = function(n){
+    return n * 5;
 }
 
 var updateStaminaBar = function(consumedSta){
@@ -1493,8 +1547,8 @@ var updateUserExp = function(exp){
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
-    levelUp();
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
+    levelUp("userLevel");
     rerenderCropLand(s_Id);
     lvlCap = levelCap(currentUser.level);
   }else{
@@ -1503,7 +1557,7 @@ var updateUserExp = function(exp){
 
   var percent = (currentUser.exp/lvlCap)*100;
   $(".expProgressBar").css("width", percent + "%");
-  $(".expText").text(currentUser.exp+"/"+lvlCap);
+  $(".expText").text(percent+"%");
 
 }
 
@@ -1539,29 +1593,60 @@ var levelUp = function(_type){
     else{
         Session.set('Levelup', currentUser.SyndicateLevel);
     }
-    var opacity;
-    $(".levelUp").css("display", "flex");
-    $(".levelUp").css("opacity", 1);
 
-    setTimeout(function(){
-      $(".levelUp").css("opacity", 0);
-
-      setTimeout(function(){
-        $(".levelUp").css("display", "none");
-
-      }, 5000);
-
-    },5000);
+    $(".levelUp").fadeIn().delay(5000).fadeOut();
 
 
 }
 
 var checkMission = function(){
-
     if (showThief){
+        var maxCount = (thiefNumber(currentUser.SyndicateLevel) / 2);
+        if($('.thief').length > maxCount)
+        {
+            do{
+                var removeRand = Math.round(Math.random() * maxCount);
+            }while(removeRand >= $('.thief').length);
+            var removeObj = $('.thief:eq('+ removeRand +')');
+            var removeIndex = removeObj.attr('bindIndex');
+            landInfo[removeIndex].showed = 0;
+            removeObj.css({opacity:0, transform:"translateY(50px)"});
+            removeObj.remove();
+        }
+        else{
+            var show;
+            do{
+                var rand = Math.round(Math.random() * userLandConfiguration.length);
+                show = landInfo[rand].showed;
+            }while(show != 0);
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()/4;
+            var areaLeft = $(".gamingArea").position().left;
 
+            var missionStyles = {
+                top: landInfo[rand].top-divHeight,
+                left: landInfo[rand].left-areaLeft+divWidth,
+                width:"150px",
+                height:"150px",
+                position:"absolute",
+                opacity:1,
+                "z-index":5,
+                display:'inline'
+            };
 
+            var prob = Math.random()*3;
+            
+            if (prob > 2){
+                $(".thiefObject").html("<img src = '/img/game/thief.gif' />");
+                $( ".thiefObject" ).clone().attr("class","thief thief"+theifId++).appendTo(".missionObject").css(missionStyles).attr('bindIndex', rand);
+                landInfo[rand].showed = 1;
+            }
+        }
     }
+    else{
+        $(".missionObject").html("<div class='thiefObject'></div>");
+    }
+
 }
 
 var cropSummaryUpdate = function(){
@@ -1834,14 +1919,8 @@ save_tradable_setting = function(){
         var _id = index_finder( $('.shop_tradable_input')[i].id, 'tradable_input_');
         var _tradable = $('#tradable_input_' + _id).val();
         var _propertyCount = parseInt($('#shop_stock_' + _id).val(),10) - parseInt(_tradable,10);
-        usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000}).catch(function(err){
-          if (err)
-          console.log(err)
-        }).then(function(res){
-          console.log(res);
-        })
+        usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000});
     }
-    console.log("gg");
 }
 
 save_rating_setting = function () {

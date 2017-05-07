@@ -1,11 +1,21 @@
 <template name="gameIndex">
   <div class="gameContainer">
+    {{> loading}}
     {{> statusList}}
     {{> gamingArea}}
     {{> shop}}
     {{> mission}}
     {{> operationList}}
   </div>
+</template>
+
+<template name="loading">
+    <div class="loading">
+      <div class="loadingLogo">
+          <img src="/img/logo_bartering.png" alt="">
+      </div>
+      <img src="/img/game/loading.gif" alt="">
+    </div>
 </template>
 
 <template name="crop">
@@ -197,7 +207,9 @@
               <span class="musicSwitch">
                   <img src="/img/game/speaker_off.svg" alt="">
               </span>
-
+              <div class="resizer">
+                <input type="range" id= "farmResizer" name="" value="">
+              </div>
         </div>
     </div>
 </template>
@@ -223,9 +235,7 @@
             <h2>{{currentLevel}}</h2>
           </div>
         </div>
-        <div class="loading">
-          <img src="/img/game/loading.gif" alt="">
-        </div>
+
         <div class="canvas">
             {{> logo}}
             <div class= 'animationObject'>
@@ -256,7 +266,7 @@
 
             </div>
             <div class="systemInfo">
-
+                <h2>New Transaction !</h2>
             </div>
         </div>
 

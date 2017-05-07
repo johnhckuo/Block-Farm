@@ -23,6 +23,7 @@ contract usingProperty{
     function updateOwnershipStatus(uint, uint);
     function getPropertiesOwner(uint visitedProperty) constant returns(uint);
     function checkTradingStatus(uint p_Id) constant returns (bool);
+
 }
 
 contract MainActivity{

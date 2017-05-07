@@ -1,6 +1,6 @@
-# D3-Accelerator
+# Block Farm
 
-A bartering DApp for greater good of resources utilization.  
+Its time to farm ! :D
 
 ## Getting Started
 
