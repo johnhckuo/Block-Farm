@@ -34,7 +34,7 @@ contract Congress{
 
     struct Syndicate{
         uint id;
-        //int256 progress;
+        uint progress;
         uint exp;
         uint totalExp;
         uint level;
@@ -135,11 +135,12 @@ contract Congress{
         SyndicateData[_id].level = 1;
         SyndicateData[_id].success = 0;
         SyndicateData[_id].fail = 0;
+        SyndicateData[_id].progress = 0;
         SyndicateData[_id].character = _character;
     }
 
-    function getSyndicateData(uint u_Id) constant returns(uint, uint, uint){
-        return (SyndicateData[u_Id].exp, SyndicateData[u_Id].totalExp, SyndicateData[u_Id].level);
+    function getSyndicateData(uint u_Id) constant returns(uint, uint, uint, uint){
+        return (SyndicateData[u_Id].exp, SyndicateData[u_Id].totalExp, SyndicateData[u_Id].level,  SyndicateData[u_Id].progress);
     }
 
     function updateUserExp(uint u_Id, uint exp){
@@ -151,6 +152,17 @@ contract Congress{
         SyndicateData[u_Id].exp = exp;
         SyndicateData[u_Id].totalExp += exp;
         SyndicateData[u_Id].level = level;
+    }
+
+    function updateStealRecord(uint u_Id, bool result){
+        if(result)
+            SyndicateData[u_Id].success += 1;
+        else
+            SyndicateData[u_Id].fail += 1;
+    }
+
+    function updateSyndicateProgress(uint u_Id, uint Progress){
+        SyndicateData[u_Id].progress = Progress;
     }
 
     function updateUserStamina(uint u_Id, uint sta){
