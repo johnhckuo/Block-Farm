@@ -95,8 +95,6 @@ Template.gameIndex.created = function() {
         Router.go('/');
         return;
     }
-
-
     loading(1);
 
 
@@ -136,33 +134,35 @@ Template.gameIndex.created = function() {
 
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
+        $(".levelUp").hide();
 
         updateUserExp(0);
         updateSyndicateExp(0);
         updateStaminaBar(0);
 
         initCropLand(s_Id);
-
         showConfirmation(s_Id);
+
         Session.set('userName', currentUser.name);
         Session.set('userExp', currentUser.exp);
         Session.set('userSta', currentUser.sta);
         Session.set('userCharacter', currentUser.type);
         Session.set('userLevel', currentUser.level);
         Session.set('SyndicateLevel', currentUser.SyndicateLevel);
-        //farmObjectLoader();
 
         
         setInterval(cropSummaryUpdate, 1000);
-        //setInterval(updateUserStamina, 1000*60);
         setInterval(updateUserStamina, 500);
 
-        //initCropLand(otherUser, otherUserLandConfiguration);
+        $(document).on('input', '#farmResizer', function() {
+
+            console.log( $(this).val() );
+        });
         console.log('gameArea render complete');
 
         loading(0);
-        //console.log(fetchAllCropTypes());
-            //levelUp();
+
+
     }
 }
 
@@ -912,14 +912,20 @@ Template.characterList.events({
     },
     'click .test': function(event){
         GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
-        levelUp();
+        currentUser.level+=1;
+        levelUp("userLevel");
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
         MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:2000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+
     },
     'click .confirmMatches':function(event){
-        MainActivityInstance.checkConfirmation(0, s_Id, {from:web3.eth.accounts[0], gas:2000000});
+        MainActivityInstance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
 
     }
 
@@ -984,6 +990,8 @@ var eventListener = function(){
 var events = MainActivityInstance.matchSuccess({fromBlock: 0, toBlock: 'latest'});
 events.watch(function(error, result){
   console.log(result);
+  updateUserData(s_Id);
+  showConfirmation(s_Id);
 });
 
 // would get all past logs again.
@@ -1035,10 +1043,12 @@ events.get(function(error, logs){
 var showConfirmation = function(s_Id){
     var length = currentUser.matches.length;
     if (length > 0){
-        $(".systemInfo").css("opacity", "1");
+        $(".systemInfo").css("transform", "translateX(0px)");
     }else{
-      return;
+        $(".systemInfo").css("transform", "translateX(600px)");
+        return;
     }
+    $(".matches").remove();
 
     for (var i = 0 ; i < length ; i++){
 
@@ -1046,8 +1056,6 @@ var showConfirmation = function(s_Id){
         var owners = data[1];
         var properties = data[2];
         var tradeables = data[3];
-
-
         var index;
 
         for (var j = 0 ; j < owners.length ; j++){
@@ -1070,11 +1078,12 @@ var showConfirmation = function(s_Id){
         var fromAddr = $("<div>").text("from "+previousName);
         var receive = $("<div>").text("for " +web3.toUtf8(receiveProperty[0]) + "X" + tradeables[previousIndex].c[0]);
         var provide = $("<div>").text("You exchange " + web3.toUtf8(provideProperty[0]) + "X" + tradeables[index].c[0]);
-        row.append(provide).append(receive).append(fromAddr).append($('input').attr( {
+        var checkBtn = $('<input>').attr( {
             type: 'button',
             class: "btn btn-info matchesBtn matchBtn"+currentUser.matches[i].c[0],
             value: 'Confirm'
-        }));
+        });
+        row.append(provide).append(receive).append(fromAddr).append(checkBtn);
 
 
 
@@ -1239,6 +1248,24 @@ var getUserData = function(s_Id){
     if (currentUser.sta >= staCap ){
         currentUser.sta = staCap;
     }
+    // end = end.split("\"")[1];
+
+}
+
+var updateUserData = function(s_Id){
+
+    var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var syndicateData = CongressInstance.getSyndicateData.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+    var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    currentUser.exp =  data[1].c[0];
+    currentUser.totalExp = data[2].c[0];
+    currentUser.landSize = data[4].c[0];
+    currentUser.level = data[5].c[0];
+    currentUser.SyndicateExp = syndicateData[0].c[0];
+    currentUser.SyndicateTotalExp = syndicateData[1].c[0];
+    currentUser.SyndicateLevel = syndicateData[2].c[0];
+    currentUser.matches = matches;
     // end = end.split("\"")[1];
 
 }
@@ -1529,8 +1556,8 @@ var updateUserExp = function(exp){
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount]});
-    levelUp();
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
+    levelUp("userLevel");
     rerenderCropLand(s_Id);
     lvlCap = levelCap(currentUser.level);
   }else{
@@ -1539,7 +1566,7 @@ var updateUserExp = function(exp){
 
   var percent = (currentUser.exp/lvlCap)*100;
   $(".expProgressBar").css("width", percent + "%");
-  $(".expText").text(currentUser.exp+"/"+lvlCap);
+  $(".expText").text(percent+"%");
 
 }
 
@@ -1575,19 +1602,8 @@ var levelUp = function(_type){
     else{
         Session.set('Levelup', currentUser.SyndicateLevel);
     }
-    var opacity;
-    $(".levelUp").css("display", "flex");
-    $(".levelUp").css("opacity", 1);
 
-    setTimeout(function(){
-      $(".levelUp").css("opacity", 0);
-
-      setTimeout(function(){
-        $(".levelUp").css("display", "none");
-
-      }, 5000);
-
-    },5000);
+    $(".levelUp").fadeIn().delay(5000).fadeOut();
 
 
 }

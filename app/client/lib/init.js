@@ -1,58 +1,179 @@
 import { Session } from 'meteor/session';
 
 
-currentAccount = 2;
+currentAccount = 1;
 var cropsPerLvl =3;
 
 var cropTypeList = [
   {
-      id:0,
-      name: "Carrot",
-      img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"],
-      count:4,
-      time:"0.0.0.3"
+        id:0,
+        name: "Carrot",
+        img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"],
+        count:4,
+        time:"0.0.0.3"
 
-  },
-  {
-      id:1,
-      name: "Radish",
-      img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
-      count:4,
-      time:"0.0.0.5"
+    },
+    {
+        id:1,
+        name: "Radish",
+        img: ["radish_seed", "radish_grow", "radish_harvest", "radish"],
+        count:4,
+        time:"0.0.0.5"
 
-  },
-  {
-      id:2,
-      name: "Lettuce",
-      img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce"],
-      count:4,
-      time:"0.0.0.3"
+    },
+    {
+        id:2,
+        name: "Lettuce",
+        img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce"],
+        count:4,
+        time:"0.0.0.3"
 
-  },
-  {
-      id:3,
-      name: "Cauliflower",
-      img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
-      count:4,
-      time:"0.0.0.10"
+    },
+    {
+        id:3,
+        name: "Cauliflower",
+        img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower"],
+        count:4,
+        time:"0.0.0.10"
 
-  },
-  {
-      id:4,
-      name: "Eggplant",
-      img: ["eggplant_seed", "eggplant_grow", "eggplant_harvest", "eggplant"],
-      count:4,
-      time:"0.0.0.10"
+    },
+    {
+        id:4,
+        name: "Eggplant",
+        img: ["eggplant_seed", "eggplant_grow", "eggplant_harvest", "eggplant"],
+        count:4,
+        time:"0.0.0.10"
 
-  },
-  {
-      id:5,
-      name: "Blueberry",
-      img: ["blueberry_seed", "blueberry_grow", "blueberry_harvest", "blueberry"],
-      count:4,
-      time:"0.0.0.10"
+    },
+    {
+        id:5,
+        name: "Blueberry",
+        img: ["blueberry_seed", "blueberry_grow", "blueberry_harvest", "blueberry"],
+        count:4,
+        time:"0.0.0.10"
 
-  }
+    },
+    {
+        id:6,
+        name: "Chili",
+        img: ["chili_seed", "chili_grow", "chili_harvest", "chili"],
+        count:4,
+        time:"0.0.2.0"
+
+    },
+    {
+        id:7,
+        name: "Watermelon",
+        img: ["watermelon_seed", "watermelon_grow", "watermelon_harvest", "watermelon"],
+        count:4,
+        time:"0.0.2.0"
+
+    },
+    {
+        id:8,
+        name: "Strawberry",
+        img: ["strawberry_seed", "strawberry_grow", "strawberry_harvest", "strawberry"],
+        count:4,
+        time:"0.0.2.0"
+
+    },
+    {
+        id:9,
+        name: "Loofa",
+        img: ["loofa_seed", "loofa_grow", "loofa_harvest", "loofa"],
+        count:4,
+        time:"0.0.5.0"
+
+    },
+    {
+        id:10,
+        name: "Honeydew melon",
+        img: ["hamimelon_seed", "hamimelon_grow", "hamimelon_harvest", "hamimelon"],
+        count:4,
+        time:"0.0.5.0"
+
+    },
+    {
+        id:11,
+        name: "Green pepper",
+        img: ["greenPepper_seed", "greenPepper_grow", "greenPepper_harvest", "greenPepper"],
+        count:4,
+        time:"0.0.5.0"
+
+    },
+    {
+        id:12,
+        name: "Onion",
+        img: ["onion_seed", "onion_grow", "onion_harvest", "onion"],
+        count:4,
+        time:"0.0.10.0"
+
+    },
+    {
+        id:13,
+        name: "Scallion",
+        img: ["sansingOnion_seed", "sansingOnion_grow", "sansingOnion_harvest", "sansingOnion"],
+        count:4,
+        time:"0.0.10.0"
+
+    },
+    {
+        id:14,
+        name: "Grape",
+        img: ["grape_seed", "grape_grow", "grape_harvest", "grape"],
+        count:4,
+        time:"0.0.10.0"
+
+    },
+    {
+        id:15,
+        name: "Bamboo",
+        img: ["bamboo_seed", "bamboo_grow", "bamboo_harvest", "bamboo"],
+        count:4,
+        time:"0.0.15.0"
+
+    },
+    {
+        id:16,
+        name: "Apple",
+        img: ["apple_seed", "apple_grow", "apple_harvest", "apple"],
+        count:4,
+        time:"0.0.15.0"
+
+    },
+    {
+        id:17,
+        name: "Wheat",
+        img: ["wheat_seed", "wheat_grow", "wheat_harvest", "wheat"],
+        count:4,
+        time:"0.0.15.0"
+
+    },
+    {
+        id:18,
+        name: "Corn",
+        img: ["corn_seed", "corn_grow", "corn_harvest", "corn"],
+        count:4,
+        time:"0.0.30.0"
+
+    },
+    {
+        id:19,
+        name: "Pear",
+        img: ["pear_seed", "pear_grow", "pear_harvest", "pear"],
+        count:4,
+        time:"0.0.30.0"
+
+    },
+    {
+        id:20,
+        name: "Lemon",
+        img: ["lemon_seed", "lemon_grow", "lemon_harvest", "lemon"],
+        count:4,
+        time:"0.0.30.0"
+
+    }
+
 
 ];
 
