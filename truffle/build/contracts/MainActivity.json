@@ -373,12 +373,12 @@
         }
       },
       "links": {
-        "StringUtils": "0xcecbbe37778cb66fba31e1c755956b8e2bad9e5c"
+        "StringUtils": "0xa147528c86da340efe9addbffc2de838d9c5e03f"
       },
-      "address": "0x90b79250b7644523feaad8657640718fd8b52060",
-      "updated_at": 1494164901428
+      "address": "0xff5c8995cb1a1fe954d4d542507f93216ed81317",
+      "updated_at": 1494169174182
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1494164901428
+  "updated_at": 1494169174182
 }

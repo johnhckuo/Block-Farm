@@ -1360,12 +1360,12 @@
         }
       },
       "links": {
-        "StringUtils": "0xcecbbe37778cb66fba31e1c755956b8e2bad9e5c"
+        "StringUtils": "0xa147528c86da340efe9addbffc2de838d9c5e03f"
       },
-      "address": "0xa6ca942deeab1b95a427bb600c7a920e986d3ba7",
-      "updated_at": 1494164901417
+      "address": "0xebb306a0764ab0c2f6c3d8d117526ba659fb97de",
+      "updated_at": 1494169174170
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1494164901417
+  "updated_at": 1494169174170
 }
