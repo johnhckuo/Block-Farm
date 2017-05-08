@@ -285,8 +285,12 @@ Template.shop.events({
     },
 
     'click #btn_property_tradeable':function(){
-        set_property_table();
+        //set_property_table();
     },
+    'change input[type="range"]':function(e){
+      var eTarget=$(e.target);
+      eTarget.css({'background-image':'-webkit-linear-gradient(left ,#82cbd1 0%,#82cbd1 '+eTarget.val()+'%,#C7FFEF '+eTarget.val()+'%, #C7FFEF 100%)'});
+    }
 });
 
 
@@ -744,49 +748,62 @@ Template.gamingArea.events({
     }
 })
 
+function PanelControl(panelIndex){
+    var temp = panelCounter; // default:2
+    $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
+    $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
+    $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
+    // setTimeout(function(){
+    //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
+    // },1000);
+    panelCounter = panelIndex;
+        $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
+    $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
+    $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
+
+    if(panelCounter==5){
+        set_property_table();
+    }
+    if (plantMode){
+        $(".cropObject").css("display", "none");
+        $(".farmObject").css("display", "none");
+        // $(currentClickedCrop).css("background", "#337ab7");
+        // $(currentClickedCrop).css("border-color", "#337ab7");
+        // $(currentClickedCrop).text("Specify");
+        $(currentClickedCrop).html("<img src='/img/game/rake.svg'>")
+        $(currentClickedCrop).data('pressed', false);
+        plantMode = false;
+    }else if (placeMode){
+        $(".cropObject").css("display", "none");
+        $(".farmObject").css("display", "none");
+        // $(currentClickedLand).css("background", "#337ab7");
+        // $(currentClickedLand).css("border-color", "#337ab7");
+        $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
+        // $(currentClickedLand).text("Specify");
+        $(currentClickedLand).data('pressed', false);
+        placeMode = false;
+
+    }
+}
+
 Template.statusList.events({
-    'click .btnSelect': function (e) {
-
-        var temp = panelCounter; // default:2
-        $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
-        $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
-        $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
-        // setTimeout(function(){
-        //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
-        // },1000);
-        if(e.target.className==""){
-          panelCounter=$(e.target).parent().prop('className').split("crop")[1];
-          $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
-        }else{
-          panelCounter = e.target.className.split("crop")[1];
-          $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
-        }
-        $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
-        $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
-
-        if(panelCounter==5){
-          set_property_table();
-        }
-        if (plantMode){
-          $(".cropObject").css("display", "none");
-          $(".farmObject").css("display", "none");
-          // $(currentClickedCrop).css("background", "#337ab7");
-          // $(currentClickedCrop).css("border-color", "#337ab7");
-          // $(currentClickedCrop).text("Specify");
-          $(currentClickedCrop).html("<img src='/img/game/rake.svg'>")
-          $(currentClickedCrop).data('pressed', false);
-          plantMode = false;
-        }else if (placeMode){
-          $(".cropObject").css("display", "none");
-          $(".farmObject").css("display", "none");
-          // $(currentClickedLand).css("background", "#337ab7");
-          // $(currentClickedLand).css("border-color", "#337ab7");
-          $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
-          // $(currentClickedLand).text("Specify");
-          $(currentClickedLand).data('pressed', false);
-          placeMode = false;
-
-        }
+    //'click .btnSelect': function (e) {
+    //    test(e);
+    //},
+    'click .crop2' :function(){
+        PanelControl(2);
+    },
+    'click .crop3' :function(){
+        PanelControl(3);
+    },
+    'click .crop4' :function(){
+        PanelControl(4);
+    },
+    'click .crop5' :function(){
+        PanelControl(5);
+    },
+    'click .crop2' :function(){
+        PanelControl(2);
     },
     'click .removeLand button': function (event){
           removeMode = !removeMode;
@@ -816,7 +833,7 @@ Template.statusList.events({
 
 Template.characterList.events({
     'click .characterSwitch': function (event) {
-
+        PanelControl(5);
         loading(1);
         //need to check boss' id
         if ($(event.target).html() == "Guard"){
@@ -908,10 +925,11 @@ Template.characterList.events({
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
-        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:2000000});
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:3500000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
-
+        // var result = usingPropertyInstance.getProperty_Shop.call(21 ,{from:web3.eth.accounts[0]});
+        // console.log(result);
     },
     'click .confirmMatches':function(event){
         MainActivityInstance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
@@ -987,6 +1005,17 @@ events.watch(function(error, result){
 
 // would get all past logs again.
 events.get(function(error, logs){
+    console.log(logs);
+});
+
+
+var events2 = MainActivityInstance.returnOrigin({fromBlock: 0, toBlock: 'latest'});
+events2.watch(function(error, result){
+  console.log(result);
+});
+
+// would get all past logs again.
+events2.get(function(error, logs){
     console.log(logs);
 });
 
@@ -1748,7 +1777,9 @@ get_propertyType_setting = function(){
 }
 
 set_property_table = function(){
+    loading(1);
     get_user_property_setting();
+    loading(0);
     var table, tr, td, heart_path, heart_status;
     heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
 
@@ -1870,6 +1901,7 @@ set_propertyType_table = function () {
         tr.append($('<td></td>').text(display_field[i].name));
         //tr.append($('<td></td>').text(display_field[i].propertyCount));
         td = $('<td></td>');
+        td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
         td.append($('<input>', {
             type: 'range',
             value: display_field[i].rating,
@@ -1881,7 +1913,6 @@ set_propertyType_table = function () {
             $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
         })
         );
-        td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
         tr.append(td);
         tr.append($('<td></td>').text(display_field[i].averageRating));
         table.append(tr);
@@ -1890,21 +1921,21 @@ set_propertyType_table = function () {
     //control bar
     tr = $('<tr></tr>');
     td = $('<td></td>').attr('colspan', 3);
-    td.append($('<input>').attr( {
-        type: 'button',
+    td.append($('<button></button>').attr( {
+        // type: 'button',
         id: 'btn_property_save',
         value: 'SAVE',
-        class:'hvr-rectangle-out'
-    }).on('click', function () {
+        class:'hvr-rectangle-out',
+    }).append('SAVE').on('click', function () {
         save_rating_setting();
         $('.property_shop').css('display', 'none');
     }));
-    td.append($('<input>').attr( {
-        type: 'button',
+    td.append($('<button></button>').attr( {
+        // type: 'button',
         id: 'btn_property_cancel',
         value: 'CANCEL',
         class:'hvr-rectangle-out'
-    }).on('click', function () {
+    }).append('CANCEL').on('click', function () {
         alert('cancel');
     }));
     tr.append(td);
@@ -1989,16 +2020,21 @@ get_mission_list = function(){
     }
 }
 mission_rending = function(){
-
+    loading(1);
     get_mission_list();
+    loading(0);
     $('.mission_template').html('');
     $('.mission_template').append($('<button></button>',{
         type:'button',
         id:'btn_mission_close',
-        html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
+        class:'btnClose'
+        // html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
     })
-    .on('click', function(){ $('.mission_template').css('display','none'); })
-    );
+    .on('click', function(){ $('.mission_template').css('display','none'); }).text('X')
+  ).append($('<div></div>',{
+    class:'mission_header'
+  }).text('Mission'));
+
 
     var div, table, tr, td;
     div=$('<div></div>',{class:'mission_content'})

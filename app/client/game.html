@@ -145,7 +145,7 @@
     <button type="button" class="btnSelect crop4" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/harvest.svg" alt=""></button>
     <button type="button" class="btnSelect crop2" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
     <button type="button" class="btnSelect crop3" name="button"><img src="/img/game/sprout.svg" alt=""></button>
-    <button type="button" class="btnSelect btn_property_tradeable crop5" value="Tradable" name="button"><img src="/img/game/barn.svg" alt=""></button>
+    <button type="button" class="btnSelect crop5" name="button"><img src="/img/game/barn.svg" alt=""></button>
   </div>
 
 </template>
@@ -264,19 +264,19 @@
             <div class = "land">
 
             </div>
-            <div class="systemInfo">
-                <h2>New Transaction !</h2>
-            </div>
+
         </div>
     {{> logo}}
-
+    <div class="systemInfo">
+        <h2>New Transaction !</h2>
+    </div>
     </div>
 </template>
 
 
 <template name="shop">
     <div class="property_shop" >
-        <button type="button" id="btn_shop_close" value="close"><img src="/img/game/cancel.svg" alt=""></button>
+        <button type="button" id="btn_shop_close" class="btnClose" value="close">X</button>
         <div class="shop_header">
             <input type="button" id="btn_show_property" value="Ratings" />
             <!-- <input type="button" id="btn_property_tradeable" value="Tradable" /> -->
@@ -301,9 +301,9 @@
       <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
     </div>
     <div class="rightMenuIcon" >
-      <button type="button" class="btn btnSelect btnMission MissionOpen" name="button"><img src="/img/game/envelope.svg" alt=""></button>
-      <button type="button" class="btn btnSelect btnShop shopOpen" name="button"><img src="/img/game/grocery.svg" alt=""></button>
-      <button type="button" class="btn btnSelect btnRank" name="button"><img src="/img/game/quality.svg" alt=""></button>
+      <button type="button" class="btn btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt=""></button>
+      <button type="button" class="btn btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt=""></button>
+      <button type="button" class="btn btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt=""></button>
     </div>
   </div>
 </template>

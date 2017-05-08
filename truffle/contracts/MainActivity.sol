@@ -116,6 +116,7 @@ contract MainActivity{
             if (access == 0 || isTrading){
                 continue;
             }
+
             address owner = property.getPartialProperty(i);
             uint averageRating = property.getPropertyTypeAverageRating(i, congress.stakeholderId(owner));
             uint self_Importance = property.getPropertyTypeRating_Matchmaking(i, congress.stakeholderId(owner));
@@ -128,7 +129,6 @@ contract MainActivity{
         (priorityList, sortedList) = sort(priorityList, visitList);
         actualVisitIndex = new uint[](length);
         origin = sortedList[0];
-        returnOrigin(origin);
 
         visitedCount = 0;
         visitedProperty.length++;
@@ -340,7 +340,7 @@ contract MainActivity{
             }
         }
         matches[m_Id].confirmation[s_Index] = confirmation;
-        matches[m_Id].confirmed[s_Id] = true;
+        matches[m_Id].confirmed[s_Index] = true;
     }
 /*
     function __callback(bytes32 myid, string result) {
