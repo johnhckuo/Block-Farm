@@ -111,7 +111,7 @@ body{
 }
 
 h1{
-  font-size: 65px;
+  font-size: 60px;
   color: #404040;
   font-weight: 500;
 }
@@ -128,18 +128,34 @@ h3{
 .titleContainer{
   position: absolute;
   z-index: 3;
-  margin-top:200px;
-  margin-left: 200px;
+  margin-top:150px;
+  margin-left: 80px;
+  background: rgba(0,0,0,0);
+  border-radius: 10px;
+  color:white;
+  padding:30px;
 
 }
 .titleContainer span{
   position: relative;
   background: #000;
-  color:#fff;
   padding:10px;
   top: 20px;
   margin-right: 10px;
 
+}
+
+.socialIcons{
+  position:relative;
+  float:left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+
+}
+.socialIcons *{
+    margin-right: 10px;
 }
 
 #arrow-down {

@@ -91,7 +91,7 @@ Template.gameIndex.created = function() {
     console.log(s_Id);
     s_Id = s_Id.c[0];
     if (s_Id == 0){
-        alert("Please Register First");
+        sweetAlert("Oops...", "Please Register First", "error");
         Router.go('/');
         return;
     }
@@ -303,13 +303,13 @@ Template.gameIndex.events({
 
 
             if (userLandConfiguration[_landId].crop != -1){
-                alert("Don't plant twice !");
+                sweetAlert("Oops...", "Don't plant twice !", "error");
                 return;
             }else if (userLandConfiguration[_landId].land == -1){
-                alert("You need a land first !");
+                sweetAlert("Oops...", "You need a land first !", "error");
                 return;
             }else if (currentUser.sta < staminaList["crop"]){
-                alert("not enough stamina");
+                sweetAlert("Oops...", "Not enough stamina", "error");
                 return;
             }
 
@@ -356,7 +356,7 @@ Template.gameIndex.events({
             console.log(cropList);
 
         }else{
-            alert("Specify Crop first");
+            sweetAlert("Oops...", "Please specify Crop first", "error");
             return;
         }
 
@@ -368,7 +368,7 @@ Template.gameIndex.events({
             var _landId = currentCropLand.split("cropLand")[1];
 
             if (userLandConfiguration[_landId].land != -1){
-                alert("Don't plant twice !");
+                sweetAlert("Oops...", "Don't plow twice !", "error");
                 return;
             }
             landTypeList[currentLandId].count++;
@@ -388,7 +388,7 @@ Template.gameIndex.events({
             console.log(userLandConfiguration);
             console.log(cropList);
         }else{
-            alert("Specify Land first");
+            sweetAlert("Oops...", "Specify Land first", "error");
             return;
         }
     },
@@ -407,7 +407,7 @@ Template.gameIndex.events({
                 $('.thief:eq(' + i + ')').css({opacity:0, transform:"translateY(50px)"});
                 $('.thief:eq(' + i + ')').remove();
             }
-            alert("Mission Completed!");
+            sweetAlert("Congratulations!", "Mission Completed!", "success");
 
         }
     },
@@ -445,7 +445,7 @@ Template.gameIndex.events({
                     updateUserExp(exp);
                     $(".scoreObject").html("+" + exp +"XP");
                 }else{
-                    alert("Patience is a virtue <3");
+                    sweetAlert("Oops...", "Patience is a virtue <3", "error");
                     return;
                 }
 
@@ -513,7 +513,7 @@ Template.gameIndex.events({
             }
             else if(gameMode == "Thief"){
                 if(currentUser.sta < staminaList["steal"]){
-                    alert("not enough stamina");
+                    sweetAlert("Oops...", "Not enough stamina", "error");
                     return;
                 }
                 else{
@@ -529,7 +529,7 @@ Template.gameIndex.events({
                             updateSyndicateExp(5);
                         }
                         else{
-                            alert("Don't be so greedy");
+                            sweetAlert("Oops...", "Don't be so greedy", "error");
                             return;
                         }
                         var landTop = $(".land").position().top;
@@ -567,7 +567,7 @@ Template.gameIndex.events({
                     }
                     else{
                         stealResult = false;
-                        alert("You are under arrest!");
+                        sweetAlert("Oops...", "You are under arrest!", "warning");
                         updateStaminaBar(staminaList["stealFail"]);
                     }
                     CongressInstance.updateStealRecord(s_Id, stealResult, {from:web3.eth.accounts[currentAccount], gas:2000000});
@@ -583,7 +583,7 @@ Template.gameIndex.events({
             var _landId = parentClass.split("cropLand")[1];
 
             if (userLandConfiguration[_landId].land == -1){
-                alert("Its already empty !");
+                sweetAlert("Oops...", "Its already empty !", "error");
                 return;
             }
 
@@ -827,7 +827,7 @@ Template.statusList.events({
       save_tradable_setting();
     },
     'click #btn_tradeable_cancel':function(){
-      alert('cancel');
+      sweetAlert("Warning", 'cancel', "warning");
     }
 })
 
@@ -1493,6 +1493,7 @@ var initCropLand = function(id){
         for (var j = 0 ; j < cropTypeList.length ; j++){
             if (cropTypeList[j].id == cropList[index].type){
                 typeIndex = j;
+                break;
             }
         }
 
@@ -1510,7 +1511,6 @@ var initCropLand = function(id){
             $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
             stolenFlag = "t";
         }
-
         //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
         //$(".currentCrop"+index).html(diffData);
 
@@ -1867,7 +1867,7 @@ set_property_table = function(){
     //     id: 'btn_property_cancel',
     //     value: 'CANCEL'
     // }).on('click', function () {
-    //     alert('cancel');
+    //     sweetAlert('cancel');
     // }));
     // tr.append(td);
     table.append(tr);
@@ -1936,7 +1936,7 @@ set_propertyType_table = function () {
         value: 'CANCEL',
         class:'hvr-rectangle-out'
     }).append('CANCEL').on('click', function () {
-        alert('cancel');
+        sweetAlert("Warning!", 'cancel', "warning");
     }));
     tr.append(td);
     table.append(tr);

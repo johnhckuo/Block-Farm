@@ -1,7 +1,7 @@
 import { Session } from 'meteor/session';
 
 
-currentAccount = 1;
+currentAccount = 4;
 var cropsPerLvl =3;
 
 var cropTypeList = [
@@ -328,6 +328,12 @@ function initGameConfig(){
 
 
 }
+
+Meteor.startup(function(){
+    $.getScript('scripts/buttons.js');
+
+});
+
 
 Template.index.created = function() {
     init();
