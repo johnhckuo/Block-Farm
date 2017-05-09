@@ -202,7 +202,7 @@
 
 .land{
   position: relative;
-  top:30%;
+  top:25%;
   float: none;
   margin-left: auto;
   margin-right: auto;
@@ -327,8 +327,8 @@
 
 .logo{
   position: absolute;
-  width: 15vw;
-  height: 5vh;
+  width: 137px;
+  height: 78px;
   z-index: 20000;
   /*background: rgba(0,0,0,0.5);*/
   bottom:10px;
@@ -913,24 +913,30 @@ td img{
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
-  background: rgba(255,255,255,0.5);
+  z-index: 1000000;
+  background: rgba(255,255,255,0.8);
   transition: opacity 1s;
 }
 
 .loadingLogo{
-  width: 50vw;
-  height: 50vh;
+  width: 60vh;
+  height: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 10vh;
+  top: 20vh;
+}
+
+.loading img{
+  top: 5vh;
+  position: relative;
 }
 
 .loadingLogo img {
   width:100%;
 }
+
 
 .levelUp{
   position: absolute;
@@ -1170,7 +1176,7 @@ input[type="range"]::-webkit-slider-thumb:active{
 }
 .hvr-glow:hover, .hvr-glow:focus, .hvr-glow:active {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-
+}
 
 .systemInfo{
   position:absolute;

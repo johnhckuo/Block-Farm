@@ -12,7 +12,7 @@
 <template name="loading">
     <div class="loading">
       <div class="loadingLogo">
-          <img src="/img/logo_bartering.png" alt="">
+          <img src="/img/BlockFarm.png" alt="">
       </div>
       <img src="/img/game/loading.gif" alt="">
     </div>
@@ -152,7 +152,7 @@
 
 <template name="logo">
     <div class="logo">
-        <img src="/img/logo_bartering.png" alt="">
+        <img src="/img/BlockFarm.png" alt="">
     </div>
 </template>
 
@@ -237,7 +237,6 @@
         </div>
 
         <div class="canvas">
-            {{> logo}}
             <div class= 'animationObject'>
               <div class="animationImg"></div>
               <div class="scoreObject"></div>
@@ -265,11 +264,12 @@
             <div class = "land">
 
             </div>
-            <div class="systemInfo">
-                <h2>New Transaction !</h2>
-            </div>
-        </div>
 
+        </div>
+    {{> logo}}
+    <div class="systemInfo">
+        <h2>New Transaction !</h2>
+    </div>
     </div>
 </template>
 

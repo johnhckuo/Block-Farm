@@ -174,6 +174,8 @@ contract usingProperty{
         prop.extraData= _extraData;
         prop.propertyType = _type;
         prop.tradeable = _tradeable;
+        prop.isTrading = false;
+
 
         //propertyAdded("Success");
     }

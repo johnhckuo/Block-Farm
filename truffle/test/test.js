@@ -36,35 +36,47 @@ contract('Congress', function (accounts) {
 
     it("add propertyType", function () {
         return usingProperty.deployed().then(function (instance) {
-            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+            return instance.addPropertyType('1', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
         });
     });
     it("add propertyType", function () {
         return usingProperty.deployed().then(function (instance) {
-            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
-        });
-    });
-
-    it("add propertyType", function () {
-        return usingProperty.deployed().then(function (instance) {
-            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
+            return instance.addPropertyType('2', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
         });
     });
 
     it("add propertyType", function () {
         return usingProperty.deployed().then(function (instance) {
-            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
-        });
-    });
-    it("add propertyType", function () {
-        return usingProperty.deployed().then(function (instance) {
-            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+            return instance.addPropertyType('3', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
         });
     });
 
     it("add propertyType", function () {
         return usingProperty.deployed().then(function (instance) {
-            return instance.addPropertyType('Cauliflower', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
+            return instance.addPropertyType('4', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+        });
+    });
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('5', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from:accounts[0], gas: 2000000 });
+        });
+    });
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('6', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
+        });
+    });
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('7', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
+        });
+    });
+
+    it("add propertyType", function () {
+        return usingProperty.deployed().then(function (instance) {
+            return instance.addPropertyType('8', ["s1", "s2", "s3", "s4"], '0.0.0.10', 4, { from: accounts[0], gas: 2000000 });
         });
     });
 
@@ -298,7 +310,7 @@ contract('Congress', function (accounts) {
         var instance;
         return usingProperty.deployed().then(function (property) {
             instance = property;
-            return instance.updatePropertyCount(6, 1, 1, { from: accounts[2] });
+            return instance.updatePropertyCount(8, 1, 1, { from: accounts[2] });
 
         }).then(function(txs){
 
@@ -310,7 +322,7 @@ contract('Congress', function (accounts) {
         var instance;
         return usingProperty.deployed().then(function (property) {
             instance = property;
-            return instance.updatePropertyCount(13, 1, 1, { from: accounts[3] });
+            return instance.updatePropertyCount(17, 1, 1, { from: accounts[3] });
 
         }).then(function(txs){
 
@@ -321,7 +333,7 @@ contract('Congress', function (accounts) {
         var instance;
         return usingProperty.deployed().then(function (property) {
             instance = property;
-            return instance.updatePropertyCount(14, 1, 1, { from: accounts[3] });
+            return instance.updatePropertyCount(18, 1, 1, { from: accounts[3] });
 
         }).then(function(txs){
 
@@ -332,7 +344,7 @@ contract('Congress', function (accounts) {
         var instance;
         return usingProperty.deployed().then(function (property) {
             instance = property;
-            return instance.updatePropertyCount(21, 1, 1, { from: accounts[4] });
+            return instance.updatePropertyCount(27, 1, 1, { from: accounts[4] });
 
         }).then(function(txs){
 
@@ -343,7 +355,7 @@ contract('Congress', function (accounts) {
         var instance;
         return usingProperty.deployed().then(function (property) {
             instance = property;
-            return instance.updatePropertyCount(22, 1, 1, { from: accounts[4] });
+            return instance.updatePropertyCount(28, 1, 1, { from: accounts[4] });
 
         }).then(function(txs){
 

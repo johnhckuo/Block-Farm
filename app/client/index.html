@@ -22,6 +22,15 @@
   </div>
 </template>
 
+<template name="socialIcons">
+  <div class="socialIcons">
+      <a class="github-button" href="https://github.com/johnhckuo/Block-Farm" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star johnhckuo/Block-Farm on GitHub">Star</a>
+      <a class="github-button" href="https://github.com/johnhckuo/Block-Farm/fork" data-icon="octicon-repo-forked" data-size="large" data-show-count="true" aria-label="Fork johnhckuo/Block-Farm on GitHub">Fork</a>
+      <a href="https://gitter.im/Block-Farm/Support"><img src="https://badges.gitter.im/gitterHQ/gitter.png" alt="gitter chat"></a>
+  </div>
+
+</template>
+
 <!--
 ***********************
 *        Pages        *
@@ -35,7 +44,7 @@
       <div id="title" class="section" >
           <div class="titleContainer">
             <h1>"A Blockchain-based <br/>Bartering System"</h1>
-
+            {{> socialIcons}}
           </div>
           <div class="titleImage">
               <img src="/img/coverpic_bartering.png" alt="">

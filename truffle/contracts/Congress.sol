@@ -9,7 +9,6 @@ contract Congress{
     address owner;
 
     struct Stakeholder {
-
         uint256 id;
         address addr;
         uint since;
@@ -147,7 +146,7 @@ contract Congress{
         stakeholdersGameData[u_Id].exp = exp;
         stakeholdersGameData[u_Id].totalExp += exp;
     }
-    
+
     function updateSyndicateExp(uint u_Id, uint exp, uint level){
         SyndicateData[u_Id].exp = exp;
         SyndicateData[u_Id].totalExp += exp;
