@@ -19,6 +19,7 @@ body{
   width: 100%;
   height:100vh;
   /*align-items: center;*/
+  background: white;
 }
 .indexHeader{
   position: absolute;
@@ -172,50 +173,47 @@ h3{
     display: block;
 }
 
-#intro #aboutUs{
-  display: flex;
-  color: #404040;
-  background: #ffffff;
-}
-#aboutUs{
-  background: #E8E8E8;
-  height: 80vh;
-}
-#intro_head{
-  display:inline-flex;;
-  position: absolute;
-  flex-direction: column;
-  padding-top: 10vh;
-  align-content: space-around;
-  margin-left: 87px;
-}
-#intro_head h1{
-  padding-bottom: 5vh;
+#intro{
+  padding:50px;
 }
 
-.underLine{
-  position: relative;
-  width:140px;
-  height: 0.4vh;
-  background-color:#404040;
+#intro h2{
+  font-size: 40px;
+  float:left;
 }
-#videoBack{
-  position: relative;
-  width:60vw;
-  height: 50vh;
-  background-color:#E8E8E8;
-  margin-top: 10vh;
+
+#intro h3{
+  margin-top:50px;
+  clear: both;
+  font-size: 20px;
+  float:left;
 }
-#videoWord{
+
+.videoContainter{
   position: relative;
-  padding-left: 40vw;
-  margin-top: -6vh;
+  width :60%;
+  height: 60%;
+  bottom:-10px;
+  border:1px black solid;
+
+
 }
-#videoWord h1{
-  background-color: #E3F4FD;
+
+.videoContainter iframe{
+  width:100%;
+  height: 100%;
+  border-radius: 10px;
+
+}
+.videoTitle{
+  position: absolute;
+  bottom: 0px;
+  right:0px;
+  width:100px;
+  height:100px;
+}
+.videoTitle h1{
   text-align: center;
-  height: 80px;
-  line-height: 80px;
 }
 #intro_content{
   padding-left: 50vw;

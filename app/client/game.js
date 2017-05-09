@@ -441,7 +441,7 @@ Template.gameIndex.events({
                     //var exp = cropTypeList[cropList[id].type].exp;
 
                     var difference = elapsedTime(cropList[id].start, cropList[id].end);
-                    var exp = (difference/(1000*30))*20;
+                    var exp = Math.floor((difference/(1000*30))*20);
                     updateUserExp(exp);
                     $(".scoreObject").html("+" + exp +"XP");
                 }else{
@@ -919,9 +919,14 @@ Template.characterList.events({
 
     },
     'click .test': function(event){
-        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
         currentUser.level+=1;
+
+        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
+        _character.changed();
         levelUp("userLevel");
+        if (currentUser.level%5 ==0){
+            getUserData(s_Id);
+        }
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
@@ -1577,15 +1582,16 @@ var updateUserExp = function(exp){
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
     levelUp("userLevel");
+    getUserData(s_Id);
     rerenderCropLand(s_Id);
     lvlCap = levelCap(currentUser.level);
   }else{
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
   }
 
-  var percent = (currentUser.exp/lvlCap)*100;
+  var percent = Math.floor((currentUser.exp/lvlCap)*100);
   $(".expProgressBar").css("width", percent + "%");
   $(".expText").text(percent+"%");
 
