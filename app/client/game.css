@@ -83,6 +83,11 @@
   height: 50px;
   width: 50px;
 }
+.menuButton:hover{
+  height: 55px;
+  width: 55px;
+  transition: .2s;
+}
 .menuBtn button{
   border-style: none;
   background-color: rgba(255, 255, 255, 0);
@@ -126,6 +131,9 @@
   background-color: rgba(255,255,255,0.45);
   border-style: none;
 }
+.rightBtn:hover{
+  background-color: rgba(255,255,255,0.65);
+}
 .rightMenuIcon>.btnMission{
   border-top-left-radius: 15px;
   border-top-right-radius: 0px;
@@ -143,23 +151,25 @@
   width: 70%;
 }
 /* in rightMenuIcon rating */
-#btn_shop_close{
-  height: 60px;
-  width: 60px;
-  background-color: rgba(0, 0, 0, 0);
+.btnClose{
+  height: 50px;
+  width: 50px;
+  background-color: rgba(244, 102, 102, 1);
   border-style: none;
   position: absolute;
   right: -20px;
   top:-20px;
+  border-radius: 100%;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 25px;
+  font-weight: 500;
+  color: rgb(221, 221, 221);
 }
-#btn_mission_close{
-  height: 60px;
-  width: 60px;
-  background-color: rgba(0, 0, 0, 0);
-  border-style: none;
-  position: absolute;
-  right: -20px;
-  top: -20px;
+.btnClose:hover{
+  background-color: rgba(191, 47, 47, 1);
+  color: rgb(255, 255, 255);
+  transition: .2s;
 }
 
 .gamingArea{
@@ -418,6 +428,7 @@
   overflow: auto;
   height: 70vh;
   width: 40vw;
+  padding-top: 5vh;
 }
 #mission_table{
   margin-top: 5vh;
@@ -425,7 +436,8 @@
   height: 100%;
   text-align: center;
 }
-#mission_table tr:first-child{
+
+/*#mission_table tr:first-child{
   position: fixed;
   width: 40vw;
   font-weight:500;
@@ -446,9 +458,9 @@
 }
 #mission_table th:nth-child(4){
   width: 7vw;
-}
+}*/
 #mission_table td:nth-child(1){
-  width: 10vw;
+  width: 25vw;
 }
 #mission_table td:nth-child(2){
   width: 60vw;
@@ -457,7 +469,7 @@
   width: 10vw;
 }
 #mission_table td:nth-child(4){
-  width: 10vw;
+  width: 0vw;
 }
 .property_shop{
   position:absolute;
@@ -477,7 +489,8 @@
   color:black;
 }
 .property_shop>.shop_header{
-    background-color: rgb(164, 209, 151);
+    /*background-color: rgb(164, 209, 151);*/
+    background-color: rgb(130, 203, 209);
     height: 5vh;
     display: flex;
     justify-content: space-around;
@@ -488,6 +501,8 @@
   background-color: rgba(255, 255, 255, 0);
   color: black;
   border-style: none;
+  font-size: 20px;
+  font-weight: 500;
 }
 .property_shop tbody{
   color: black;
@@ -495,10 +510,11 @@
 }
 .shop_content{
   text-align:center;
-  padding-top: 5vh;
   height: 70vh;
   background-color:rgba(255,255,255,0.8);
   overflow: auto;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 
 .property_shop.property_shop_table{
@@ -511,7 +527,22 @@
   width: 45vw;
   height: 70vh;
 }
+#property_table label{
+  padding-bottom: 2px;
+}
+#property_table th{
+  vertical-align: middle;
+  font-weight: 500;
+}
+#property_table td{
+  vertical-align: middle;
+}
+#btn_property_save{
+  border-style: none;
+  border-radius: 10px;
+  margin: 15px;
 
+}
 /*property stock tradable in the fourth controlButtons*/
 .tradeable_content{
   overflow: auto;
@@ -543,24 +574,26 @@
   margin-right: -10vw;
   justify-content: space-around;
 }
-.btn_tradeable button{
+/*.btn_tradeable button{
   border-style: none;
   border-radius: 10px;
   margin: 15px;
   /*background-color: rgba(255, 255, 255, 0.3);*/
-  font-size: 22px;
+  /*font-size: 22px;
   height: 4vh;
-  width: 8vw;
-}
+  width: 8vw;*/
+/*}*/
 /*.btn_tradeable button:hover{
   background: rgb(135, 224, 62);
   color: rgb(255, 255, 255);
 }*/
 .shop_tradable_input{
-  width: 1vw;
+  width: 2vw;
   background-color: rgba(255, 255, 255, 0);
   color: rgb(0, 0, 0);
-  border-style: none;
+  border-style: dotted;
+  text-align: center;
+  border-color: rgba(119, 150, 179, 1);
 }
 .expProgress{
   position: relative;
@@ -1039,6 +1072,13 @@ td img{
   transition-property: color;
   -webkit-transition-duration: 0.3s;
   transition-duration: 0.3s;
+
+  border-style: none;
+  border-radius: 10px;
+  margin: 15px;
+  font-size: 20px;
+  height: 4vh;
+  width: 8vw;
 }
 .hvr-rectangle-out:before {
   content: "";
@@ -1087,6 +1127,51 @@ td img{
   margin-right:10px;
 }
 
+input[type="range"]{
+  -webkit-appearance: none;
+  overflow:hidden;
+  width:100%;
+  height:15px;
+  outline : none;
+  background:#C7FFEF;
+  border-radius: 15px;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  position: relative;
+  width:15px;
+  height:15px;
+  background:#fff300;
+  border-radius:50%;
+  transition:.2s;
+}
+input[type="range"]:active::-webkit-slider-thumb:before,
+input[type="range"]:active::-webkit-slider-thumb:after
+{
+  position: absolute;
+  pointer-events: none;
+  top: 6px;
+}
+input[type="range"]::-webkit-slider-thumb:active{
+  width:25px;
+  height:25px;
+}
+
+.hvr-glow {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px transparent;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: box-shadow;
+  transition-property: box-shadow;
+}
+.hvr-glow:hover, .hvr-glow:focus, .hvr-glow:active {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+
+
 .systemInfo{
   position:absolute;
   right:0px;
@@ -1113,4 +1198,5 @@ td img{
 .resizer{
   position: absolute;
   bottom:0px;
+
 }
