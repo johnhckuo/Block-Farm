@@ -154,14 +154,6 @@ Template.gameIndex.rendered = function() {
         setInterval(cropSummaryUpdate, 1000);
         setInterval(updateUserStamina, 500);
 
-        $(document).on('input', '#farmResizer', function() {
-            //$(".land").css("transform", "scale("+ (1 + ($(this).val()/100)) +") rotateX(55deg) rotateZ(45deg)");
-            $(".canvas").css("transform", "scale("+ (1 + ($(this).val()/100)) +")");
-
-            //$(".land").css("transform", "scale(1) rotateX(55deg) rotateZ(45deg)");
-
-            console.log( $(this).val() );
-        });
         console.log('gameArea render complete');
 
         loading(0);
@@ -744,6 +736,35 @@ Template.gamingArea.events({
 
         $(event.target).prop("value", "Waiting");
         $(event.target).prop("disabled", true);
+
+    },
+    'click .zoom':function(event){
+        var data = $(".canvas").css("transform");
+        var scale;
+        if (data == 'none'){
+          scale = 1;
+        }else{
+          var values = data.split('(')[1];
+          values = values.split(')')[0];
+          values = values.split(',');
+
+          var a = values[0];
+          var b = values[1];
+
+          scale = Math.sqrt(a*a + b*b);
+          console.log(scale);
+        }
+        console.log(scale);
+
+
+
+        if (event.target.className.split(" ")[1] == 'zoomin' && scale < 1.5){
+            scale += 0.1;
+        }else if (event.target.className.split(" ")[1] == 'zoomout' && scale > 0.5){
+            scale -= 0.1;
+
+        }
+        $(".canvas").css("transform", "scale(" + scale + ")");
 
     }
 })
