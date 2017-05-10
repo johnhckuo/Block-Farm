@@ -16,6 +16,7 @@ body{
 .layout{
   /*display:flex;*/
   /*flex-wrap: row;*/
+  position: relative;
   width: 100%;
   height:100vh;
   /*align-items: center;*/
@@ -174,7 +175,7 @@ h3{
 }
 
 #intro{
-  padding:50px;
+  padding:100px;
 }
 
 #intro h2{
@@ -183,17 +184,15 @@ h3{
 }
 
 #intro h3{
-  margin-top:50px;
-  clear: both;
-  font-size: 20px;
-  float:left;
+  font-size: 30px;
 }
 
 .videoContainter{
-  position: relative;
+  position: absolute;
   width :60%;
   height: 60%;
-  bottom:-10px;
+  bottom:50px;
+  left:150px;
   border:1px black solid;
 
 
@@ -208,18 +207,31 @@ h3{
 .videoTitle{
   position: absolute;
   bottom: 0px;
-  right:0px;
-  width:100px;
-  height:100px;
-}
-.videoTitle h1{
+  right:-250px;
+  width:500px;
+  height:50px;
+  background: #00FFFF;
+  font-size: 40px;
   text-align: center;
+  border-radius: 10px;
+
 }
-#intro_content{
-  padding-left: 50vw;
-  padding-top: 20vh;
-  line-height: 30px;
+
+.introContent{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  float:left;
+  margin-top: 50px;
 }
+
+.introContent *{
+  margin-right: 100px;
+}
+
+
 #teamInfo{
   display: flex;
   flex-direction: row;
@@ -273,109 +285,113 @@ h3{
 #whyUs{
   display: flex;;
   color: #404040;
+  height:250vh;
   background: #ffffff;
-}
-
-#whyUs_head{
-  display:inline-flex;;
-  position: absolute;
+  padding:100px;
   flex-direction: column;
-  padding-top: 10vh;
-  align-content: space-around;
-  margin-left: 87px;
-}
-#whyUs_head h1{
-  padding-bottom: 5vh;
-}
-
-#whyUs_content{
-  padding-left: 50vw;
-  padding-top: 20vh;
-  line-height: 30px;
-}
-
-
-#aboutUs{
-  display: flex;;
-  color: #404040;
-  background: #ffffff;
-}
-
-#aboutUs_head{
-  display:inline-flex;;
-  position: absolute;
-  flex-direction: column;
-  padding-top: 10vh;
-  align-content: space-around;
-  margin-left: 87px;
-}
-#aboutUs_head h1{
-  padding-bottom: 5vh;
-}
-
-#aboutUs_content{
-  padding-left: 50vw;
-  padding-top: 20vh;
-  line-height: 30px;
-}
-
-
-#advantage{
-  display:flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  background: rgba(0,0,0,0.5);
-  color:#fff;
-}
-
-#advantageContainer{
-  position: relative;
-  display:flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
-  top:-60px;
+
 }
 
-#advantage2{
+#whyUs h2{
+  font-size: 50px;
+  float:left;
+  margin-bottom: 100px;
+
+}
+
+.whyUs_head h3{
+  font-size: 100px;
+}
+
+.whyUs{
+  margin-bottom: 20vh;
+}
+
+.whyUs:nth-child(2) .whyUs_content{
+  background: #FFFFBB;
+}
+
+.whyUs:nth-child(3) .whyUs_content{
+  left:-50px;
+  bottom:-50px;
+  background: #DDDDDD;
+}
+
+.whyUs:nth-child(4) .whyUs_content{
+  background: #FFFFBB;
+}
+
+.whyUs_head{
+  display:flex;
+  position: absolute;
+  top:-40px;
+  right:0px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.whyUs_head h2{
+  font-size: 60px;
+}
+
+.whyUs_head hr{
+  border: 0;
+  height: 5px;
+  background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+}
+
+.whyUs_background{
+  position: relative;
+  width:80vw;
+  height: 50vh;
+  border: 1px black solid;
+
+}
+
+.whyUs_content{
+    position: absolute;
+    right:-50px;
+    bottom:-50px;
+    padding:20px;
+    width:40vw;
+    height: 30vh;
+    border: 1px black solid;
+    border-radius: 10px;
+
+}
+
+.whyUs_content_head{
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-direction: row;
   align-items: center;
-  background: rgba(0,50,0,0.5);
-  color:#fff;
 }
 
-#advantageContainer2{
-  position: relative;
-  display:flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  top:-60px;
+.whyUs_content_body{
+  margin-left: 50px;
 }
-.advantageContainer div{
-  width:300px;
-  height:400px;
-  text-align: center;
-  margin-right: 10px;
-  display:flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+
+.whyUs_content_head img{
+  width:100px;
+  height: 100px;
 }
+
+
 
 #tutorial{
   display:flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background: #ffffff;
   color:white;
+  background: #112027;
 }
 #tutorial > div{
-  margin-right: 100px;
   height:600px;
   width:500px;
   display:flex;
@@ -534,39 +550,6 @@ h3{
   top:0px;
 }
 
-.fixed{
-  position: fixed;
-  z-index: 99;
-  top: 0px;
-}
-
-.table{
-  position: relative;
-  display:flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width:100vw;
-  height: 100vh;
-  color: white;
-}
-
-.manageContent{
-  position: relative;
-  display:flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width:100vw;
-  height: 100vh;
-  color: white;
-}
-
-#matchingTable{
-  color:black;
-  text-align: center;
-}
-
 .manage{
   display:flex;
   flex-direction: column;
@@ -591,40 +574,4 @@ input, textarea{
     background-color:#000;
     color: #FFF;
     border-color: #000;
-}
-
-.stakeholderList{
-
-  position: relative;
-  display:flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width:100vw;
-  height: 100vh;
-  color: white;
-}
-
-#stakeholderTable{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#web3AccountsTable{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#matchingTable{
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height:100vh;
-  width:100vw;
 }
