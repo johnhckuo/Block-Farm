@@ -18,8 +18,6 @@ contract Congress{
 contract usingProperty{
 
     event propertyAdded(bytes32);
-    event propertyTypeAdded(bool);
-
     event propertyUpdated(uint);
     event updatedPropertiesCalled();
     event propertyNewed(uint);
@@ -95,6 +93,12 @@ contract usingProperty{
     Congress congress;
     address owner;
 
+    uint[] _id;
+    bytes32[] _name;
+    uint[] _propertyType;
+    uint[] _count;
+    uint[] _tradable;
+    bytes32[] _img;
 
     function usingProperty(address _congressAddress){
         CongressAddress = _congressAddress;
@@ -138,6 +142,26 @@ contract usingProperty{
         prop.tradeable = 0;
     }
 
+
+    function getAllProperty() constant returns(uint[], uint[], bytes32[], uint[], uint[], bytes32[]){
+        uint length = propertyList.length;
+
+        for(uint i = 0; i < length; i++){
+            if(propertyList[i].owner == msg.sender){
+                _id.push(i);
+                _name.push(propertyTypeList[propertyList[i].propertyType].name);
+                _propertyType.push(propertyList[i].propertyType);
+                _count.push(propertyList[i].propertyCount);
+                _tradable.push(propertyList[i].tradeable);
+                _img.push(propertyTypeList[propertyList[i].propertyType].img[3]);
+            }
+            else{
+                continue;
+            }
+        }
+        return (_id, _propertyType, _name, _count, _tradable, _img);
+    }     
+
     function addProperty(bytes32 _name, uint _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
         bool flag = true;
         for (uint w = 0 ; w < propertyTypeList.length ; w++){
@@ -150,20 +174,12 @@ contract usingProperty{
             propertyAdded("Property Type Not Found");
         }
 
-
         _id = propertyList.length++;
 
         uint s_Id = congress.stakeholderId(msg.sender);
         congress.addProperty(s_Id, _id);
 
-      //  Stakeholder[] s_List = temp.stakeholders;
-
         Property prop = propertyList[_id];
-
-        //uint length = congress.getStakeholdersLength();
-        //for (uint j = 0 ; j < length ; j++){
-        //    updatePropertiesRating(_id, 0, "init");
-        //}
 
         prop.name = _name;
         prop.id= _id;
@@ -175,11 +191,7 @@ contract usingProperty{
         prop.propertyType = _type;
         prop.tradeable = _tradeable;
         prop.isTrading = false;
-
-
-        //propertyAdded("Success");
     }
-
 
     function getPropertyByOwner(uint p_Id) constant returns (uint, bytes32, uint, uint256, bytes32, uint, uint){
         if(propertyList[p_Id].owner == msg.sender){
@@ -188,7 +200,6 @@ contract usingProperty{
             throw;
         }
     }
-
 
     function removeProperty(uint _id){
         if (getPropertiesLength() == 0) throw;
@@ -238,24 +249,27 @@ contract usingProperty{
 
     }
 
-    function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
+        function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
 
-        if(propertyList[_id].owner == msg.sender){
-            propertyList[_id].propertyCount = _propertyCount;
-            propertyList[_id].tradeable = _tradeable;
+            if(propertyList[_id].owner == msg.sender){
+                propertyList[_id].propertyCount = _propertyCount;
+                propertyList[_id].tradeable = _tradeable;
+            }
+            else{
+                throw;
+            }
         }
-        else{
-            throw;
-        }
-    }
 
-    function updatePropertyCount_Cropped(uint _id, uint _pt_Id, uint _croppedCount){
-        if((propertyList[_id].owner == msg.sender)&&(propertyList[_id].propertyType == _pt_Id)){
-            uint currentCount = propertyList[_id].propertyCount;
-            propertyList[_id].propertyCount = currentCount + _croppedCount;
-        }
-        else{
-           // throw;
+    function updatePropertyCount_Cropped(uint _pt_Id, uint _croppedCount){
+        for(uint i = 0; i < propertyList.length; i++){
+            if((propertyList[i].owner == msg.sender)&&(propertyList[i].propertyType == _pt_Id)){
+                uint currentCount = propertyList[i].propertyCount;
+                propertyList[i].propertyCount = currentCount + _croppedCount;
+                break;
+            }
+            else{
+                // throw;
+            }
         }
     }
 
@@ -511,7 +525,4 @@ contract usingProperty{
     function getPropertyTypeLength() constant returns(uint){
         return propertyTypeList.length;
     }
-
-
-
 }
