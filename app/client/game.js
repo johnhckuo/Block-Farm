@@ -154,14 +154,6 @@ Template.gameIndex.rendered = function() {
         setInterval(cropSummaryUpdate, 1000);
         setInterval(updateUserStamina, 500);
 
-        $(document).on('input', '#farmResizer', function() {
-            //$(".land").css("transform", "scale("+ (1 + ($(this).val()/100)) +") rotateX(55deg) rotateZ(45deg)");
-            $(".canvas").css("transform", "scale("+ (1 + ($(this).val()/100)) +")");
-
-            //$(".land").css("transform", "scale(1) rotateX(55deg) rotateZ(45deg)");
-
-            console.log( $(this).val() );
-        });
         console.log('gameArea render complete');
 
         loading(0);
@@ -441,7 +433,7 @@ Template.gameIndex.events({
                     //var exp = cropTypeList[cropList[id].type].exp;
 
                     var difference = elapsedTime(cropList[id].start, cropList[id].end);
-                    var exp = (difference/(1000*30))*20;
+                    var exp = Math.floor((difference/(1000*30))*20);
                     updateUserExp(exp);
                     $(".scoreObject").html("+" + exp +"XP");
                 }else{
@@ -742,6 +734,35 @@ Template.gamingArea.events({
         $(event.target).prop("value", "Waiting");
         $(event.target).prop("disabled", true);
 
+    },
+    'click .zoom':function(event){
+        var data = $(".canvas").css("transform");
+        var scale;
+        if (data == 'none'){
+          scale = 1;
+        }else{
+          var values = data.split('(')[1];
+          values = values.split(')')[0];
+          values = values.split(',');
+
+          var a = values[0];
+          var b = values[1];
+
+          scale = Math.sqrt(a*a + b*b);
+          console.log(scale);
+        }
+        console.log(scale);
+
+
+
+        if (event.target.className.split(" ")[1] == 'zoomin' && scale < 1.5){
+            scale += 0.1;
+        }else if (event.target.className.split(" ")[1] == 'zoomout' && scale > 0.5){
+            scale -= 0.1;
+
+        }
+        $(".canvas").css("transform", "scale(" + scale + ")");
+
     }
 })
 
@@ -911,9 +932,14 @@ Template.characterList.events({
 
     },
     'click .test': function(event){
-        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
         currentUser.level+=1;
+
+        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
+        _character.changed();
         levelUp("userLevel");
+        if (currentUser.level%5 ==0){
+            getUserData(s_Id);
+        }
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
@@ -1569,15 +1595,16 @@ var updateUserExp = function(exp){
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:2000000});
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
     levelUp("userLevel");
+    getUserData(s_Id);
     rerenderCropLand(s_Id);
     lvlCap = levelCap(currentUser.level);
   }else{
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
   }
 
-  var percent = (currentUser.exp/lvlCap)*100;
+  var percent = Math.floor((currentUser.exp/lvlCap)*100);
   $(".expProgressBar").css("width", percent + "%");
   $(".expText").text(percent+"%");
 
