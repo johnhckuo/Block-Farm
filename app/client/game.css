@@ -191,19 +191,21 @@
 
 .gamingArea .canvas{
   position: absolute;
-  width:200%;
-  height: 200%;
+  width:500%;
+  height: 500%;
   background: #99CB34;
   transform-style:3d;
   -moz-transform-style:3d;
   -webkit-transform-style:3d;
   background-image: url("/img/game/background.svg");
-  background-size: 200px 200px;
+  background-size: 600px 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .land{
   position: relative;
-  top:25%;
   float: none;
   margin-left: auto;
   margin-right: auto;
@@ -257,6 +259,7 @@
 }
 
 .farmObject{
+  -webkit-transition: all .1s;
   transform:rotateX(55deg) rotateZ(45deg);
   -moz-transform:rotateX(55deg) rotateZ(45deg);
   -webkit-transform:rotateX(55deg) rotateZ(45deg);
@@ -770,7 +773,7 @@ td img{
 
   background: #99CB34;
   background-image: url("/img/game/background.svg");
-  background-size: 200px 200px;
+  background-size: 600px 600px;
 
 }
 
@@ -1202,28 +1205,62 @@ input[type="range"]::-webkit-slider-thumb:active{
 
 }
 
-.resizer{
+.navigation{
   position: absolute;
-  float:none;
-  margin-left: auto;
-  margin-right: auto;
+
+  right:130px;
+  bottom:150px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
-  bottom:50px;
+  align-items: center;
+
+
 }
 
-.resizer img{
+.navBackground{
+  position: absolute;
+  left:5px;
+  width:90px;
+  height: 90px;
+  background: rgba(0 , 0, 0, 0.4);
+  border-radius: 100%;
+}
+
+.navigation img{
 
   width: 30px;
   height: 30px;
   cursor:pointer;
-  transition: all .5s;
+  transition: all .1s;
   margin-left: 50px;
 }
 
-.resizer img:hover{
+.navigation img:hover{
   width:35px;
   height:35px;
+}
+
+.nav{
+  position: absolute;
+}
+
+.navUp{
+    top: -50px;
+    transform: rotate(270deg);
+}
+
+.navDown{
+    bottom:-50px;
+    transform: rotate(90deg);
+}
+
+.navLeft{
+    left:-50px;
+    transform: rotate(180deg);
+}
+
+.navRight{
+    right:-100px;
+    transform: rotate(0deg);
+
 }

@@ -18,6 +18,7 @@ var audio;
 
 var visitNode;
 var s_Id;
+var x = 0, y = 0;
 
 var gameMode = "Farmer";
 
@@ -711,17 +712,24 @@ Template.gamingArea.events({
             var top = $(event.target)[0].getBoundingClientRect().top;
             var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var landTop = $(".land").position().top;
-            var landLeft = $(".land").position().left;
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
 
             var areaLeft = $(".gamingArea").position().left;
 
-            var divHeight =$(".farmObject").height()/5;
-            var divWidth = $(".farmObject").width()/4;
+            var divHeight =$(".farmObject").height()/6;
+            var divWidth = $(".farmObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x;
+            var posY = top+landTop-divHeight-y;
 
-            $(".farmObject").css({top: top-divHeight, left: left-areaLeft+divWidth, width:"150px", height:"150px", position:"absolute", opacity:0.5});
+
+            console.log(posY)
+            console.log(y);
+
+
+            $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
         }
 
@@ -735,33 +743,69 @@ Template.gamingArea.events({
         $(event.target).prop("disabled", true);
 
     },
-    'click .zoom':function(event){
-        var data = $(".canvas").css("transform");
-        var scale;
+    // 'click .zoom':function(event){
+    //     var data = $(".canvas").css("transform");
+    //     var scale;
+    //     if (data == 'none'){
+    //       scale = 1;
+    //     }else{
+    //       var values = data.split('(')[1];
+    //       values = values.split(')')[0];
+    //       values = values.split(',');
+    //
+    //       var a = values[0];
+    //       var b = values[1];
+    //
+    //       scale = Math.sqrt(a*a + b*b);
+    //       console.log(scale);
+    //     }
+    //     console.log(scale);
+    //
+    //
+    //
+    //     if (event.target.className.split(" ")[1] == 'zoomin' && scale < 1.5){
+    //         scale += 0.1;
+    //     }else if (event.target.className.split(" ")[1] == 'zoomout' && scale > 0.5){
+    //         scale -= 0.1;
+    //
+    //     }
+    //     $(".canvas").css("transform", "scale(" + scale + ")");
+    //
+    // }
+    'click .nav':function(event){
+        var moveSpeed = 30;
+        var data = $(".canvas").css('-webkit-transform');
+        var negativeBoundary = -900;
+        var boundary = 900;
+
+        console.log(data);
+
         if (data == 'none'){
-          scale = 1;
+          x = 0;
+          y = 0;
         }else{
-          var values = data.split('(')[1];
-          values = values.split(')')[0];
-          values = values.split(',');
-
-          var a = values[0];
-          var b = values[1];
-
-          scale = Math.sqrt(a*a + b*b);
-          console.log(scale);
+          data = data.split(/[()]/)[1];
+          x = parseInt(data.split(',')[4]);
+          y = parseInt(data.split(',')[5]);
+          console.log(x)
         }
-        console.log(scale);
 
-
-
-        if (event.target.className.split(" ")[1] == 'zoomin' && scale < 1.5){
-            scale += 0.1;
-        }else if (event.target.className.split(" ")[1] == 'zoomout' && scale > 0.5){
-            scale -= 0.1;
-
+        // console.log(scale);
+        //
+        //
+        //
+        if (event.target.className.split(" ")[1] == 'navUp' && y < boundary){
+            y += moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navDown' && y > negativeBoundary){
+            y -= moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navLeft' && x < boundary){
+            x += moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navRight' && x > negativeBoundary){
+            x -= moveSpeed;
         }
-        $(".canvas").css("transform", "scale(" + scale + ")");
+        //$(".canvas").css("transform", "translate(" + x + "px, " +y+ "px)");
+        $('.canvas').css('-webkit-transform',  'translateX(' + x+ 'px) translateY(' + y+ 'px)');
+
 
     }
 })
@@ -988,6 +1032,8 @@ Template.operationList.events({
 
 
 document.onmousemove = function(e){
+
+
     cursorX = e.pageX;
     cursorY = e.pageY;
 }
