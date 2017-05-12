@@ -18,6 +18,7 @@ var audio;
 
 var visitNode;
 var s_Id;
+var x = 0, y = 0;
 
 var gameMode = "Farmer";
 
@@ -719,12 +720,14 @@ Template.gamingArea.events({
 
             var areaLeft = $(".gamingArea").position().left;
 
-            var divHeight =$(".farmObject").height()/5;
+            var divHeight =$(".farmObject").height()/6;
             var divWidth = $(".farmObject").width()/4;
             // var divHeight =0;
             // var divWidth = 0;
+            console.log(top);
+            console.log(y);
 
-            $(".farmObject").css({top: top-divHeight, left: left-areaLeft+divWidth, width:"150px", height:"150px", position:"absolute", opacity:0.5});
+            $(".farmObject").css({top: top-divHeight-y, left: left-areaLeft+divWidth-x, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
         }
 
@@ -770,7 +773,6 @@ Template.gamingArea.events({
     'click .nav':function(event){
         var moveSpeed = 20;
         var data = $(".canvas").css('-webkit-transform');
-        var x, y;
         console.log(data);
 
         if (data == 'none'){
@@ -1030,6 +1032,8 @@ Template.operationList.events({
 
 
 document.onmousemove = function(e){
+
+
     cursorX = e.pageX;
     cursorY = e.pageY;
 }
