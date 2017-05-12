@@ -715,19 +715,24 @@ Template.gamingArea.events({
             var top = $(event.target)[0].getBoundingClientRect().top;
             var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var landTop = $(".land").position().top;
-            var landLeft = $(".land").position().left;
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
 
             var areaLeft = $(".gamingArea").position().left;
 
             var divHeight =$(".farmObject").height()/6;
-            var divWidth = $(".farmObject").width()/4;
+            var divWidth = $(".farmObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
-            console.log(top);
+            var posX = left+landLeft-areaLeft+divWidth-x;
+            var posY = top+landTop-divHeight-y;
+
+
+            console.log(posY)
             console.log(y);
 
-            $(".farmObject").css({top: top-divHeight-y, left: left-areaLeft+divWidth-x, width:"150px", height:"150px", position:"absolute", opacity:0.5});
+
+            $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
         }
 
@@ -771,8 +776,11 @@ Template.gamingArea.events({
     //
     // }
     'click .nav':function(event){
-        var moveSpeed = 20;
+        var moveSpeed = 30;
         var data = $(".canvas").css('-webkit-transform');
+        var negativeBoundary = -900;
+        var boundary = 900;
+
         console.log(data);
 
         if (data == 'none'){
@@ -789,14 +797,14 @@ Template.gamingArea.events({
         //
         //
         //
-        if (event.target.className.split(" ")[1] == 'navUp' && y > -800){
-            y -= moveSpeed;
-        }else if (event.target.className.split(" ")[1] == 'navDown' && y < 800){
+        if (event.target.className.split(" ")[1] == 'navUp' && y < boundary){
             y += moveSpeed;
-        }else if (event.target.className.split(" ")[1] == 'navLeft' && x > -800){
-            x -= moveSpeed;
-        }else if (event.target.className.split(" ")[1] == 'navRight' && x < 800){
+        }else if (event.target.className.split(" ")[1] == 'navDown' && y > negativeBoundary){
+            y -= moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navLeft' && x < boundary){
             x += moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navRight' && x > negativeBoundary){
+            x -= moveSpeed;
         }
         //$(".canvas").css("transform", "translate(" + x + "px, " +y+ "px)");
         $('.canvas').css('-webkit-transform',  'translateX(' + x+ 'px) translateY(' + y+ 'px)');
