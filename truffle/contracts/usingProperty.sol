@@ -421,6 +421,13 @@ contract usingProperty{
 
     }
 
+    function moveUserLandPosition(uint u_Id, uint oldId, uint newId){
+        userLandConfigurationList[u_Id].land[newId] = userLandConfigurationList[u_Id].land[oldId];
+        userLandConfigurationList[u_Id].crop[newId] = userLandConfigurationList[u_Id].crop[oldId];
+        userLandConfigurationList[u_Id].land[oldId] = -1;
+        userLandConfigurationList[u_Id].crop[oldId] = -1;
+    }
+
     /*  ----------------------------------
         |                                |
         |            land type           |

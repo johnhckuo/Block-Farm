@@ -28,6 +28,7 @@ contract usingProperty{
     function getPropertyCount(uint) constant returns(uint);
     function initUserProperty(uint);
     function updatePropertyTypeRating(uint, uint, string);
+    function moveUserLandPosition(uint u_Id, uint oldId, uint newId);
 
 }
 
@@ -179,11 +180,20 @@ contract GameCore{
             for (uint i = 0 ; i < difference ; i++){
                 usingPropertyInstance.addUserLandConfiguration(u_Id);
             }
+            levelupLandUpdate(landSize, u_Id);
         }
-
         congress.updateGameData(u_Id, landSize, level);
         //congress.updateUserExp(u_Id, exp);
 
+    }
+
+    function levelupLandUpdate(uint landSize, uint s_Id){
+        uint length = landSize-1;
+
+        //ignore the first line since their id remains the same
+        for (uint i = ((length*length)-1) ; i >= length  ; i--){
+            usingPropertyInstance.moveUserLandPosition(s_Id, i, i + (i/length));
+        }
     }
 
 }
