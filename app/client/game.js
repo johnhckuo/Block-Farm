@@ -474,9 +474,8 @@ Template.gameIndex.events({
                 });
                 console.log(cropTypeList);
                 var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-                for(var i = 0 ; i < propertyLength.c[0]; i++){
-                    usingPropertyInstance.updatePropertyCount_Cropped(i, parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
-                }
+                usingPropertyInstance.updatePropertyCount_Cropped(parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
+                
                 //usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
                 var configId;
@@ -547,9 +546,7 @@ Template.gameIndex.events({
                         stealCount = Math.round(cropCount / 2);
                         cropCount = cropCount - stealCount;
                         var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-                        for(var i= 0; i < propertyLength;i++){
-                            usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
-                        }
+                        usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
                         usingPropertyInstance.updateCropCount(visitNode, id, cropCount, {from:web3.eth.accounts[currentAccount], gas:2000000});
                         $(event.target).parent().attr("cropcount", parseInt(cropCount));
                         $(event.target).parent().attr("stolenFlag", "t");
@@ -852,9 +849,6 @@ function PanelControl(panelIndex){
 }
 
 Template.statusList.events({
-    //'click .btnSelect': function (e) {
-    //    test(e);
-    //},
     'click .crop2' :function(){
         PanelControl(2);
     },
@@ -866,9 +860,6 @@ Template.statusList.events({
     },
     'click .crop5' :function(){
         PanelControl(5);
-    },
-    'click .crop2' :function(){
-        PanelControl(2);
     },
     'click .removeLand button': function (event){
           removeMode = !removeMode;
@@ -897,11 +888,11 @@ Template.statusList.events({
 })
 
 Template.characterList.events({
-    'click .characterSwitch': function (event) {
-        PanelControl(5);
+    'click .characterSwitch': function (event) {        
         loading(1);
         //need to check boss' id
         if ($(event.target).html() == "Guard"){
+            PanelControl(5);
             showThief = true;
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
@@ -931,6 +922,7 @@ Template.characterList.events({
                 clearInterval(checkMissionInterval);
             }
         }else if ($(event.target).html() == "Thief"){
+            PanelControl(5);
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
             $('.SyndicateExp').css('visibility', 'visible');
@@ -1825,11 +1817,34 @@ var elapsedTime = function(start, end){
 
 get_user_property_setting = function () {
     user_property = [];
-    var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-    for(i = 0; i < propertyLength;i++){
-        var property_data = usingPropertyInstance.getProperty_Shop(i, {from:web3.eth.accounts[currentAccount]});
-        if(web3.eth.accounts[currentAccount] == property_data[2]){
-            var data = {"id":i, "propertyType":property_data[0].c[0], "name":hex2a(property_data[1]), "propertyCount":property_data[3].c[0],  "tradeable":property_data[4].c[0], "img": web3.toUtf8(property_data[5])};
+    //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+    //alert(propertyLength);
+    var propertyData = usingPropertyInstance.getAllProperty.call({from:web3.eth.accounts[currentAccount]});
+    //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+    //for(i = 0; i < propertyLength.c[0];i++){
+    //    var property_data = usingPropertyInstance.getProperty_Shop(i, {from:web3.eth.accounts[currentAccount]});
+    //    var _propertyType = property_data[0].c[0];
+    //    var _name = web3.toUtf8(property_data[1]);
+    //    var _owner = property_data[2];
+    //    var _propertyCount = property_data[3].c[0];
+    //    var _tradeable = property_data[4].c[0];
+    //    var _img = web3.toUtf8(property_data[5]);
+    //    if(web3.eth.accounts[currentAccount] == _owner){
+    //        if((_propertyCount > 0) || (_tradeable > 0)){
+    //            var data = {"id":i, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
+    //            user_property.push(data);
+    //        }
+    //    }
+    //}
+    for(i = 0; i < propertyData[0].length; i++){
+        var _id = propertyData[0][i].c[0];
+        var _propertyType = propertyData[1][i].c[0]
+        var _name = web3.toUtf8(propertyData[2][i]);
+        var _propertyCount = propertyData[3][i].c[0];
+        var _tradeable = propertyData[4][i].c[0];
+        var _img = web3.toUtf8(propertyData[5][i]);
+        if((_propertyCount > 0) || (_tradeable > 0)){
+            var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
             user_property.push(data);
         }
     }
@@ -1853,8 +1868,7 @@ set_property_table = function(){
     loading(1);
     get_user_property_setting();
     loading(0);
-    var table, tr, td, heart_path, heart_status;
-    heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
+    var table, tr, td;
 
     $('.tradeable_content').html('');
     table = $('<table></table>').attr('id', 'property_trade_table')
@@ -1869,60 +1883,55 @@ set_property_table = function(){
     //header
     //content
     for(i = 0; i < user_property.length; i++){
-        if((parseInt(user_property[i].propertyCount,10) == 0) &&  (parseInt(user_property[i].tradeable,10) == 0)){
-            //don't hold any stock
-        }
-        else{
-            tr = $('<tr></tr>');
-            td = $('<td></td>');
-            td.append($('<img></img>', {
-                src:prefix+user_property[i].img + postfix,
-                style:'width:50px; height:50px'
-            }));
-            tr.append(td);
-            td = $('<td></td>');
-            td.text(user_property[i].name);
-            tr.append(td);
-            td = $('<td></td>');
-            td.text(user_property[i].propertyCount);
-            tr.append(td);
-            td = $('<td></td>');
-            td.append(
-                    $('<input></input>',{
-                        type:'text',
-                        class:'shop_tradable_input',
-                        id:'tradable_input_' + user_property[i].id,
-                        value:user_property[i].tradeable
-                    })
-                    .on('keydown',function (e) {
-                        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-                            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                            (e.keyCode >= 35 && e.keyCode <= 40)) {
-                            return;
-                        }
-                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                            e.preventDefault();
-                        }
-                    })
-                    .on('change',function(e){
-                        var _id = index_finder($(this).attr('id'), 'tradable_input_');
-                        if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
-                            $(this).val($('#shop_stock_' + _id).val());
-                        }
-                        $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
-                    })
-                    .on('click', function(){
-                        $(this).select();
-                    })
-                    );
-            td.append($('<input></input>',{
-                type:'hidden',
-                id:'shop_stock_' + user_property[i].id,
-                value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
-            }));
-            tr.append(td);
-            table.append(tr);
-        }
+        tr = $('<tr></tr>');
+        td = $('<td></td>');
+        td.append($('<img></img>', {
+            src:prefix+user_property[i].img + postfix,
+            style:'width:50px; height:50px'
+        }));
+        tr.append(td);
+        td = $('<td></td>');
+        td.text(user_property[i].name);
+        tr.append(td);
+        td = $('<td></td>');
+        td.text(user_property[i].propertyCount);
+        tr.append(td);
+        td = $('<td></td>');
+        td.append(
+                $('<input></input>',{
+                    type:'text',
+                    class:'shop_tradable_input',
+                    id:'tradable_input_' + user_property[i].id,
+                    value:user_property[i].tradeable
+                })
+                .on('keydown',function (e) {
+                    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                        (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                        (e.keyCode >= 35 && e.keyCode <= 40)) {
+                        return;
+                    }
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                })
+                .on('change',function(e){
+                    var _id = index_finder($(this).attr('id'), 'tradable_input_');
+                    if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
+                        $(this).val($('#shop_stock_' + _id).val());
+                    }
+                    $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
+                })
+                .on('click', function(){
+                    $(this).select();
+                })
+                );
+        td.append($('<input></input>',{
+            type:'hidden',
+            id:'shop_stock_' + user_property[i].id,
+            value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
+        }));
+        tr.append(td);
+        table.append(tr);
     }
     //content
     //control bar
