@@ -475,7 +475,7 @@ Template.gameIndex.events({
                 console.log(cropTypeList);
                 var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
                 usingPropertyInstance.updatePropertyCount_Cropped(parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
-                
+
                 //usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
                 var configId;
@@ -653,9 +653,37 @@ Template.land.events({
 
         var id = clickTarget.parent()[0].className.split("farmLand")[1];
 
+
+        if (clickTarget.data('pressed')){
+            $(".farmObject").css("display", "none");
+
+            // $(event.target).css("background", "#337ab7");
+            // $(event.target).css("border-color", "#337ab7");
+            // $(event.target).text("Specify");
+            clickTarget.html("<img src='/img/game/shovel.svg'>")
+            clickTarget.data('pressed', false);
+            place = false;
+            return;
+        }
+
+        var btns = $(".cropLand").find("button");
+
+        for (var i = 0 ; i < btns.length; i++){
+            if ($(btns[i]).data('pressed')){
+                // $(btns[i]).css("background", "#337ab7");
+                // $(btns[i]).css("border-color", "#337ab7");
+                // $(btns[i]).text("Specify");
+                $(btns[i]).html("<img src='/img/game/shovel.svg'>")
+                $(btns[i]).data('pressed', false);
+            }
+        }
+
+        placeMode = true;
+        clickTarget.data('pressed', true);
+
         $(".farmObject").html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />");
         currentLandId = id;
-        placeMode = !placeMode;
+
         if (placeMode){
             $(".farmObject").css("display", "inline");
 
@@ -826,7 +854,10 @@ function PanelControl(panelIndex){
     if(panelCounter==5){
         set_property_table();
     }
+
+
     if (plantMode){
+
         $(".cropObject").css("display", "none");
         $(".farmObject").css("display", "none");
         // $(currentClickedCrop).css("background", "#337ab7");
@@ -836,6 +867,7 @@ function PanelControl(panelIndex){
         $(currentClickedCrop).data('pressed', false);
         plantMode = false;
     }else if (placeMode){
+
         $(".cropObject").css("display", "none");
         $(".farmObject").css("display", "none");
         // $(currentClickedLand).css("background", "#337ab7");
@@ -843,9 +875,10 @@ function PanelControl(panelIndex){
         $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
         // $(currentClickedLand).text("Specify");
         $(currentClickedLand).data('pressed', false);
-        placeMode = false;
 
     }
+    initAllBtns();
+
 }
 
 Template.statusList.events({
@@ -862,18 +895,50 @@ Template.statusList.events({
         PanelControl(5);
     },
     'click .removeLand button': function (event){
-          removeMode = !removeMode;
+
+          clickTarget=null;
+          $(".farmObject").css("display", "none");
+
+          if(event.target.className==""){
+            clickTarget=$(event.target).parent();
+          }else{
+            clickTarget=$(event.target);
+          }
+
+          if (clickTarget.data('pressed')){
+
+              clickTarget.html("<img src='/img/game/shovel.svg'>")
+              clickTarget.data('pressed', false);
+              removeMode = false;
+              return;
+          }
+
+          removeMode = true;
+
+          var btns = $(".cropLand").find("button");
+
+          for (var i = 0 ; i < btns.length; i++){
+              if ($(btns[i]).data('pressed')){
+                  // $(btns[i]).css("background", "#337ab7");
+                  // $(btns[i]).css("border-color", "#337ab7");
+                  // $(btns[i]).text("Specify");
+                  $(btns[i]).html("<img src='/img/game/shovel.svg'>")
+                  $(btns[i]).data('pressed', false);
+              }
+          }
+          clickTarget.data('pressed', true);
+
           if (removeMode){
               // $(event.target).css("background", "gray");
               // $(event.target).css("border-color", "gray");
               // $(event.target).text("Done");
-              $(event.target).html("<img src='/img/game/cancel2.svg' width='30px' height='50px'>");
+              clickTarget.html("<img src='/img/game/cancel2.svg' width='30px' height='50px'>");
 
           }else{
               // $(event.target).css("background", "#337ab7");
               // $(event.target).css("border-color", "#337ab7");
               // $(event.target).text("Specify");
-              $(event.target).html("<img src='/img/game/shovel.svg'>");
+              clickTarget.html("<img src='/img/game/shovel.svg'>");
 
           }
           console.log(removeMode);
@@ -888,7 +953,7 @@ Template.statusList.events({
 })
 
 Template.characterList.events({
-    'click .characterSwitch': function (event) {        
+    'click .characterSwitch': function (event) {
         loading(1);
         //need to check boss' id
         if ($(event.target).html() == "Guard"){
@@ -1036,6 +1101,36 @@ document.onmousemove = function(e){
 
     cursorX = e.pageX;
     cursorY = e.pageY;
+}
+
+var initAllBtns = function(){
+  var btns = $(".cropLand").find("button");
+
+  for (var i = 0 ; i < btns.length; i++){
+      if ($(btns[i]).data('pressed')){
+          // $(btns[i]).css("background", "#337ab7");
+          // $(btns[i]).css("border-color", "#337ab7");
+          // $(btns[i]).text("Specify");
+          $(btns[i]).html("<img src='/img/game/shovel.svg'>")
+          $(btns[i]).data('pressed', false);
+      }
+  }
+
+  var btns = $(".crop").find("button");
+
+  for (var i = 0 ; i < btns.length; i++){
+      if ($(btns[i]).data('pressed')){
+          // $(btns[i]).css("background", "#337ab7");
+          // $(btns[i]).css("border-color", "#337ab7");
+          // $(btns[i]).text("Specify");
+          $(btns[i]).html("<img src='/img/game/rake.svg'>")
+          $(btns[i]).data('pressed', false);
+      }
+  }
+
+  placeMode = false;
+  plantMode = false;
+  removeMode = false;
 }
 
 var eventListener = function(){
