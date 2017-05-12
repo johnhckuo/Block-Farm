@@ -713,19 +713,21 @@ Template.gamingArea.events({
             var top = $(event.target)[0].getBoundingClientRect().top;
             var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var landTop = $(".land").position().top;
-            var landLeft = $(".land").position().left;
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
 
             var areaLeft = $(".gamingArea").position().left;
 
             var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()/4;
+            var divWidth = $(".cropObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x;
+            var posY = top+landTop-divHeight-y;
 
             var styles = {
-                top: top-divHeight,
-                left: left-areaLeft+divWidth,
+                top: posY,
+                left: posX,
                 width:"150px",
                 height:"150px",
                 position:"absolute",
@@ -751,11 +753,6 @@ Template.gamingArea.events({
             // var divWidth = 0;
             var posX = left+landLeft-areaLeft+divWidth-x;
             var posY = top+landTop-divHeight-y;
-
-
-            console.log(posY)
-            console.log(y);
-
 
             $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
@@ -1614,7 +1611,7 @@ var initCropLand = function(id){
             continue;
         }
 
-        //currentCropLand = event.target.className;
+        /*
         var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
         var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
 
@@ -1625,11 +1622,25 @@ var initCropLand = function(id){
 
         var divHeight =$(".cropObject").height()/5;
         var divWidth = $(".cropObject").width()/4;
+        */
+        var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+        var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
+
+        var landTop = ($(".canvas").height()-$(window).height())/2;
+        var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+        var areaLeft = $(".gamingArea").position().left;
+
+        var divHeight =$(".cropObject").height()/5;
+        var divWidth = $(".cropObject").width()*1.65;
         // var divHeight =0;
         // var divWidth = 0;
+        var posX = left+landLeft-areaLeft+divWidth-x;
+        var posY = top+landTop-divHeight-y;
+
         var styles = {
-            top: top-divHeight,
-            left: left-areaLeft+divWidth,
+            top: posY,
+            left: posX,
             width:"150px",
             height:"150px",
             position:"absolute",
