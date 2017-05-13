@@ -172,6 +172,69 @@ var cropTypeList = [
         count:4,
         time:"0.0.30.0"
 
+    },
+    {
+        id:21,
+        name: "Mushroom",
+        img: ["mushroom_seed", "mushroom_grow", "mushroom_harvest", "mushroom"],
+        count:4,
+        time:"0.1.0.0"
+    },
+    {
+        id:22,
+        name: "Cactus",
+        img: ["cactus_seed", "cactus_grow", "cactus_harvest", "cactus"],
+        count:4,
+        time:"0.1.0.0"
+    },
+    {
+        id:23,
+        name: "Banana",
+        img: ["banana_seed", "banana_grow", "banana_harvest", "banana"],
+        count:4,
+        time:"0.1.0.0"
+    },
+    {
+        id:24,
+        name: "Cupcake",
+        img: ["cupcake_seed", "cupcake_grow", "cupcake_harvest", "cupcake"],
+        count:4,
+        time:"0.2.0.0"
+    },
+    {
+        id:25,
+        name: "Doughnut",
+        img: ["doughnut_seed", "doughnut_grow", "doughnut_harvest", "doughnut"],
+        count:4,
+        time:"0.2.0.0"
+    },
+    {
+        id:26,
+        name: "Gingerbread Man",
+        img: ["gingerbread_man_seed", "gingerbread_man_grow", "gingerbread_man_harvest", "gingerbread_man"],
+        count:4,
+        time:"0.2.0.0"
+    },
+    {
+        id:27,
+        name: "Egg",
+        img: ["egg_seed", "egg_grow", "egg_harvest", "egg"],
+        count:4,
+        time:"0.4.0.0"
+    },
+    {
+        id:28,
+        name: "Chicken",
+        img: ["chicken_seed", "chicken_grow", "chicken_harvest", "chicken"],
+        count:4,
+        time:"0.4.0.0"
+    },
+    {
+        id:29,
+        name: "Report",
+        img: ["report_seed", "report_grow", "report_harvest", "report"],
+        count:4,
+        time:"0.4.0.0"
     }
 
 
