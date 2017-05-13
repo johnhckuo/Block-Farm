@@ -18,6 +18,7 @@ var audio;
 
 var visitNode;
 var s_Id;
+var x = 0, y = 0;
 
 var gameMode = "Farmer";
 
@@ -473,9 +474,8 @@ Template.gameIndex.events({
                 });
                 console.log(cropTypeList);
                 var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-                for(var i = 0 ; i < propertyLength.c[0]; i++){
-                    usingPropertyInstance.updatePropertyCount_Cropped(i, parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
-                }
+                usingPropertyInstance.updatePropertyCount_Cropped(parseInt(stockList[stockId].type), parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
+
                 //usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
                 var configId;
@@ -546,9 +546,7 @@ Template.gameIndex.events({
                         stealCount = Math.round(cropCount / 2);
                         cropCount = cropCount - stealCount;
                         var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-                        for(var i= 0; i < propertyLength;i++){
-                            usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
-                        }
+                        usingPropertyInstance.updatePropertyCount_Cropped(i, cropList[id].type, stealCount,{from:web3.eth.accounts[currentAccount], gas:2000000});
                         usingPropertyInstance.updateCropCount(visitNode, id, cropCount, {from:web3.eth.accounts[currentAccount], gas:2000000});
                         $(event.target).parent().attr("cropcount", parseInt(cropCount));
                         $(event.target).parent().attr("stolenFlag", "t");
@@ -655,9 +653,37 @@ Template.land.events({
 
         var id = clickTarget.parent()[0].className.split("farmLand")[1];
 
+
+        if (clickTarget.data('pressed')){
+            $(".farmObject").css("display", "none");
+
+            // $(event.target).css("background", "#337ab7");
+            // $(event.target).css("border-color", "#337ab7");
+            // $(event.target).text("Specify");
+            clickTarget.html("<img src='/img/game/shovel.svg'>")
+            clickTarget.data('pressed', false);
+            place = false;
+            return;
+        }
+
+        var btns = $(".cropLand").find("button");
+
+        for (var i = 0 ; i < btns.length; i++){
+            if ($(btns[i]).data('pressed')){
+                // $(btns[i]).css("background", "#337ab7");
+                // $(btns[i]).css("border-color", "#337ab7");
+                // $(btns[i]).text("Specify");
+                $(btns[i]).html("<img src='/img/game/shovel.svg'>")
+                $(btns[i]).data('pressed', false);
+            }
+        }
+
+        placeMode = true;
+        clickTarget.data('pressed', true);
+
         $(".farmObject").html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />");
         currentLandId = id;
-        placeMode = !placeMode;
+
         if (placeMode){
             $(".farmObject").css("display", "inline");
 
@@ -687,19 +713,21 @@ Template.gamingArea.events({
             var top = $(event.target)[0].getBoundingClientRect().top;
             var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var landTop = $(".land").position().top;
-            var landLeft = $(".land").position().left;
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
 
             var areaLeft = $(".gamingArea").position().left;
 
             var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()/4;
+            var divWidth = $(".cropObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x;
+            var posY = top+landTop-divHeight-y;
 
             var styles = {
-                top: top-divHeight,
-                left: left-areaLeft+divWidth,
+                top: posY,
+                left: posX,
                 width:"150px",
                 height:"150px",
                 position:"absolute",
@@ -714,17 +742,19 @@ Template.gamingArea.events({
             var top = $(event.target)[0].getBoundingClientRect().top;
             var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var landTop = $(".land").position().top;
-            var landLeft = $(".land").position().left;
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
 
             var areaLeft = $(".gamingArea").position().left;
 
-            var divHeight =$(".farmObject").height()/5;
-            var divWidth = $(".farmObject").width()/4;
+            var divHeight =$(".farmObject").height()/6;
+            var divWidth = $(".farmObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x;
+            var posY = top+landTop-divHeight-y;
 
-            $(".farmObject").css({top: top-divHeight, left: left-areaLeft+divWidth, width:"150px", height:"150px", position:"absolute", opacity:0.5});
+            $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
         }
 
@@ -738,33 +768,69 @@ Template.gamingArea.events({
         $(event.target).prop("disabled", true);
 
     },
-    'click .zoom':function(event){
-        var data = $(".canvas").css("transform");
-        var scale;
+    // 'click .zoom':function(event){
+    //     var data = $(".canvas").css("transform");
+    //     var scale;
+    //     if (data == 'none'){
+    //       scale = 1;
+    //     }else{
+    //       var values = data.split('(')[1];
+    //       values = values.split(')')[0];
+    //       values = values.split(',');
+    //
+    //       var a = values[0];
+    //       var b = values[1];
+    //
+    //       scale = Math.sqrt(a*a + b*b);
+    //       console.log(scale);
+    //     }
+    //     console.log(scale);
+    //
+    //
+    //
+    //     if (event.target.className.split(" ")[1] == 'zoomin' && scale < 1.5){
+    //         scale += 0.1;
+    //     }else if (event.target.className.split(" ")[1] == 'zoomout' && scale > 0.5){
+    //         scale -= 0.1;
+    //
+    //     }
+    //     $(".canvas").css("transform", "scale(" + scale + ")");
+    //
+    // }
+    'click .nav':function(event){
+        var moveSpeed = 30;
+        var data = $(".canvas").css('-webkit-transform');
+        var negativeBoundary = -900;
+        var boundary = 900;
+
+        console.log(data);
+
         if (data == 'none'){
-          scale = 1;
+          x = 0;
+          y = 0;
         }else{
-          var values = data.split('(')[1];
-          values = values.split(')')[0];
-          values = values.split(',');
-
-          var a = values[0];
-          var b = values[1];
-
-          scale = Math.sqrt(a*a + b*b);
-          console.log(scale);
+          data = data.split(/[()]/)[1];
+          x = parseInt(data.split(',')[4]);
+          y = parseInt(data.split(',')[5]);
+          console.log(x)
         }
-        console.log(scale);
 
-
-
-        if (event.target.className.split(" ")[1] == 'zoomin' && scale < 1.5){
-            scale += 0.1;
-        }else if (event.target.className.split(" ")[1] == 'zoomout' && scale > 0.5){
-            scale -= 0.1;
-
+        // console.log(scale);
+        //
+        //
+        //
+        if (event.target.className.split(" ")[1] == 'navUp' && y < boundary){
+            y += moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navDown' && y > negativeBoundary){
+            y -= moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navLeft' && x < boundary){
+            x += moveSpeed;
+        }else if (event.target.className.split(" ")[1] == 'navRight' && x > negativeBoundary){
+            x -= moveSpeed;
         }
-        $(".canvas").css("transform", "scale(" + scale + ")");
+        //$(".canvas").css("transform", "translate(" + x + "px, " +y+ "px)");
+        $('.canvas').css('-webkit-transform',  'translateX(' + x+ 'px) translateY(' + y+ 'px)');
+
 
     }
 })
@@ -785,7 +851,10 @@ function PanelControl(panelIndex){
     if(panelCounter==5){
         set_property_table();
     }
+
+
     if (plantMode){
+
         $(".cropObject").css("display", "none");
         $(".farmObject").css("display", "none");
         // $(currentClickedCrop).css("background", "#337ab7");
@@ -795,6 +864,7 @@ function PanelControl(panelIndex){
         $(currentClickedCrop).data('pressed', false);
         plantMode = false;
     }else if (placeMode){
+
         $(".cropObject").css("display", "none");
         $(".farmObject").css("display", "none");
         // $(currentClickedLand).css("background", "#337ab7");
@@ -802,15 +872,13 @@ function PanelControl(panelIndex){
         $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
         // $(currentClickedLand).text("Specify");
         $(currentClickedLand).data('pressed', false);
-        placeMode = false;
 
     }
+    initAllBtns();
+
 }
 
 Template.statusList.events({
-    //'click .btnSelect': function (e) {
-    //    test(e);
-    //},
     'click .crop2' :function(){
         PanelControl(2);
     },
@@ -823,22 +891,51 @@ Template.statusList.events({
     'click .crop5' :function(){
         PanelControl(5);
     },
-    'click .crop2' :function(){
-        PanelControl(2);
-    },
     'click .removeLand button': function (event){
-          removeMode = !removeMode;
+
+          clickTarget=null;
+          $(".farmObject").css("display", "none");
+
+          if(event.target.className==""){
+            clickTarget=$(event.target).parent();
+          }else{
+            clickTarget=$(event.target);
+          }
+
+          if (clickTarget.data('pressed')){
+
+              clickTarget.html("<img src='/img/game/shovel.svg'>")
+              clickTarget.data('pressed', false);
+              removeMode = false;
+              return;
+          }
+
+          removeMode = true;
+
+          var btns = $(".cropLand").find("button");
+
+          for (var i = 0 ; i < btns.length; i++){
+              if ($(btns[i]).data('pressed')){
+                  // $(btns[i]).css("background", "#337ab7");
+                  // $(btns[i]).css("border-color", "#337ab7");
+                  // $(btns[i]).text("Specify");
+                  $(btns[i]).html("<img src='/img/game/shovel.svg'>")
+                  $(btns[i]).data('pressed', false);
+              }
+          }
+          clickTarget.data('pressed', true);
+
           if (removeMode){
               // $(event.target).css("background", "gray");
               // $(event.target).css("border-color", "gray");
               // $(event.target).text("Done");
-              $(event.target).html("<img src='/img/game/cancel2.svg' width='30px' height='50px'>");
+              clickTarget.html("<img src='/img/game/cancel2.svg' width='30px' height='50px'>");
 
           }else{
               // $(event.target).css("background", "#337ab7");
               // $(event.target).css("border-color", "#337ab7");
               // $(event.target).text("Specify");
-              $(event.target).html("<img src='/img/game/shovel.svg'>");
+              clickTarget.html("<img src='/img/game/shovel.svg'>");
 
           }
           console.log(removeMode);
@@ -854,10 +951,10 @@ Template.statusList.events({
 
 Template.characterList.events({
     'click .characterSwitch': function (event) {
-        PanelControl(5);
         loading(1);
         //need to check boss' id
         if ($(event.target).html() == "Guard"){
+            PanelControl(5);
             showThief = true;
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
@@ -887,6 +984,7 @@ Template.characterList.events({
                 clearInterval(checkMissionInterval);
             }
         }else if ($(event.target).html() == "Thief"){
+            PanelControl(5);
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
             $('.SyndicateExp').css('visibility', 'visible');
@@ -996,8 +1094,40 @@ Template.operationList.events({
 
 
 document.onmousemove = function(e){
+
+
     cursorX = e.pageX;
     cursorY = e.pageY;
+}
+
+var initAllBtns = function(){
+  var btns = $(".cropLand").find("button");
+
+  for (var i = 0 ; i < btns.length; i++){
+      if ($(btns[i]).data('pressed')){
+          // $(btns[i]).css("background", "#337ab7");
+          // $(btns[i]).css("border-color", "#337ab7");
+          // $(btns[i]).text("Specify");
+          $(btns[i]).html("<img src='/img/game/shovel.svg'>")
+          $(btns[i]).data('pressed', false);
+      }
+  }
+
+  var btns = $(".crop").find("button");
+
+  for (var i = 0 ; i < btns.length; i++){
+      if ($(btns[i]).data('pressed')){
+          // $(btns[i]).css("background", "#337ab7");
+          // $(btns[i]).css("border-color", "#337ab7");
+          // $(btns[i]).text("Specify");
+          $(btns[i]).html("<img src='/img/game/rake.svg'>")
+          $(btns[i]).data('pressed', false);
+      }
+  }
+
+  placeMode = false;
+  plantMode = false;
+  removeMode = false;
 }
 
 var eventListener = function(){
@@ -1481,7 +1611,7 @@ var initCropLand = function(id){
             continue;
         }
 
-        //currentCropLand = event.target.className;
+        /*
         var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
         var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
 
@@ -1492,11 +1622,25 @@ var initCropLand = function(id){
 
         var divHeight =$(".cropObject").height()/5;
         var divWidth = $(".cropObject").width()/4;
+        */
+        var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+        var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
+
+        var landTop = ($(".canvas").height()-$(window).height())/2;
+        var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+        var areaLeft = $(".gamingArea").position().left;
+
+        var divHeight =$(".cropObject").height()/5;
+        var divWidth = $(".cropObject").width()*1.65;
         // var divHeight =0;
         // var divWidth = 0;
+        var posX = left+landLeft-areaLeft+divWidth-x;
+        var posY = top+landTop-divHeight-y;
+
         var styles = {
-            top: top-divHeight,
-            left: left-areaLeft+divWidth,
+            top: posY,
+            left: posX,
             width:"150px",
             height:"150px",
             position:"absolute",
@@ -1779,11 +1923,34 @@ var elapsedTime = function(start, end){
 
 get_user_property_setting = function () {
     user_property = [];
-    var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
-    for(i = 0; i < propertyLength;i++){
-        var property_data = usingPropertyInstance.getProperty_Shop(i, {from:web3.eth.accounts[currentAccount]});
-        if(web3.eth.accounts[currentAccount] == property_data[2]){
-            var data = {"id":i, "propertyType":property_data[0].c[0], "name":hex2a(property_data[1]), "propertyCount":property_data[3].c[0],  "tradeable":property_data[4].c[0], "img": web3.toUtf8(property_data[5])};
+    //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+    //alert(propertyLength);
+    var propertyData = usingPropertyInstance.getAllProperty.call({from:web3.eth.accounts[currentAccount]});
+    //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+    //for(i = 0; i < propertyLength.c[0];i++){
+    //    var property_data = usingPropertyInstance.getProperty_Shop(i, {from:web3.eth.accounts[currentAccount]});
+    //    var _propertyType = property_data[0].c[0];
+    //    var _name = web3.toUtf8(property_data[1]);
+    //    var _owner = property_data[2];
+    //    var _propertyCount = property_data[3].c[0];
+    //    var _tradeable = property_data[4].c[0];
+    //    var _img = web3.toUtf8(property_data[5]);
+    //    if(web3.eth.accounts[currentAccount] == _owner){
+    //        if((_propertyCount > 0) || (_tradeable > 0)){
+    //            var data = {"id":i, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
+    //            user_property.push(data);
+    //        }
+    //    }
+    //}
+    for(i = 0; i < propertyData[0].length; i++){
+        var _id = propertyData[0][i].c[0];
+        var _propertyType = propertyData[1][i].c[0]
+        var _name = web3.toUtf8(propertyData[2][i]);
+        var _propertyCount = propertyData[3][i].c[0];
+        var _tradeable = propertyData[4][i].c[0];
+        var _img = web3.toUtf8(propertyData[5][i]);
+        if((_propertyCount > 0) || (_tradeable > 0)){
+            var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
             user_property.push(data);
         }
     }
@@ -1807,8 +1974,7 @@ set_property_table = function(){
     loading(1);
     get_user_property_setting();
     loading(0);
-    var table, tr, td, heart_path, heart_status;
-    heart_path = ['./img/heart-outline.png','./img/heart_filled.png'];
+    var table, tr, td;
 
     $('.tradeable_content').html('');
     table = $('<table></table>').attr('id', 'property_trade_table')
@@ -1823,60 +1989,55 @@ set_property_table = function(){
     //header
     //content
     for(i = 0; i < user_property.length; i++){
-        if((parseInt(user_property[i].propertyCount,10) == 0) &&  (parseInt(user_property[i].tradeable,10) == 0)){
-            //don't hold any stock
-        }
-        else{
-            tr = $('<tr></tr>');
-            td = $('<td></td>');
-            td.append($('<img></img>', {
-                src:prefix+user_property[i].img + postfix,
-                style:'width:50px; height:50px'
-            }));
-            tr.append(td);
-            td = $('<td></td>');
-            td.text(user_property[i].name);
-            tr.append(td);
-            td = $('<td></td>');
-            td.text(user_property[i].propertyCount);
-            tr.append(td);
-            td = $('<td></td>');
-            td.append(
-                    $('<input></input>',{
-                        type:'text',
-                        class:'shop_tradable_input',
-                        id:'tradable_input_' + user_property[i].id,
-                        value:user_property[i].tradeable
-                    })
-                    .on('keydown',function (e) {
-                        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-                            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                            (e.keyCode >= 35 && e.keyCode <= 40)) {
-                            return;
-                        }
-                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                            e.preventDefault();
-                        }
-                    })
-                    .on('change',function(e){
-                        var _id = index_finder($(this).attr('id'), 'tradable_input_');
-                        if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
-                            $(this).val($('#shop_stock_' + _id).val());
-                        }
-                        $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
-                    })
-                    .on('click', function(){
-                        $(this).select();
-                    })
-                    );
-            td.append($('<input></input>',{
-                type:'hidden',
-                id:'shop_stock_' + user_property[i].id,
-                value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
-            }));
-            tr.append(td);
-            table.append(tr);
-        }
+        tr = $('<tr></tr>');
+        td = $('<td></td>');
+        td.append($('<img></img>', {
+            src:prefix+user_property[i].img + postfix,
+            style:'width:50px; height:50px'
+        }));
+        tr.append(td);
+        td = $('<td></td>');
+        td.text(user_property[i].name);
+        tr.append(td);
+        td = $('<td></td>');
+        td.text(user_property[i].propertyCount);
+        tr.append(td);
+        td = $('<td></td>');
+        td.append(
+                $('<input></input>',{
+                    type:'text',
+                    class:'shop_tradable_input',
+                    id:'tradable_input_' + user_property[i].id,
+                    value:user_property[i].tradeable
+                })
+                .on('keydown',function (e) {
+                    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                        (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                        (e.keyCode >= 35 && e.keyCode <= 40)) {
+                        return;
+                    }
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                })
+                .on('change',function(e){
+                    var _id = index_finder($(this).attr('id'), 'tradable_input_');
+                    if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
+                        $(this).val($('#shop_stock_' + _id).val());
+                    }
+                    $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
+                })
+                .on('click', function(){
+                    $(this).select();
+                })
+                );
+        td.append($('<input></input>',{
+            type:'hidden',
+            id:'shop_stock_' + user_property[i].id,
+            value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
+        }));
+        tr.append(td);
+        table.append(tr);
     }
     //content
     //control bar
