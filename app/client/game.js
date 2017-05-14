@@ -750,12 +750,13 @@ Template.gamingArea.events({
             var landLeft = ($(".canvas").width()-$(window).width())/2;
 
             var areaLeft = $(".gamingArea").position().left;
+            var resizeOffsetX = (screen.width- $(window).width())/6.5;
 
             var divHeight =$(".cropObject").height()/5;
             var divWidth = $(".cropObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
-            var posX = left+landLeft-areaLeft+divWidth-x;
+            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
             var posY = top+landTop-divHeight-y;
 
             var styles = {
@@ -780,11 +781,14 @@ Template.gamingArea.events({
 
             var areaLeft = $(".gamingArea").position().left;
 
+            var resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+
             var divHeight =$(".farmObject").height()/6;
             var divWidth = $(".farmObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
-            var posX = left+landLeft-areaLeft+divWidth-x;
+            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
             var posY = top+landTop-divHeight-y;
 
             $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
@@ -1127,8 +1131,6 @@ Template.operationList.events({
 
 
 document.onmousemove = function(e){
-
-
     cursorX = e.pageX;
     cursorY = e.pageY;
 }
@@ -1661,14 +1663,16 @@ var initCropLand = function(id){
         var landTop = ($(".canvas").height()-$(window).height())/2;
         var landLeft = ($(".canvas").width()-$(window).width())/2;
 
-        console.log($(window).width());
+        var resizeOffsetX = ($(window).width()-400)/6.5;
         var areaLeft = $(".gamingArea").position().left;
-
+        //console.log(areaLeft)
         var divHeight =$(".cropObject").height()/5;
-        var divWidth = $(".cropObject").width()*1.65;
+        var divWidth = $(".cropObject").width()/1.65;
         // var divHeight =0;
         // var divWidth = 0;
-        var posX = left+landLeft-areaLeft+divWidth-x;
+        var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+        //var posX = left+landLeft+divWidth-x;
+
         var posY = top+landTop-divHeight-y;
 
         var styles = {
