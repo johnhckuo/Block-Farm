@@ -663,5 +663,5 @@ input, textarea{
 
 .hvr-submit:active{
   position: relative;
-  top: 2px;
+  top: 0.1px;
 }
