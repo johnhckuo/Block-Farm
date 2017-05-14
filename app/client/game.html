@@ -163,7 +163,9 @@
 
 <template name="logo">
     <div class="logo">
-        <img src="/img/BlockFarm.png" alt="">
+        <a href="/">
+          <img src="/img/BlockFarm.png" alt="">
+        </a>
     </div>
 </template>
 
@@ -226,22 +228,24 @@
 <template name="gamingArea">
     <div class = "gamingArea">
         <div class="levelUp">
-          <h2>Level Up !</h2>
-          <div class="levelUpArrow">
-            <img src="/img/game/levelup_arrow.svg" alt="">
-          </div>
+          <div class="levelUpFlex">
+            <h2>Level Up !</h2>
+            <div class="levelUpArrow">
+              <img src="/img/game/levelup_arrow.svg" alt="">
+            </div>
 
-          <div class="circleL">
-            <img src="/img/game/levelup_circle_1.svg" alt="">
-          </div>
-          <div class="circleM">
-            <img src="/img/game/levelup_circle_2.svg" alt="">
-          </div>
-          <div class="circleS">
-            <img src="/img/game/levelup_circle_3.svg" alt="">
-          </div>
-          <div class="levelUpText">
-            <h2>{{currentLevel}}</h2>
+            <div class="circleL">
+              <img src="/img/game/levelup_circle_1.svg" alt="">
+            </div>
+            <div class="circleM">
+              <img src="/img/game/levelup_circle_2.svg" alt="">
+            </div>
+            <div class="circleS">
+              <img src="/img/game/levelup_circle_3.svg" alt="">
+            </div>
+            <div class="levelUpText">
+              <h2>{{currentLevel}}</h2>
+            </div>
           </div>
         </div>
 

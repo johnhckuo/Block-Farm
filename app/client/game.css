@@ -995,16 +995,22 @@ td img{
   position: absolute;
   width: 50%;
   height: 50%;
+  display: none;
+}
+
+.levelUpFlex{
+  position: absolute;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10;
   background: rgba(0,0,0,0.8);
   border-radius: 10%;
-
 }
 
-.levelUp h2{
+.levelUpFlex h2{
   position: absolute;
   top:10%;
   color:white;
@@ -1012,7 +1018,7 @@ td img{
 
 }
 
-.levelUp div{
+.levelUpFlex div{
   position: absolute;
   width:50%;
   height: 50%;
@@ -1026,7 +1032,7 @@ td img{
 
 }
 
-.levelUp img{
+.levelUpFlex img{
   animation-name: levelUpCircle;
   animation-iteration-count:infinite;
   animation-timing-function: linear;

@@ -1,6 +1,6 @@
 import { Session } from 'meteor/session';
 
-currentAccount = 1;
+currentAccount = 2;
 cropsPerLvl =3;
 
 cropTypeList = [
@@ -245,13 +245,6 @@ landTypeList = [
       name: "Dirt",
       img: "land",
       count:0,
-  },
-  {
-      id:1,
-      name: "Water",
-      img: "pond",
-      count:0,
-
   }
 
 ];
