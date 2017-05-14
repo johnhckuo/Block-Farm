@@ -1,7 +1,6 @@
 import { Session } from 'meteor/session';
 
-
-currentAccount = 4;
+currentAccount = 1;
 var cropsPerLvl =3;
 
 var cropTypeList = [
@@ -346,18 +345,19 @@ function init(event){
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       //sweetAlert("Oops...", "There was an error fetching your accounts.", "error");
-      account = null;
+      Session.set('account', "An Error Has Occured");
       return;
     }
 
     if (accs.length == 0) {
       //sweetAlert("Oops...", "Couldn't get any accounts! Make sure your Ethereum client is configured correctly.", "error");
-      account = null;
+      Session.set('account', "Account Not Found");
       return;
     }
 
     accounts = accs;
     account = accounts[currentAccount];
+    Session.set('account', account);
     //alert(account)
   });
 }

@@ -64,11 +64,13 @@ if (Meteor.isClient) {
   Template.index.helpers({
 
       currentAddress: function(){
-        if (typeof account == 'undefined'){
-          return "Account Not Found";
-        }else{
-          return web3.eth.accounts[currentAccount];
-        }
+        //if (typeof account == 'undefined'){
+        //   return "Account Not Found";
+        // }else{
+        //   return web3.eth.accounts[currentAccount];
+        // }
+
+        return Session.get("account");
       },
       currentAccount: function(){
         var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
