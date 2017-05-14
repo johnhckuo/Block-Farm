@@ -172,6 +172,69 @@ var cropTypeList = [
         count:4,
         time:"0.0.30.0"
 
+    },
+    {
+        id:21,
+        name: "Mushroom",
+        img: ["mushroom_seed", "mushroom_grow", "mushroom_harvest", "mushroom"],
+        count:4,
+        time:"0.1.0.0"
+    },
+    {
+        id:22,
+        name: "Cactus",
+        img: ["cactus_seed", "cactus_grow", "cactus_harvest", "cactus"],
+        count:4,
+        time:"0.1.0.0"
+    },
+    {
+        id:23,
+        name: "Banana",
+        img: ["banana_seed", "banana_grow", "banana_harvest", "banana"],
+        count:4,
+        time:"0.1.0.0"
+    },
+    {
+        id:24,
+        name: "Cupcake",
+        img: ["cupcake_seed", "cupcake_grow", "cupcake_harvest", "cupcake"],
+        count:4,
+        time:"0.2.0.0"
+    },
+    {
+        id:25,
+        name: "Doughnut",
+        img: ["doughnut_seed", "doughnut_grow", "doughnut_harvest", "doughnut"],
+        count:4,
+        time:"0.2.0.0"
+    },
+    {
+        id:26,
+        name: "Gingerbread Man",
+        img: ["gingerbread_man_seed", "gingerbread_man_grow", "gingerbread_man_harvest", "gingerbread_man"],
+        count:4,
+        time:"0.2.0.0"
+    },
+    {
+        id:27,
+        name: "Egg",
+        img: ["egg_seed", "egg_grow", "egg_harvest", "egg"],
+        count:4,
+        time:"0.4.0.0"
+    },
+    {
+        id:28,
+        name: "Chicken",
+        img: ["chicken_seed", "chicken_grow", "chicken_harvest", "chicken"],
+        count:4,
+        time:"0.4.0.0"
+    },
+    {
+        id:29,
+        name: "Report",
+        img: ["report_seed", "report_grow", "report_harvest", "report"],
+        count:4,
+        time:"0.4.0.0"
     }
 
 
@@ -282,52 +345,24 @@ var missionItem = [
 function init(event){
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
-      alert("There was an error fetching your accounts.");
+      //sweetAlert("Oops...", "There was an error fetching your accounts.", "error");
+      account = null;
       return;
     }
 
     if (accs.length == 0) {
-      alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
+      //sweetAlert("Oops...", "Couldn't get any accounts! Make sure your Ethereum client is configured correctly.", "error");
+      account = null;
       return;
     }
 
     accounts = accs;
-    account = accounts[0];
+    account = accounts[currentAccount];
     //alert(account)
   });
 }
 
 
-function initGameConfig(){
-
-    for(var i = 0 ; i < MissionList.length; i++){
-        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    for(var i = 0; i < missionItem.length; i++){
-        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    console.log("Mission added");
-
-    for (var i = 0 ; i < cropTypeList.length ; i++){
-       usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
-    }
-
-    for (var i = 0 ; i < landTypeList.length ; i++){
-        usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    }
-
-
-    var length = usingPropertyInstance.getPropertyTypeLength({ from:web3.eth.accounts[currentAccount]});
-    usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", { from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    for(var i = 0; i < length; i++){
-        usingPropertyInstance.initUserProperty(i, { from:web3.eth.accounts[currentAccount], gas:2000000});
-    }
-    console.log("Init Complete");
-
-
-}
 
 Template.index.created = function() {
     $.getScript('scripts/buttons.js');
@@ -336,15 +371,7 @@ Template.index.created = function() {
     Session.set('currentAccount', currentAccount);
     Session.set('cropsPerLvl', cropsPerLvl);
 
-    try{
-      var val = usingPropertyInstance.propertyTypeList(0);
-      console.log("=========== Data Inited ===========");
 
-    }
-    catch(err){
-      initGameConfig();
-      console.log(err);
-    }
 
     // try{
     //   console.log("data inited");

@@ -22,17 +22,6 @@ body{
   /*align-items: center;*/
   background: white;
 }
-.indexHeader{
-  position: absolute;
-  display:flex;
-  align-items: center;
-  width:100vw;
-  height:50px;
-  color:#fff;
-  top:100vh;
-  background: rgba(0,0,0,0.5);
-  z-index: 100;
-}
 
 .header{
   position: absolute;
@@ -46,17 +35,31 @@ body{
 }
 
 .header ul{
-  display:flex;
-  justify-content: space-around;
+  display: flex;
   align-items: center;
-  width:100%;
-  right:10px;
+  width:100vw;
+  height:20vh;
 }
-.header ul li{
-  display: inline;
-  cursor: pointer;
 
+.header span{
+  position: absolute;
+  right:100px;
+  height: 100%;
 }
+
+.header span li{
+  position: relative;
+  display: block;
+  float: left;
+  cursor: pointer;
+  top:0px;
+  height: 100%;
+  width:250px;
+  text-align: center;
+  line-height: 150px;
+}
+
+
 .header a{
   color:#BFBFBF;
   font-family: "franklin-gothic-urw", "sans-serif";
@@ -64,13 +67,17 @@ body{
 }
 
 .header ul div{
-  width: 30%;
-  height: 100%;
+  position: relative;
+  left: 80px;
+  top:30px;
+  width: 360px;
+  height: 220px;
+
 }
 
 .header img{
   width: 100%;
-  heig: 100%;;
+  height: 100%;;
 }
 .header ul li:hover{
   color:rgb(150,150,255);
@@ -138,6 +145,12 @@ h3{
   padding:30px;
 
 }
+
+.titleContainer h1{
+  line-height: 80px;
+
+}
+
 .titleContainer span{
   position: relative;
   background: #000;
@@ -581,4 +594,74 @@ input, textarea{
     background-color:#000;
     color: #FFF;
     border-color: #000;
+}
+
+.btn-group{
+  float:none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.hvr-submit {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px transparent;
+  position: relative;
+  background: white;
+  -webkit-transition-property: color;
+  transition-property: color;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+
+  border-style: none;
+  border-radius: 10px;
+  margin: 15px;
+  font-size: 20px;
+  height: 4vh;
+  width: 12vw;
+  color:black;
+
+  top:-20px;
+
+  float:none;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hvr-submit:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /*background-color: rgb(86, 142, 92);*/
+  /*background-color: rgb(144, 176, 232);*/
+  background-color: #33CCFF;
+  -webkit-transform: scale(0);
+  transform: scale(0);
+  -webkit-transition-property: transform;
+  transition-property: transform;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  border-radius: 10px;
+}
+
+.hvr-submit:hover{
+  color:black;
+}
+
+.hvr-submit:hover:before{
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+.hvr-submit:active{
+  position: relative;
+  top: 2px;
 }

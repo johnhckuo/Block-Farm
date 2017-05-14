@@ -64,7 +64,11 @@ if (Meteor.isClient) {
   Template.index.helpers({
 
       currentAddress: function(){
-        return web3.eth.accounts[currentAccount];
+        if (typeof account == 'undefined'){
+          return "Account Not Found";
+        }else{
+          return web3.eth.accounts[currentAccount];
+        }
       },
       currentAccount: function(){
         var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
@@ -110,6 +114,15 @@ if (Meteor.isClient) {
         event.preventDefault();
         var name = $(".s_Name").val();
 
+        if (name.trim() == ""){
+          sweetAlert("Oops...", "Please enter your username !", "error");
+        }else if (typeof character == 'undefined'){
+          sweetAlert("Oops...", "Please choose your character !", "error");
+
+        }else if (account == null){
+          sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
+
+        }
         //alert(web3.eth.accounts[currentAccount]);
         var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468});
         var s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
