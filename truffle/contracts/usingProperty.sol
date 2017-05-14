@@ -4,25 +4,16 @@ import "./StringUtils.sol";
 contract Congress{
 
     mapping (address => uint) public stakeholderId;
-
     function addProperty(uint _id, uint p_Id);
     function getStakeholdersLength() constant returns(uint);
-
     function getStakeholder(uint s_Id) constant returns(bytes32, uint256, uint256, uint, address, uint, bytes32);
-
     function getPropertyId(uint s_Id, uint index) constant returns(uint);
-
     function getStakeholderPropertyCount(uint s_Id) constant returns(uint);
 }
 
 contract usingProperty{
 
     event propertyAdded(bytes32);
-    event propertyUpdated(uint);
-    event updatedPropertiesCalled();
-    event propertyNewed(uint);
-    event propertyInited(uint);
-    event propertyRatinglength_testing(uint);
 
     struct PropertyType{
         bytes32 name;
@@ -141,8 +132,7 @@ contract usingProperty{
         prop.propertyType = pt.id;
         prop.tradeable = 0;
     }
-
-
+    
     function getAllProperty() constant returns(uint[], uint[], bytes32[], uint[], uint[], bytes32[]){
         uint length = propertyList.length;
 
@@ -220,21 +210,15 @@ contract usingProperty{
         return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
-    function getProperty_Shop(uint p_Id) constant returns(uint, bytes32, address, uint, uint, bytes32){
-        return (propertyList[p_Id].propertyType, propertyTypeList[propertyList[p_Id].propertyType].name, propertyList[p_Id].owner, propertyList[p_Id].propertyCount, propertyList[p_Id].tradeable, propertyTypeList[propertyList[p_Id].propertyType].img[3]);
-    }
-
     function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint){
         return (propertyList[p_Id].propertyType, propertyList[p_Id].owner, propertyList[p_Id].propertyCount);
     }
-
 
     function getPartialProperty(uint p_Id) constant returns(address){
         return (propertyList[p_Id].owner);
     }
 
     function getPropertyRatingLength(uint p_Id) constant returns(uint){
-        propertyRatinglength_testing(propertyTypeList[p_Id].rating.length);
         return propertyTypeList[p_Id].rating.length;
     }
 
@@ -243,20 +227,14 @@ contract usingProperty{
     }
 
     function updatePropertyCount_Sudo(uint _id, uint _propertyCount, uint _tradeable){
-
         propertyList[_id].propertyCount = _propertyCount;
         propertyList[_id].tradeable = _tradeable;
-
     }
 
     function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
-
         if(propertyList[_id].owner == msg.sender){
             propertyList[_id].propertyCount = _propertyCount;
             propertyList[_id].tradeable = _tradeable;
-        }
-        else{
-            throw;
         }
     }
 
@@ -264,9 +242,6 @@ contract usingProperty{
         if(propertyList[_id].owner == msg.sender){
             uint currentCount = propertyList[_id].propertyCount;
             propertyList[_id].propertyCount = currentCount + _croppedCount;
-        }
-        else{
-            // throw;
         }
     }
 
@@ -453,7 +428,6 @@ contract usingProperty{
         ----------------------------------  */
 
     function updatePropertyTypeRating(uint _id, uint rate, string operation){
-        updatedPropertiesCalled();
         if (StringUtils.equal(operation,"update")){
 
             uint length = congress.getStakeholdersLength();
@@ -497,8 +471,9 @@ contract usingProperty{
     }
 
 
-    function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, bytes32, uint){
-        return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].time, propertyTypeList[p_Id].harvestUnit);
+    function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, uint){
+        uint s_Id = congress.stakeholderId(msg.sender);
+        return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].rating[s_Id]);
     }
 
     function getPropertyTypeId(uint p_Id) constant returns(uint){
@@ -511,11 +486,6 @@ contract usingProperty{
 
     function getPropertyType_forMission(uint p_id, uint cropStage) constant returns(bytes32, uint, bytes32){
         return(propertyTypeList[p_id].name, propertyTypeList[p_id].id, propertyTypeList[p_id].img[cropStage]);
-    }
-
-    function getPropertyTypeRating(uint p_id) constant returns(uint){
-        uint s_Id = congress.stakeholderId(msg.sender);
-        return propertyTypeList[p_id].rating[s_Id];
     }
 
     function getPropertyTypeLength() constant returns(uint){

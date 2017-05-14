@@ -2020,10 +2020,12 @@ get_propertyType_setting = function(){
 
     for(i = 0; i < propertyTypeLength.c[0]; i++){
         var property_type = usingPropertyInstance.getPropertyType.call(i,currentAccount, {from:web3.eth.accounts[currentAccount]});
-        var property_type_rating = usingPropertyInstance.getPropertyTypeRating.call(i,{from:web3.eth.accounts[currentAccount]});
-        console.log(property_type_rating);
+        var _name = web3.toUtf8(property_type[0]);
+        var _id =  property_type[1].c[0];
+        var _rating = property_type[3].c[0]/floatOffset;
+        var _averageRating = property_type[2].c[0]/floatOffset;
 
-        var data = {"name":hex2a(property_type[0]),"id": property_type[1].c[0],"rating":property_type_rating.c[0]/floatOffset,"averageRating":property_type[2].c[0]/floatOffset};
+        var data = {"name": _name,"id":_id, "rating": _rating, "averageRating":_averageRating};
         display_field.push(data);
     }
 }
@@ -2232,24 +2234,42 @@ var mission_list = [];
 get_mission_list = function(){
     var item, result, _cropId, _cropName, _quantity, _missionId, _missionName, _exp, _lvl_limitation, _accountStatus;
     var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]});
+    var mission_source = GameCoreInstance.getMission.call({from:web3.eth.accounts[currentAccount]});
     mission_list = [];
 
-    for(i = 0; i < mission_count.c[0]; i++){
-        mission_source = GameCoreInstance.getMission.call(i, {from:web3.eth.accounts[currentAccount]});
-        item_length = GameCoreInstance.getMissionItemsLength.call(i, {from:web3.eth.accounts[currentAccount]});
-        mission = {id: i, name:$.trim(web3.toUtf8(mission_source[0])), exp: mission_source[1].c[0], lvl_limitation: mission_source[2].c[0], solved:mission_source[3],items:[]};
 
-        if(mission.lvl_limitation ===999){}
-        else{
-            for(j = 0; j < item_length.c[0];j++){
-                item_source = GameCoreInstance.getMissionItems.call(i, j, {from:web3.eth.accounts[currentAccount]});
-                item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
-                mission.items.push(item);
-            }
-            mission_list.push(mission);
+    for(i = 0; i < mission_source[0].length; i++){
+        var _id = mission_source[0][i].c[0];;
+        var _name = web3.toUtf8(mission_source[1][i]);
+        var _exp = mission_source[2][i].c[0];
+        var _limitation = mission_source[3][i].c[0];
+        var _solved = mission_source[4][i];
+        mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
+
+        item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
+        for(j = 0; j < item_source[0].length; j++){
+            var _crop_id = item_source[0][j].c[0];
+            var res = find_propertyInfo(_crop_id);
+            var _crop_name = res.name;
+            var _quantity = item_source[1][j].c[0];
+            var _img = res.img;
+            // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
+            item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
+            mission.items.push(item);
+        }
+        mission_list.push(mission);
+    }
+}
+
+find_propertyInfo = function(item_id){
+    for(k = 0; k < user_property.length; k++){
+        if(user_property[k].propertyType == item_id){
+            target_crop = {crop_name: user_property[k].name, img: user_property[k].img};
+            return(target_crop);
         }
     }
 }
+
 mission_rending = function(){
     loading(1);
     get_mission_list();
