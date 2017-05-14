@@ -282,52 +282,24 @@ var missionItem = [
 function init(event){
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
-      alert("There was an error fetching your accounts.");
+      //sweetAlert("Oops...", "There was an error fetching your accounts.", "error");
+      account = null;
       return;
     }
 
     if (accs.length == 0) {
-      alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
+      //sweetAlert("Oops...", "Couldn't get any accounts! Make sure your Ethereum client is configured correctly.", "error");
+      account = null;
       return;
     }
 
     accounts = accs;
-    account = accounts[0];
+    account = accounts[currentAccount];
     //alert(account)
   });
 }
 
 
-function initGameConfig(){
-
-    for(var i = 0 ; i < MissionList.length; i++){
-        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    for(var i = 0; i < missionItem.length; i++){
-        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    console.log("Mission added");
-
-    for (var i = 0 ; i < cropTypeList.length ; i++){
-       usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
-    }
-
-    for (var i = 0 ; i < landTypeList.length ; i++){
-        usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    }
-
-
-    var length = usingPropertyInstance.getPropertyTypeLength({ from:web3.eth.accounts[currentAccount]});
-    usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", { from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    for(var i = 0; i < length; i++){
-        usingPropertyInstance.initUserProperty(i, { from:web3.eth.accounts[currentAccount], gas:2000000});
-    }
-    console.log("Init Complete");
-
-
-}
 
 Template.index.created = function() {
     $.getScript('scripts/buttons.js');
@@ -336,15 +308,7 @@ Template.index.created = function() {
     Session.set('currentAccount', currentAccount);
     Session.set('cropsPerLvl', cropsPerLvl);
 
-    try{
-      var val = usingPropertyInstance.propertyTypeList(0);
-      console.log("=========== Data Inited ===========");
 
-    }
-    catch(err){
-      initGameConfig();
-      console.log(err);
-    }
 
     // try{
     //   console.log("data inited");
