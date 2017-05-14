@@ -89,36 +89,7 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 
 
 
-function initGameConfig(){
 
-    for(var i = 0 ; i < MissionList.length; i++){
-        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    for(var i = 0; i < missionItem.length; i++){
-        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    console.log("Mission added");
-
-    for (var i = 0 ; i < cropTypeList.length ; i++){
-       usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
-    }
-
-    for (var i = 0 ; i < landTypeList.length ; i++){
-        usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    }
-
-
-    var length = usingPropertyInstance.getPropertyTypeLength({ from:web3.eth.accounts[currentAccount]});
-    usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", { from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    for(var i = 0; i < length; i++){
-        usingPropertyInstance.initUserProperty(i, { from:web3.eth.accounts[currentAccount], gas:2000000});
-    }
-    console.log("Init Complete");
-
-
-}
 
 
 /////////////////
@@ -127,15 +98,7 @@ function initGameConfig(){
 
 Template.gameIndex.created = function() {
 
-    try{
-      var val = usingPropertyInstance.propertyTypeList(0);
-      console.log("=========== Data Inited ===========");
 
-    }
-    catch(err){
-      initGameConfig();
-      console.log(err);
-    }
 
     //------
     s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
@@ -574,12 +537,12 @@ Template.gameIndex.events({
                     if(judgement >= 0.5){
                         stealResult = true;
                         stolenFlag = $(event.target).parent().attr("stolenFlag");
-                        
+
                         $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                         $(".scoreObject").html("+" + 5 +"XP");
                         updateStaminaBar(staminaList["steal"]);
                         updateSyndicateExp(5);
-                    
+
 
                         var landTop = $(".land").position().top;
                         var landLeft = $(".land").position().left;
@@ -626,7 +589,7 @@ Template.gameIndex.events({
                         updateStaminaBar(staminaList["stealFail"]);
                     }
                     CongressInstance.updateStealRecord(s_Id, stealResult, {from:web3.eth.accounts[currentAccount], gas:2000000});
-                } 
+                }
                 else{
                     sweetAlert("Oops...", "Don't be so greedy", "error");
                     return;
@@ -1954,7 +1917,7 @@ var cropSummaryUpdate = function(){
             $(".currentCrop"+cropList[i].id).parent().remove();
             continue;
         }
-        
+
 
 
         //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";

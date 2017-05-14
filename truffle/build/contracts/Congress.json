@@ -607,13 +607,13 @@
       "address": "0x332a6ca427fae8f377b6cb91053194bf776d1f9d",
       "updated_at": 1494164901426
     },
-    "1494749258678": {
+    "1494750061621": {
       "events": {},
       "links": {},
-      "address": "0x6d66192f27097374079d762e4faf1f60978b4544",
-      "updated_at": 1494749331950
+      "address": "0x3b05390d343df99bc759cbf5fb027049700acf14",
+      "updated_at": 1494750423230
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1494749331950
+  "updated_at": 1494750423230
 }

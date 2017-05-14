@@ -64,11 +64,6 @@ if (Meteor.isClient) {
   Template.index.helpers({
 
       currentAddress: function(){
-        //if (typeof account == 'undefined'){
-        //   return "Account Not Found";
-        // }else{
-        //   return web3.eth.accounts[currentAccount];
-        // }
 
         return Session.get("account");
       },
@@ -134,7 +129,7 @@ if (Meteor.isClient) {
 
         var length = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
         console.log(length);
-        var tx = usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:251468});
+        var tx = usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:2514068});
         //create user's property at first time 4/30 kokokon
         for(i = 0; i < length; i++){
             usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468});
