@@ -249,30 +249,26 @@ contract usingProperty{
 
     }
 
-        function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
+    function updatePropertyCount(uint _id, uint _propertyCount, uint _tradeable){
 
-            if(propertyList[_id].owner == msg.sender){
-                propertyList[_id].propertyCount = _propertyCount;
-                propertyList[_id].tradeable = _tradeable;
-            }
-            else{
-                throw;
-            }
+        if(propertyList[_id].owner == msg.sender){
+            propertyList[_id].propertyCount = _propertyCount;
+            propertyList[_id].tradeable = _tradeable;
         }
-
-    function updatePropertyCount_Cropped(uint _pt_Id, uint _croppedCount){
-        for(uint i = 0; i < propertyList.length; i++){
-            if((propertyList[i].owner == msg.sender)&&(propertyList[i].propertyType == _pt_Id)){
-                uint currentCount = propertyList[i].propertyCount;
-                propertyList[i].propertyCount = currentCount + _croppedCount;
-                break;
-            }
-            else{
-                // throw;
-            }
+        else{
+            throw;
         }
     }
 
+    function updatePropertyCount_Cropped(uint _id, uint _croppedCount){
+        if(propertyList[_id].owner == msg.sender){
+            uint currentCount = propertyList[_id].propertyCount;
+            propertyList[_id].propertyCount = currentCount + _croppedCount;
+        }
+        else{
+            // throw;
+        }
+    }
 
     function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount){
         propertyList[_id].propertyCount = _propertyCount;
