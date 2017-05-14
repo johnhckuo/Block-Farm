@@ -1657,9 +1657,11 @@ var initCropLand = function(id){
         var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
         var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
 
+
         var landTop = ($(".canvas").height()-$(window).height())/2;
         var landLeft = ($(".canvas").width()-$(window).width())/2;
 
+        console.log($(window).width());
         var areaLeft = $(".gamingArea").position().left;
 
         var divHeight =$(".cropObject").height()/5;
