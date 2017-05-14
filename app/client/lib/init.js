@@ -245,13 +245,6 @@ landTypeList = [
       name: "Dirt",
       img: "land",
       count:0,
-  },
-  {
-      id:1,
-      name: "Water",
-      img: "pond",
-      count:0,
-
   }
 
 ];
