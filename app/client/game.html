@@ -52,8 +52,10 @@
         <!-- <div class="cropListButton statusListButton"> -->
         <div class="plantPanel statusPanel listbutton" style="z-index:-1;">
           <div class="statusPanelList">
-              <h2>Crop List</h2>
-              <hr>
+              <div class="listHeader">
+                <h2>Crop List</h2>
+                <hr>
+              </div>
               <div class="cropListDiv">
               {{#each crops}}
                       {{> crop}}
@@ -70,7 +72,9 @@
         <div class="cropPanel statusPanel listbutton" style="z-index:-1;">
             <div class="statusPanelList">
               <div class="summaryBoard">
-                  <h2>Current Crop Summary</h2>
+                  <div class="currentList listHeader">
+                    <h2>Current Crop Summary</h2>
+                    <hr/>
                   <!-- <table id="cropTableTittle">
                     <tr>
                       <th> </th>
@@ -78,6 +82,7 @@
                       <th>Time Left</th>
                     </tr>
                   </table> -->
+                  </div>
                   <table id="cropTable" class="">
                     <tbody>
                       <tr>
@@ -102,8 +107,10 @@
         <!-- <div class="landListButton statusListButton"> -->
         <div class="landPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
-              <h2>Land List</h2>
-              <hr>
+              <div class="listHeader">
+                <h2>Land List</h2>
+                <hr>
+              </div>
               <div class="landList">
               {{#each lands}}
                       {{> land}}
@@ -125,6 +132,10 @@
 
         <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
           <div class="statusPanelList">
+            <div class="listHeader">
+              <h2>Stock</h2>
+              <hr>
+            </div>
             <div class="tradeable_content">
 
             </div>
@@ -188,11 +199,11 @@
             </div>
         </div>
         <div class="functionSwitch">
-              <button type="button" name="button" class="btn btn-primary test">Test</button>
+              <button type="button" name="button" class="btn-primary test">Test</button>
 
-              <button type="button" name="button" class="btn btn-primary characterSwitch">{{characterType}}</button>
-              <button type="button" name="button" class="btn btn-primary matchmaking">Matching Making</button>
-              <button type="button" name="button" class="btn btn-primary confirmMatches">Check</button>
+              <button type="button" name="button" class="btn-primary characterSwitch">{{characterType}}</button>
+              <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
+              <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
 
               <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
 

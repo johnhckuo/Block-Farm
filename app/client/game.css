@@ -61,7 +61,18 @@
   transition: all 1s;
   opacity: 1;
 }
-
+.listHeader{
+  margin-right: -3vw;
+  width: 25vw;
+  font-size: 25px;
+}
+.listHeader hr{
+  border-top: 1.5px solid rgb(130, 203, 209);
+  margin-top: 15px;
+}
+.listHeader.currentList{
+  font-size: 23px;
+}
 /****************/
 
 .operationList{
@@ -71,6 +82,7 @@
     z-index: 20000;
     background: rgba(0, 0, 0, 0);
     right: 0px;
+    top:20vh;
     color:white;
     display: flex;
     flex-direction: row;
@@ -306,12 +318,12 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  font-size: 25px;
+  font-size: 18px;
 }
 
-.crop *{
+/*.crop *{
   margin-left: 20px;
-}
+}*/
 
 .crop img{
   height:50px;
@@ -319,6 +331,8 @@
 .cropListDiv{
   height: 55vh;
   overflow: auto;
+  margin-right: -3vw;
+  width: 25vw;
 }
 .farm{
   width:150px;
@@ -371,7 +385,7 @@
 #cropTable tbody{
   width: 25vw;
 }
-#cropTable th:nth-child(1){
+/*#cropTable th:nth-child(1){
   width: 20vw;
 }
 #cropTable th:nth-child(2){
@@ -379,23 +393,33 @@
 }
 #cropTable th:nth-child(3){
   width: 80vw;
-}
-#cropTable tr:first-child{
+}*/
+/*#cropTable tr:first-child{
   position: absolute;
   z-index: 100;
   width: 25vw;
   background-color: rgb(227, 247, 199);
-}
-#cropTable td:nth-child(1){
-  vertical-align: bottom;
+  margin-bottom: 25px;
+}*/
+/*#cropTable td:nth-child(1){
+  vertical-align: middle;
   height: 7vh;
+}*/
+#cropTable th{
+  vertical-align: middle;
+  height: 5vh;
+  font-size: 18px;
+  width:20vw;
 }
 #cropTable td{
   vertical-align: middle;
-  font-size: 18px
+  height: 7vh;
+  font-size: 15px
 }
 #cropTable img{
-  margin-bottom: -15px;
+  /*margin-bottom: -15px;*/
+  height: 40px;
+  width: 40px;
 }
 #cropTable td:nth-child(1){
   width: 10vw;
@@ -411,9 +435,8 @@
   z-index: 6;
   height:80vh;
   width:45vw;
-  margin-top:50px;
+  /*margin-top:50px;*/
   left: 40vw;
-  padding: 10px;
   background-color:rgba(255,255,255,0.8);
   display:none;
   text-align:center;
@@ -428,17 +451,30 @@
   color: black;
   border-style: none;
 }
+.mission_header{
+  display: flex;
+  height: 5vh;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(130, 203, 209);
+  color: rgb(255, 255, 255);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
 .mission_content{
   overflow: auto;
-  height: 70vh;
-  width: 40vw;
-  padding-top: 5vh;
+  height: 100%;
+  /*width: 45vw;*/
+  padding-top: 3vh;
 }
 #mission_table{
-  margin-top: 5vh;
-  width: 100%;
-  height: 100%;
+  width: 45vw;
+  height: 70vh;
   text-align: center;
+}
+#mission_table th td{
+  height: 7vh;
+  vertical-align: middle;
 }
 
 /*#mission_table tr:first-child{
@@ -478,9 +514,9 @@
 .property_shop{
   position:absolute;
   z-index: 15;
-  height:80vh;
+  height:75vh;
   width:45vw;
-  margin-top:50px;
+  /*margin-top:10vh;*/
   left: 40vw;
   /*background-color:rgba(255,255,255,0.7);*/
   display:none;
@@ -494,7 +530,7 @@
 }
 .property_shop>.shop_header{
     /*background-color: rgb(164, 209, 151);*/
-    background-color: rgb(130, 203, 209);
+    background-color: rgba(130, 203, 209, 0.9);
     height: 5vh;
     display: flex;
     justify-content: space-around;
@@ -503,18 +539,18 @@
 }
 .property_shop input{
   background-color: rgba(255, 255, 255, 0);
-  color: black;
+  color: rgb(255, 255, 255);
   border-style: none;
   font-size: 20px;
   font-weight: 500;
 }
 .property_shop tbody{
-  color: black;
+  color: rgb(69, 68, 68);
   border-style: none;
 }
 .shop_content{
   text-align:center;
-  height: 70vh;
+  height: 100%;
   background-color:rgba(255,255,255,0.8);
   overflow: auto;
   border-bottom-left-radius: 15px;
@@ -538,9 +574,11 @@
 #property_table th{
   vertical-align: middle;
   font-weight: 500;
+  height: 7vh;
 }
 #property_table td{
   vertical-align: middle;
+  height: 7vh;
 }
 #btn_property_save{
   border-style: none;
@@ -552,7 +590,7 @@
 .tradeable_content{
   overflow: auto;
   width: 25vw;
-  height: 60vh;
+  height: 50vh;
   margin-right: -3vw;
 
 }
@@ -563,7 +601,7 @@
   display: flex;
   justify-content: center;
   width: 25vw;
-  font-size: 20px;
+  font-size: 16px;
   text-align: center;
   border-spacing: 100px;
   height: inherit;
@@ -571,6 +609,9 @@
 #property_trade_table td{
   width:50vw;
   vertical-align:middle;
+}
+#property_trade_table th{
+  width: 20vw;
 }
 .btn_tradeable{
   display: flex;
@@ -732,6 +773,10 @@
 .landList{
   display: flex;
   flex-direction: column;
+  height: 55vh;
+  margin-right: -3vw;
+  width: 25vw;
+  font-size: 22px;
 }
 .cropLand{
   display: flex;
@@ -740,10 +785,10 @@
   flex-direction: row;
   margin-bottom:30px;
 }
-
+/*
 .cropLand *{
   margin-right: 10px;
-}
+}*/
 
 .cropLand img{
   height:50px;
@@ -772,15 +817,15 @@ td img{
   align-items: center;
   z-index:5;
 
-  background: #99CB34;
+  /*background: #99CB34;
   background-image: url("/img/game/background.svg");
-  background-size: 600px 600px;
+  background-size: 600px 600px;*/
 
 }
 
 .characterImg{
-  width:100px;
-  height:100px;
+  width:6vw;
+  /*height:100px;*/
   border-radius: 100%;
   background: #E5E5E5;
 }
@@ -795,8 +840,8 @@ td img{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: 1vw;
+  margin-left: 1vw;
 }
 
 .characterStatus *{
@@ -820,13 +865,16 @@ td img{
 
 .functionSwitch{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
 }
 
 .functionSwitch button{
   margin-right: 10px;
+  height: 3vh;
+  width: 7vw;
+  margin-bottom: 2px;
+  border-style: none;
 }
 
 .musicSwitch{
@@ -1067,9 +1115,9 @@ td img{
   margin-bottom: 30px;
 }
 
-.removeLand *{
+/*.removeLand *{
   margin-right: 10px;
-}
+}*/
 
 .hvr-rectangle-out {
   display: inline-block;
