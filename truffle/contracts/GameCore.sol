@@ -198,7 +198,7 @@ contract GameCore{
             uint p_Id = random + ((level/unlockCropLevel)*unlockCropNum);
             usingPropertyInstance.addUserPropertyType(u_Id, p_Id);
 
-            uint difference = (landSize*landSize) - ((landSize-1)*(landSize-1)) +1;
+            uint difference = (landSize*landSize) - ((landSize-1)*(landSize-1));
             for (uint i = 0 ; i < difference ; i++){
                 usingPropertyInstance.addUserLandConfiguration(u_Id);
             }

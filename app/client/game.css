@@ -1093,6 +1093,12 @@ td img{
   left:-10px;
 }
 
+.missionObject{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+}
+
 .thiefObject{
   -webkit-transition: all 1s;
 
