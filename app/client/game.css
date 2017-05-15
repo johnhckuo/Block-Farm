@@ -1340,6 +1340,7 @@ input[type="range"]:active::-webkit-slider-thumb{
 
 
 .tutorial{
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1410,6 +1411,12 @@ input[type="range"]:active::-webkit-slider-thumb{
   position: absolute;
   right:50px;
   width: 200px;
+}
+
+.tutorialSkipBtn{
+  position: absolute;
+  right:50px;
+  top:20px;
 }
 
 #iron-router-progress.spinner:before {

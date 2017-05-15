@@ -302,6 +302,14 @@ Template.firstTutorial.events({
           $(".tutorialContainer").css("display", "none");
 
         },1000);
+    },
+    'click .tutorialSkipBtn': function (event) {
+        $(".tutorialContainer").css("opacity", "0");
+        currentTutorialSlide = 0;
+        setTimeout(function(){
+          $(".tutorialContainer").css("display", "none");
+
+        },1000);
     }
 });
 
@@ -1119,7 +1127,7 @@ Template.characterList.events({
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
-        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:3500000});
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
         // var result = usingPropertyInstance.getProperty_Shop.call(21 ,{from:web3.eth.accounts[0]});
