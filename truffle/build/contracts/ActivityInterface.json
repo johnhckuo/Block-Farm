@@ -171,8 +171,27 @@
       "links": {},
       "address": "0x8c5352aa8123d66ddbbbcb949ca12477a8540e4b",
       "updated_at": 1494817707116
+    },
+    "1494771034596": {
+      "events": {
+        "0xc2c1af3ea88836d81cd60be9ffd4f35c8510b1c2ecbfad52c3d99de1f1f6bce1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "name": "biddingAdded",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x463ea51cac942ba1501ea6640a7983bacfd9fd27",
+      "updated_at": 1494842868276
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1494817707116
+  "updated_at": 1494842868276
 }

@@ -431,12 +431,14 @@ Template.gameIndex.events({
     },
     'click .thief': function(event){
         $(event.target).parent().css({opacity:0, transform:"translateY(50px)"});
+        landInfo[$(event.target).parent().attr('bindindex')].showed = 0;
         updateSyndicateExp(2);
         currentUser.SyndicateProgress -= 1;
         CongressInstance.updateSyndicateProgress(s_Id, currentUser.SyndicateProgress, {from: web3.eth.accounts[currentAccount], gas:2000000});
         setTimeout(function(){
             $(event.target).parent().remove();
         },1000);
+        console.log(currentUser.SyndicateProgress);
         if(currentUser.SyndicateProgress <= 0){
             clearInterval(checkMissionInterval);
             var leftThieives = $('.thief').length;
@@ -486,6 +488,8 @@ Template.gameIndex.events({
                 return;
             }
 
+            var top = $(event.target)[0].getBoundingClientRect().top;
+            var left = $(event.target)[0].getBoundingClientRect().left;
 
             var landTop = ($(".canvas").height()-$(window).height())/2;
             var landLeft = ($(".canvas").width()-$(window).width())/2;
@@ -497,8 +501,8 @@ Template.gameIndex.events({
             var divWidth = $(".cropObject").width()*1.65;
             // var divHeight =0;
             // var divWidth = 0;
-            var posX = cursorX+landLeft-areaLeft+divWidth-x-resizeOffsetX;
-            var posY = cursorY+landTop-divHeight-y;
+            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+            var posY = top+landTop-divHeight-y;
 
             var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
             temp.css({display:"inline", top: posY, left: posX});
@@ -823,10 +827,13 @@ Template.gamingArea.events({
             var areaLeft = $(".gamingArea").position().left;
 
             var resizeOffsetX = (screen.width- $(window).width())/6.5;
-
+            console.log($(window).height()/$(window).width())
 
             var divHeight =$(".farmObject").height()/6;
             var divWidth = $(".farmObject").width()*1.65;
+            //var divHeight =$(".farmObject").height()/8;
+            //var divWidth = $(".farmObject").width()*2.15;
+
             // var divHeight =0;
             // var divWidth = 0;
             var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
@@ -1086,6 +1093,7 @@ Template.characterList.events({
         }else if ($(event.target).html() == "Home"){
             $(event.target).html(Session.get('userCharacter'));
             showThief = false;
+            clearInterval(checkMissionInterval);
             $(".missionObject").html("<div class='thiefObject'></div>");
             $('.SyndicateExp').css('visibility', 'collapse');
             $('.userExp').css('visibility', 'visible');
@@ -1525,11 +1533,11 @@ var updateUserData = function(s_Id){
 var getLandConfiguration = function(s_Id){
     userLandConfiguration = [];
     var data = usingPropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+    landSize = Math.sqrt(data[0].length);
 
     var contractLandData = data[0];
     var contractCropData = data[1];
 
-    var landSize = currentUser.landSize;
     for (var i = 0 ; i < landSize*landSize ; i++){
         if (contractLandData[i].s != -1){
             contractLandData[i].s = contractLandData[i].c[0];
@@ -1656,14 +1664,14 @@ var rerenderCropLand = function(id){
 
 var initCropLand = function(id){
 
+    
     $('.land').html("");
     $(".surfaceObject").html("");
     $(".surfaceObject").append("<div class='cropObject'></div>");
+    $('.land').css("width", blockSize*landSize );
+    $('.land').css("height", blockSize*landSize );
 
-    $('.land').css("width", blockSize*currentUser.landSize );
-    $('.land').css("height", blockSize*currentUser.landSize );
-
-    for (var i = 0 ; i < currentUser.landSize*currentUser.landSize; i++){
+    for (var i = 0 ; i < landSize*landSize; i++){
         $('.land').append("<div class='farm cropLand" + i + "'></div>");
         if (userLandConfiguration[i].land == -1){
             $('.cropLand'+i).css("border", '1px solid black');
@@ -1671,7 +1679,7 @@ var initCropLand = function(id){
         //$('.land').append("<div></div>");
     }
 
-
+    landInfo = [];
     for (var i = 0 ; i < userLandConfiguration.length ; i++){
 
         if (userLandConfiguration[i].land == -1){
@@ -1725,8 +1733,12 @@ var initCropLand = function(id){
             opacity:1,
             "z-index":2
         };
+        
 
 
+        var info = {top:posY,left:posX, showed:0};
+        landInfo.push(info);
+        
         var index = userLandConfiguration[i].crop;
         if (index == -1){
           return;
@@ -1898,13 +1910,18 @@ var checkMission = function(){
                 var rand = Math.round(Math.random() * userLandConfiguration.length);
                 show = landInfo[rand].showed;
             }while(show != 0);
-            var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()/4;
+
+            var top =landInfo[rand].top;
+            var left = landInfo[rand].left;
+
             var areaLeft = $(".gamingArea").position().left;
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()/1.65;
+
 
             var missionStyles = {
-                top: landInfo[rand].top-divHeight,
-                left: landInfo[rand].left-areaLeft+divWidth,
+                top:top-(divHeight*2),
+                left:left-areaLeft+(divWidth*3),
                 width:"150px",
                 height:"150px",
                 position:"absolute",
@@ -2190,17 +2207,13 @@ save_tradable_setting = function(){
         var _id = index_finder( $('.shop_tradable_input')[i].id, 'tradable_input_');
         var _tradable = $('#tradable_input_' + _id).val();
         var _propertyCount = parseInt($('#shop_stock_' + _id).val(),10) - parseInt(_tradable,10);
+        user_property[i].propertyCount = _propertyCount;
+        
         usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000});
     }
 }
 
 save_rating_setting = function () {
-    //for (i = 0; i < user_property.length; i++) {
-    //    user_property[i].rating = $('#rating' + i).val();
-    //}
-    //property_log[account_index].property = user_property;
-    //$('#json_temp').val(JSON.stringify(property_log));
-    //averageRating_calculation();
     for(i = 0; i < display_field.length;i++){
         var _id = parseInt(display_field[i].id,10);
         var _rate = parseInt($('#rating' + i).val(),10);
