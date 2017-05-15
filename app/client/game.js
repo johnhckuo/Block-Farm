@@ -19,6 +19,7 @@ var audio;
 var visitNode;
 var s_Id;
 var x = 0, y = 0;
+var currentTutorialSlide = 0;
 
 var gameMode = "Farmer";
 
@@ -98,8 +99,6 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 
 Template.gameIndex.created = function() {
 
-
-
     //------
     s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
     console.log(s_Id);
@@ -173,6 +172,10 @@ Template.gameIndex.rendered = function() {
         loading(0);
         //need to be async 0513
         get_user_property_setting();
+
+        if (currentUser.level == 0){
+          $(".tutorialContainer").fadeIn();
+        }
 
     }
 }
@@ -282,6 +285,33 @@ Template.statusList.helpers({
 //////////////
 //  Events  //
 //////////////
+
+Template.firstTutorial.events({
+    'click .tutorialNextBtn': function (event) {
+        currentTutorialSlide -= 100;
+        $(".tutorialContainer").css("transform", "translateX("+ currentTutorialSlide +"vw)");
+    },
+    'click .tutorialPreviousBtn': function (event) {
+        currentTutorialSlide += 100;
+        $(".tutorialContainer").css("transform", "translateX("+ currentTutorialSlide +"vw)");
+    },
+    'click .tutorialFinishBtn': function (event) {
+        $(".tutorialContainer").css("opacity", "0");
+        currentTutorialSlide = 0;
+        setTimeout(function(){
+          $(".tutorialContainer").css("display", "none");
+
+        },1000);
+    },
+    'click .tutorialSkipBtn': function (event) {
+        $(".tutorialContainer").css("opacity", "0");
+        currentTutorialSlide = 0;
+        setTimeout(function(){
+          $(".tutorialContainer").css("display", "none");
+
+        },1000);
+    }
+});
 
 Template.shop.events({
     'click #btn_show_property': function () {
@@ -456,16 +486,22 @@ Template.gameIndex.events({
                 return;
             }
 
-            var landTop = $(".land").position().top;
-            var landLeft = $(".land").position().left;
+
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
 
             var areaLeft = $(".gamingArea").position().left;
+            var resizeOffsetX = (screen.width- $(window).width())/6.5;
 
-            var divHeight =$(".farmObject").height()/5;
-            var divWidth = $(".farmObject").width()/4;
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()*1.65;
+            // var divHeight =0;
+            // var divWidth = 0;
+            var posX = cursorX+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+            var posY = cursorY+landTop-divHeight-y;
 
             var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
-            temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
+            temp.css({display:"inline", top: posY, left: posX});
             temp.addClass("animationTempShow");
 
             setTimeout(function(){
@@ -544,16 +580,21 @@ Template.gameIndex.events({
                         updateSyndicateExp(5);
 
 
-                        var landTop = $(".land").position().top;
-                        var landLeft = $(".land").position().left;
+                        var landTop = ($(".canvas").height()-$(window).height())/2;
+                        var landLeft = ($(".canvas").width()-$(window).width())/2;
 
                         var areaLeft = $(".gamingArea").position().left;
+                        var resizeOffsetX = (screen.width- $(window).width())/6.5;
 
-                        var divHeight =$(".farmObject").height()/5;
-                        var divWidth = $(".farmObject").width()/4;
+                        var divHeight =$(".cropObject").height()/5;
+                        var divWidth = $(".cropObject").width()*1.65;
+                        // var divHeight =0;
+                        // var divWidth = 0;
+                        var posX = cursorX+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+                        var posY = cursorY+landTop-divHeight-y;
 
                         var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
-                        temp.css({display:"inline", top: cursorY-divHeight, left: cursorX-areaLeft+divWidth});
+                        temp.css({display:"inline", top: posY, left: posX});
                         temp.addClass("animationTempShow");
 
                         setTimeout(function(){
@@ -1086,7 +1127,7 @@ Template.characterList.events({
         rerenderCropLand(s_Id);
     },
     'click .matchmaking': function(event){
-        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:3500000});
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
         // var result = usingPropertyInstance.getProperty_Shop.call(21 ,{from:web3.eth.accounts[0]});

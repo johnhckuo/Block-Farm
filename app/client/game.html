@@ -1,11 +1,115 @@
 <template name="gameIndex">
   <div class="gameContainer">
+
+    {{> firstTutorial}}
     {{> loading}}
     {{> statusList}}
     {{> gamingArea}}
     {{> shop}}
     {{> mission}}
     {{> operationList}}
+  </div>
+</template>
+
+<template name="firstTutorial">
+  <div class="tutorialContainer">
+    <div class="firstLoginTutorial">
+      <div class="tutorial tutorial1">
+        <div class="tutorial_img">
+          <img src="/img/game/tutorial/land_1.png" alt="">
+          <img src="/img/game/tutorial/land_2.png" alt="">
+        </div>
+        <div class="tutorial_content">
+          Welcome to block farm! <br>
+          As a professional farmer, the first thing you need to do is to plow a land so that you can spread some seeds on it! :D
+        </div>
+        <div class="tutorial_page">
+          <h3>1/5</h3>
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+
+        </div>
+        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+      </div>
+      <div class="tutorial tutorial2">
+        <div class="tutorial_img">
+          <img src="/img/game/tutorial/seed_1.png" alt="">
+          <img src="/img/game/tutorial/time.png" alt="">
+        </div>
+        <div class="tutorial_content">
+          Next, you can choose which crop to plant. <br>
+          In the beginning, you have no other crops to choose from.
+          But hey! Don't be frustrated ! More crops await you as your level get higher !! <br>
+          After planting the seed, the progress will show how much longer until it ripe!
+        </div>
+        <div class="tutorial_page">
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <h3>2/5</h3>
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+
+        </div>
+        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+
+      </div>
+      <div class="tutorial tutorial3">
+        <div class="tutorial_img">
+          <img src="/img/game/tutorial/stock_1.png" alt="">
+          <img src="/img/game/tutorial/stock_2.png" alt="">
+        </div>
+        <div class="tutorial_content">
+          After waiting, the crop will disappear from the progress tag, then it's time to harvest your crop by left-clicking the crop. <br>
+          You can check your stock by selecting the stock tag, it will show the types and number of crop you have. <br>
+          In the stock tag, you will find a tradeable column. You can specify how many crops you wish to have trade with others, and we will perform a matchmaking for every one hour! <br>
+        </div>
+        <div class="tutorial_page">
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <h3>3/5</h3>
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+
+        </div>
+        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+      </div>
+      <div class="tutorial tutorial4">
+        <div class="tutorial_img">
+          <img src="/img/game/tutorial/rating_1.png" alt="">
+          <img src="/img/game/tutorial/rating_2.png" alt="">
+        </div>
+        <div class="tutorial_content">
+          If you want to trade other crops that you don't have, just go to the rating tag! <br>
+          In order to get some certain crops by trading, you can higher the default importance so that you will get a better chance of acquiring it !
+        </div>
+        <div class="tutorial_page">
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <h3>4/5</h3>
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+
+        </div>
+        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+
+      </div>
+      <div class="tutorial tutorial5">
+        <div class="tutorial_img">
+          <img src="/img/game/tutorial/seed_1.png" alt="">
+          <img src="/img/game/tutorial/time.png" alt="">
+        </div>
+        <div class="tutorial_content">
+          Remember the character you choose during registration? <br>
+          You can gain some "extra" income from other farmers ! <br>
+          By stealing, you might be get caught and get heavy penalty, but receive a lot if success. <br>
+          By gurading, you can get a rather stable but less income from other farmers as salaries. <br>
+
+        </div>
+        <div class="tutorial_page">
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <h3>5/5</h3>
+          <button type="button" name="button" class = "hvr-rectangle-out tutorialFinishBtn">Start Farming!</button>
+
+        </div>
+        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+
+      </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -52,8 +156,10 @@
         <!-- <div class="cropListButton statusListButton"> -->
         <div class="plantPanel statusPanel listbutton" style="z-index:-1;">
           <div class="statusPanelList">
-              <h2>Crop List</h2>
-              <hr>
+              <div class="listHeader">
+                <h2>Crop List</h2>
+                <hr>
+              </div>
               <div class="cropListDiv">
               {{#each crops}}
                       {{> crop}}
@@ -70,7 +176,9 @@
         <div class="cropPanel statusPanel listbutton" style="z-index:-1;">
             <div class="statusPanelList">
               <div class="summaryBoard">
-                  <h2>Current Crop Summary</h2>
+                  <div class="currentList listHeader">
+                    <h2>Current Crop Summary</h2>
+                    <hr/>
                   <!-- <table id="cropTableTittle">
                     <tr>
                       <th> </th>
@@ -78,6 +186,7 @@
                       <th>Time Left</th>
                     </tr>
                   </table> -->
+                  </div>
                   <table id="cropTable" class="">
                     <tbody>
                       <tr>
@@ -102,8 +211,10 @@
         <!-- <div class="landListButton statusListButton"> -->
         <div class="landPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
-              <h2>Land List</h2>
-              <hr>
+              <div class="listHeader">
+                <h2>Land List</h2>
+                <hr>
+              </div>
               <div class="landList">
               {{#each lands}}
                       {{> land}}
@@ -125,6 +236,10 @@
 
         <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
           <div class="statusPanelList">
+            <div class="listHeader">
+              <h2>Stock</h2>
+              <hr>
+            </div>
             <div class="tradeable_content">
 
             </div>
@@ -190,11 +305,11 @@
             </div>
         </div>
         <div class="functionSwitch">
-              <button type="button" name="button" class="btn btn-primary test">Test</button>
+              <button type="button" name="button" class="btn-primary test">Test</button>
 
-              <button type="button" name="button" class="btn btn-primary characterSwitch">{{characterType}}</button>
-              <button type="button" name="button" class="btn btn-primary matchmaking">Matching Making</button>
-              <button type="button" name="button" class="btn btn-primary confirmMatches">Check</button>
+              <button type="button" name="button" class="btn-primary characterSwitch">{{characterType}}</button>
+              <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
+              <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
 
               <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
 
