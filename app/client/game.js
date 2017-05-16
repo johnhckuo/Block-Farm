@@ -1027,10 +1027,11 @@ Template.statusList.events({
     },
     // for tradable table to save
     'click #btn_tradeable_save':function(){
-      save_tradable_setting();
+        save_tradable_setting();
     },
     'click #btn_tradeable_cancel':function(){
-      sweetAlert("Warning", 'cancel', "warning");
+        //sweetAlert("Warning", 'cancel', "warning");
+        set_property_table();
     }
 })
 
@@ -2025,18 +2026,23 @@ var elapsedTime = function(start, end){
 
 get_user_property_setting = function () {
     user_property = [];
-    var propertyData = usingPropertyInstance.getAllProperty.call({from:web3.eth.accounts[currentAccount]});
-
-    for(i = 0; i < propertyData[0].length; i++){
-        var _id = propertyData[0][i].c[0];
-        var _propertyType = propertyData[1][i].c[0]
-        var _name = web3.toUtf8(propertyData[2][i]);
-        var _propertyCount = propertyData[3][i].c[0];
-        var _tradeable = propertyData[4][i].c[0];
-        var _img = web3.toUtf8(propertyData[5][i]);
-        var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
-        user_property.push(data);
-    }
+    var propertyData = usingPropertyInstance.getAllProperty.call({from:web3.eth.accounts[currentAccount]}, function(err, result){
+        if(err){
+            alert(err);
+        }
+        else{
+            for(i = 0; i < result[0].length; i++){
+                var _id = result[0][i].c[0];
+                var _propertyType = result[1][i].c[0]
+                var _name = web3.toUtf8(result[2][i]);
+                var _propertyCount = result[3][i].c[0];
+                var _tradeable = result[4][i].c[0];
+                var _img = web3.toUtf8(result[5][i]);
+                var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
+                user_property.push(data);
+            }
+        }
+    });
 }
 
 get_propertyType_setting = function(){
@@ -2056,81 +2062,87 @@ get_propertyType_setting = function(){
 }
 
 set_property_table = function(){
-    //loading(1);
-    //get_user_property_setting();
-    loading(0);
-    var table, tr, td;
-
-    $('.tradeable_content').html('');
-    table = $('<table></table>').attr('id', 'property_trade_table')
-                                .attr('class', 'property_shop_table');
-    //header
-    tr = $('<tr></tr>');
-    tr.append($('<th></th>'));
-    tr.append($('<th></th>').text('Property'));
-    tr.append($('<th></th>').text('Stock'));
-    tr.append($('<th></th>').text('Tradable'));
-    table.append(tr);
-    //header
-    //content
-    for(i = 0; i < user_property.length; i++){
-        if((user_property[i].propertyCount != 0) || (user_property[i].tradeable != 0)){
-            tr = $('<tr></tr>');
-            td = $('<td></td>');
-            td.append($('<img></img>', {
-                src:prefix+user_property[i].img + postfix,
-                style:'width:50px; height:50px'
-            }));
-            tr.append(td);
-            td = $('<td></td>');
-            td.text(user_property[i].name);
-            tr.append(td);
-            td = $('<td></td>');
-            td.text(user_property[i].propertyCount);
-            tr.append(td);
-            td = $('<td></td>');
-            td.append(
-                    $('<input></input>',{
-                        type:'text',
-                        class:'shop_tradable_input',
-                        id:'tradable_input_' + user_property[i].id,
-                        value:user_property[i].tradeable
-                    })
-                    .on('keydown',function (e) {
-                        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-                            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                            (e.keyCode >= 35 && e.keyCode <= 40)) {
-                            return;
-                        }
-                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                            e.preventDefault();
-                        }
-                    })
-                    .on('change',function(e){
-                        var _id = index_finder($(this).attr('id'), 'tradable_input_');
-                        if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
-                            $(this).val($('#shop_stock_' + _id).val());
-                        }
-                        $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
-                    })
-                    .on('click', function(){
-                        $(this).select();
-                    })
-                    );
-            td.append($('<input></input>',{
-                type:'hidden',
-                id:'shop_stock_' + user_property[i].id,
-                value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
-            }));
-            tr.append(td);
-            table.append(tr);
-        }
+    if(user_property.length == 0){
+        loading(1);
+        setTimeout(set_property_table, 1000);
     }
-    //content
-    //control bar
+    else{
+        //loading(1);
+        //get_user_property_setting();
+        loading(0);
+        var table, tr, td;
 
-    //control bar
-    $('.tradeable_content').append(table);
+        $('.tradeable_content').html('');
+        table = $('<table></table>').attr('id', 'property_trade_table')
+                                    .attr('class', 'property_shop_table');
+        //header
+        tr = $('<tr></tr>');
+        tr.append($('<th></th>'));
+        tr.append($('<th></th>').text('Property'));
+        tr.append($('<th></th>').text('Stock'));
+        tr.append($('<th></th>').text('Tradable'));
+        table.append(tr);
+        //header
+        //content
+        for(i = 0; i < user_property.length; i++){
+            if((user_property[i].propertyCount != 0) || (user_property[i].tradeable != 0)){
+                tr = $('<tr></tr>');
+                td = $('<td></td>');
+                td.append($('<img></img>', {
+                    src:prefix+user_property[i].img + postfix,
+                    style:'width:50px; height:50px'
+                }));
+                tr.append(td);
+                td = $('<td></td>');
+                td.text(user_property[i].name);
+                tr.append(td);
+                td = $('<td></td>');
+                td.text(user_property[i].propertyCount);
+                tr.append(td);
+                td = $('<td></td>');
+                td.append(
+                        $('<input></input>',{
+                            type:'text',
+                            class:'shop_tradable_input',
+                            id:'tradable_input_' + user_property[i].id,
+                            value:user_property[i].tradeable
+                        })
+                        .on('keydown',function (e) {
+                            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                                return;
+                            }
+                            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                                e.preventDefault();
+                            }
+                        })
+                        .on('change',function(e){
+                            var _id = index_finder($(this).attr('id'), 'tradable_input_');
+                            if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
+                                $(this).val($('#shop_stock_' + _id).val());
+                            }
+                            $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
+                        })
+                        .on('click', function(){
+                            $(this).select();
+                        })
+                        );
+                td.append($('<input></input>',{
+                    type:'hidden',
+                    id:'shop_stock_' + user_property[i].id,
+                    value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
+                }));
+                tr.append(td);
+                table.append(tr);
+            }
+        }
+        //content
+        //control bar
+
+        //control bar
+        $('.tradeable_content').append(table);
+    }
 }
 
 index_finder = function(_source, _mask){
@@ -2194,7 +2206,8 @@ set_propertyType_table = function () {
         value: 'CANCEL',
         class:'hvr-rectangle-out'
     }).append('CANCEL').on('click', function () {
-        sweetAlert("Warning!", 'cancel', "warning");
+        set_propertyType_table();
+       // sweetAlert("Warning!", 'cancel', "warning");
     }));
     tr.append(td);
     table.append(tr);
@@ -2207,10 +2220,16 @@ save_tradable_setting = function(){
         var _id = index_finder( $('.shop_tradable_input')[i].id, 'tradable_input_');
         var _tradable = $('#tradable_input_' + _id).val();
         var _propertyCount = parseInt($('#shop_stock_' + _id).val(),10) - parseInt(_tradable,10);
-        user_property[i].propertyCount = _propertyCount;
-        
+        for(j = 0; j < user_property.length; j++){
+            if(user_property[j].id == _id){
+                user_property[j].propertyCount = _propertyCount;
+                user_property[j].tradeable = _tradable;
+                break;
+            }
+        }        
         usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000});
     }
+    sweetAlert("Congratulations!", "Setting Saved!", "success");
 }
 
 save_rating_setting = function () {
