@@ -1,5 +1,6 @@
 import { Session } from 'meteor/session';
 
+
 currentAccount = 7;
 cropsPerLvl =3;
 

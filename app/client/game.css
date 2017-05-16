@@ -1093,6 +1093,12 @@ td img{
   left:-10px;
 }
 
+.missionObject{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+}
+
 .thiefObject{
   -webkit-transition: all 1s;
 
@@ -1427,8 +1433,8 @@ input[type="range"]:active::-webkit-slider-thumb{
 }
 
 #iron-router-progress {
-	background-color : black;
-  box-shadow       : 0 0 40px #888888;
+	background-color : #55AA00;
+  box-shadow       : 0 0 40px black;
 
 }
 

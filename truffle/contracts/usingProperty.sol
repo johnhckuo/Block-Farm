@@ -84,12 +84,12 @@ contract usingProperty{
     Congress congress;
     address owner;
 
-    uint[] _id;
-    bytes32[] _name;
-    uint[] _propertyType;
-    uint[] _count;
-    uint[] _tradable;
-    bytes32[] _img;
+    uint[] get_PropertyId;
+    bytes32[] get_PropertyName;
+    uint[] get_PropertyType;
+    uint[] get_PropertyCount;
+    uint[] get_PropertyTradable;
+    bytes32[] get_PropertyImg;
 
     function usingProperty(address _congressAddress){
         CongressAddress = _congressAddress;
@@ -138,18 +138,18 @@ contract usingProperty{
 
         for(uint i = 0; i < length; i++){
             if(propertyList[i].owner == msg.sender){
-                _id.push(i);
-                _name.push(propertyTypeList[propertyList[i].propertyType].name);
-                _propertyType.push(propertyList[i].propertyType);
-                _count.push(propertyList[i].propertyCount);
-                _tradable.push(propertyList[i].tradeable);
-                _img.push(propertyTypeList[propertyList[i].propertyType].img[3]);
+                get_PropertyId.push(i);
+                get_PropertyName.push(propertyTypeList[propertyList[i].propertyType].name);
+                get_PropertyType.push(propertyList[i].propertyType);
+                get_PropertyCount.push(propertyList[i].propertyCount);
+                get_PropertyTradable.push(propertyList[i].tradeable);
+                get_PropertyImg.push(propertyTypeList[propertyList[i].propertyType].img[3]);
             }
             else{
                 continue;
             }
         }
-        return (_id, _propertyType, _name, _count, _tradable, _img);
+        return (get_PropertyId, get_PropertyType, get_PropertyName, get_PropertyCount, get_PropertyTradable, get_PropertyImg);
     }     
 
     function addProperty(bytes32 _name, uint _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
