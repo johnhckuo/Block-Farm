@@ -10,6 +10,7 @@
 var usingProperty = artifacts.require("usingProperty.sol");
 var Congress = artifacts.require("Congress.sol");
 var MainActivity = artifacts.require("MainActivity.sol");
+var MainActivity2 = artifacts.require("MainActivity2.sol");
 var StringUtils = artifacts.require("StringUtils.sol");
 var GameCore = artifacts.require("GameCore.sol");
 var Oraclize = artifacts.require("usingOraclize.sol");
@@ -22,8 +23,10 @@ module.exports = function(deployer) {
       deployer.link(StringUtils, usingProperty);
       return deployer.deploy(usingProperty, Congress.address);
   }).then(function () {
-      deployer.link(StringUtils, MainActivity);
+      return deployer.deploy([[GameCore, Congress.address, usingProperty.address], [MainActivity2, Congress.address, usingProperty.address]]);
+  }).then(function(){
       deployer.link(Oraclize, MainActivity);
-      return deployer.deploy([[MainActivity, Congress.address, usingProperty.address], [GameCore, Congress.address, usingProperty.address]]);
+      deployer.link(StringUtils, MainActivity);
+      return deployer.deploy(MainActivity, Congress.address, usingProperty.address, MainActivity2.address);
   });
 };

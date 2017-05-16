@@ -123,7 +123,7 @@ if (Meteor.isClient) {
         //alert(web3.eth.accounts[currentAccount]);
         var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468});
         var s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
-        var txs = MainActivityInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468});
+        var txs = GameCoreInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468});
 
         //console.log(txs);
 

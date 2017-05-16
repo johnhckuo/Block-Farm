@@ -1,6 +1,7 @@
 var Congress = artifacts.require("./Congress.sol");
 var usingProperty = artifacts.require("./usingProperty.sol");
 var MainActivity = artifacts.require("./MainActivity.sol");
+var MainActivity2 = artifacts.require("./MainActivity2.sol");
 var GameCore = artifacts.require("./GameCore.sol");
 var Oraclize = artifacts.require("./usingOraclize.sol");
 
@@ -567,7 +568,7 @@ contract('Congress', function (accounts) {
     });
 
     it("get matchmaking", function () {
-        return MainActivity.deployed("","").then(function (instance) {
+        return MainActivity2.deployed("","").then(function (instance) {
             return instance.getMatchMaking(0, { from: accounts[0] });
 
         }).then(function(txs){
@@ -576,7 +577,7 @@ contract('Congress', function (accounts) {
     });
 
     it("update matchmaking", function () {
-        return MainActivity.deployed("","").then(function (instance) {
+        return MainActivity2.deployed("","").then(function (instance) {
             return instance.updateConfirmation(0, 1, 0, { from: accounts[0] });
 
         }).then(function(txs){
@@ -585,7 +586,7 @@ contract('Congress', function (accounts) {
     });
 
     it("update matchmaking", function () {
-        return MainActivity.deployed("","").then(function (instance) {
+        return MainActivity2.deployed("","").then(function (instance) {
             return instance.updateConfirmation(0, 2, 1, { from: accounts[0] });
 
         }).then(function(txs){
@@ -594,29 +595,8 @@ contract('Congress', function (accounts) {
     });
 
     it("get matchmaking", function () {
-        return MainActivity.deployed("","").then(function (instance) {
+        return MainActivity2.deployed("","").then(function (instance) {
             return instance.getMatchMaking(0, { from: accounts[0] });
-
-        }).then(function(txs){
-            console.log(txs);
-        });
-    });
-
-
-
-
-    it("check confirmation", function () {
-        return usingProperty.deployed("","").then(function (instance) {
-            return instance.getProperty_Shop(6, { from: accounts[0] });
-
-        }).then(function(txs){
-            console.log(txs);
-        });
-    });
-
-    it("check confirmation", function () {
-        return usingProperty.deployed("","").then(function (instance) {
-            return instance.getProperty_Shop(6, { from: accounts[0] });
 
         }).then(function(txs){
             console.log(txs);
