@@ -109,7 +109,7 @@ if (Meteor.isClient) {
     },
     'click #next': function (event){
         event.preventDefault();
-        var name = $(".s_Name").val();
+        var name = $(".s_Name").val().toString();
 
         if (name.trim() == ""){
           sweetAlert("Oops...", "Please enter your username !", "error");

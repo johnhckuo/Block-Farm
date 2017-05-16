@@ -1434,5 +1434,35 @@ input[type="range"]:active::-webkit-slider-thumb{
 }
 
 #iron-router-progress {
-	background-color : green;
+	background-color : #55AA00;
+  box-shadow       : 0 0 40px black;
+
+}
+
+
+.floatCropStatus{
+  position: absolute;
+  width:200px;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  padding:20px;
+  z-index:90;
+  color:white;
+  transition: all 0.1s;
+  text-align: center;
+  display: none;
+}
+
+.floatCropStatus img{
+  display: inline;
+  width:50px;
+  height: 50px;
+  float: left;
+  margin-right: 10px;
+}
+
+.floatCropStatus h3{
+  margin-bottom: 10px;
+  font-size: 20px;
 }
