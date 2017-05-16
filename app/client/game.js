@@ -532,11 +532,12 @@ Template.gameIndex.events({
             }
             else{
                 var stolenFlag, stealCount, judgement, stealResult;
+                stolenFlag = $(event.target).parent().attr("stolenFlag");
                 if ((cropList[id].ripe)&&(stolenFlag == "f")){
                     judgement = Math.random();
                     if(judgement >= 0.5){
                         stealResult = true;
-                        stolenFlag = $(event.target).parent().attr("stolenFlag");
+                        
 
                         $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                         $(".scoreObject").html("+" + 5 +"XP");
@@ -584,7 +585,7 @@ Template.gameIndex.events({
                         $(event.target).parent().attr("cropcount", parseInt(cropCount));
                         $(event.target).parent().attr("stolenFlag", "t");
 
-                        $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+                        $("."+cropClass).html("<img src = '" + prefix+ cropTypeList[typeIndex].img[4] + postfix +"' />");
                         //reload propertyTable
                         set_property_table();
                     }
@@ -1029,63 +1030,67 @@ Template.statusList.events({
 })
 
 Template.characterList.events({
-    'click .characterSwitch': function (event) {
+    'click .characterImg':function(event){
         loading(1);
-        //need to check boss' id
-        if ($(event.target).html() == "Guard"){
-            PanelControl(4);
-            showThief = true;
-            visitNode = getVisitNode();
-            rerenderCropLand(visitNode);
-            $(event.target).html("Home");
-            gameMode = "Guard";
-            $('.SyndicateExp').css('visibility', 'visible');
-            $('.userExp').css('visibility', 'collapse');
-            $('.crop4').css('display','none');
-            $('.crop2').css('display','none');
-            $('.crop3').css('display','none');
-
-            landInfo = [];
-            for (var i = 0 ; i < userLandConfiguration.length ; i++){
-                var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
-                var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
-                var info = {top:top,left:left, showed:0};
-                landInfo.push(info);
+        if($(event.target).parent().attr("character") == "farmer"){
+            if(Session.get('userCharacter') == "Thief"){
+                $(event.target).parent().attr("character", "thief");
+                $(event.target)[0].src = "/img/game/thief.svg";
+                PanelControl(5);
+                visitNode = getVisitNode();
+                rerenderCropLand(visitNode);
+                $('.SyndicateExp').css('visibility', 'visible');
+                $('.userExp').css('visibility', 'collapse');
+               // $(event.target).html("Home");
+                $('.functionSwitch').append($('<input></input>',{
+                    type:'button',
+                    name:'button',
+                    class:'btn btn-primary nextHome',
+                    value:'Next'
+                }));
+                gameMode = "Thief";
+                $('.crop4').css('display','none');
+                $('.crop2').css('display','none');
+                $('.crop3').css('display','none');
             }
-            var progress = thiefNumber(currentUser.SyndicateLevel);
-            currentUser.SyndicateProgress = progress;
-            CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
+            else if(Session.get('userCharacter') == "Guard"){
+                $(event.target).parent().attr("character", "guard");
+                $(event.target)[0].src = "/img/game/guard.svg";
+                PanelControl(5);
+                showThief = true;
+                visitNode = getVisitNode();
+                rerenderCropLand(visitNode);
+               // $(event.target).html("Home");
+                gameMode = "Guard";
+                $('.SyndicateExp').css('visibility', 'visible');
+                $('.userExp').css('visibility', 'collapse');
+                $('.crop4').css('display','none');
+                $('.crop2').css('display','none');
+                $('.crop3').css('display','none');
 
-            if(currentUser.SyndicateProgress > 0){
-                checkMissionInterval = setInterval(checkMission, 1000);
-            }
-            else{
-                clearInterval(checkMissionInterval);
-            }
-        }else if ($(event.target).html() == "Thief"){
-            PanelControl(4);
-            visitNode = getVisitNode();
-            rerenderCropLand(visitNode);
-            $('.SyndicateExp').css('visibility', 'visible');
-            $('.userExp').css('visibility', 'collapse');
-            $(event.target).html("Home");
-            $(event.target).parent().append($('<input></input>',{
-                                                type:'button',
-                                                name:'button',
-                                                class:'btn btn-primary nextHome',
-                                                value:'Next'
-                                            }));
-            gameMode = "Thief";
-            $('.crop4').css('display','none');
-            $('.crop2').css('display','none');
-            $('.crop3').css('display','none');
+                landInfo = [];
+                for (var i = 0 ; i < userLandConfiguration.length ; i++){
+                    var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+                    var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
+                    var info = {top:top,left:left, showed:0};
+                    landInfo.push(info);
+                }
+                var progress = thiefNumber(currentUser.SyndicateLevel);
+                currentUser.SyndicateProgress = progress;
+                CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
 
-            //$(".crop"+5+"").css("background-color","rgba(255,255,255,0.65)");
-            //$(".statusPanel:nth-child("+5+")").css("z-index", 1);
-            //$(".statusPanel:nth-child("+5+")").addClass("statusPanelShow");
-            //$('.btnSelect').trigger('click');
-        }else if ($(event.target).html() == "Home"){
-            $(event.target).html(Session.get('userCharacter'));
+                if(currentUser.SyndicateProgress > 0){
+                    checkMissionInterval = setInterval(checkMission, 1000);
+                }
+                else{
+                    clearInterval(checkMissionInterval);
+                }
+            }
+        }
+        else{
+            $(event.target).parent().attr("character", "farmer");
+            $(event.target)[0].src = "/img/game/farmer.svg";
+
             showThief = false;
             clearInterval(checkMissionInterval);
             $(".missionObject").html("<div class='thiefObject'></div>");
@@ -1094,11 +1099,11 @@ Template.characterList.events({
             $('.crop4').css('display','block');
             $('.crop2').css('display','block');
             $('.crop3').css('display','block');
-            $(event.target).parent().find(".nextHome").remove();
+            $('.functionSwitch').parent().find(".nextHome").remove();
             gameMode = "Farmer"
             rerenderCropLand(s_Id);
         }
-    },
+    },   
     'click .nextHome': function (event) {
 
         // ===== wait for further testing
@@ -1535,7 +1540,7 @@ var fetchGameInitConfig = function(s_Id){
 
     for (var i = 0 ; i < cropData.length ; i++){
         var tempImg = [];
-        for (var j = 0 ; j < 4; j++){
+        for (var j = 0 ; j < 5; j++){
             var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(cropData[i][1].c[0], j, { from:web3.eth.accounts[currentAccount]})).toString();
             tempImg.push(tempStr);
             //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
@@ -1706,7 +1711,7 @@ var initCropLand = function(id){
         //0430 wait to change stolen svg
         var stolenFlag = "f";
         if(cropList[index].count != cropTypeList[typeIndex].count){
-            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
+            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[4] + postfix +"' />");
             stolenFlag = "t";
         }
         //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
@@ -1904,7 +1909,7 @@ var cropSummaryUpdate = function(){
         }
         if (percent <= 0){
             if(cropList[i].count != cropTypeList[index].count){
-                $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[3]+postfix);
+                $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[4]+postfix);
             }
             else{
                 $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[2]+postfix);
