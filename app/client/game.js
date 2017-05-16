@@ -32,7 +32,7 @@ const _character = new Tracker.Dependency;
 var cursorX;
 var cursorY;
 
-var panelCounter = 4, panelCount = 3;
+var panelCounter = 2, panelCount = 3;
 
 var cropList = [];
 var stockList = [];
@@ -99,7 +99,6 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 
 Template.gameIndex.created = function() {
 
-    //------
     s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
     console.log(s_Id);
     s_Id = s_Id.c[0];
@@ -239,30 +238,6 @@ Template.statusList.helpers({
         _crop.depend();
         return cropsData;
     },
-    cropsSummary: function(){
-        var cropsData = [];
-
-        for (var i = 0 ; i < cropList.length; i++){
-            if (cropList[i].name == 0){
-                continue;
-            }
-            var data = cropList[i];
-
-            //console.log(data);
-            cropsData.push({
-                "id": "currentCrop"+data.id,
-                "name": data.name,
-                "img": prefix+data.img+postfix,
-                "timeLeft": null
-            });
-        }
-
-        _dep.depend();
-        return cropsData;
-
-
-
-    },
     lands: function(){
 
         var landsData = [];
@@ -280,7 +255,6 @@ Template.statusList.helpers({
         return landsData;
     },
 });
-
 
 //////////////
 //  Events  //
@@ -660,6 +634,52 @@ Template.gameIndex.events({
         }
 
     },
+    'mouseenter .croppedObject img':function(event){
+      $(".floatCropStatus").css("display", "inline");
+      var cropId = $(event.target).parent()[0].className.split("croppedObject")[2];
+
+      var landTop = ($(".canvas").height()-$(window).height())/2;
+      var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+      var areaLeft = $(".gamingArea").position().left;
+      var resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+      var divHeight =$(".cropObject").height()/5;
+      var divWidth = $(".cropObject").width()*1.65;
+      // var divHeight =0;
+      // var divWidth = 0;
+      var posX = cursorX;
+      var posY = cursorY;
+
+      $(".floatCropStatus").css({display:"inline", top: posY, left: posX});
+      $(".floatCropName").html(cropList[cropId].name);
+
+      var difference = elapsedTime(new Date(), cropList[cropId].end);
+      var diffData = (difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
+
+      if (cropList[cropId].ripe){
+        $(".timeLeft").html("Ready to harvest");
+      }else{
+        $(".timeLeft").html(diffData);
+      }
+
+      $(".timeLeft").attr("class", "timeLeft timeLeft"+cropId);
+
+
+      var index;
+      for (var j = 0 ; j < cropTypeList.length ; j++){
+          if (cropTypeList[j].id == cropList[cropId].type){
+              index = j;
+          }
+      }
+      $(".floatCropStatus").find("img").attr("src",prefix+cropTypeList[index].img[3]+postfix);
+
+
+    },
+    'mouseout .croppedObject img':function(event){
+      $(".floatCropStatus").css("display", "none");
+    },
+
 
 })
 
@@ -916,17 +936,17 @@ Template.gamingArea.events({
 function PanelControl(panelIndex){
     var temp = panelCounter; // default:2
     $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
-    $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
+    $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
     $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
     // setTimeout(function(){
     //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
     // },1000);
     panelCounter = panelIndex;
-        $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
+    $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
     $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
 
-    if(panelCounter==5){
+    if(panelCounter==4){
         set_property_table();
     }
 
@@ -965,9 +985,6 @@ Template.statusList.events({
     },
     'click .crop4' :function(){
         PanelControl(4);
-    },
-    'click .crop5' :function(){
-        PanelControl(5);
     },
     'click .removeLand button': function (event){
 
@@ -1032,7 +1049,7 @@ Template.characterList.events({
         loading(1);
         //need to check boss' id
         if ($(event.target).html() == "Guard"){
-            PanelControl(5);
+            PanelControl(4);
             showThief = true;
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
@@ -1062,7 +1079,7 @@ Template.characterList.events({
                 clearInterval(checkMissionInterval);
             }
         }else if ($(event.target).html() == "Thief"){
-            PanelControl(5);
+            PanelControl(4);
             visitNode = getVisitNode();
             rerenderCropLand(visitNode);
             $('.SyndicateExp').css('visibility', 'visible');
@@ -1961,15 +1978,15 @@ var cropSummaryUpdate = function(){
                 $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[2]+postfix);
             }
             cropList[i].ripe = 1;
-            $(".currentCrop"+cropList[i].id).parent().remove();
+            //$(".currentCrop"+cropList[i].id).parent().remove();
+            $(".timeLeft"+cropList[i].id).html("Ready to harvest");
+
             continue;
         }
 
-
-
         //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
         var diffData = (difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
-        $(".currentCrop"+i).html(diffData);
+        $(".timeLeft"+i).html(diffData);
     }
 }
 
