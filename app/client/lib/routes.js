@@ -28,11 +28,6 @@ Router.route('/transaction', function () {
 
 //game
 //
-// Router.route('/game', function () {
-//   this.render('gameIndex');
-// });
-
-Router.route('/game', {
-  name: 'gameIndex',
-  fastRender: true
+Router.route('/game', function () {
+  this.render('gameIndex');
 });

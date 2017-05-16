@@ -1682,7 +1682,7 @@ var rerenderCropLand = function(id){
 
 var initCropLand = function(id){
 
-    
+
     $('.land').html("");
     $(".surfaceObject").html("");
     $(".surfaceObject").append("<div class='cropObject'></div>");
@@ -1751,12 +1751,12 @@ var initCropLand = function(id){
             opacity:1,
             "z-index":2
         };
-        
+
 
 
         var info = {top:posY,left:posX, showed:0};
         landInfo.push(info);
-        
+
         var index = userLandConfiguration[i].crop;
         if (index == -1){
           return;
@@ -2092,17 +2092,19 @@ set_property_table = function(){
         $('.tradeable_content').html('');
         table = $('<table></table>').attr('id', 'property_trade_table')
                                     .attr('class', 'property_shop_table');
-        //header
-        tr = $('<tr></tr>');
-        tr.append($('<th></th>'));
-        tr.append($('<th></th>').text('Property'));
-        tr.append($('<th></th>').text('Stock'));
-        tr.append($('<th></th>').text('Tradable'));
-        table.append(tr);
-        //header
         //content
+        var flag = false;
         for(i = 0; i < user_property.length; i++){
             if((user_property[i].propertyCount != 0) || (user_property[i].tradeable != 0)){
+                flag = true;
+                if (i == 0){
+                  tr = $('<tr></tr>');
+                  tr.append($('<th></th>'));
+                  tr.append($('<th></th>').text('Property'));
+                  tr.append($('<th></th>').text('Stock'));
+                  tr.append($('<th></th>').text('Tradable'));
+                  table.append(tr);
+                }
                 tr = $('<tr></tr>');
                 td = $('<td></td>');
                 td.append($('<img></img>', {
@@ -2153,6 +2155,13 @@ set_property_table = function(){
                 tr.append(td);
                 table.append(tr);
             }
+        }
+
+
+        if (!flag){
+            tr = $('<tr></tr>');
+            tr.append($('<th></th>').text('No Stock Found'));
+            table.append(tr);
         }
         //content
         //control bar
@@ -2243,7 +2252,7 @@ save_tradable_setting = function(){
                 user_property[j].tradeable = _tradable;
                 break;
             }
-        }        
+        }
         usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000});
     }
     sweetAlert("Congratulations!", "Setting Saved!", "success");
