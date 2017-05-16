@@ -27,7 +27,7 @@ Router.route('/transaction', function () {
 
 
 //game
-
+//
 Router.route('/game', function () {
   this.render('gameIndex');
 });
