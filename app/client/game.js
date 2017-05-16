@@ -100,7 +100,6 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 Template.gameIndex.created = function() {
 
     s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
-    console.log(s_Id);
     s_Id = s_Id.c[0];
     if (s_Id == 0){
         sweetAlert("Oops...", "Please Register First", "error");
@@ -116,7 +115,6 @@ Template.gameIndex.created = function() {
     getUserStockList(s_Id);
 
     fetchGameInitConfig(s_Id);
-    console.log(cropTypeList);
 
     eventListener();
     // Tracker.autorun(() => {
@@ -165,8 +163,6 @@ Template.gameIndex.rendered = function() {
 
         setInterval(cropSummaryUpdate, 1000);
         setInterval(updateUserStamina, 500);
-
-        console.log('gameArea render complete');
 
         loading(0);
         //need to be async 0513
@@ -224,11 +220,9 @@ Template.statusList.helpers({
     crops: function(){
 
         var cropsData = [];
-        console.log(cropTypeList);
         for (var i = 0 ; i < cropTypeList.length; i++){
             var data = cropTypeList[i];
 
-            //console.log(data);
             cropsData.push({
                 "name": "crop property"+ i,
                 "img": prefix+data.img[3]+postfix,
@@ -245,7 +239,6 @@ Template.statusList.helpers({
         for (var i = 0 ; i < landTypeList.length; i++){
             var data = landTypeList[i];
 
-            //console.log(data);
             landsData.push({
                 "name": "cropLand farmLand"+data.id,
                 "img": prefix+data.img+postfix,
@@ -358,13 +351,10 @@ Template.gameIndex.events({
                 ripe: 0,
                 count: cropTypeList[currentCropId].count
             });
-            //console.log(cropList);
             _dep.changed();
 
             userCropType[currentCropId].count++;
             usingPropertyInstance.updateUserPropertyType(s_Id, currentCropId, {from:web3.eth.accounts[currentAccount], gas:2000000});
-            console.log(userLandConfiguration);
-            console.log(cropList);
 
         }else{
             sweetAlert("Oops...", "Please specify Crop first", "error");
@@ -396,8 +386,6 @@ Template.gameIndex.events({
                 img:landTypeList[currentLandId].img,
             });
 
-            console.log(userLandConfiguration);
-            console.log(cropList);
         }else{
             sweetAlert("Oops...", "Specify Land first", "error");
             return;
@@ -412,7 +400,6 @@ Template.gameIndex.events({
         setTimeout(function(){
             $(event.target).parent().remove();
         },1000);
-        console.log(currentUser.SyndicateProgress);
         if(currentUser.SyndicateProgress <= 0){
             clearInterval(checkMissionInterval);
             var leftThieives = $('.thief').length;
@@ -500,7 +487,6 @@ Template.gameIndex.events({
                 count: cropCount,
                 tradeable: 0
             });
-            console.log(cropTypeList);
             var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
             var propertyIndex;
             for(var i = 0; i < user_property.length; i++){
@@ -847,7 +833,6 @@ Template.gamingArea.events({
             var areaLeft = $(".gamingArea").position().left;
 
             var resizeOffsetX = (screen.width- $(window).width())/6.5;
-            console.log($(window).height()/$(window).width())
 
             var divHeight =$(".farmObject").height()/6;
             var divWidth = $(".farmObject").width()*1.65;
@@ -866,7 +851,6 @@ Template.gamingArea.events({
     },
     'click .matchesBtn':function(event){
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
-        console.log(m_Id);
         MainActivityInstance.updateConfirmation(m_Id, s_Id, 1, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
         $(event.target).prop("value", "Waiting");
@@ -908,8 +892,6 @@ Template.gamingArea.events({
         var negativeBoundary = -900;
         var boundary = 900;
 
-        console.log(data);
-
         if (data == 'none'){
           x = 0;
           y = 0;
@@ -917,13 +899,8 @@ Template.gamingArea.events({
           data = data.split(/[()]/)[1];
           x = parseInt(data.split(',')[4]);
           y = parseInt(data.split(',')[5]);
-          console.log(x)
         }
 
-        // console.log(scale);
-        //
-        //
-        //
         if (event.target.className.split(" ")[1] == 'navUp' && y < boundary){
             y += moveSpeed;
         }else if (event.target.className.split(" ")[1] == 'navDown' && y > negativeBoundary){
@@ -1040,7 +1017,6 @@ Template.statusList.events({
               clickTarget.html("<img src='/img/game/shovel.svg'>");
 
           }
-          console.log(removeMode);
     },
     // for tradable table to save
     'click #btn_tradeable_save':function(){
@@ -1156,8 +1132,6 @@ Template.characterList.events({
         MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
-        // var result = usingPropertyInstance.getProperty_Shop.call(21 ,{from:web3.eth.accounts[0]});
-        // console.log(result);
     },
     'click .confirmMatches':function(event){
         MainActivityInstance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
@@ -1269,7 +1243,7 @@ events.get(function(error, logs){
 
 var events2 = MainActivityInstance.returnOrigin({fromBlock: 0, toBlock: 'latest'});
 events2.watch(function(error, result){
-  console.log(result);
+    console.log(result);
 });
 
 // would get all past logs again.
@@ -1277,45 +1251,6 @@ events2.get(function(error, logs){
     console.log(logs);
 });
 
-
-// would stop and uninstall the filter
-//myEvent.stopWatching();
-
-  // MainActivityInstance.matchSuccess({from : 1, to : 'latest'}, { fromBlock: 0, toBlock: 'latest' }).get((error, eventResult) => {
-  //   if (error)
-  //     console.log('Error in myEvent event handler: ' + error);
-  //   else
-  //     console.log('myEvent: ' + JSON.stringify(eventResult.args));
-  // });
-
-//   var filter = web3.eth.filter({
-//     address: MainActivityInstance.address,
-//     from: 1,
-//     to: 'latest'
-//   });
-//
-//   filter.watch(function (error, log) {
-//   console.log(log); //  {"address":"0x0000000000000000000000000000000000000000", "data":"0x0000000000000000000000000000000000000000000000000000000000000000", ...}
-// });
-//
-//   var res = filter.get(function (err, result) {
-//       console.log(result);
-//   });
-//
-//   console.log(res);
-  // MainActivityInstance.matchSuccess().watch(function(error, result){
-  //     if (!error){
-  //         console.log(result);
-  //     }
-  //     console.log(error);
-  // });
-  //
-  // MainActivityInstance.matchFail().watch(function(error, result){
-  //     if (!error){
-  //         console.log(result);
-  //     }
-  //     console.log(error);
-  // });
 }
 
 var showConfirmation = function(s_Id){
@@ -1384,8 +1319,7 @@ var getVisitNode = function(){
     while (visitNode == s_Id){
         visitNode = Math.floor(s_Length*Math.random());
     }
-    console.log(visitNode);
-    console.log(s_Length);
+
     return visitNode;
 }
 
@@ -1452,15 +1386,12 @@ var loadCropList = function(s_Id){
             count: countData[i].c[0]
         });
     }
-    console.log(cropList);
 
 }
 
 
 var getUserStockList = function(s_Id){
-    var p_List = CongressInstance.getPropertyList(s_Id, { from:web3.eth.accounts[currentAccount]})
-    console.log(p_List);
-
+    var p_List = CongressInstance.getPropertyList(s_Id, { from:web3.eth.accounts[currentAccount]});
 
     var data = [];
     for (var i = 0 ; i < p_List.length ; i++){
@@ -1477,7 +1408,6 @@ var getUserStockList = function(s_Id){
           tradeable: data[i][6].c[0]
       });
     }
-    console.log(stockList);
 
 }
 
@@ -1513,12 +1443,9 @@ var getUserData = function(s_Id){
     }
 
     lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
-    //
     lastLogin = new Date(lastLogin.split("\"")[1]);
-    console.log(lastLogin);
 
     var difference = elapsedTime(lastLogin, new Date());
-    console.log(Math.round(difference.getTime()/(1000*60)));
 
     currentUser.sta += Math.round(difference.getTime()/(1000*60));
     var staCap = staminaCap(currentUser.level);
@@ -1572,9 +1499,6 @@ var getLandConfiguration = function(s_Id){
         );
     }
 
-    console.log(contractCropData);
-
-
 }
 
 var fetchGameInitConfig = function(s_Id){
@@ -1592,7 +1516,6 @@ var fetchGameInitConfig = function(s_Id){
         });
     }
 
-    console.log(userCropTypeData)
     for (var i = 0 ; i < userCropType.length; i++){
         cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
     }
@@ -1628,8 +1551,6 @@ var fetchGameInitConfig = function(s_Id){
         })
     }
     _crop.changed();
-
-    console.log(cropTypeList);
 
     for (var i = 0 ; i < landData.length ; i++){
 
@@ -1732,7 +1653,6 @@ var initCropLand = function(id){
 
         var resizeOffsetX = ($(window).width()-400)/6.5;
         var areaLeft = $(".gamingArea").position().left;
-        //console.log(areaLeft)
         var divHeight =$(".cropObject").height()/5;
         var divWidth = $(".cropObject").width()/1.65;
         // var divHeight =0;
@@ -1970,12 +1890,6 @@ var cropSummaryUpdate = function(){
         }
         var difference = elapsedTime(new Date(), cropList[i].end);
         var originDifference = elapsedTime(cropList[i].start, cropList[i].end);
-        //var percentage = (1 - (difference / originDifference))*100;
-        // console.log(percentage);
-        // if (percentage > 100){
-        //   continue;
-        // }
-        //$(".currentCrop"+i).css("width", percentage+"%");
         var percent = difference/originDifference;
 
         var index;
