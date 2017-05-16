@@ -496,7 +496,7 @@ Template.gameIndex.events({
                     break;
                 }
             }
-            usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
+            usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:3000000});
 
             //usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
@@ -851,7 +851,7 @@ Template.gamingArea.events({
     },
     'click .matchesBtn':function(event){
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
-        MainActivityInstance.updateConfirmation(m_Id, s_Id, 1, {from:web3.eth.accounts[currentAccount], gas:2000000});
+        MainActivity2Instance.updateConfirmation(m_Id, s_Id, 1, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
         $(event.target).prop("value", "Waiting");
         $(event.target).prop("disabled", true);
@@ -1134,7 +1134,7 @@ Template.characterList.events({
         showConfirmation(s_Id);
     },
     'click .confirmMatches':function(event){
-        MainActivityInstance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
+        MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
 
@@ -1265,7 +1265,7 @@ var showConfirmation = function(s_Id){
 
     for (var i = 0 ; i < length ; i++){
 
-        var data = MainActivityInstance.getMatchMaking.call(currentUser.matches[i], {from:web3.eth.accounts[currentAccount]});
+        var data = MainActivity2Instance.getMatchMaking.call(currentUser.matches[i], {from:web3.eth.accounts[currentAccount]});
         var owners = data[1];
         var properties = data[2];
         var tradeables = data[3];
@@ -1302,7 +1302,7 @@ var showConfirmation = function(s_Id){
 
         $(".systemInfo").append(row);
 
-        var confirmed = MainActivityInstance.getMatchMakingConfirmed.call(currentUser.matches[i], s_Id, {from:web3.eth.accounts[currentAccount]});
+        var confirmed = MainActivity2Instance.getMatchMakingConfirmed.call(currentUser.matches[i], s_Id, {from:web3.eth.accounts[currentAccount]});
         if (confirmed){
             $(".matchBtn"+currentUser.matches[i].c[0]).prop("value", "Waiting");
             $(".matchBtn"+currentUser.matches[i].c[0]).prop("disabled", true);

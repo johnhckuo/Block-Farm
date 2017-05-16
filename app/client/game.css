@@ -645,10 +645,11 @@
   position: relative;
   width: 100px;
   height: 20px;
-
   background-color: grey;
   color:black;
   text-align: center;
+  border-radius: 5px;
+
 }
 
 .expProgressBar{
@@ -658,7 +659,7 @@
   height: 100%;
   background-color: #BBFF00;
   transition: all 1s;
-
+  border-radius: 5px;
 
 }
 
@@ -680,10 +681,11 @@
   position: relative;
   width: 100px;
   height: 20px;
-
   background-color: grey;
   color:black;
   text-align: center;
+  border-radius: 5px;
+
 }
 
 .SyndicateExpProgressBar{
@@ -693,6 +695,7 @@
   height: 100%;
   background-color: #BBFF00;
   transition: all 1s;
+  border-radius: 5px;
 
 
 }
@@ -711,10 +714,11 @@
   position: relative;
   width: 100px;
   height: 20px;
-
   background-color: grey;
   color:black;
   text-align: center;
+  border-radius: 5px;
+
 }
 
 .staProgressBar{
@@ -724,7 +728,7 @@
   height: 100%;
   background-color: #BBFF00;
   transition: all 1s;
-
+  border-radius: 5px;
 
 }
 
