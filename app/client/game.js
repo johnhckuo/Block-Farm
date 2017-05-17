@@ -537,7 +537,7 @@ Template.gameIndex.events({
                     judgement = Math.random();
                     if(judgement >= 0.5){
                         stealResult = true;
-                        
+
 
                         $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                         $(".scoreObject").html("+" + 5 +"XP");
@@ -931,7 +931,7 @@ function PanelControl(panelIndex){
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
     $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
 
-    if(panelCounter==4){
+    if(panelCounter==3){
         set_property_table();
     }
 
@@ -967,9 +967,6 @@ Template.statusList.events({
     },
     'click .crop3' :function(){
         PanelControl(3);
-    },
-    'click .crop4' :function(){
-        PanelControl(4);
     },
     'click .removeLand button': function (event){
 
@@ -1036,7 +1033,7 @@ Template.characterList.events({
             if(Session.get('userCharacter') == "Thief"){
                 $(event.target).parent().attr("character", "thief");
                 $(event.target)[0].src = "/img/game/thief.svg";
-                PanelControl(5);
+                PanelControl(4);
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
                 $('.SyndicateExp').css('visibility', 'visible');
@@ -1049,14 +1046,13 @@ Template.characterList.events({
                     value:'Next'
                 }));
                 gameMode = "Thief";
-                $('.crop4').css('display','none');
                 $('.crop2').css('display','none');
                 $('.crop3').css('display','none');
             }
             else if(Session.get('userCharacter') == "Guard"){
                 $(event.target).parent().attr("character", "guard");
                 $(event.target)[0].src = "/img/game/guard.svg";
-                PanelControl(5);
+                PanelControl(4);
                 showThief = true;
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
@@ -1064,7 +1060,6 @@ Template.characterList.events({
                 gameMode = "Guard";
                 $('.SyndicateExp').css('visibility', 'visible');
                 $('.userExp').css('visibility', 'collapse');
-                $('.crop4').css('display','none');
                 $('.crop2').css('display','none');
                 $('.crop3').css('display','none');
 
@@ -1096,14 +1091,13 @@ Template.characterList.events({
             $(".missionObject").html("<div class='thiefObject'></div>");
             $('.SyndicateExp').css('visibility', 'collapse');
             $('.userExp').css('visibility', 'visible');
-            $('.crop4').css('display','block');
             $('.crop2').css('display','block');
             $('.crop3').css('display','block');
             $('.functionSwitch').parent().find(".nextHome").remove();
             gameMode = "Farmer"
             rerenderCropLand(s_Id);
         }
-    },   
+    },
     'click .nextHome': function (event) {
 
         // ===== wait for further testing
