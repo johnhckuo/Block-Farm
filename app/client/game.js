@@ -434,6 +434,9 @@ Template.gameIndex.events({
                 typeIndex = j;
             }
         }
+
+        $(".floatCropStatus").css("display", "none");
+
         if(gameMode == "Farmer"){
             if (cropList[id].ripe){
 
@@ -2177,8 +2180,7 @@ save_rating_setting = function () {
         var _rate = parseInt($('#rating' + i).val(),10);
         usingPropertyInstance.updatePropertyTypeRating(_id, _rate*floatOffset, "update", {from:web3.eth.accounts[currentAccount],gas:200000});
     }
-
-
+    sweetAlert("Congratulations!", "Rating Saved!", "success");
 }
 
 averageRating_calculation = function () {
