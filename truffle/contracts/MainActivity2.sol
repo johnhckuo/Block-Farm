@@ -4,7 +4,8 @@ contract Congress{
     function deleteMatchesId(uint, uint);
     function updateGuardMatchId(uint, int256);
     function insertMatchesId(uint, uint);
-
+    function updateGuardId(uint, uint);
+    function updateFarmerId(uint, uint);
 }
 
 contract usingProperty{
@@ -100,6 +101,9 @@ contract MainActivity2{
             uint p_Type = property.getPropertyType_Matchmaking(matches[m_Id].visitedProperties[i]);
             if (p_Type > 29 && p_Type < 40){
                 congress.updateGuardMatchId(matches[m_Id].visitedOwners[i], int256(m_Id));
+                congress.updateGuardId(matches[m_Id].visitedOwners[i+1], matches[m_Id].visitedOwners[i]);
+                congress.updateFarmerId(matches[m_Id].visitedOwners[i], matches[m_Id].visitedOwners[i+1]);
+
             }
         }
 

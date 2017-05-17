@@ -41,6 +41,7 @@ contract Congress{
         int256 fail;
         bytes32 character;
         int256 guardMatchId;
+        uint guardFarmerId;
     }
 
     function Congress(){
@@ -119,10 +120,19 @@ contract Congress{
        stakeholdersGameData[_id].level = 0;
        stakeholdersGameData[_id].stamina = 100;
        stakeholdersGameData[_id].lastLogin = 0;
+       stakeholdersGameData[_id].guardId = 0;
 
        initSyndicateData(_character);
-       //stakeholders[_id].guardId = 0;
        //stakeholders[_id].thiefId = 0;
+    }
+
+    function updateGuardId(uint s_Id, uint g_Id){
+        stakeholdersGameData[s_Id].guardId = g_Id;
+
+    }
+
+    function getGuardId(uint s_Id) constant returns (uint){
+        return stakeholdersGameData[s_Id].guardId;
     }
 
 
@@ -137,6 +147,16 @@ contract Congress{
         SyndicateData[_id].progress = 0;
         SyndicateData[_id].character = _character;
         SyndicateData[_id].guardMatchId = -1;
+        SyndicateData[_id].guardFarmerId = 0;
+
+    }
+
+    function updateFarmerId(uint s_Id, uint g_Id){
+        SyndicateData[s_Id].guardFarmerId = g_Id;
+    }
+
+    function getFarmerId(uint s_Id) constant returns(uint){
+        return SyndicateData[s_Id].guardFarmerId;
     }
 
     function getSyndicateData(uint u_Id) constant returns(uint, uint, uint, uint){
