@@ -20,15 +20,8 @@ contract usingProperty{
     function getPropertiesLength() constant returns(uint);
     function updatePropertyCount_MissionSubmit(uint _id, uint _propertyCount);
     function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint);
-    function getPropertyRating(uint, uint) constant returns(uint);
     function addUserPropertyType(uint, uint);
-    function getPropertyTypeId(uint) constant returns(uint);
-    function updatePropertyCount(uint, uint, uint);
-    function getPropertyCount(uint) constant returns(uint);
-    function initUserProperty(uint);
-    function updatePropertyTypeRating(uint, uint, string);
     function moveUserLandPosition(uint u_Id, uint oldId, uint newId);
-
 }
 
 contract GameCore{
@@ -131,13 +124,13 @@ contract GameCore{
 
     function getMissionItemsArray(uint mId) constant returns(uint[] ,uint[]){
         Mission obj = MissionList[mId];
-        for(uint j = 0; j < obj.cropId.length; j++){            
+        for(uint j = 0; j < obj.cropId.length; j++){
             _MissionCropId.push(obj.cropId[j]);
             _MissionQuantity.push(obj.quantity[j]);
         }
         return(_MissionCropId,_MissionQuantity);
     }
-    
+
     function getMissionItems(uint mId, uint itemId) constant returns(uint ,bytes32, uint, bytes32){
         Mission obj = MissionList[mId];
 
@@ -217,5 +210,6 @@ contract GameCore{
             usingPropertyInstance.moveUserLandPosition(s_Id, i, i + (i/length));
         }
     }
+
 
 }

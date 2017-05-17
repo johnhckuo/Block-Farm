@@ -40,6 +40,7 @@ contract Congress{
         int256 success;
         int256 fail;
         bytes32 character;
+        int256 guardMatchId;
     }
 
     function Congress(){
@@ -108,21 +109,20 @@ contract Congress{
 
     function initPlayerData(bytes32 _name, bytes32 _character){
 
-         uint _id = stakeholdersGameData.length++;
-         stakeholdersGameData[_id].name=_name;
+       uint _id = stakeholdersGameData.length++;
+       stakeholdersGameData[_id].name=_name;
+       stakeholdersGameData[_id].character= _character;
 
-         stakeholdersGameData[_id].character= _character;
+       stakeholdersGameData[_id].exp = 0;
+       stakeholdersGameData[_id].totalExp = 0;
+       stakeholdersGameData[_id].landSize = 3;
+       stakeholdersGameData[_id].level = 0;
+       stakeholdersGameData[_id].stamina = 100;
+       stakeholdersGameData[_id].lastLogin = 0;
 
-         stakeholdersGameData[_id].exp = 0;
-         stakeholdersGameData[_id].totalExp = 0;
-         stakeholdersGameData[_id].landSize = 3;
-         stakeholdersGameData[_id].level = 0;
-         stakeholdersGameData[_id].stamina = 100;
-         stakeholdersGameData[_id].lastLogin = 0;
-
-         initSyndicateData(_character);
-         //stakeholders[_id].guardId = 0;
-         //stakeholders[_id].thiefId = 0;
+       initSyndicateData(_character);
+       //stakeholders[_id].guardId = 0;
+       //stakeholders[_id].thiefId = 0;
     }
 
 
@@ -136,6 +136,7 @@ contract Congress{
         SyndicateData[_id].fail = 0;
         SyndicateData[_id].progress = 0;
         SyndicateData[_id].character = _character;
+        SyndicateData[_id].guardMatchId = -1;
     }
 
     function getSyndicateData(uint u_Id) constant returns(uint, uint, uint, uint){
@@ -162,6 +163,14 @@ contract Congress{
 
     function updateSyndicateProgress(uint u_Id, uint Progress){
         SyndicateData[u_Id].progress = Progress;
+    }
+
+    function updateGuardMatchId(uint u_Id, int256 g_Id){
+        SyndicateData[u_Id].guardMatchId = g_Id;
+    }
+
+    function getGuardMatchId(uint u_Id) constant returns (int256){
+        return SyndicateData[u_Id].guardMatchId;
     }
 
     function updateUserStamina(uint u_Id, uint sta){
