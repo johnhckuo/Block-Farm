@@ -315,10 +315,11 @@
 
 .crop{
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   font-size: 18px;
+  width:8vw;
 }
 
 /*.crop *{
@@ -326,9 +327,12 @@
 }*/
 
 .crop img{
-  height:50px;
+  height:5vh;
 }
 .cropListDiv{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
   height: 55vh;
   overflow: auto;
   margin-right: -3vw;
@@ -776,18 +780,20 @@
 }
 .landList{
   display: flex;
-  flex-direction: column;
-  height: 55vh;
+  flex-direction: row;
+  height: 15vh;
   margin-right: -3vw;
   width: 25vw;
   font-size: 22px;
 }
 .cropLand{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items:center;
-  flex-direction: row;
-  margin-bottom:30px;
+  flex-direction: column;
+  margin-bottom:15px;
+  width:50%;
+  cursor:pointer;
 }
 /*
 .cropLand *{
@@ -795,7 +801,7 @@
 }*/
 
 .cropLand img{
-  height:50px;
+  height:5vh;
 }
 
 /*td{
@@ -1126,10 +1132,11 @@ td img{
 
 .removeLand{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  flex-direction: row;
-  margin-bottom: 30px;
+  flex-direction: column;
+  margin-bottom: 15px;
+  cursor:pointer;
 }
 
 /*.removeLand *{

@@ -224,7 +224,7 @@ Template.statusList.helpers({
             var data = cropTypeList[i];
 
             cropsData.push({
-                "name": "crop property"+ i,
+                "name": "crop plantButton property"+ i,
                 "img": prefix+data.img[3]+postfix,
                 "content": data.name
             });
@@ -676,22 +676,26 @@ Template.gameIndex.events({
 
 
 Template.crop.events({
-    'click .crop button': function (event){
+    'click .crop': function (event){
         clickTarget=null;
         if(event.target.className==""){
           clickTarget=$(event.target).parent();
         }else{
           clickTarget=$(event.target);
         }
-        var id = clickTarget.parent()[0].className.split("property")[1];
+
+        if (placeMode){
+            $(".farmObject").css("display", "none");
+            $(currentClickedLand).html("<img src = '" + prefix+ "land" + postfix +"' />Dirt");
+            $(currentClickedLand).data('pressed', false);
+            placeMode = false;
+        }
+
+        var id = clickTarget[0].className.split("property")[1];
 
         if (clickTarget.data('pressed')){
             $(".cropObject").css("display", "none");
-
-            // $(event.target).css("background", "#337ab7");
-            // $(event.target).css("border-color", "#337ab7");
-            // $(event.target).text("Specify");
-            clickTarget.html("<img src='/img/game/rake.svg'>")
+            clickTarget.html("<img src = '" + prefix+ cropTypeList[id].img[3] + postfix +"' />" + cropTypeList[id].name);
             clickTarget.data('pressed', false);
             plantMode = false;
             return;
@@ -700,15 +704,12 @@ Template.crop.events({
         plantMode = true;
 
         currentClickedCrop = clickTarget;
-        var btns = $(".crop").find("button");
+        var imgs = $(".crop").find("img");
 
-        for (var i = 0 ; i < btns.length; i++){
-            if ($(btns[i]).data('pressed')){
-                // $(btns[i]).css("background", "#337ab7");
-                // $(btns[i]).css("border-color", "#337ab7");
-                // $(btns[i]).text("Specify");
-                $(btns[i]).html("<img src='/img/game/rake.svg'>")
-                $(btns[i]).data('pressed', false);
+        for (var i = 0 ; i < imgs.length; i++){
+            if ($(imgs[i]).parent().data('pressed')){
+                $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);
+                $(imgs[i]).parent().data('pressed', false);
             }
         }
         clickTarget.data('pressed', true);
@@ -717,10 +718,6 @@ Template.crop.events({
         currentCropId = id;
 
         $(".cropObject").css("display", "inline");
-
-        // $(event.target).css("background", "gray");
-        // $(event.target).css("border-color", "gray");
-        // $(event.target).text("Done");
         clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>")
 
     },
@@ -728,7 +725,7 @@ Template.crop.events({
 })
 
 Template.land.events({
-    'click .cropLand button': function (event){
+    'click .cropLand ': function (event){
         clickTarget=null;
         if(event.target.className==""){
           clickTarget=$(event.target).parent();
@@ -736,32 +733,29 @@ Template.land.events({
           clickTarget=$(event.target);
         }
 
-        var id = clickTarget.parent()[0].className.split("farmLand")[1];
+        if (plantMode){
+            $(".cropObject").css("display", "none");
+            for(var k = 0; k < cropTypeList.length; k++){
+                $('.crop:nth-child(' + (k + 1) + ')').html("<img src = '" + prefix+ cropTypeList[k].img[3] + postfix +"' />" +  cropTypeList[k].name);
+                $('.crop:nth-child(' + (k + 1) + ')').data('pressed', false);
+            }
+            plantMode = false;
+        }
+
+        var id = clickTarget[0].className.split("farmLand")[1];
 
 
         if (clickTarget.data('pressed')){
             $(".farmObject").css("display", "none");
-
-            // $(event.target).css("background", "#337ab7");
-            // $(event.target).css("border-color", "#337ab7");
-            // $(event.target).text("Specify");
-            clickTarget.html("<img src='/img/game/shovel.svg'>")
+            clickTarget.html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />Dirt");
             clickTarget.data('pressed', false);
             place = false;
             return;
         }
 
-        var btns = $(".cropLand").find("button");
-
-        for (var i = 0 ; i < btns.length; i++){
-            if ($(btns[i]).data('pressed')){
-                // $(btns[i]).css("background", "#337ab7");
-                // $(btns[i]).css("border-color", "#337ab7");
-                // $(btns[i]).text("Specify");
-                $(btns[i]).html("<img src='/img/game/shovel.svg'>")
-                $(btns[i]).data('pressed', false);
-            }
-        }
+        var imgs = $(".cropLand").find("img");
+        imgs[1].src = '/img/game/trashcan.svg';
+        $(imgs[1]).parent().data('pressed', false);
 
         placeMode = true;
         clickTarget.data('pressed', true);
@@ -771,19 +765,12 @@ Template.land.events({
 
         if (placeMode){
             $(".farmObject").css("display", "inline");
-
-            // $(event.target).css("background", "gray");
-            // $(event.target).css("border-color", "gray");
-            // $(event.target).text("Done");
             clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>")
             currentClickedLand = clickTarget;
 
         }else{
-            // $(event.target).css("background", "#337ab7");
-            // $(event.target).css("border-color", "#337ab7");
-            // $(event.target).text("Specify");
-            $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
-            clickTarget.html("<img src='/img/game/shovel.svg'>")
+            $(currentClickedLand).html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />Dirt");
+            clickTarget.html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />Dirt");
             $(".farmObject").css("display", "none");
         }
     },
@@ -923,9 +910,7 @@ function PanelControl(panelIndex){
     $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
     $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
-    // setTimeout(function(){
-    //   $(".statusPanel:nth-child("+temp+")").css("z-index", -1);
-    // },1000);
+
     panelCounter = panelIndex;
     $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
@@ -935,28 +920,9 @@ function PanelControl(panelIndex){
         set_property_table();
     }
 
+    $(".cropObject").css("display", "none");
+    $(".farmObject").css("display", "none");
 
-    if (plantMode){
-
-        $(".cropObject").css("display", "none");
-        $(".farmObject").css("display", "none");
-        // $(currentClickedCrop).css("background", "#337ab7");
-        // $(currentClickedCrop).css("border-color", "#337ab7");
-        // $(currentClickedCrop).text("Specify");
-        $(currentClickedCrop).html("<img src='/img/game/rake.svg'>")
-        $(currentClickedCrop).data('pressed', false);
-        plantMode = false;
-    }else if (placeMode){
-
-        $(".cropObject").css("display", "none");
-        $(".farmObject").css("display", "none");
-        // $(currentClickedLand).css("background", "#337ab7");
-        // $(currentClickedLand).css("border-color", "#337ab7");
-        $(currentClickedLand).html("<img src='/img/game/shovel.svg'>")
-        // $(currentClickedLand).text("Specify");
-        $(currentClickedLand).data('pressed', false);
-
-    }
     initAllBtns();
 
 }
@@ -968,7 +934,7 @@ Template.statusList.events({
     'click .crop3' :function(){
         PanelControl(3);
     },
-    'click .removeLand button': function (event){
+    'click .removeLand': function (event){
 
           clickTarget=null;
           $(".farmObject").css("display", "none");
@@ -981,38 +947,24 @@ Template.statusList.events({
 
           if (clickTarget.data('pressed')){
 
-              clickTarget.html("<img src='/img/game/shovel.svg'>")
+              clickTarget.html("<img src='/img/game/trashcan.svg'>Remove")
               clickTarget.data('pressed', false);
               removeMode = false;
               return;
           }
 
           removeMode = true;
+          var imgs = $(".cropLand").find("img");
+          imgs[0].src = prefix+ "land" + postfix;
+          $(imgs[0]).parent().data('pressed', false);
 
-          var btns = $(".cropLand").find("button");
-
-          for (var i = 0 ; i < btns.length; i++){
-              if ($(btns[i]).data('pressed')){
-                  // $(btns[i]).css("background", "#337ab7");
-                  // $(btns[i]).css("border-color", "#337ab7");
-                  // $(btns[i]).text("Specify");
-                  $(btns[i]).html("<img src='/img/game/shovel.svg'>")
-                  $(btns[i]).data('pressed', false);
-              }
-          }
           clickTarget.data('pressed', true);
 
           if (removeMode){
-              // $(event.target).css("background", "gray");
-              // $(event.target).css("border-color", "gray");
-              // $(event.target).text("Done");
-              clickTarget.html("<img src='/img/game/cancel2.svg' width='30px' height='50px'>");
+              clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>");
 
           }else{
-              // $(event.target).css("background", "#337ab7");
-              // $(event.target).css("border-color", "#337ab7");
-              // $(event.target).text("Specify");
-              clickTarget.html("<img src='/img/game/shovel.svg'>");
+              clickTarget.html("<img src='/img/game/trashcan.svg'>Remove");
 
           }
     },
@@ -1021,7 +973,7 @@ Template.statusList.events({
         save_tradable_setting();
     },
     'click #btn_tradeable_cancel':function(){
-        //sweetAlert("Warning", 'cancel', "warning");
+        sweetAlert("Warning", 'cancel', "warning");
         set_property_table();
     }
 })
@@ -1033,12 +985,11 @@ Template.characterList.events({
             if(Session.get('userCharacter') == "Thief"){
                 $(event.target).parent().attr("character", "thief");
                 $(event.target)[0].src = "/img/game/thief.svg";
-                PanelControl(4);
+                PanelControl(3);
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
                 $('.SyndicateExp').css('visibility', 'visible');
                 $('.userExp').css('visibility', 'collapse');
-               // $(event.target).html("Home");
                 $('.functionSwitch').append($('<input></input>',{
                     type:'button',
                     name:'button',
@@ -1052,11 +1003,10 @@ Template.characterList.events({
             else if(Session.get('userCharacter') == "Guard"){
                 $(event.target).parent().attr("character", "guard");
                 $(event.target)[0].src = "/img/game/guard.svg";
-                PanelControl(4);
+                PanelControl(3);
                 showThief = true;
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
-               // $(event.target).html("Home");
                 gameMode = "Guard";
                 $('.SyndicateExp').css('visibility', 'visible');
                 $('.userExp').css('visibility', 'collapse');
@@ -1176,27 +1126,18 @@ document.onmousemove = function(e){
 }
 
 var initAllBtns = function(){
-  var btns = $(".cropLand").find("button");
+  var imgs = $(".cropLand").find("img");
+  $(imgs[0]).parent().html("<img src = '" + prefix+ "land" + postfix + "' />" + "Dirt");
+  $(imgs[0]).parent().data('pressed', false);
+  $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");
+  $(imgs[1]).parent().data('pressed', false);
+  
+  var imgs = $(".crop").find("img");
 
-  for (var i = 0 ; i < btns.length; i++){
-      if ($(btns[i]).data('pressed')){
-          // $(btns[i]).css("background", "#337ab7");
-          // $(btns[i]).css("border-color", "#337ab7");
-          // $(btns[i]).text("Specify");
-          $(btns[i]).html("<img src='/img/game/shovel.svg'>")
-          $(btns[i]).data('pressed', false);
-      }
-  }
-
-  var btns = $(".crop").find("button");
-
-  for (var i = 0 ; i < btns.length; i++){
-      if ($(btns[i]).data('pressed')){
-          // $(btns[i]).css("background", "#337ab7");
-          // $(btns[i]).css("border-color", "#337ab7");
-          // $(btns[i]).text("Specify");
-          $(btns[i]).html("<img src='/img/game/rake.svg'>")
-          $(btns[i]).data('pressed', false);
+  for (var i = 0 ; i < imgs.length; i++){
+      if ($(imgs[i]).parent().data('pressed')){
+          $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);
+          $(imgs[i]).parent().data('pressed', false);
       }
   }
 

@@ -133,22 +133,16 @@
 </template>
 
 <template name="crop">
-    <div class={{name}}>
+    <div class={{name}} data-pressed="false">
         <img src={{img}} alt="">
-        <div class="cropContent">
-          {{content}}
-        </div>
-        <button class="plantButton" data-pressed = "false" ><img src="/img/game/rake.svg" alt=""></button>
+        {{content}}
     </div>
 </template>
 
 <template name="land">
-    <div class={{name}}>
-        <img src={{img}} alt="">
-        <div class="landContent">
-          {{content}}
-        </div>
-        <button class="placeButton" data-pressed = "false" ><img src="/img/game/shovel.svg" alt=""></button>
+    <div class={{name}} data-pressed="false">
+        <img class="" src={{img}} alt="">
+            {{content}}
     </div>
 </template>
 
@@ -156,36 +150,20 @@
     <div class="statusList">
         {{> characterList}}
 
-
-        <!-- <div class="landPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
-          <div class="statusPanelList">
-              <div class="listHeader">
-                <h2>Land List</h2>
-                <hr>
-              </div>
-              <div class="landList">
-              {{#each lands}}
-                      {{> land}}
-              {{/each}}
-              <div class='cropLand removeLand'>
-                  <img src="/img/game/trashcan.svg" width='50px' height='50px' alt="">
-                  <div class="landContent">
-                    Remove
-                  </div>
-                  <button class="removeButton" data-pressed = "false" ><img src="/img/game/shovel.svg" alt=""></button>
-              </div>
-              </div>
-          </div>
-          <div>
-            {{> cropSelectingBtns}}
-          </div>
-        </div> -->
-
         <!-- <div class="cropListButton statusListButton"> -->
         <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
+              <div class="landList">
+                  {{#each lands}}
+                  {{> land}}
+                  {{/each}}
+                  <div class='cropLand removeLand' data-pressed="false">
+                      <img src="/img/game/trashcan.svg" height='5vh' alt="">
+                      Remove
+                  </div>
+              </div>
               <div class="listHeader">
-                <h2>Crop List</h2>
+                <h2>Crops</h2>
                 <hr>
               </div>
               <div class="cropListDiv">
