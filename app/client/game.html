@@ -157,7 +157,7 @@
         {{> characterList}}
 
 
-        <div class="landPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
+        <!-- <div class="landPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
               <div class="listHeader">
                 <h2>Land List</h2>
@@ -175,15 +175,14 @@
                   <button class="removeButton" data-pressed = "false" ><img src="/img/game/shovel.svg" alt=""></button>
               </div>
               </div>
-              <!-- {{> cropSelectingBtns}} -->
           </div>
           <div>
             {{> cropSelectingBtns}}
           </div>
-        </div>
+        </div> -->
 
         <!-- <div class="cropListButton statusListButton"> -->
-        <div class="plantPanel statusPanel listbutton" style="z-index:-1;">
+        <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
               <div class="listHeader">
                 <h2>Crop List</h2>
@@ -200,36 +199,6 @@
             {{> cropSelectingBtns}}
           </div>
         </div>
-
-        <!-- <div class="cropPanel statusPanel listbutton" style="z-index:-1;">
-            <div class="statusPanelList">
-              <div class="summaryBoard">
-                  <div class="currentList listHeader">
-                    <h2>Current Crop Summary</h2>
-                    <hr/>
-                  </div>
-                  <table id="cropTable" class="">
-                    <tbody>
-                      <tr>
-                        <th> </th>
-                        <th>Name</th>
-                        <th>Time Left</th>
-                      </tr>
-                      {{#each cropsSummary}}
-                        <tr>
-                          {{> cropSummary}}
-                        </tr>
-                      {{/each}}
-                    </tbody>
-                  </table>
-              </div>
-          </div>
-          <div>
-            {{> cropSelectingBtns}}
-          </div>
-        </div> -->
-
-
 
         <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
           <div class="statusPanelList">
@@ -254,9 +223,8 @@
 
 <template name="cropSelectingBtns">
   <div class="controlButtons">
-    <button type="button" class="btnSelect crop2" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/sprout.svg" alt=""></button>
-    <button type="button" class="btnSelect crop3" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
-    <button type="button" class="btnSelect crop4" name="button"><img src="/img/game/barn.svg" alt=""></button>
+    <button type="button" class="btnSelect crop2" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
+    <button type="button" class="btnSelect crop3" name="button"><img src="/img/game/barn.svg" alt=""></button>
   </div>
 
 </template>
