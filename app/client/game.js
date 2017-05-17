@@ -683,13 +683,14 @@ Template.crop.events({
         }else{
           clickTarget=$(event.target);
         }
-
-        if (placeMode){
-            $(".farmObject").css("display", "none");
-            $(currentClickedLand).html("<img src = '" + prefix+ "land" + postfix +"' />Dirt");
-            $(currentClickedLand).data('pressed', false);
-            placeMode = false;
-        }
+        var imgs = $(".cropLand").find("img");
+        $(".farmObject").css("display", "none");
+        $(imgs[0]).parent().data('pressed', false);
+        $(imgs[0]).parent().html("<img src = '" + prefix+ "land" + postfix + "' />" + "Dirt");        
+        $(imgs[1]).parent().data('pressed', false);
+        $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");        
+        placeMode = false;
+        removeMode = false;
 
         var id = clickTarget[0].className.split("property")[1];
 
@@ -708,8 +709,8 @@ Template.crop.events({
 
         for (var i = 0 ; i < imgs.length; i++){
             if ($(imgs[i]).parent().data('pressed')){
-                $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);
                 $(imgs[i]).parent().data('pressed', false);
+                $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);                
             }
         }
         clickTarget.data('pressed', true);
@@ -736,8 +737,8 @@ Template.land.events({
         if (plantMode){
             $(".cropObject").css("display", "none");
             for(var k = 0; k < cropTypeList.length; k++){
-                $('.crop:nth-child(' + (k + 1) + ')').html("<img src = '" + prefix+ cropTypeList[k].img[3] + postfix +"' />" +  cropTypeList[k].name);
                 $('.crop:nth-child(' + (k + 1) + ')').data('pressed', false);
+                $('.crop:nth-child(' + (k + 1) + ')').html("<img src = '" + prefix+ cropTypeList[k].img[3] + postfix +"' />" +  cropTypeList[k].name);
             }
             plantMode = false;
         }
@@ -756,6 +757,7 @@ Template.land.events({
         var imgs = $(".cropLand").find("img");
         imgs[1].src = '/img/game/trashcan.svg';
         $(imgs[1]).parent().data('pressed', false);
+        removeMode = false;
 
         placeMode = true;
         clickTarget.data('pressed', true);
@@ -938,13 +940,21 @@ Template.statusList.events({
 
           clickTarget=null;
           $(".farmObject").css("display", "none");
+          if (plantMode){
+              $(".cropObject").css("display", "none");
+              for(var k = 0; k < cropTypeList.length; k++){
+                  $('.crop:nth-child(' + (k + 1) + ')').html("<img src = '" + prefix+ cropTypeList[k].img[3] + postfix +"' />" +  cropTypeList[k].name);
+                  $('.crop:nth-child(' + (k + 1) + ')').data('pressed', false);
+              }
+              plantMode = false;
+          }
 
           if(event.target.className==""){
             clickTarget=$(event.target).parent();
           }else{
             clickTarget=$(event.target);
           }
-
+        
           if (clickTarget.data('pressed')){
 
               clickTarget.html("<img src='/img/game/trashcan.svg'>Remove")
