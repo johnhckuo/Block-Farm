@@ -32,7 +32,7 @@ const _character = new Tracker.Dependency;
 var cursorX;
 var cursorY;
 
-var panelCounter = 2, panelCount = 3;
+var panelCounter = 2, panelCount = 2;
 
 var cropList = [];
 var stockList = [];
@@ -1033,7 +1033,7 @@ Template.characterList.events({
             if(Session.get('userCharacter') == "Thief"){
                 $(event.target).parent().attr("character", "thief");
                 $(event.target)[0].src = "/img/game/thief.svg";
-                PanelControl(4);
+                PanelControl(3);
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
                 $('.SyndicateExp').css('visibility', 'visible');
@@ -1052,7 +1052,7 @@ Template.characterList.events({
             else if(Session.get('userCharacter') == "Guard"){
                 $(event.target).parent().attr("character", "guard");
                 $(event.target)[0].src = "/img/game/guard.svg";
-                PanelControl(4);
+                PanelControl(3);
                 showThief = true;
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
