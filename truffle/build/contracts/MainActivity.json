@@ -291,12 +291,12 @@
         }
       },
       "links": {
-        "StringUtils": "0x4f4c2b2e84d326e1485d99e682bb3c902aac516c"
+        "StringUtils": "0x5667fa3c5cd4e64daa453cd1e960bda2337560e7"
       },
-      "address": "0x894a33fbf3c6debb29ce9f2f1b8904554269d8bb",
-      "updated_at": 1495029028684
+      "address": "0x19d19dc54ef58248625dfda7fcbff9fa4dda89d6",
+      "updated_at": 1495127393632
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1495029028684
+  "updated_at": 1495127393632
 }

@@ -67,10 +67,10 @@ body{
 
 .header ul div{
   position: relative;
-  left: 80px;
-  top:30px;
+  left: 100px;
+  top:0px;
   width: 360px;
-  height: 220px;
+  height: 90px;
 
 }
 

@@ -211,7 +211,10 @@ Template.gamingArea.helpers({
 
 Template.characterList.helpers({
     userLevel: function(){
-      return "LvL. "+Session.get('userLevel');
+      return "LV. "+Session.get('userLevel');
+    },
+    userSyndicateLevel: function(){
+      return "LV. "+Session.get('SyndicateLevel');
     },
     userName: function() {
       return Session.get('userName');
@@ -755,7 +758,7 @@ Template.land.events({
         }
 
         var imgs = $(".cropLand").find("img");
-        imgs[1].src = '/img/game/trashcan.svg';
+        imgs[1].src = '/img/game/background.svg';
         $(imgs[1]).parent().data('pressed', false);
         removeMode = false;
 
@@ -967,8 +970,6 @@ Template.characterList.events({
         loading(1);
         if(currentCharacter == "farmer"){
             if(Session.get('userCharacter') == "Thief"){
-              $(".front img").prop('src', "/img/game/thief.svg");
-              $(".back img").prop('src', "/img/game/farmer.svg");
 
                 PanelControl(3);
                 visitNode = getVisitNode();
@@ -987,8 +988,6 @@ Template.characterList.events({
                 currentCharacter = "thief";
             }
             else if(Session.get('userCharacter') == "Guard"){
-                $(".front img").prop('src', "/img/game/guard.svg");
-                $(".back img").prop('src', "/img/game/farmer.svg");
 
                 PanelControl(3);
                 showThief = true;
@@ -1022,8 +1021,6 @@ Template.characterList.events({
         }
         else{
             currentCharacter = "farmer";
-            $(".front img").prop('src', "/img/game/farmer.svg");
-            $(".back img").prop('src', "/img/game/guard.svg");
 
             showThief = false;
             clearInterval(checkMissionInterval);
@@ -1038,10 +1035,18 @@ Template.characterList.events({
         }
     },
     'mouseenter .flipDIV *':function(event){
-      $('.characterImg').addClass('flipped');
+      if (gameMode == "Farmer"){
+        $('.characterImg').addClass('flipped');
+      }else{
+        $('.characterImg').removeClass('flipped');
+      }
     },
     'mouseout .flipDIV *':function(event){
-      $('.characterImg').removeClass('flipped');
+      if (gameMode == "Farmer"){
+        $('.characterImg').removeClass('flipped');
+      }else{
+        $('.characterImg').addClass('flipped');
+      }
     },
     'click .nextHome': function (event) {
 
@@ -1063,6 +1068,7 @@ Template.characterList.events({
     },
     'click .test': function(event){
         currentUser.level+=1;
+        Session.set('userLevel', currentUser.level);
 
         GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
         _character.changed();
@@ -1151,7 +1157,7 @@ var initAllBtns = function(){
   var imgs = $(".cropLand").find("img");
   $(imgs[0]).parent().html("<img src = '" + prefix+ "land" + postfix + "' />" + "Dirt");
   $(imgs[0]).parent().data('pressed', false);
-  $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");
+  $(imgs[1]).parent().html("<img src = '/img/game/background.svg' />Grass");
   $(imgs[1]).parent().data('pressed', false);
 
   var imgs = $(".crop").find("img");
@@ -1721,7 +1727,6 @@ var updateUserExp = function(exp){
     currentUser.level += 1;
     _character.changed();
     Session.set('userLevel', currentUser.level);
-
     currentUser.exp = currentUser.exp - lvlCap;
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});

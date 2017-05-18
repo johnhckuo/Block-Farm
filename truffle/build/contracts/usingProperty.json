@@ -1218,12 +1218,12 @@
         }
       },
       "links": {
-        "StringUtils": "0x4f4c2b2e84d326e1485d99e682bb3c902aac516c"
+        "StringUtils": "0x5667fa3c5cd4e64daa453cd1e960bda2337560e7"
       },
-      "address": "0xb5269ac208077722ac7a961e99e5424696bbc6b4",
-      "updated_at": 1495029028676
+      "address": "0x11c6ca2044e012f7127b2585922063601cd5ad0d",
+      "updated_at": 1495127393619
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1495029028676
+  "updated_at": 1495127393619
 }
