@@ -13,6 +13,7 @@ contract Congress{
         address addr;
         uint since;
         uint farmerLevel;
+        uint propertyIndex;
     }
 
     struct StakeholderGameData {
@@ -100,12 +101,18 @@ contract Congress{
            stakeholders[id].addr=msg.sender;
            stakeholders[id].since=now;
            stakeholders[id].farmerLevel = 0;
-
-            //04.21 Powei
-            //  mission status[] needed to be pushed
-
         }
+    }
 
+    function getPropertyIndex(uint u_Id) constant returns(uint){
+        return stakeholders[u_Id].propertyIndex;
+    }
+
+
+
+
+    function setPropertyIndex(uint u_Id, uint _index){
+        stakeholders[u_Id].propertyIndex = _index;
     }
 
     function initPlayerData(bytes32 _name, bytes32 _character){
@@ -128,14 +135,12 @@ contract Congress{
 
     function updateGuardId(uint s_Id, uint g_Id){
         stakeholdersGameData[s_Id].guardId = g_Id;
-
     }
 
     function getGuardId(uint s_Id) constant returns (uint){
         return stakeholdersGameData[s_Id].guardId;
     }
-
-
+    
     function initSyndicateData(bytes32 _character){
         uint _id = SyndicateData.length++;
         SyndicateData[_id].id = _id;
@@ -159,8 +164,12 @@ contract Congress{
         return SyndicateData[s_Id].guardFarmerId;
     }
 
-    function getSyndicateData(uint u_Id) constant returns(uint, uint, uint, uint){
-        return (SyndicateData[u_Id].exp, SyndicateData[u_Id].totalExp, SyndicateData[u_Id].level,  SyndicateData[u_Id].progress);
+    function getSyndicateData(uint u_Id) constant returns(uint, uint, uint){
+        return (SyndicateData[u_Id].exp, SyndicateData[u_Id].totalExp, SyndicateData[u_Id].level);
+    }
+
+    function getGuardReqInfo(uint u_Id) constant returns(uint, uint){
+        return (SyndicateData[u_Id].guardFarmerId, SyndicateData[u_Id].progress);
     }
 
     function updateUserExp(uint u_Id, uint exp){
@@ -204,13 +213,10 @@ contract Congress{
     function updateGameData(uint u_Id, uint _landSize, uint _level){
         stakeholdersGameData[u_Id].landSize = _landSize;
         stakeholdersGameData[u_Id].level = _level;
-
-
     }
 
     function insertMatchesId(uint s_Id, uint m_Id){
         stakeholdersGameData[s_Id].matchesId.push(m_Id);
-
     }
 
     function deleteMatchesId(uint s_Id, uint m_Id){

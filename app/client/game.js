@@ -40,7 +40,7 @@ var cropList = [];
 var stockList = [];
 var landList = [];
 
-var staminaList = {crop:5,steal:5, stealFail:20};
+var staminaList = {crop:5,steal:20, stealFail:40};
 
 var currentUser = {};
 
@@ -69,6 +69,7 @@ var floatOffset = 1000;
 var checkMissionInterval = null;
 var theifId = 0;
 var landInfo = [];
+var stealRate;
 
 ///////////////////////////
 //  prototype functions  //
@@ -420,6 +421,8 @@ Template.gameIndex.events({
                 $('.thief:eq(' + i + ')').css({opacity:0, transform:"translateY(50px)"});
                 $('.thief:eq(' + i + ')').remove();
             }
+            CongressInstance.updateFarmerId(s_Id, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            updateSyndicateExp(30);
             sweetAlert("Congratulations!", "Mission Completed!", "success");
 
         }
@@ -551,14 +554,14 @@ Template.gameIndex.events({
                 stolenFlag = $(event.target).parent().attr("stolenFlag");
                 if ((cropList[id].ripe)&&(stolenFlag == "f")){
                     judgement = Math.random();
-                    if(judgement >= 0.5){
+                    if(judgement >= stealRate){
                         stealResult = true;
-
 
                         $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                         $(".scoreObject").html("+" + 5 +"XP");
                         updateStaminaBar(staminaList["steal"]);
                         updateSyndicateExp(5);
+
 
 
                         var pos = getTransformedPosition($(event.target)[0]);
@@ -885,11 +888,12 @@ Template.gamingArea.events({
 })
 
 function PanelControl(panelIndex){
+    panelCounter += 1;
     var temp = panelCounter; // default:2
     $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
     $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
-
+    panelIndex +=1;
     panelCounter = panelIndex;
     $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
@@ -973,6 +977,7 @@ Template.characterList.events({
 
                 PanelControl(3);
                 visitNode = getVisitNode();
+                setStealRate(visitNode);
                 rerenderCropLand(visitNode);
                 $('.SyndicateExp').css('visibility', 'visible');
                 $('.userExp').css('visibility', 'collapse');
@@ -999,24 +1004,52 @@ Template.characterList.events({
                 $('.crop2').css('display','none');
                 $('.crop3').css('display','none');
 
-                landInfo = [];
-                for (var i = 0 ; i < userLandConfiguration.length ; i++){
-                    var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
-                    var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
-                    var info = {top:top,left:left, showed:0};
-                    landInfo.push(info);
-                }
-                var progress = thiefNumber(currentUser.SyndicateLevel);
-                currentUser.SyndicateProgress = progress;
-                CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
+                var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]} );
+                var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]});
+                var matchDiff = matchLength - gaurdMatchID; 
+                if(matchDiff <= 2){
+                    var guardData = CongressInstance.getGuardReqInfo.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+                    var guardLand = guardData[0].c[0];
+                    var progress = guardData[1].c[0];
+                    if(guardLand == 0){
+                        alert("you are free");
+                        rerenderCropLand(s_Id);
+                        //return;
+                    }
+                    else{
+                        $(".front img").prop('src', "/img/game/guard.svg");
+                        $(".back img").prop('src', "/img/game/farmer.svg");
+                        if(progress == 0){
+                            progress = thiefNumber(currentUser.SyndicateLevel);
+                            currentUser.SyndicateProgress = progress;
+                            CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
+                        }
 
-                if(currentUser.SyndicateProgress > 0){
-                    checkMissionInterval = setInterval(checkMission, 1000);
+                        PanelControl(3);
+                        showThief = true;
+                        rerenderCropLand(guardLand);
+                        gameMode = "Guard";
+                        $('.SyndicateExp').css('visibility', 'visible');
+                        $('.userExp').css('visibility', 'collapse');
+                        $('.crop2').css('display','none');
+                        $('.crop3').css('display','none');
+                        landInfo = [];
+                        for (var i = 0 ; i < userLandConfiguration.length ; i++){
+                            var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+                            var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
+                            var info = {top:top,left:left, showed:0};
+                            landInfo.push(info);
+                        }
+                        currentUser.SyndicateProgress = progress;
+                        checkMissionInterval = setInterval(checkMission, 1000);
+                        currentCharacter = "guard";
+                    }
                 }
                 else{
-                    clearInterval(checkMissionInterval);
-                }
-                currentCharacter = "guard";
+                    alert("you are free");
+                    rerenderCropLand(s_Id);
+                   // return;
+                }               
             }
         }
         else{
@@ -1052,7 +1085,8 @@ Template.characterList.events({
 
         // ===== wait for further testing
         visitNode = getVisitNode();
-        rerenderCropLand(visitNode);
+        setStealRate(visitNode);
+        rerenderCropLand(visitNode);  
 
     },
     'click .musicSwitch': function (event) {
@@ -1401,7 +1435,7 @@ var getUserData = function(s_Id){
       SyndicateExp:syndicateData[0].c[0],
       SyndicateTotalExp:syndicateData[1].c[0],
       SyndicateLevel:syndicateData[2].c[0],
-      SyndicateProgress:syndicateData[3].c[0],
+      SyndicateProgress:0,
       matches : matches
     };
     var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
@@ -1593,7 +1627,7 @@ var initCropLand = function(id){
             continue;
         }
         $(".farmObject").html("<img src = '" + prefix+ landTypeList[userLandConfiguration[i].land].img + postfix +"' />");
-        $( ".farmObject" ).children().clone().appendTo(".cropLand"+ i).css({opacity:1});
+        $(".farmObject" ).children().clone().appendTo(".cropLand"+ i).css({opacity:1});
 
 
         if (userLandConfiguration[i].crop == -1){
@@ -1692,7 +1726,7 @@ var staminaCap = function(n){
 }
 
 var thiefNumber = function(n){
-    return n * 5;
+    return n * 10;
 }
 
 var updateStaminaBar = function(consumedSta){
@@ -1749,21 +1783,30 @@ var updateUserExp = function(exp){
 }
 
 var updateSyndicateExp = function(exp){
-    currentUser.SyndicateExp += parseInt(exp);
-    currentUser.SyndicateTotalExp += currentUser.SyndicateExp;
-    var lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
+    if(currentUser.SyndicateLevel <= 9){
+        currentUser.SyndicateExp += parseInt(exp);
+        currentUser.SyndicateTotalExp += currentUser.SyndicateExp;
+        var lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
 
-    if  (currentUser.SyndicateExp >= lvlCap){
+        if  (currentUser.SyndicateExp >= lvlCap){
+            if(Session.get('userCharacter') == "Guard"){
+                setGuardProperty();
+            }
+            currentUser.SyndicateLevel += 1;
+            _character.changed();
+            Session.set('SyndicateLevel', currentUser.SyndicateLevel);
+            currentUser.SyndicateExp = currentUser.SyndicateExp - lvlCap;
+            levelUp('Syndicate');
+            lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
+        }
+        CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
 
-        currentUser.SyndicateLevel += 1;
-        _character.changed();
-        Session.set('SyndicateLevel', currentUser.SyndicateLevel);
 
-        currentUser.SyndicateExp = currentUser.SyndicateExp - lvlCap;
-
-        levelUp('Syndicate');
-        lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
+        var percent = (currentUser.SyndicateExp/lvlCap)*100;
+        $(".SyndicateExpProgressBar").css("width", percent + "%");
+        $(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
     }
+
     CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
 
 
@@ -1783,8 +1826,32 @@ var levelUp = function(_type){
     }
 
     $(".levelUp").fadeIn().delay(5000).fadeOut();
+}
 
+var setGuardProperty = function(){
+    var propertyIndex;
+    for(var i = 0; i < user_property.length; i++){
+        if((user_property[i].propertyType - 29) == currentUser.SyndicateLevel){
+            propertyIndex = user_property[i].id;
+            break;
+        }
+    }
+    usingPropertyInstance.updatePropertyCount_Sudo(propertyIndex, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
+    usingPropertyInstance.updatePropertyCount_Sudo((propertyIndex + 1), 1, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
+}
+
+var setStealRate = function(visitNode){
+    var thisGuardId = CongressInstance.getGuardId.call(visitNode, {from: web3.eth.accounts[currentAccount]});
+    var thisGuardLvl;
+    if(thisGuardId != 0){
+        var GuardData = CongressInstance.getSyndicateData.call(thisGaurdId, {from: web3.eth.accounts[currentAccount]});
+        thisGuardLvl = GuardData[2].c[0];
+    }
+    else{
+        thisGuardLvl = 0;
+    }
+    stealRate = (80 * (thisGuardLvl / 10) - 40 * (currentUser.SyndicateLevel / 10)) / 100;
 }
 
 var checkMission = function(){
@@ -1916,23 +1983,41 @@ var elapsedTime = function(start, end){
 
 get_user_property_setting = function () {
     user_property = [];
-    var propertyData = usingPropertyInstance.getAllProperty.call({from:web3.eth.accounts[currentAccount]}, function(err, result){
-        if(err){
-            alert(err);
-        }
-        else{
-            for(i = 0; i < result[0].length; i++){
-                var _id = result[0][i].c[0];
-                var _propertyType = result[1][i].c[0]
-                var _name = web3.toUtf8(result[2][i]);
-                var _propertyCount = result[3][i].c[0];
-                var _tradeable = result[4][i].c[0];
-                var _img = web3.toUtf8(result[5][i]);
+    //var propertyData = usingProperty2Instance.getAllProperty.call(s_Id, {from:web3.eth.accounts[currentAccount]}, function(err, result){
+    //    if(err){
+    //        alert(err);
+    //    }
+    //    else{
+    //        for(i = 0; i < result[0].length; i++){
+    //            var _id = result[0][i].c[0];
+    //            var _propertyType = result[1][i].c[0]
+    //            var _name = web3.toUtf8(result[2][i]);
+    //            var _propertyCount = result[3][i].c[0];
+    //            var _tradeable = result[4][i].c[0];
+    //            var _img = web3.toUtf8(result[5][i]);
+    //            var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
+    //            user_property.push(data);
+    //        }
+    //    }
+    //});
+    var _propertyIndex = CongressInstance.getPropertyIndex.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]});
+    for(i = _propertyIndex; i < propertyTypeLength; i++){
+        var propertyData = usingPropertyInstance.getPropertyTo2(i, web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}, function(err, result){
+            if(err){}
+            else{
+                var _id = result[0].c[0];
+                var _propertyType = result[1].c[0]
+                var _name = web3.toUtf8(result[2]);
+                var _propertyCount = result[3].c[0];
+                var _tradeable = result[4].c[0];
+                var _img = web3.toUtf8(result[5]);
                 var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
                 user_property.push(data);
             }
-        }
-    });
+        });
+    }
+
 }
 
 get_propertyType_setting = function(){
@@ -1959,6 +2044,7 @@ set_property_table = function(){
     else{
         //loading(1);
         //get_user_property_setting();
+
         loading(0);
         var table, tr, td;
 
