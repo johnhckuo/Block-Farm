@@ -671,16 +671,49 @@
 
 .expText{
   position: absolute;
-  top:0px;
-  left:110%;
-  /*float:none;
+  z-index: 6;
+  float:none;
   margin-left: auto;
-  margin-right: auto;*/
+  margin-right: auto;
+}
+
+.hoverText{
+  position: absolute;
+  background: rgba(255, 255, 2255, 1);
+  border-radius: 5px;
+  z-index: 7;
+  display: none;
+}
+
+
+.expPopText{
+
+  position:absolute;
+  z-index:6;
+  -webkit-transition: opacity .5s,  -webkit-transform .5s; /* Safari */
+  transition:  opacity .5s, transform .5s;
+  -webkit-transform: translateY(0px);
+  transform: translateY(0px);
+
+  display: none;
+  opacity: 0;
+  font-size: 15px;
+  color:#404040;
+  left:65%;
 }
 
 .SyndicateExp{
     visibility:collapse;
     position: absolute;
+    margin-top: 10px;
+    left:5vw;
+}
+
+.SyndicateExp h3{
+  position: absolute;
+  left:-40%;
+  color: black;
+  font-size: 20px;
 }
 
 .SyndicateExpProgress{
@@ -709,11 +742,10 @@
 
 .SyndicateExpText{
   position: absolute;
-  top:0px;
-  left:110%;
-  /*float:none;
+  z-index: 6;
+  float:none;
   margin-left: auto;
-  margin-right: auto;*/
+  margin-right: auto;
 }
 
 
@@ -742,11 +774,10 @@
 
 .staText{
   position: absolute;
-  top:0px;
-  left:110%;
-  /*float:none;
+  z-index: 6;
+  float:none;
   margin-left: auto;
-  margin-right: auto;*/
+  margin-right: auto;
 }
 
 .controlButtons{
@@ -840,8 +871,8 @@ td img{
 .container{
   position: relative;
 
-  width:6vw;
-  height:6vw;
+  width:7vw;
+  height:7vw;
   border-radius: 100%;
   background: #E5E5E5;
   border: 5px solid #290B01;
@@ -942,6 +973,14 @@ td img{
   justify-content: center;
 }
 
+.userName h3{
+  position: relative;
+  left:2vw;
+  margin-bottom: 10px;
+  font-size: 40px;
+
+}
+
 .characterStatus h3{
   margin-bottom: 10px;
 }
@@ -951,7 +990,28 @@ td img{
 }
 
 .userExp{
+  position: relative;
+  left:5vw;
   margin-bottom: 10px;
+}
+
+.expProgress h3{
+  position: absolute;
+  left:-40%;
+  color: black;
+  font-size: 20px;
+}
+
+.userSta{
+  position: relative;
+  left:5vw;
+}
+
+.staProgress h3{
+  position: absolute;
+  left:-40%;
+  color: black;
+  font-size: 20px;
 }
 
 .functionSwitch{
@@ -974,8 +1034,8 @@ td img{
 
 .musicSwitch{
   position: relative;
-  width:40px;
-  height:40px;
+  width:45px;
+  height:45px;
   border-radius: 100%;
   background: #E5E5E5;
   display: flex;
@@ -1006,6 +1066,8 @@ td img{
   display: none;
   opacity: 0;
 }
+
+
 
 .animationTemp{
   width:80px;

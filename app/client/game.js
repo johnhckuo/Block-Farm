@@ -457,26 +457,26 @@ Template.gameIndex.events({
                 var exp = Math.floor((difference/(1000*30))*20);
                 updateUserExp(exp);
                 $(".scoreObject").html("+" + exp +"XP");
+
+                $(".expPopText").html("+" + exp +"XP");
+                $(".expPopText").css({display:"inline", opacity:1, transform:"translateY(0px)"});
+
+                setTimeout(function(){
+                    $(".expPopText").css({opacity:0, transform:"translateY(10px)"});
+                    setTimeout(function(){
+                        $(".expPopText").css({display: "none"});
+                    },500);
+                },500);
+
             }else{
                 sweetAlert("Oops...", "Patience is a virtue <3", "error");
                 return;
             }
 
-            var top = $(event.target)[0].getBoundingClientRect().top;
-            var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var landTop = ($(".canvas").height()-$(window).height())/2;
-            var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-            var areaLeft = $(".gamingArea").position().left;
-            var resizeOffsetX = (screen.width- $(window).width())/6.5;
-
-            var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()*1.65;
-            // var divHeight =0;
-            // var divWidth = 0;
-            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
-            var posY = top+landTop-divHeight-y;
+            var pos = getTransformedPosition($(event.target)[0]);
+            var posX = pos[0];
+            var posY = pos[1];
 
             var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
             temp.css({display:"inline", top: posY, left: posX});
@@ -558,18 +558,13 @@ Template.gameIndex.events({
                         updateSyndicateExp(5);
 
 
-                        var landTop = ($(".canvas").height()-$(window).height())/2;
-                        var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-                        var areaLeft = $(".gamingArea").position().left;
-                        var resizeOffsetX = (screen.width- $(window).width())/6.5;
-
-                        var divHeight =$(".cropObject").height()/5;
-                        var divWidth = $(".cropObject").width()*1.65;
+                        var pos = getTransformedPosition($(event.target)[0]);
+                        var posX = pos[0];
+                        var posY = pos[1];
                         // var divHeight =0;
                         // var divWidth = 0;
-                        var posX = cursorX+landLeft-areaLeft+divWidth-x-resizeOffsetX;
-                        var posY = cursorY+landTop-divHeight-y;
+                        var posX = cursorX+posX;
+                        var posY = cursorY+posY;
 
                         var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
                         temp.css({display:"inline", top: posY, left: posX});
@@ -642,14 +637,6 @@ Template.gameIndex.events({
       $(".floatCropStatus").css("display", "inline");
       var cropId = $(event.target).parent()[0].className.split("croppedObject")[2];
 
-      var landTop = ($(".canvas").height()-$(window).height())/2;
-      var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-      var areaLeft = $(".gamingArea").position().left;
-      var resizeOffsetX = (screen.width- $(window).width())/6.5;
-
-      var divHeight =$(".cropObject").height()/5;
-      var divWidth = $(".cropObject").width()*1.65;
       // var divHeight =0;
       // var divWidth = 0;
       var posX = cursorX;
@@ -699,9 +686,9 @@ Template.crop.events({
         var imgs = $(".cropLand").find("img");
         $(".farmObject").css("display", "none");
         $(imgs[0]).parent().data('pressed', false);
-        $(imgs[0]).parent().html("<img src = '" + prefix+ "land" + postfix + "' />" + "Dirt");        
+        $(imgs[0]).parent().html("<img src = '" + prefix+ "land" + postfix + "' />" + "Dirt");
         $(imgs[1]).parent().data('pressed', false);
-        $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");        
+        $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");
         placeMode = false;
         removeMode = false;
 
@@ -723,7 +710,7 @@ Template.crop.events({
         for (var i = 0 ; i < imgs.length; i++){
             if ($(imgs[i]).parent().data('pressed')){
                 $(imgs[i]).parent().data('pressed', false);
-                $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);                
+                $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);
             }
         }
         clickTarget.data('pressed', true);
@@ -799,22 +786,9 @@ Template.gamingArea.events({
             currentCropLand = event.target.className;
 
 
-            var top = $(event.target)[0].getBoundingClientRect().top;
-            var left = $(event.target)[0].getBoundingClientRect().left;
-
-            var landTop = ($(".canvas").height()-$(window).height())/2;
-            var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-            var resizeOffsetX = ($(window).width()-400)/6.5;
-            var areaLeft = $(".gamingArea").position().left;
-            var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()/1.65;
-            // var divHeight =0;
-            // var divWidth = 0;
-            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
-            //var posX = left+landLeft+divWidth-x;
-
-            var posY = top+landTop-divHeight-y;
+            var pos = getTransformedPosition($(event.target)[0]);
+            var posX = pos[0];
+            var posY = pos[1];
 
             var styles = {
                 top: posY,
@@ -830,22 +804,9 @@ Template.gamingArea.events({
 
         }else if (placeMode){
             currentCropLand = event.target.className;
-            var top = $(event.target)[0].getBoundingClientRect().top;
-            var left = $(event.target)[0].getBoundingClientRect().left;
-
-            var landTop = ($(".canvas").height()-$(window).height())/2;
-            var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-            var resizeOffsetX = ($(window).width()-400)/6.5;
-            var areaLeft = $(".gamingArea").position().left;
-            var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()/1.65;
-            // var divHeight =0;
-            // var divWidth = 0;
-            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
-            //var posX = left+landLeft+divWidth-x;
-
-            var posY = top+landTop-divHeight-y;
+            var pos = getTransformedPosition($(event.target)[0]);
+            var posX = pos[0];
+            var posY = pos[1];
 
             $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
@@ -967,7 +928,7 @@ Template.statusList.events({
           }else{
             clickTarget=$(event.target);
           }
-        
+
           if (clickTarget.data('pressed')){
 
               clickTarget.html("<img src='/img/game/trashcan.svg'>Remove")
@@ -1121,7 +1082,14 @@ Template.characterList.events({
         updateUserData(s_Id);
         showConfirmation(s_Id);
 
-    }
+    },
+    // 'mouseenter .userExp':function(event){
+    //     $(".expHoverText").fadeIn();
+    //     $(".expHoverText").css({"left":cursorX, "top":cursorY});
+    // },
+    // 'mouseout .userExp':function(event){
+    //     $(".expHoverText").fadeOut();
+    // },
 
 })
 
@@ -1157,6 +1125,26 @@ Template.operationList.events({
 document.onmousemove = function(e){
     cursorX = e.pageX;
     cursorY = e.pageY;
+}
+
+
+var getTransformedPosition = function(target){
+    var top = target.getBoundingClientRect().top;
+    var left = target.getBoundingClientRect().left;
+
+    var landTop = ($(".canvas").height()-$(window).height())/2;
+    var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+    var areaLeft = $(".gamingArea").position().left;
+    var resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+    var divHeight =$(".cropObject").height()/5;
+    var divWidth = $(".cropObject").width()*1.65;
+    // var divHeight =0;
+    // var divWidth = 0;
+    var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+    var posY = top+landTop-divHeight-y;
+    return [posX, posY];
 }
 
 var initAllBtns = function(){
@@ -1618,23 +1606,10 @@ var initCropLand = function(id){
         var divHeight =$(".cropObject").height()/5;
         var divWidth = $(".cropObject").width()/4;
         */
-        var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
-        var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
 
-
-        var landTop = ($(".canvas").height()-$(window).height())/2;
-        var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-        var resizeOffsetX = ($(window).width()-400)/6.5;
-        var areaLeft = $(".gamingArea").position().left;
-        var divHeight =$(".cropObject").height()/5;
-        var divWidth = $(".cropObject").width()/1.65;
-        // var divHeight =0;
-        // var divWidth = 0;
-        var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
-        //var posX = left+landLeft+divWidth-x;
-
-        var posY = top+landTop-divHeight-y;
+        var pos = getTransformedPosition($('.cropLand'+i)[0]);
+        var posX = pos[0];
+        var posY = pos[1];
 
         var styles = {
             top: posY,
@@ -1720,7 +1695,9 @@ var updateStaminaBar = function(consumedSta){
     currentUser.sta -= consumedSta;
     var percent = (currentUser.sta/staCap)*100;
     $(".staProgressBar").css("width", percent + "%");
-    $(".staText").text(currentUser.sta+"/"+staCap);
+    $(".staText").text(Math.floor(percent)+"%");
+    //$(".staHoverText").text(currentUser.sta+"/"+staCap);
+
 }
 
 
@@ -1761,6 +1738,8 @@ var updateUserExp = function(exp){
   var percent = Math.floor((currentUser.exp/lvlCap)*100);
   $(".expProgressBar").css("width", percent + "%");
   $(".expText").text(percent+"%");
+  //$(".expHoverText").text(currentUser.exp+ " / " +lvlCap);
+
 
 }
 
@@ -1785,7 +1764,8 @@ var updateSyndicateExp = function(exp){
 
     var percent = (currentUser.SyndicateExp/lvlCap)*100;
     $(".SyndicateExpProgressBar").css("width", percent + "%");
-    $(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
+    //$(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
+    $(".SyndicateExpText").text(percent+"%");
 
 }
 
