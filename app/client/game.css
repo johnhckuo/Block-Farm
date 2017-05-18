@@ -647,12 +647,14 @@
 }
 .expProgress{
   position: relative;
-  width: 100px;
-  height: 20px;
-  background-color: grey;
+  width: 150px;
+  height: 15px;
+  background-color: #BFBFBF;
   color:black;
   text-align: center;
   border-radius: 5px;
+  border:1px solid #7F7F7F;
+
 
 }
 
@@ -661,19 +663,19 @@
   left:0px;
   width: 0%;
   height: 100%;
-  background-color: #BBFF00;
+  background-color: #C7EBFC;
   transition: all 1s;
   border-radius: 5px;
 
 }
 
 .expText{
-  position: relative;
+  position: absolute;
   top:0px;
-  left:0px;
-  float:none;
+  left:110%;
+  /*float:none;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto;*/
 }
 
 .SyndicateExp{
@@ -683,12 +685,13 @@
 
 .SyndicateExpProgress{
   position: relative;
-  width: 100px;
-  height: 20px;
-  background-color: grey;
+  width: 150px;
+  height: 15px;
+  background-color: #BFBFBF;
   color:black;
   text-align: center;
   border-radius: 5px;
+  border:1px solid #7F7F7F;
 
 }
 
@@ -697,7 +700,7 @@
   left:0px;
   width: 0%;
   height: 100%;
-  background-color: #BBFF00;
+  background-color: #C7EBFC;
   transition: all 1s;
   border-radius: 5px;
 
@@ -705,23 +708,24 @@
 }
 
 .SyndicateExpText{
-  position: relative;
+  position: absolute;
   top:0px;
-  left:0px;
-  float:none;
+  left:110%;
+  /*float:none;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto;*/
 }
 
 
 .staProgress{
   position: relative;
-  width: 100px;
-  height: 20px;
-  background-color: grey;
+  width: 150px;
+  height: 15px;
+  background-color: #BFBFBF;
   color:black;
-  text-align: center;
   border-radius: 5px;
+  border:1px solid #7F7F7F;
+
 
 }
 
@@ -730,19 +734,19 @@
   left:0px;
   width: 0%;
   height: 100%;
-  background-color: #BBFF00;
+  background-color: #C7EBFC;
   transition: all 1s;
   border-radius: 5px;
 
 }
 
 .staText{
-  position: relative;
+  position: absolute;
   top:0px;
-  left:0px;
-  float:none;
+  left:110%;
+  /*float:none;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto;*/
 }
 
 .controlButtons{
@@ -833,20 +837,96 @@ td img{
 
 }
 
-.characterImg{
+.container{
+  position: relative;
+
   width:6vw;
-  /*height:100px;*/
+  height:6vw;
   border-radius: 100%;
   background: #E5E5E5;
+  border: 5px solid #290B01;
+  -webkit-perspective: 800px;
+  -moz-perspective: 800px;
+  -o-perspective: 800px;
+  perspective: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 1s;
+}
+
+.container:hover{
+  background: #BBBBBB;
+}
+
+.characterImg{
+  position: absolute;
+  /*height:100px;*/
+  border-radius: 100%;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-transition: -webkit-transform 1s;
+  -moz-transition: -moz-transform 1s;
+  -o-transition: -o-transform 1s;
+  transition: transform 1s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transform-origin: 50% 50%;
+}
+
+
+
+.characterImg div{
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  cursor: pointer;
+  text-align: center;
+}
+
+
+.characterImg .back{
+  -webkit-transform: rotateY( 180deg );
+  -moz-transform: rotateY( 180deg );
+  -o-transform: rotateY( 180deg );
+  transform: rotateY( 180deg );
+}
+
+.characterImg.flipped {
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
 }
 
 .characterImg img{
   width:100%;
   height:100%;
-  cursor:pointer;
+}
+
+.characterImg h3{
+  position: absolute;
+  font-size: 20px;
+  color: #290B01;
+  bottom:10px;
 }
 
 .characterStatus{
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -875,9 +955,13 @@ td img{
 }
 
 .functionSwitch{
+  position: absolute;
+  right:-150px;
+  top:50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  z-index: 3;
 }
 
 .functionSwitch button{
@@ -889,6 +973,7 @@ td img{
 }
 
 .musicSwitch{
+  position: relative;
   width:40px;
   height:40px;
   border-radius: 100%;
@@ -898,6 +983,7 @@ td img{
   align-items: center;
   cursor: pointer;
   transition: all .2s;
+  margin-left: 80px;
 }
 
 .musicSwitch:hover{

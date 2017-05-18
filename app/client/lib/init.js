@@ -1,6 +1,6 @@
 import { Session } from 'meteor/session';
 
-currentAccount = 1;
+currentAccount = 2;
 cropsPerLvl =3;
 
 cropTypeList = [
@@ -338,7 +338,7 @@ function init(event){
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       //sweetAlert("Oops...", "There was an error fetching your accounts.", "error");
-      Session.set('account', "An Error Has Occured");
+      Session.set('account', "Wallet Not Found");
       return;
     }
 
@@ -392,6 +392,10 @@ Template.index.created = function() {
     init();
     Session.set('currentAccount', currentAccount);
     Session.set('cropsPerLvl', cropsPerLvl);
+
+    if (Session.get('account') == "Account Not Found" || Session.get('account') == "Wallet Not Found"){
+        return false;
+    };
 
     try{
       var val = usingPropertyInstance.propertyTypeList(0);

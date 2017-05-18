@@ -1,5 +1,4 @@
 /* CSS declarations go here */
-@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,500,700,800,900');
 
 body{
 
@@ -9,7 +8,7 @@ body{
   background-attachment: fixed;
   overflow-x: hidden;
 
-  font-family: 'Libre Franklin', sans-serif;
+  font-family: Copperplate, "Copperplate Gothic Light", fantasy;
 }
 
 

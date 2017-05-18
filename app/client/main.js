@@ -17,6 +17,7 @@ import './game.js';
 var stakeholderLength;
 var ownerAccount = 0;
 var renderChecked = false;
+var userNameCounter = 0;
 Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
@@ -107,6 +108,23 @@ if (Meteor.isClient) {
         event.target.className = "btn btn-info chooseCharacters";
         character = event.target.value;
     },
+    'keydown .s_Name':function(event){
+        var ew = event.which;
+        userNameCounter++;
+        if (userNameCounter > 9){
+          sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
+        }
+
+        if(65 <= ew && ew <= 90)
+            return true;
+        if(97 <= ew && ew <= 122)
+            return true;
+        if (ew == 8){
+            return true;
+        }
+
+        return false;
+    },
     'click #next': function (event){
         event.preventDefault();
         var name = $(".s_Name").val().toString();
@@ -139,6 +157,7 @@ if (Meteor.isClient) {
         //console.log(name, threshold, fund, rate, character);
         var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
         usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468});
+        sweetAlert("Congratulations!", "Register Completed!", "success");
 
         Router.go('game');
 
