@@ -1,6 +1,7 @@
 import { Session } from 'meteor/session';
 
-currentAccount = 5;
+
+currentAccount = 4;
 cropsPerLvl =3;
 
 cropTypeList = [
