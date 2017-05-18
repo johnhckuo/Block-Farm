@@ -16,6 +16,8 @@ var placeMode = false;
 var currentCropLand;
 var audio;
 
+var currentCharacter = "farmer";
+
 var visitNode;
 var s_Id;
 var x = 0, y = 0;
@@ -208,11 +210,19 @@ Template.gamingArea.helpers({
 });
 
 Template.characterList.helpers({
+    userLevel: function(){
+      return "LvL. "+Session.get('userLevel');
+    },
     userName: function() {
       return Session.get('userName');
     },
     characterType: function() {
-      return Session.get('userCharacter');
+      if(Session.get('userCharacter') == "Thief"){
+          return "/img/game/thief.svg";
+      }else{
+          return "/img/game/guard.svg";
+
+      }
     }
 });
 
@@ -785,20 +795,23 @@ Template.gamingArea.events({
     'mouseenter .land div': function (event){
         if (plantMode){
             currentCropLand = event.target.className;
+
+
             var top = $(event.target)[0].getBoundingClientRect().top;
             var left = $(event.target)[0].getBoundingClientRect().left;
 
             var landTop = ($(".canvas").height()-$(window).height())/2;
             var landLeft = ($(".canvas").width()-$(window).width())/2;
 
+            var resizeOffsetX = ($(window).width()-400)/6.5;
             var areaLeft = $(".gamingArea").position().left;
-            var resizeOffsetX = (screen.width- $(window).width())/6.5;
-
             var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()*1.65;
+            var divWidth = $(".cropObject").width()/1.65;
             // var divHeight =0;
             // var divWidth = 0;
-            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+            //var posX = left+landLeft+divWidth-x;
+
             var posY = top+landTop-divHeight-y;
 
             var styles = {
@@ -821,18 +834,15 @@ Template.gamingArea.events({
             var landTop = ($(".canvas").height()-$(window).height())/2;
             var landLeft = ($(".canvas").width()-$(window).width())/2;
 
+            var resizeOffsetX = ($(window).width()-400)/6.5;
             var areaLeft = $(".gamingArea").position().left;
-
-            var resizeOffsetX = (screen.width- $(window).width())/6.5;
-
-            var divHeight =$(".farmObject").height()/6;
-            var divWidth = $(".farmObject").width()*1.65;
-            //var divHeight =$(".farmObject").height()/8;
-            //var divWidth = $(".farmObject").width()*2.15;
-
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()/1.65;
             // var divHeight =0;
             // var divWidth = 0;
-            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+            //var posX = left+landLeft+divWidth-x;
+
             var posY = top+landTop-divHeight-y;
 
             $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
@@ -984,10 +994,11 @@ Template.statusList.events({
 Template.characterList.events({
     'click .characterImg':function(event){
         loading(1);
-        if($(event.target).parent().attr("character") == "farmer"){
+        if(currentCharacter == "farmer"){
             if(Session.get('userCharacter') == "Thief"){
-                $(event.target).parent().attr("character", "thief");
-                $(event.target)[0].src = "/img/game/thief.svg";
+              $(".front img").prop('src', "/img/game/thief.svg");
+              $(".back img").prop('src', "/img/game/farmer.svg");
+
                 PanelControl(3);
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
@@ -1002,10 +1013,12 @@ Template.characterList.events({
                 gameMode = "Thief";
                 $('.crop2').css('display','none');
                 $('.crop3').css('display','none');
+                currentCharacter = "thief";
             }
             else if(Session.get('userCharacter') == "Guard"){
-                $(event.target).parent().attr("character", "guard");
-                $(event.target)[0].src = "/img/game/guard.svg";
+                $(".front img").prop('src', "/img/game/guard.svg");
+                $(".back img").prop('src', "/img/game/farmer.svg");
+
                 PanelControl(3);
                 showThief = true;
                 visitNode = getVisitNode();
@@ -1033,11 +1046,13 @@ Template.characterList.events({
                 else{
                     clearInterval(checkMissionInterval);
                 }
+                currentCharacter = "guard";
             }
         }
         else{
-            $(event.target).parent().attr("character", "farmer");
-            $(event.target)[0].src = "/img/game/farmer.svg";
+            currentCharacter = "farmer";
+            $(".front img").prop('src', "/img/game/farmer.svg");
+            $(".back img").prop('src', "/img/game/guard.svg");
 
             showThief = false;
             clearInterval(checkMissionInterval);
@@ -1051,6 +1066,12 @@ Template.characterList.events({
             rerenderCropLand(s_Id);
         }
     },
+    'mouseenter .flipDIV *':function(event){
+      $('.characterImg').addClass('flipped');
+    },
+    'mouseout .flipDIV *':function(event){
+      $('.characterImg').removeClass('flipped');
+    },
     'click .nextHome': function (event) {
 
         // ===== wait for further testing
@@ -1061,10 +1082,10 @@ Template.characterList.events({
     'click .musicSwitch': function (event) {
         if (!audio.paused){
             audio.pause();
-            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
+            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_off.svg");
         }else{
             audio.play();
-            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_off.svg");
+            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
 
         }
 
@@ -1134,7 +1155,7 @@ var initAllBtns = function(){
   $(imgs[0]).parent().data('pressed', false);
   $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");
   $(imgs[1]).parent().data('pressed', false);
-  
+
   var imgs = $(".crop").find("img");
 
   for (var i = 0 ; i < imgs.length; i++){

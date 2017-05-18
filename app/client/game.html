@@ -217,55 +217,70 @@
 
 <template name="characterList">
     <div class="characterList">
-        <div class="characterImg" character="farmer">
-            <img src="/img/game/farmer.svg" alt="">
+        <div class="container">
+          <div class="characterImg">
+              <div class="flipDIV front">
+                <img src="/img/game/farmer.svg" alt="">
+                <h3>{{userLevel}}</h3>
+              </div>
+              <div class="flipDIV back">
+                <img src={{characterType}} alt="">
+                <h3>{{userLevel}}</h3>
+              </div>
+
+          </div>
         </div>
+
         <div class="characterStatus">
             <div class="userName">
               <h3>{{userName}}</h3>
             </div>
             <div class="userExp">
-              <h4>EXP </h4>
               <div class="expProgress">
                   <div class="expProgressBar"></div>
                   <div class="expText"></div>
               </div>
             </div>
             <div class="SyndicateExp">
-                <h4>EXP </h4>
                 <div class="SyndicateExpProgress">
                     <div class="SyndicateExpProgressBar"></div>
                     <div class="SyndicateExpText"></div>
                 </div>
             </div>
             <div class="userSta">
-              <h4>STA </h4>
               <div class="staProgress">
                   <div class="staProgressBar"></div>
                   <div class="staText"></div>
               </div>
             </div>
-        </div>
-        <div class="functionSwitch">
-              <button type="button" name="button" class="btn-primary test">Test</button>
-              <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
-              <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
 
-              <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
-
-              <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
-                <div class="missionIndicator">
-                  !
-                </div>
-                Mission
-
-              </button> -->
-
-              <span class="musicSwitch">
-                  <img src="/img/game/speaker_off.svg" alt="">
-              </span>
 
         </div>
+        <div class="musicSwitch">
+            <img src="/img/game/speaker_on.svg" alt="">
+        </div>
+
+    </div>
+    <div class="functionSwitch">
+          <button type="button" name="button" class="btn-primary test">Test</button>
+          <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
+          <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
+
+
+
+
+          <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
+
+          <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
+            <div class="missionIndicator">
+              !
+            </div>
+            Mission
+
+          </button> -->
+
+
+
     </div>
 </template>
 
