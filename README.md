@@ -27,7 +27,7 @@ First, you need get your own ethereum client node. And the easiest way to do thi
 ```
 testrpc
 ```
-Now, you need to deploy the smart contracts to the local private chain you just set up. We've already wrote a script to get all the trivial things done. For Mac/Linux users, just go to the Block-Farm directory and execute the script by typing:
+Now, you need to deploy the smart contracts to the local private chain you just set up. We've already wrote a script to get all the trivial things done. For Mac/Linux users, just go to the `Block-Farm` directory and execute the script by typing:
 ```
 sh truffle/Compile.sh
 ```
@@ -37,7 +37,7 @@ truffle/Compile.bat
 ```
 It should take a while for truffle to deploy all the contracts to testrpc. Once it is done, There should be all the address of each contract shown on the console, just copy them and update the default contract address in `app/client/lib/contract.js`.
 
-After finishing all these steps, change your current path to the app folder and execute:
+After finishing all these steps, change your current path to the `app` folder and execute:
 ```
 meteor npm install
 ```
