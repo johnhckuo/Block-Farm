@@ -110,20 +110,25 @@ if (Meteor.isClient) {
     },
     'keydown .s_Name':function(event){
         var ew = event.which;
-        userNameCounter++;
-        if (userNameCounter > 9){
-          sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
+
+        if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122)){
+            if (userNameCounter >= 10){
+              sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
+              return true;
+            }
+            userNameCounter++;
+            return true;
+        }else if (ew == 8){
+            console.log(userNameCounter)
+            if (userNameCounter >0){
+              userNameCounter--;
+            }
+            return true;
+        }else{
+            sweetAlert("Oops...", "Only english characters are accepted", "error");
+            return false;
         }
 
-        if(65 <= ew && ew <= 90)
-            return true;
-        if(97 <= ew && ew <= 122)
-            return true;
-        if (ew == 8){
-            return true;
-        }
-
-        return false;
     },
     'click #next': function (event){
         event.preventDefault();
