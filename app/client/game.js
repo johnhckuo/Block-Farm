@@ -2155,7 +2155,6 @@ rend_propertyType_table = function(_length){
     else{
         var table, tr, td, property_index;
         loading(1);
-        get_propertyType_setting();
         $('.shop_content').html('');
         table = $('<table></table>').attr('id', 'property_table')
                                     .attr('class', 'property_shop_table');
@@ -2398,6 +2397,7 @@ mission_rending = function(){
         for(k = 0; k < mission_list.length;k++){
             mission_qualify_check(mission_list[k].id);
         }
+        loading(0);
     }
 }
 
