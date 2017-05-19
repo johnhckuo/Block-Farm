@@ -635,6 +635,9 @@
   width: 25vw;
   height: 50vh;
   margin-right: -3vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
 }
 .button{
@@ -643,7 +646,7 @@
 #property_trade_table{
   display: flex;
   justify-content: center;
-  width: 25vw;
+  width: 80%;
   font-size: 16px;
   text-align: center;
   border-spacing: 100px;
@@ -655,6 +658,7 @@
 }
 #property_trade_table th{
   width: 20vw;
+  vertical-align:middle;
 }
 .btn_tradeable{
   display: flex;
@@ -728,10 +732,14 @@
 
 .expPopText{
 
+}
+
+.expPopTextTemp{
+
   position:absolute;
   z-index:6;
-  -webkit-transition: opacity .5s,  -webkit-transform .5s; /* Safari */
-  transition:  opacity .5s, transform .5s;
+  -webkit-transition: opacity .2s,  -webkit-transform .2s; /* Safari */
+  transition:  opacity .2s, transform .2s;
   -webkit-transform: translateY(0px);
   transform: translateY(0px);
 

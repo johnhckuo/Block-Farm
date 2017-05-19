@@ -464,15 +464,17 @@ Template.gameIndex.events({
                 updateUserExp(exp);
                 $(".scoreObject").html("+" + exp +"XP");
 
-                $(".expPopText").html("+" + exp +"XP");
-                $(".expPopText").css({display:"inline", opacity:1, transform:"translateY(0px)"});
+                var temp2 = $(".expPopText").clone().attr("class", "expPopTextTemp").appendTo(".expProgress");
+
+                temp2.html("+" + exp +"XP");
+                temp2.css({display:"inline", opacity:1, transform:"translateY(0px)"});
 
                 setTimeout(function(){
-                    $(".expPopText").css({opacity:0, transform:"translateY(10px)"});
+                    temp2.css({opacity:0, transform:"translateY(10px)"});
                     setTimeout(function(){
-                        $(".expPopText").css({display: "none"});
-                    },500);
-                },500);
+                        temp2.css({display: "none"});
+                    },2000);
+                },1000);
 
             }else{
                 sweetAlert("Oops...", "Patience is a virtue <3", "error");
@@ -694,7 +696,7 @@ Template.crop.events({
         $(imgs[0]).parent().data('pressed', false);
         $(imgs[0]).parent().html("<img src = '" + prefix+ "land" + postfix + "' />" + "Dirt");
         $(imgs[1]).parent().data('pressed', false);
-        $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");
+        $(imgs[1]).parent().html("<img src = '/img/game/background.svg' />Grass");
         placeMode = false;
         removeMode = false;
 
@@ -938,7 +940,7 @@ Template.statusList.events({
 
           if (clickTarget.data('pressed')){
 
-              clickTarget.html("<img src='/img/game/trashcan.svg'>Remove")
+              clickTarget.html("<img src='/img/game/background.svg'>Grass")
               clickTarget.data('pressed', false);
               removeMode = false;
               return;
@@ -955,7 +957,7 @@ Template.statusList.events({
               clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>");
 
           }else{
-              clickTarget.html("<img src='/img/game/trashcan.svg'>Remove");
+              clickTarget.html("<img src='/img/game/background.svg'>Grass");
 
           }
     },
@@ -2052,16 +2054,16 @@ set_property_table = function(){
         table = $('<table></table>').attr('id', 'property_trade_table')
                                     .attr('class', 'property_shop_table');
         //content
-        var flag = false;
+        var flag = 0;
         for(i = 0; i < user_property.length; i++){
             if((user_property[i].propertyCount != 0) || (user_property[i].tradeable != 0)){
-                flag = true;
-                if (i == 0){
+                if (flag == 0){
+                  flag++;
                   tr = $('<tr></tr>');
                   tr.append($('<th></th>'));
                   tr.append($('<th></th>').text('Property'));
-                  tr.append($('<th></th>').text('Stock'));
-                  tr.append($('<th></th>').text('Tradable'));
+                  tr.append($('<th></th>').text('Stock Number'));
+                  tr.append($('<th></th>').text('Tradable Number'));
                   table.append(tr);
                 }
                 tr = $('<tr></tr>');
