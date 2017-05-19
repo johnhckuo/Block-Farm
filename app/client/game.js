@@ -34,7 +34,7 @@ const _character = new Tracker.Dependency;
 var cursorX;
 var cursorY;
 
-var panelCounter = 2, panelCount = 2;
+var panelCounter = 0, panelCount = 2;
 
 var cropList = [];
 var stockList = [];
@@ -888,18 +888,16 @@ Template.gamingArea.events({
 })
 
 function PanelControl(panelIndex){
-    panelCounter += 1;
-    var temp = panelCounter; // default:2
-    $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
-    $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
-    $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
-    panelIndex +=1;
+    var temp = panelCounter;
+    $(".statusPanel:eq(" + panelCounter + ")").removeClass("statusPanelShow");
+    $(".statusPanel:eq(" + panelCounter + ")").css("z-index", -1);
+    $(".crop"+(temp)+"").css("background-color","rgba(255,255,255,0.45)");
     panelCounter = panelIndex;
-    $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
-    $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
-    $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
+    $(".crop"+(panelCounter)+"").css("background-color","rgba(255,255,255,0.65)");
+    $(".statusPanel:eq(" + panelCounter + ")").css("z-index", 1);
+    $(".statusPanel:eq(" + panelCounter + ")").addClass("statusPanelShow");
 
-    if(panelCounter==3){
+    if(panelCounter==1){
         set_property_table();
     }
 
@@ -911,11 +909,11 @@ function PanelControl(panelIndex){
 }
 
 Template.statusList.events({
-    'click .crop2' :function(){
-        PanelControl(2);
+    'click .crop0' :function(){
+        PanelControl(0);
     },
-    'click .crop3' :function(){
-        PanelControl(3);
+    'click .crop1' :function(){
+        PanelControl(1);
     },
     'click .removeLand': function (event){
 
@@ -975,7 +973,7 @@ Template.characterList.events({
         if(currentCharacter == "farmer"){
             if(Session.get('userCharacter') == "Thief"){
 
-                PanelControl(3);
+                PanelControl(1);
                 visitNode = getVisitNode();
                 setStealRate(visitNode);
                 rerenderCropLand(visitNode);
@@ -994,7 +992,7 @@ Template.characterList.events({
             }
             else if(Session.get('userCharacter') == "Guard"){
 
-                PanelControl(3);
+                PanelControl(1);
                 showThief = true;
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
@@ -1025,7 +1023,7 @@ Template.characterList.events({
                             CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
                         }
 
-                        PanelControl(3);
+                        PanelControl(1);
                         showThief = true;
                         rerenderCropLand(guardLand);
                         gameMode = "Guard";
