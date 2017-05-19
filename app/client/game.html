@@ -156,6 +156,7 @@
 
               <div class="listHeader">
                 <h2>Plants</h2>
+                <hr>
               </div>
               <div class="landList">
                   {{#each lands}}
@@ -166,8 +167,6 @@
                       Grass
                   </div>
               </div>
-              <hr>
-
               <div class="cropListDiv">
               {{#each crops}}
                       {{> crop}}
@@ -198,13 +197,34 @@
             {{> cropSelectingBtns}}
           </div>
         </div>
+        <div class="functionSwitch">
+              <button type="button" name="button" class="btn-primary test">Test</button>
+              <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
+              <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
+
+
+
+
+              <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
+
+              <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
+                <div class="missionIndicator">
+                  !
+                </div>
+                Mission
+
+              </button> -->
+
+
+
+        </div>
     </div>
 </template>
 
 <template name="cropSelectingBtns">
   <div class="controlButtons">
-    <button type="button" class="btnSelect crop0" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
-    <button type="button" class="btnSelect crop1" name="button"><img src="/img/game/barn.svg" alt=""></button>
+    <button type="button" class="btnSelect crop2" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
+    <button type="button" class="btnSelect crop3" name="button"><img src="/img/game/barn.svg" alt=""></button>
   </div>
 
 </template>
@@ -272,27 +292,7 @@
         </div>
 
     </div>
-    <div class="functionSwitch">
-          <button type="button" name="button" class="btn-primary test">Test</button>
-          <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
-          <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
 
-
-
-
-          <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
-
-          <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
-            <div class="missionIndicator">
-              !
-            </div>
-            Mission
-
-          </button> -->
-
-
-
-    </div>
 </template>
 
 <template name="gamingArea">

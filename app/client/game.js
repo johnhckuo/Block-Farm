@@ -34,7 +34,7 @@ const _character = new Tracker.Dependency;
 var cursorX;
 var cursorY;
 
-var panelCounter = 0, panelCount = 2;
+var panelCounter = 2;
 
 var cropList = [];
 var stockList = [];
@@ -464,15 +464,17 @@ Template.gameIndex.events({
                 updateUserExp(exp);
                 $(".scoreObject").html("+" + exp +"XP");
 
-                $(".expPopText").html("+" + exp +"XP");
-                $(".expPopText").css({display:"inline", opacity:1, transform:"translateY(0px)"});
+                var temp2 = $(".expPopText").clone().attr("class", "expPopTextTemp").appendTo(".expProgress");
+
+                temp2.html("+" + exp +"XP");
+                temp2.css({display:"inline", opacity:1, transform:"translateY(0px)"});
 
                 setTimeout(function(){
-                    $(".expPopText").css({opacity:0, transform:"translateY(10px)"});
+                    temp2.css({opacity:0, transform:"translateY(10px)"});
                     setTimeout(function(){
-                        $(".expPopText").css({display: "none"});
-                    },500);
-                },500);
+                        temp2.css({display: "none"});
+                    },2000);
+                },1000);
 
             }else{
                 sweetAlert("Oops...", "Patience is a virtue <3", "error");
@@ -694,7 +696,7 @@ Template.crop.events({
         $(imgs[0]).parent().data('pressed', false);
         $(imgs[0]).parent().html("<img src = '" + prefix+ "land" + postfix + "' />" + "Dirt");
         $(imgs[1]).parent().data('pressed', false);
-        $(imgs[1]).parent().html("<img src = '/img/game/trashcan.svg' />Remove");
+        $(imgs[1]).parent().html("<img src = '/img/game/background.svg' />Grass");
         placeMode = false;
         removeMode = false;
 
@@ -888,16 +890,18 @@ Template.gamingArea.events({
 })
 
 function PanelControl(panelIndex){
-    var temp = panelCounter;
-    $(".statusPanel:eq(" + panelCounter + ")").removeClass("statusPanelShow");
-    $(".statusPanel:eq(" + panelCounter + ")").css("z-index", -1);
-    $(".crop"+(temp)+"").css("background-color","rgba(255,255,255,0.45)");
-    panelCounter = panelIndex;
-    $(".crop"+(panelCounter)+"").css("background-color","rgba(255,255,255,0.65)");
-    $(".statusPanel:eq(" + panelCounter + ")").css("z-index", 1);
-    $(".statusPanel:eq(" + panelCounter + ")").addClass("statusPanelShow");
 
-    if(panelCounter==1){
+    $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
+    $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
+    $(".crop"+panelCounter).css("background-color","rgba(255,255,255,0.45)");
+
+    $(".crop"+panelIndex).css("background-color","rgba(255,255,255,0.65)");
+    $(".statusPanel:nth-child("+panelIndex+")").css("z-index", 1);
+    $(".statusPanel:nth-child("+panelIndex+")").addClass("statusPanelShow");
+    panelCounter = panelIndex;
+
+
+    if(panelCounter==3){
         set_property_table();
     }
 
@@ -909,11 +913,11 @@ function PanelControl(panelIndex){
 }
 
 Template.statusList.events({
-    'click .crop0' :function(){
-        PanelControl(0);
+    'click .crop2' :function(){
+        PanelControl(2);
     },
-    'click .crop1' :function(){
-        PanelControl(1);
+    'click .crop3' :function(){
+        PanelControl(3);
     },
     'click .removeLand': function (event){
 
@@ -936,7 +940,7 @@ Template.statusList.events({
 
           if (clickTarget.data('pressed')){
 
-              clickTarget.html("<img src='/img/game/trashcan.svg'>Remove")
+              clickTarget.html("<img src='/img/game/background.svg'>Grass")
               clickTarget.data('pressed', false);
               removeMode = false;
               return;
@@ -953,7 +957,7 @@ Template.statusList.events({
               clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>");
 
           }else{
-              clickTarget.html("<img src='/img/game/trashcan.svg'>Remove");
+              clickTarget.html("<img src='/img/game/background.svg'>Grass");
 
           }
     },
@@ -1000,7 +1004,7 @@ Template.characterList.events({
 
                 var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]} );
                 var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]});
-                var matchDiff = matchLength - gaurdMatchID; 
+                var matchDiff = matchLength - gaurdMatchID;
                 if(matchDiff <= 2){
                     var guardData = CongressInstance.getGuardReqInfo.call(s_Id, {from:web3.eth.accounts[currentAccount]});
                     var guardLand = guardData[0].c[0];
@@ -1043,7 +1047,7 @@ Template.characterList.events({
                     sweetAlert("Oops...", "You are not assiged to any farm right now.", "error");
                     loading(0);
                     return;
-                }               
+                }             
             }
         }
         else{
@@ -1082,6 +1086,7 @@ Template.characterList.events({
         setStealRate(visitNode);
         rerenderCropLand(visitNode); 
         loading(0);
+
 
     },
     'click .musicSwitch': function (event) {
@@ -2051,16 +2056,16 @@ set_property_table = function(){
         table = $('<table></table>').attr('id', 'property_trade_table')
                                     .attr('class', 'property_shop_table');
         //content
-        var flag = false;
+        var flag = 0;
         for(i = 0; i < user_property.length; i++){
             if((user_property[i].propertyCount != 0) || (user_property[i].tradeable != 0)){
-                flag = true;
-                if (i == 0){
+                if (flag == 0){
+                  flag++;
                   tr = $('<tr></tr>');
                   tr.append($('<th></th>'));
                   tr.append($('<th></th>').text('Property'));
-                  tr.append($('<th></th>').text('Stock'));
-                  tr.append($('<th></th>').text('Tradable'));
+                  tr.append($('<th></th>').text('Stock Number'));
+                  tr.append($('<th></th>').text('Tradable Number'));
                   table.append(tr);
                 }
                 tr = $('<tr></tr>');
@@ -2149,6 +2154,8 @@ rend_propertyType_table = function(_length){
     }
     else{
         var table, tr, td, property_index;
+        loading(1);
+        get_propertyType_setting();
         $('.shop_content').html('');
         table = $('<table></table>').attr('id', 'property_table')
                                     .attr('class', 'property_shop_table');
@@ -2209,7 +2216,6 @@ rend_propertyType_table = function(_length){
         $('.shop_content').append(table);
         loading(0);
     }
-
 }
 
 save_tradable_setting = function(){
@@ -2309,12 +2315,12 @@ mission_rending = function(){
         }, 1000);
     }
     else{
-
         $('.mission_template').html('');
         $('.mission_template').append($('<button></button>',{
             type:'button',
             id:'btn_mission_close',
             class:'btnClose'
+            // html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
         })
         .on('click', function(){ $('.mission_template').css('display','none'); }).text('X')
       ).append($('<div></div>',{
@@ -2392,9 +2398,7 @@ mission_rending = function(){
         for(k = 0; k < mission_list.length;k++){
             mission_qualify_check(mission_list[k].id);
         }
-        loading(0);
     }
-
 }
 
 mission_submit = function(_id){
