@@ -153,19 +153,21 @@
         <!-- <div class="cropListButton statusListButton"> -->
         <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
+
+              <div class="listHeader">
+                <h2>Plants</h2>
+              </div>
               <div class="landList">
                   {{#each lands}}
                   {{> land}}
                   {{/each}}
                   <div class='cropLand removeLand' data-pressed="false">
-                      <img src="/img/game/trashcan.svg" height='5vh' alt="">
-                      Remove
+                      <img src="/img/game/background.svg" height='5vh' alt="">
+                      Grass
                   </div>
               </div>
-              <div class="listHeader">
-                <h2>Crops</h2>
-                <hr>
-              </div>
+              <hr>
+
               <div class="cropListDiv">
               {{#each crops}}
                       {{> crop}}
@@ -225,7 +227,7 @@
               </div>
               <div class="flipDIV back">
                 <img src={{characterType}} alt="">
-                <h3>{{userLevel}}</h3>
+                <h3>{{userSyndicateLevel}}</h3>
               </div>
 
           </div>
@@ -237,20 +239,29 @@
             </div>
             <div class="userExp">
               <div class="expProgress">
+                  <h3>EXP</h3>
+
                   <div class="expProgressBar"></div>
                   <div class="expText"></div>
+                  <div class="expPopText"></div>
+
               </div>
             </div>
             <div class="SyndicateExp">
                 <div class="SyndicateExpProgress">
+                    <h3>EXP</h3>
+
                     <div class="SyndicateExpProgressBar"></div>
                     <div class="SyndicateExpText"></div>
                 </div>
             </div>
             <div class="userSta">
               <div class="staProgress">
+                  <h3>STA</h3>
+
                   <div class="staProgressBar"></div>
                   <div class="staText"></div>
+
               </div>
             </div>
 
@@ -385,9 +396,9 @@
       <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
     </div>
     <div class="rightMenuIcon" >
-      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt=""></button>
-      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt=""></button>
-      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt=""></button>
+      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt="">Mission</button>
+      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt="">Rating</button>
+      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt="">Rank</button>
     </div>
   </div>
 </template>
