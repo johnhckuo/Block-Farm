@@ -134,20 +134,38 @@
   background-color: rgba(0, 0, 0, 0);
   display: flex;
   position: relative;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   display: none;
 }
 .rightMenuIcon button{
+  position: relative;
   height: 15vh;
-  width: 10vw;
+  width: 8vw;
   background-color: rgba(255,255,255,0.45);
   border-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color:black;
+  right: 10px;
 }
+.rightMenuIcon button img{
+  width: 40%;
+  height: 40%;
+}
+
 .rightBtn:hover{
   background-color: rgba(255,255,255,0.65);
 }
+
+.open{
+  position: relative;
+  right:7px;
+}
+
 .rightMenuIcon>.btnMission{
   border-top-left-radius: 15px;
   border-top-right-radius: 0px;
@@ -810,13 +828,13 @@
     transition-delay: 0s;
 }
 .controlButtons button{
-  margin-top: 1vh;
+  margin-top: 2vh;
   border-top-left-radius: 0px;
   border-top-right-radius: 15px;
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 15px;
   height: 30vh;
-  width: 3vw;
+  width: 4vw;
   background-color: rgba(255,255,255,0.45);
   border-style: none;
 }

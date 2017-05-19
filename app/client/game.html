@@ -153,6 +153,10 @@
         <!-- <div class="cropListButton statusListButton"> -->
         <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
           <div class="statusPanelList">
+
+              <div class="listHeader">
+                <h2>Plants</h2>
+              </div>
               <div class="landList">
                   {{#each lands}}
                   {{> land}}
@@ -162,10 +166,8 @@
                       Grass
                   </div>
               </div>
-              <div class="listHeader">
-                <h2>Crops</h2>
-                <hr>
-              </div>
+              <hr>
+
               <div class="cropListDiv">
               {{#each crops}}
                       {{> crop}}
@@ -394,9 +396,9 @@
       <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
     </div>
     <div class="rightMenuIcon" >
-      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt=""></button>
-      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt=""></button>
-      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt=""></button>
+      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt="">Mission</button>
+      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt="">Rating</button>
+      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt="">Rank</button>
     </div>
   </div>
 </template>
