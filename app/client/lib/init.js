@@ -1,6 +1,7 @@
 import { Session } from 'meteor/session';
 
-currentAccount = 2;
+
+currentAccount = 4;
 cropsPerLvl =3;
 
 cropTypeList = [
@@ -234,7 +235,77 @@ cropTypeList = [
         img: ["report_seed", "report_grow", "report_harvest", "report", "report_warn"],
         count:4,
         time:"0.4.0.0"
-    }
+    },
+    {
+        id:30,
+        name: "Guard Level 1",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:31,
+        name: "Guard Level 2",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:32,
+        name: "Guard Level 3",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:33,
+        name: "Guard Level 4",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:34,
+        name: "Guard Level 5",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:35,
+        name: "Guard Level 6",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:36,
+        name: "Guard Level 7",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:37,
+        name: "Guard Level 8",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:38,
+        name: "Guard Level 9",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
+    {
+        id:39,
+        name: "Guard Level 10",
+        img: ["report", "report", "report", "report", "report"],
+        count:1,
+        time:"0.4.0.0"
+    },
 
 
 ];
@@ -375,12 +446,12 @@ function initGameConfig(){
     }
 
 
-    var length = usingPropertyInstance.getPropertyTypeLength({ from:web3.eth.accounts[currentAccount]});
-    usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", { from:web3.eth.accounts[currentAccount], gas:2000000});
+    //var length = usingPropertyInstance.getPropertyTypeLength({ from:web3.eth.accounts[currentAccount]});
+    //usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", { from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    for(var i = 0; i < length; i++){
-        usingPropertyInstance.initUserProperty(i, { from:web3.eth.accounts[currentAccount], gas:2000000});
-    }
+    //for(var i = 0; i < length; i++){
+    //    usingPropertyInstance.initUserProperty(i, { from:web3.eth.accounts[currentAccount], gas:2000000});
+    //}
     console.log("Init Complete");
 
 

@@ -34,7 +34,6 @@ contract usingProperty{
         uint[] id;
         int256[] crop;
         int256[] land;
-
     }
 
     struct LandType{
@@ -84,13 +83,6 @@ contract usingProperty{
     Congress congress;
     address owner;
 
-    uint[] get_PropertyId;
-    bytes32[] get_PropertyName;
-    uint[] get_PropertyType;
-    uint[] get_PropertyCount;
-    uint[] get_PropertyTradable;
-    bytes32[] get_PropertyImg;
-
     function usingProperty(address _congressAddress){
         CongressAddress = _congressAddress;
         congress = Congress(CongressAddress);
@@ -133,24 +125,13 @@ contract usingProperty{
         prop.tradeable = 0;
     }
     
-    function getAllProperty() constant returns(uint[], uint[], bytes32[], uint[], uint[], bytes32[]){
-        uint length = propertyList.length;
-
-        for(uint i = 0; i < length; i++){
-            if(propertyList[i].owner == msg.sender){
-                get_PropertyId.push(i);
-                get_PropertyName.push(propertyTypeList[propertyList[i].propertyType].name);
-                get_PropertyType.push(propertyList[i].propertyType);
-                get_PropertyCount.push(propertyList[i].propertyCount);
-                get_PropertyTradable.push(propertyList[i].tradeable);
-                get_PropertyImg.push(propertyTypeList[propertyList[i].propertyType].img[3]);
-            }
-            else{
-                continue;
-            }
+    function getPropertyTo2(uint i, address _from) constant returns(uint, uint, bytes32, uint, uint, bytes32){
+        if(propertyList[i].owner == _from){
+            return ( propertyList[i].id, propertyList[i].propertyType, propertyTypeList[propertyList[i].propertyType].name, propertyList[i].propertyCount, propertyList[i].tradeable, propertyTypeList[propertyList[i].propertyType].img[3]);
         }
-        return (get_PropertyId, get_PropertyType, get_PropertyName, get_PropertyCount, get_PropertyTradable, get_PropertyImg);
+
     }     
+
 
     function addProperty(bytes32 _name, uint _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
         bool flag = true;
@@ -199,15 +180,10 @@ contract usingProperty{
         }
         delete propertyList[propertyList.length-1];
         propertyList.length--;
-
     }
 
     function getPropertiesLength() constant returns(uint){
         return propertyList.length;
-    }
-
-    function getProperty(uint p_Id) constant returns(bytes32, uint, uint, uint256, address, bytes32){
-        return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
     function getProperty_MissionSubmit(uint p_Id) constant returns(uint, address, uint){
@@ -470,7 +446,6 @@ contract usingProperty{
         prop.harvestUnit = _harvestUnit;
     }
 
-
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, uint){
         uint s_Id = congress.stakeholderId(msg.sender);
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].rating[s_Id]);
@@ -491,4 +466,6 @@ contract usingProperty{
     function getPropertyTypeLength() constant returns(uint){
         return propertyTypeList.length;
     }
+
+
 }

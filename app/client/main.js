@@ -110,7 +110,9 @@ if (Meteor.isClient) {
     },
     'keydown .s_Name':function(event){
         var ew = event.which;
-
+        if (ew == 16 || (ew <= 40 && ew >= 37)){
+            return true;
+        }
         if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122)){
             if (userNameCounter >= 10){
               sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
@@ -147,7 +149,8 @@ if (Meteor.isClient) {
         var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468});
         var s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
         var txs = MainActivityInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468});
-
+        var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+        var txs = CongressInstance.setPropertyIndex(s_Id, length, {from:web3.eth.accounts[currentAccount], gas:2201468});
         //console.log(txs);
 
         var length = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];

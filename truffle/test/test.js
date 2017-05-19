@@ -603,5 +603,293 @@ contract('Congress', function (accounts) {
         });
     });
 
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
+    it("level Up", function () {
+        return GameCore.deployed("","").then(function (instance) {
+            return instance.playerLevelUp(1, 0,  { from: accounts[0] });
+
+        }).then(function(txs){
+            console.log(txs);
+        });
+    });
 
 });
