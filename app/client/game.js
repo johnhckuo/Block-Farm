@@ -34,7 +34,7 @@ const _character = new Tracker.Dependency;
 var cursorX;
 var cursorY;
 
-var panelCounter = 2, panelCount = 2;
+var panelCounter = 2;
 
 var cropList = [];
 var stockList = [];
@@ -888,16 +888,14 @@ Template.gamingArea.events({
 })
 
 function PanelControl(panelIndex){
-    panelCounter += 1;
-    var temp = panelCounter; // default:2
     $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
-    $(".crop"+temp+"").css("background-color","rgba(255,255,255,0.45)");
-    panelIndex +=1;
+    $(".crop"+panelCounter).css("background-color","rgba(255,255,255,0.45)");
+
+    $(".crop"+panelIndex).css("background-color","rgba(255,255,255,0.65)");
+    $(".statusPanel:nth-child("+panelIndex+")").css("z-index", 1);
+    $(".statusPanel:nth-child("+panelIndex+")").addClass("statusPanelShow");
     panelCounter = panelIndex;
-    $(".crop"+panelCounter+"").css("background-color","rgba(255,255,255,0.65)");
-    $(".statusPanel:nth-child("+panelCounter+")").css("z-index", 1);
-    $(".statusPanel:nth-child("+panelCounter+")").addClass("statusPanelShow");
 
     if(panelCounter==3){
         set_property_table();
@@ -1006,7 +1004,7 @@ Template.characterList.events({
 
                 var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]} );
                 var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]});
-                var matchDiff = matchLength - gaurdMatchID; 
+                var matchDiff = matchLength - gaurdMatchID;
                 if(matchDiff <= 2){
                     var guardData = CongressInstance.getGuardReqInfo.call(s_Id, {from:web3.eth.accounts[currentAccount]});
                     var guardLand = guardData[0].c[0];
@@ -1049,7 +1047,7 @@ Template.characterList.events({
                     alert("you are free");
                     rerenderCropLand(s_Id);
                    // return;
-                }               
+                }
             }
         }
         else{
@@ -1086,7 +1084,7 @@ Template.characterList.events({
         // ===== wait for further testing
         visitNode = getVisitNode();
         setStealRate(visitNode);
-        rerenderCropLand(visitNode);  
+        rerenderCropLand(visitNode);
 
     },
     'click .musicSwitch': function (event) {
@@ -2138,7 +2136,7 @@ index_finder = function(_source, _mask){
 set_propertyType_table = function () {
 
     var table, tr, td, property_index;
-
+    loading(1);
     get_propertyType_setting();
     $('.shop_content').html('');
     table = $('<table></table>').attr('id', 'property_table')
@@ -2198,6 +2196,7 @@ set_propertyType_table = function () {
     table.append(tr);
     //control bar
     $('.shop_content').append(table);
+    loading(0);
 }
 
 save_tradable_setting = function(){
@@ -2297,7 +2296,6 @@ find_propertyInfo = function(item_id){
 mission_rending = function(){
     loading(1);
     get_mission_list();
-    loading(0);
     $('.mission_template').html('');
     $('.mission_template').append($('<button></button>',{
         type:'button',
@@ -2381,6 +2379,8 @@ mission_rending = function(){
     for(k = 0; k < mission_list.length;k++){
         mission_qualify_check(mission_list[k].id);
     }
+    loading(0);
+
 }
 
 mission_submit = function(_id){
