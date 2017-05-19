@@ -968,7 +968,30 @@ Template.statusList.events({
     'click #btn_tradeable_cancel':function(){
         sweetAlert("Warning", 'cancel', "warning");
         set_property_table();
-    }
+    },
+    'click .test': function(event){
+        currentUser.level+=1;
+        Session.set('userLevel', currentUser.level);
+
+        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
+        _character.changed();
+        levelUp("userLevel");
+        if (currentUser.level%5 ==0){
+            getUserData(s_Id);
+        }
+        rerenderCropLand(s_Id);
+    },
+    'click .matchmaking': function(event){
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+    },
+    'click .confirmMatches':function(event){
+        MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+
+    },
 })
 
 Template.characterList.events({
@@ -1102,29 +1125,7 @@ Template.characterList.events({
         }
 
     },
-    'click .test': function(event){
-        currentUser.level+=1;
-        Session.set('userLevel', currentUser.level);
 
-        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
-        _character.changed();
-        levelUp("userLevel");
-        if (currentUser.level%5 ==0){
-            getUserData(s_Id);
-        }
-        rerenderCropLand(s_Id);
-    },
-    'click .matchmaking': function(event){
-        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
-        updateUserData(s_Id);
-        showConfirmation(s_Id);
-    },
-    'click .confirmMatches':function(event){
-        MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
-        updateUserData(s_Id);
-        showConfirmation(s_Id);
-
-    },
     // 'mouseenter .userExp':function(event){
     //     $(".expHoverText").fadeIn();
     //     $(".expHoverText").css({"left":cursorX, "top":cursorY});
@@ -2060,7 +2061,6 @@ set_property_table = function(){
                 if (flag == 0){
                   flag++;
                   tr = $('<tr></tr>');
-                  tr.append($('<th></th>'));
                   tr.append($('<th></th>').text('Property'));
                   tr.append($('<th></th>').text('Stock Number'));
                   tr.append($('<th></th>').text('Tradable Number'));
@@ -2071,10 +2071,7 @@ set_property_table = function(){
                 td.append($('<img></img>', {
                     src:prefix+user_property[i].img + postfix,
                     style:'width:50px; height:50px'
-                }));
-                tr.append(td);
-                td = $('<td></td>');
-                td.text(user_property[i].name);
+                })).append(user_property[i].name);
                 tr.append(td);
                 td = $('<td></td>');
                 td.text(user_property[i].propertyCount);
