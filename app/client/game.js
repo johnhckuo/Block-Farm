@@ -986,21 +986,17 @@ Template.characterList.events({
                     value:'Next'
                 }));
                 gameMode = "Thief";
-                $('.crop2').css('display','none');
-                $('.crop3').css('display','none');
+                $('.crop0').css('display','none');
                 currentCharacter = "thief";
+                loading(0);
             }
             else if(Session.get('userCharacter') == "Guard"){
 
                 PanelControl(1);
                 showThief = true;
-                visitNode = getVisitNode();
-                rerenderCropLand(visitNode);
-                gameMode = "Guard";
+
                 $('.SyndicateExp').css('visibility', 'visible');
                 $('.userExp').css('visibility', 'collapse');
-                $('.crop2').css('display','none');
-                $('.crop3').css('display','none');
 
                 var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]} );
                 var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]});
@@ -1010,9 +1006,9 @@ Template.characterList.events({
                     var guardLand = guardData[0].c[0];
                     var progress = guardData[1].c[0];
                     if(guardLand == 0){
-                        alert("you are free");
-                        rerenderCropLand(s_Id);
-                        //return;
+                        sweetAlert("Oops...", "You are not assiged to any farm right now.", "error");
+                        loading(0);
+                        return;
                     }
                     else{
                         $(".front img").prop('src', "/img/game/guard.svg");
@@ -1029,8 +1025,7 @@ Template.characterList.events({
                         gameMode = "Guard";
                         $('.SyndicateExp').css('visibility', 'visible');
                         $('.userExp').css('visibility', 'collapse');
-                        $('.crop2').css('display','none');
-                        $('.crop3').css('display','none');
+                        $('.crop0').css('display','none');
                         landInfo = [];
                         for (var i = 0 ; i < userLandConfiguration.length ; i++){
                             var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
@@ -1041,12 +1036,13 @@ Template.characterList.events({
                         currentUser.SyndicateProgress = progress;
                         checkMissionInterval = setInterval(checkMission, 1000);
                         currentCharacter = "guard";
+                        gameMode = "Guard";
                     }
                 }
                 else{
-                    alert("you are free");
-                    rerenderCropLand(s_Id);
-                   // return;
+                    sweetAlert("Oops...", "You are not assiged to any farm right now.", "error");
+                    loading(0);
+                    return;
                 }               
             }
         }
@@ -1058,11 +1054,11 @@ Template.characterList.events({
             $(".missionObject").html("<div class='thiefObject'></div>");
             $('.SyndicateExp').css('visibility', 'collapse');
             $('.userExp').css('visibility', 'visible');
-            $('.crop2').css('display','block');
-            $('.crop3').css('display','block');
+            $('.crop0').css('display','block');
             $('.functionSwitch').parent().find(".nextHome").remove();
             gameMode = "Farmer"
             rerenderCropLand(s_Id);
+            loading(0);
         }
     },
     'mouseenter .flipDIV *':function(event){
@@ -1080,11 +1076,12 @@ Template.characterList.events({
       }
     },
     'click .nextHome': function (event) {
-
+        loading(1);
         // ===== wait for further testing
         visitNode = getVisitNode();
         setStealRate(visitNode);
-        rerenderCropLand(visitNode);  
+        rerenderCropLand(visitNode); 
+        loading(0);
 
     },
     'click .musicSwitch': function (event) {
@@ -2000,9 +1997,12 @@ get_user_property_setting = function () {
     //});
     var _propertyIndex = CongressInstance.getPropertyIndex.call(s_Id, {from:web3.eth.accounts[currentAccount]});
     var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]});
-    for(i = _propertyIndex; i < propertyTypeLength; i++){
+    var _goal = _propertyIndex.c[0] +  propertyTypeLength.c[0];
+    for(i = _propertyIndex.c[0]; i < _goal; i++){
         var propertyData = usingPropertyInstance.getPropertyTo2(i, web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}, function(err, result){
-            if(err){}
+            if(err){
+                console.log(err);
+            }
             else{
                 var _id = result[0].c[0];
                 var _propertyType = result[1].c[0]
@@ -2012,6 +2012,7 @@ get_user_property_setting = function () {
                 var _img = web3.toUtf8(result[5]);
                 var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
                 user_property.push(data);
+                console.log(i);
             }
         });
     }
