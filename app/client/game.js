@@ -888,6 +888,7 @@ Template.gamingArea.events({
 })
 
 function PanelControl(panelIndex){
+
     $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
     $(".crop"+panelCounter).css("background-color","rgba(255,255,255,0.45)");
@@ -896,6 +897,7 @@ function PanelControl(panelIndex){
     $(".statusPanel:nth-child("+panelIndex+")").css("z-index", 1);
     $(".statusPanel:nth-child("+panelIndex+")").addClass("statusPanelShow");
     panelCounter = panelIndex;
+
 
     if(panelCounter==3){
         set_property_table();
@@ -973,7 +975,7 @@ Template.characterList.events({
         if(currentCharacter == "farmer"){
             if(Session.get('userCharacter') == "Thief"){
 
-                PanelControl(3);
+                PanelControl(1);
                 visitNode = getVisitNode();
                 setStealRate(visitNode);
                 rerenderCropLand(visitNode);
@@ -992,7 +994,7 @@ Template.characterList.events({
             }
             else if(Session.get('userCharacter') == "Guard"){
 
-                PanelControl(3);
+                PanelControl(1);
                 showThief = true;
                 visitNode = getVisitNode();
                 rerenderCropLand(visitNode);
@@ -1023,7 +1025,7 @@ Template.characterList.events({
                             CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
                         }
 
-                        PanelControl(3);
+                        PanelControl(1);
                         showThief = true;
                         rerenderCropLand(guardLand);
                         gameMode = "Guard";
