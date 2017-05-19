@@ -1150,7 +1150,7 @@ Template.operationList.events({
     'click .MissionOpen': function(event){
         $(".property_shop").css("display", "none");
         $(".mission_template").css("display", "inline");
-        mission_rending();
+        set_mission_table();
     }
 })
 
@@ -2018,19 +2018,19 @@ get_user_property_setting = function () {
 
 }
 
-get_propertyType_setting = function(){
+get_propertyType_setting = function(_length){
     display_field = [];
-    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
 
-    for(i = 0; i < propertyTypeLength.c[0]; i++){
-        var property_type = usingPropertyInstance.getPropertyType.call(i,currentAccount, {from:web3.eth.accounts[currentAccount]});
-        var _name = web3.toUtf8(property_type[0]);
-        var _id =  property_type[1].c[0];
-        var _rating = property_type[3].c[0]/floatOffset;
-        var _averageRating = property_type[2].c[0]/floatOffset;
+    for(i = 0; i < _length; i++){
+        var property_type = usingPropertyInstance.getPropertyType.call(i,currentAccount, {from:web3.eth.accounts[currentAccount]}, function(err, result){
+            var _name = web3.toUtf8(result[0]);
+            var _id =  result[1].c[0];
+            var _rating = result[3].c[0]/floatOffset;
+            var _averageRating = result[2].c[0]/floatOffset;
 
-        var data = {"name": _name,"id":_id, "rating": _rating, "averageRating":_averageRating};
-        display_field.push(data);
+            var data = {"name": _name,"id":_id, "rating": _rating, "averageRating":_averageRating};
+            display_field.push(data);
+        });
     }
 }
 
@@ -2134,71 +2134,85 @@ index_finder = function(_source, _mask){
 }
 
 set_propertyType_table = function () {
+    loading(1);    
+    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
+    get_propertyType_setting(propertyTypeLength.c[0]);
+    rend_propertyType_table(propertyTypeLength.c[0]);
+}
 
-    var table, tr, td, property_index;
-
-    get_propertyType_setting();
-    $('.shop_content').html('');
-    table = $('<table></table>').attr('id', 'property_table')
-                                .attr('class', 'property_shop_table');
-    //header
-    tr = $('<tr></tr>');
-    tr.append($('<th></th>').text('Property'));
-    tr.append($('<th></th>').text('Rating'));
-    tr.append($('<th></th>').text('AVG Rating'));
-    table.append(tr);
-    //header
-    //content
-    for (i = 0; i < display_field.length; i++) {
-        tr = $('<tr></tr>');
-        tr.append($('<td></td>').text(display_field[i].name));
-        //tr.append($('<td></td>').text(display_field[i].propertyCount));
-        td = $('<td></td>');
-        td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
-        td.append($('<input>', {
-            type: 'range',
-            value: display_field[i].rating,
-            max: 100,
-            min: 0,
-            step: 1,
-            id: 'rating' + i
-        }).on('change', function () {
-            $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
-        })
-        );
-        tr.append(td);
-        tr.append($('<td></td>').text(display_field[i].averageRating));
-        table.append(tr);
+rend_propertyType_table = function(_length){
+    if(display_field.length != _length){
+        setTimeout(function(){
+            rend_propertyType_table(_length);
+        },1000);
     }
-    //content
-    //control bar
-    tr = $('<tr></tr>');
-    td = $('<td></td>').attr('colspan', 3);
-    td.append($('<button></button>').attr( {
-        // type: 'button',
-        id: 'btn_property_save',
-        value: 'SAVE',
-        class:'hvr-rectangle-out',
-    }).append('SAVE').on('click', function () {
-        save_rating_setting();
-        $('.property_shop').css('display', 'none');
-    }));
-    td.append($('<button></button>').attr( {
-        // type: 'button',
-        id: 'btn_property_cancel',
-        value: 'CANCEL',
-        class:'hvr-rectangle-out'
-    }).append('CANCEL').on('click', function () {
-        set_propertyType_table();
-       // sweetAlert("Warning!", 'cancel', "warning");
-    }));
-    tr.append(td);
-    table.append(tr);
-    //control bar
-    $('.shop_content').append(table);
+    else{
+        var table, tr, td, property_index;
+        $('.shop_content').html('');
+        table = $('<table></table>').attr('id', 'property_table')
+                                    .attr('class', 'property_shop_table');
+        //header
+        tr = $('<tr></tr>');
+        tr.append($('<th></th>').text('Property'));
+        tr.append($('<th></th>').text('Rating'));
+        tr.append($('<th></th>').text('AVG Rating'));
+        table.append(tr);
+        //header
+        //content
+        for (i = 0; i < display_field.length; i++) {
+            tr = $('<tr></tr>');
+            tr.append($('<td></td>').text(display_field[i].name));
+            //tr.append($('<td></td>').text(display_field[i].propertyCount));
+            td = $('<td></td>');
+            td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
+            td.append($('<input>', {
+                type: 'range',
+                value: display_field[i].rating,
+                max: 100,
+                min: 0,
+                step: 1,
+                id: 'rating' + i
+            }).on('change', function () {
+                $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
+            })
+            );
+            tr.append(td);
+            tr.append($('<td></td>').text(display_field[i].averageRating));
+            table.append(tr);
+        }
+        //content
+        //control bar
+        tr = $('<tr></tr>');
+        td = $('<td></td>').attr('colspan', 3);
+        td.append($('<button></button>').attr( {
+            // type: 'button',
+            id: 'btn_property_save',
+            value: 'SAVE',
+            class:'hvr-rectangle-out',
+        }).append('SAVE').on('click', function () {
+            save_rating_setting();
+            $('.property_shop').css('display', 'none');
+        }));
+        td.append($('<button></button>').attr( {
+            // type: 'button',
+            id: 'btn_property_cancel',
+            value: 'CANCEL',
+            class:'hvr-rectangle-out'
+        }).append('CANCEL').on('click', function () {
+            set_propertyType_table();
+            // sweetAlert("Warning!", 'cancel', "warning");
+        }));
+        tr.append(td);
+        table.append(tr);
+        //control bar
+        $('.shop_content').append(table);
+        loading(0);
+    }
+
 }
 
 save_tradable_setting = function(){
+    loading(1);
     for(i = 0; i < $('.shop_tradable_input').length; i++){
         var _id = index_finder( $('.shop_tradable_input')[i].id, 'tradable_input_');
         var _tradable = $('#tradable_input_' + _id).val();
@@ -2210,43 +2224,31 @@ save_tradable_setting = function(){
                 break;
             }
         }
-        usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000});
+        usingPropertyInstance.updatePropertyCount(_id,_propertyCount,_tradable, {from:web3.eth.accounts[currentAccount],gas:200000}, function(err, result){
+            if(err){
+                console.log(err);
+            }
+        });
     }
+    loading(0);
     sweetAlert("Congratulations!", "Setting Saved!", "success");
+
 }
 
 save_rating_setting = function () {
+    loading(1);
     for(i = 0; i < display_field.length;i++){
         var _id = parseInt(display_field[i].id,10);
         var _rate = parseInt($('#rating' + i).val(),10);
-        usingPropertyInstance.updatePropertyTypeRating(_id, _rate*floatOffset, "update", {from:web3.eth.accounts[currentAccount],gas:200000});
+        usingPropertyInstance.updatePropertyTypeRating(_id, _rate*floatOffset, "update", {from:web3.eth.accounts[currentAccount],gas:200000}, function(err, result){
+            if(err){
+                console.log(err);
+            }
+        });
     }
+    loading(0);
     sweetAlert("Congratulations!", "Rating Saved!", "success");
 }
-
-averageRating_calculation = function () {
-    for (i = 0; i < property_database.length; i++) {
-        property_database[i].averageRating = 0;
-        delete property_database[i].rating;
-    }
-
-    for (i = 0; i < property_log.length; i++) {
-        for (j = 0; j < property_log[i].property.length; j++) {
-            for (k = 0 ; k < property_database.length; k++) {
-                if (property_database[k].id == property_log[i].property[j].id) {
-                    property_database[k].averageRating = parseInt(property_database[k].averageRating, 10) + parseInt(property_log[i].property[j].rating, 10);
-                    break;
-                }
-            }
-        }
-    }
-    for (i = 0; i < property_database.length; i++) {
-        n = parseInt(property_database[i].averageRating, 10) / property_log.length;
-        property_database[i].averageRating = n.toFixed(2);
-    }
-    $('#temp_property').val(JSON.stringify(property_database));
-}
-
 
 /////////////////////////
 //  Mission Functions  //
@@ -2256,31 +2258,32 @@ var mission_list = [];
 get_mission_list = function(){
     var item, result, _cropId, _cropName, _quantity, _missionId, _missionName, _exp, _lvl_limitation, _accountStatus;
     var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]});
-    var mission_source = GameCoreInstance.getMission.call({from:web3.eth.accounts[currentAccount]});
     mission_list = [];
+    var mission_source = GameCoreInstance.getMission.call({from:web3.eth.accounts[currentAccount]}, function(err, result){
 
 
-    for(i = 0; i < mission_source[0].length; i++){
-        var _id = mission_source[0][i].c[0];;
-        var _name = web3.toUtf8(mission_source[1][i]);
-        var _exp = mission_source[2][i].c[0];
-        var _limitation = mission_source[3][i].c[0];
-        var _solved = mission_source[4][i];
-        mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
+        for(i = 0; i < result[0].length; i++){
+            var _id = result[0][i].c[0];;
+            var _name = web3.toUtf8(result[1][i]);
+            var _exp = result[2][i].c[0];
+            var _limitation = result[3][i].c[0];
+            var _solved = result[4][i];
+            mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
 
-        item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
-        for(j = 0; j < item_source[0].length; j++){
-            var _crop_id = item_source[0][j].c[0];
-            var res = find_propertyInfo(_crop_id);
-            var _crop_name = res.name;
-            var _quantity = item_source[1][j].c[0];
-            var _img = res.img;
-            // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
-            item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
-            mission.items.push(item);
+            item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
+            for(j = 0; j < item_source[0].length; j++){
+                var _crop_id = item_source[0][j].c[0];
+                var res = find_propertyInfo(_crop_id);
+                var _crop_name = res.name;
+                var _quantity = item_source[1][j].c[0];
+                var _img = res.img;
+                // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
+                item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
+                mission.items.push(item);
+            }
+            mission_list.push(mission);
         }
-        mission_list.push(mission);
-    }
+    });
 }
 
 find_propertyInfo = function(item_id){
@@ -2292,99 +2295,111 @@ find_propertyInfo = function(item_id){
     }
 }
 
-mission_rending = function(){
+set_mission_table = function(){
     loading(1);
     get_mission_list();
-    loading(0);
-    $('.mission_template').html('');
-    $('.mission_template').append($('<button></button>',{
-        type:'button',
-        id:'btn_mission_close',
-        class:'btnClose'
-        // html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
-    })
-    .on('click', function(){ $('.mission_template').css('display','none'); }).text('X')
-  ).append($('<div></div>',{
-    class:'mission_header'
-  }).text('Mission'));
+    mission_rending();
+}
+
+mission_rending = function(){
+    if(mission_list.length == 0){
+        setTimeout(function(){
+            mission_rending();
+        }, 1000);
+    }
+    else{
+
+        $('.mission_template').html('');
+        $('.mission_template').append($('<button></button>',{
+            type:'button',
+            id:'btn_mission_close',
+            class:'btnClose'
+        })
+        .on('click', function(){ $('.mission_template').css('display','none'); }).text('X')
+      ).append($('<div></div>',{
+          class:'mission_header'
+      }).text('Mission'));
 
 
-    var div, table, tr, td;
-    div=$('<div></div>',{class:'mission_content'})
-    table = $('<table></table>',{id:'mission_table'});
-    //header
-    tr = $('<tr></tr>');
-    tr.append($('<th></th>').text('Mission'));
-    tr.append($('<th></th>').text('Requirement'));
-    tr.append($('<th></th>').text('Exp'));
-    tr.append($('<th></th>').text('Submit'));
-    table.append(tr);
-    //header
-    //content
-    for(i = 0; i < mission_list.length;i++){
+        var div, table, tr, td;
+        div=$('<div></div>',{class:'mission_content'})
+        table = $('<table></table>',{id:'mission_table'});
+        //header
+        tr = $('<tr></tr>');
+        tr.append($('<th></th>').text('Mission'));
+        tr.append($('<th></th>').text('Requirement'));
+        tr.append($('<th></th>').text('Exp'));
+        tr.append($('<th></th>').text('Submit'));
+        table.append(tr);
+        //header
+        //content
+        for(i = 0; i < mission_list.length;i++){
 
-        if(!mission_list[i].solved){
-            tr = $('<tr></tr>');
-            td = $('<td></td>',{
-                text:mission_list[i].name
-            });
-            tr.append(td);
-            td = $('<td></td>');
-            for(j = 0; j < mission_list[i].items.length; j++){
-                td.append($('<img></img>',{
-                    src: prefix + mission_list[i].items[j].img+postfix,
-                    alt:mission_list[i].items[j].crop_name
+            if(!mission_list[i].solved){
+                tr = $('<tr></tr>');
+                td = $('<td></td>',{
+                    text:mission_list[i].name
+                });
+                tr.append(td);
+                td = $('<td></td>');
+                for(j = 0; j < mission_list[i].items.length; j++){
+                    td.append($('<img></img>',{
+                        src: prefix + mission_list[i].items[j].img+postfix,
+                        alt:mission_list[i].items[j].crop_name
+                    }));
+                    td.append($('<span></span>',{
+                        text: ' X ' + mission_list[i].items[j].quantity
+                    }));
+                }
+                tr.append(td);
+                td = $('<td></td>',{
+                    text:  mission_list[i].exp
+                });
+                tr.append(td);
+                td = $('<td></td>');
+                td.append($('<input></input>',{
+                    type:'hidden',
+                    id:'mission_exp_' + mission_list[i].id,
+                    value:mission_list[i].exp
                 }));
-                td.append($('<span></span>',{
-                    text: ' X ' + mission_list[i].items[j].quantity
+                td.append($('<input></input>',{
+                    type:'hidden',
+                    id:'mission_id_' + mission_list[i].id
                 }));
+
+                td.append($('<input></input>',{
+                    type:'button',
+                    value:'Submit',
+                    id:'btn_mission_submit_' + mission_list[i].id
+                })
+                .on('click', function(){
+                    var _id =index_finder($(this).prev('input').attr('id'),'mission_id_');
+                    var mission_qualify = mission_qualify_check(_id);
+                    if(mission_qualify){
+                        mission_submit(_id);
+                    }
+                })
+                );
             }
             tr.append(td);
-            td = $('<td></td>',{
-                text:  mission_list[i].exp
-            });
-            tr.append(td);
-            td = $('<td></td>');
-            td.append($('<input></input>',{
-                type:'hidden',
-                id:'mission_exp_' + mission_list[i].id,
-                value:mission_list[i].exp
-            }));
-            td.append($('<input></input>',{
-                type:'hidden',
-                id:'mission_id_' + mission_list[i].id
-            }));
-
-            td.append($('<input></input>',{
-                type:'button',
-                value:'Submit',
-                id:'btn_mission_submit_' + mission_list[i].id
-            })
-            .on('click', function(){
-                var _id =index_finder($(this).prev('input').attr('id'),'mission_id_');
-                var mission_qualify = mission_qualify_check(_id);
-                if(mission_qualify){
-                    mission_submit(_id);
-                }
-            })
-            );
+            table.append(tr);
+            div.append(table);
         }
-        tr.append(td);
-        table.append(tr);
-        div.append(table);
+        //content
+        $('.mission_template').append(div);
+        //get_user_property_setting();
+        for(k = 0; k < mission_list.length;k++){
+            mission_qualify_check(mission_list[k].id);
+        }
+        loading(0);
     }
-    //content
-    $('.mission_template').append(div);
-    get_user_property_setting();
-    for(k = 0; k < mission_list.length;k++){
-        mission_qualify_check(mission_list[k].id);
-    }
+
 }
 
 mission_submit = function(_id){
     updateUserExp(parseInt($('#mission_exp_' + _id).val(),10));
     GameCoreInstance.submitMission(_id,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    mission_rending();
+    set_mission_table();
 }
 
 mission_qualify_check = function(_id){
