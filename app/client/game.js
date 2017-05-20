@@ -6,6 +6,8 @@ var landSize = 3;
 var blockSize = 150;
 var landSrc = "/img/game/land.svg";
 
+var previousUnlockCrop = 0;
+
 var prefix = "/img/game/plant/";
 var postfix = ".svg";
 
@@ -207,6 +209,18 @@ Template.gamingArea.helpers({
       _character.depend();
         //return currentUser.level;
       return Session.get('Levelup');
+    },
+    staminaCap: function(){
+      return "Stamina Capacity: "+Session.get('staminaCap');
+    },
+    expCap: function(){
+      return "Exp Capacity: "+Session.get('expCap');
+    },
+    unlockCrop: function(){
+      if (previousUnlockCrop != Session.get('unlockCrop')){
+        previousUnlockCrop = Session.get('unlockCrop');
+        return "Unlock Crop: "+cropTypeList[Session.get('unlockCrop')].name;
+      }
     }
 });
 
@@ -481,10 +495,21 @@ Template.gameIndex.events({
                 return;
             }
 
+            var top = $(event.target)[0].getBoundingClientRect().top;
+            var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var pos = getTransformedPosition($(event.target)[0]);
-            var posX = pos[0];
-            var posY = pos[1];
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
+ 
+            var areaLeft = $(".gamingArea").position().left;
+            var resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()*1.65;
+            // var divHeight =0;
+            // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+            var posY = top+landTop-divHeight-y;
 
             var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
             temp.css({display:"inline", top: posY, left: posX});
@@ -564,15 +589,18 @@ Template.gameIndex.events({
                         updateStaminaBar(staminaList["steal"]);
                         updateSyndicateExp(5);
 
+                        var landTop = ($(".canvas").height()-$(window).height())/2;
+                        var landLeft = ($(".canvas").width()-$(window).width())/2;
 
+                        var areaLeft = $(".gamingArea").position().left;
+                        var resizeOffsetX = (screen.width- $(window).width())/6.5;
 
-                        var pos = getTransformedPosition($(event.target)[0]);
-                        var posX = pos[0];
-                        var posY = pos[1];
-                        // var divHeight =0;
-                        // var divWidth = 0;
-                        var posX = cursorX+posX;
-                        var posY = cursorY+posY;
+                        var divHeight =$(".cropObject").height()/5;
+                        var divWidth = $(".cropObject").width()*1.65;
+                        var posX = cursorX+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+                        var posY = cursorY+landTop-divHeight-y;
+                        posX = cursorX + posX;
+                        posY = cursorY + posY;
 
                         var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
                         temp.css({display:"inline", top: posY, left: posX});
@@ -632,21 +660,17 @@ Template.gameIndex.events({
                 return;
             }
 
-
             $($(event.target).parent()[0]).css("border", "1px solid black");
             $(event.target).remove();
 
             userLandConfiguration[_landId].land = -1;
             usingPropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, -1, 'land', {from:web3.eth.accounts[currentAccount], gas:2000000});
         }
-
     },
     'mouseenter .croppedObject img':function(event){
       $(".floatCropStatus").css("display", "inline");
       var cropId = $(event.target).parent()[0].className.split("croppedObject")[2];
 
-      // var divHeight =0;
-      // var divWidth = 0;
       var posX = cursorX;
       var posY = cursorY;
 
@@ -664,7 +688,6 @@ Template.gameIndex.events({
 
       $(".timeLeft").attr("class", "timeLeft timeLeft"+cropId);
 
-
       var index;
       for (var j = 0 ; j < cropTypeList.length ; j++){
           if (cropTypeList[j].id == cropList[cropId].type){
@@ -672,16 +695,11 @@ Template.gameIndex.events({
           }
       }
       $(".floatCropStatus").find("img").attr("src",prefix+cropTypeList[index].img[3]+postfix);
-
-
     },
     'mouseout .croppedObject img':function(event){
       $(".floatCropStatus").css("display", "none");
     },
-
-
 })
-
 
 Template.crop.events({
     'click .crop': function (event){
@@ -753,7 +771,6 @@ Template.land.events({
 
         var id = clickTarget[0].className.split("farmLand")[1];
 
-
         if (clickTarget.data('pressed')){
             $(".farmObject").css("display", "none");
             clickTarget.html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />Dirt");
@@ -785,7 +802,6 @@ Template.land.events({
         }
     },
 
-
 })
 
 Template.gamingArea.events({
@@ -793,10 +809,22 @@ Template.gamingArea.events({
         if (plantMode){
             currentCropLand = event.target.className;
 
+            var top = $(event.target)[0].getBoundingClientRect().top;
+            var left = $(event.target)[0].getBoundingClientRect().left;
 
-            var pos = getTransformedPosition($(event.target)[0]);
-            var posX = pos[0];
-            var posY = pos[1];
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+            var resizeOffsetX = ($(window).width()-400)/6.5;
+            var areaLeft = $(".gamingArea").position().left;
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()/1.65;
+            // var divHeight =0;
+            // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+            //var posX = left+landLeft+divWidth-x;
+
+            var posY = top+landTop-divHeight-y;
 
             var styles = {
                 top: posY,
@@ -812,9 +840,22 @@ Template.gamingArea.events({
 
         }else if (placeMode){
             currentCropLand = event.target.className;
-            var pos = getTransformedPosition($(event.target)[0]);
-            var posX = pos[0];
-            var posY = pos[1];
+            var top = $(event.target)[0].getBoundingClientRect().top;
+            var left = $(event.target)[0].getBoundingClientRect().left;
+
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+            var resizeOffsetX = ($(window).width()-400)/6.5;
+            var areaLeft = $(".gamingArea").position().left;
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()/1.65;
+            // var divHeight =0;
+            // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+            //var posX = left+landLeft+divWidth-x;
+
+            var posY = top+landTop-divHeight-y;
 
             $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
@@ -827,7 +868,6 @@ Template.gamingArea.events({
 
         $(event.target).prop("value", "Waiting");
         $(event.target).prop("disabled", true);
-
     },
     // 'click .zoom':function(event){
     //     var data = $(".canvas").css("transform");
@@ -884,13 +924,10 @@ Template.gamingArea.events({
         }
         //$(".canvas").css("transform", "translate(" + x + "px, " +y+ "px)");
         $('.canvas').css('-webkit-transform',  'translateX(' + x+ 'px) translateY(' + y+ 'px)');
-
-
     }
 })
 
 function PanelControl(panelIndex){
-
     $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
     $(".crop"+panelCounter).css("background-color","rgba(255,255,255,0.45)");
@@ -900,7 +937,6 @@ function PanelControl(panelIndex){
     $(".statusPanel:nth-child("+panelIndex+")").addClass("statusPanelShow");
     panelCounter = panelIndex;
 
-
     if(panelCounter==3){
         set_property_table();
     }
@@ -909,7 +945,6 @@ function PanelControl(panelIndex){
     $(".farmObject").css("display", "none");
 
     initAllBtns();
-
 }
 
 Template.statusList.events({
@@ -958,7 +993,6 @@ Template.statusList.events({
 
           }else{
               clickTarget.html("<img src='/img/game/background.svg'>Grass");
-
           }
     },
     // for tradable table to save
@@ -968,7 +1002,34 @@ Template.statusList.events({
     'click #btn_tradeable_cancel':function(){
         sweetAlert("Warning", 'cancel', "warning");
         set_property_table();
-    }
+    },
+    'click .test': function(event){
+        currentUser.level+=1;
+        Session.set('userLevel', currentUser.level);
+
+        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
+
+          _character.changed();
+          levelUp("userLevel");
+          if (currentUser.level%5 ==0){
+              getUserData(s_Id);
+          }
+          rerenderCropLand(s_Id);
+          Session.set("unlockCrop", cropTypeList.length);
+        });
+
+    },
+    'click .matchmaking': function(event){
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[1], gas:5000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+    },
+    'click .confirmMatches':function(event){
+        MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+
+    },
 })
 
 Template.characterList.events({
@@ -977,7 +1038,7 @@ Template.characterList.events({
         if(currentCharacter == "farmer"){
             if(Session.get('userCharacter') == "Thief"){
 
-                PanelControl(1);
+                PanelControl(3);
                 visitNode = getVisitNode();
                 setStealRate(visitNode);
                 rerenderCropLand(visitNode);
@@ -990,31 +1051,32 @@ Template.characterList.events({
                     value:'Next'
                 }));
                 gameMode = "Thief";
-                $('.crop0').css('display','none');
+                $('.crop2').css('display','none');
                 currentCharacter = "thief";
                 loading(0);
             }
             else if(Session.get('userCharacter') == "Guard"){
 
-                PanelControl(1);
-                showThief = true;
-
-                $('.SyndicateExp').css('visibility', 'visible');
-                $('.userExp').css('visibility', 'collapse');
-
-                var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]} );
-                var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]});
+                var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]}).c[0];
+                var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]}).c[0];
                 var matchDiff = matchLength - gaurdMatchID;
+                matchDiff = 3;
                 if(matchDiff <= 2){
                     var guardData = CongressInstance.getGuardReqInfo.call(s_Id, {from:web3.eth.accounts[currentAccount]});
                     var guardLand = guardData[0].c[0];
                     var progress = guardData[1].c[0];
                     if(guardLand == 0){
-                        sweetAlert("Oops...", "You are not assiged to any farm right now.", "error");
+                        sweetAlert("Oops...", "You have completed your mission.", "error");
                         loading(0);
                         return;
                     }
                     else{
+
+                        PanelControl(3);
+                        showThief = true;
+
+                        $('.SyndicateExp').css('visibility', 'visible');
+                        $('.userExp').css('visibility', 'collapse');
                         $(".front img").prop('src', "/img/game/guard.svg");
                         $(".back img").prop('src', "/img/game/farmer.svg");
                         if(progress == 0){
@@ -1023,13 +1085,13 @@ Template.characterList.events({
                             CongressInstance.updateSyndicateProgress(s_Id, progress, {from: web3.eth.accounts[currentAccount], gas:2000000});
                         }
 
-                        PanelControl(1);
+                        PanelControl(3);
                         showThief = true;
                         rerenderCropLand(guardLand);
                         gameMode = "Guard";
                         $('.SyndicateExp').css('visibility', 'visible');
                         $('.userExp').css('visibility', 'collapse');
-                        $('.crop0').css('display','none');
+                        $('.crop2').css('display','none');
                         landInfo = [];
                         for (var i = 0 ; i < userLandConfiguration.length ; i++){
                             var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
@@ -1044,10 +1106,22 @@ Template.characterList.events({
                     }
                 }
                 else{
+                    //check guard property stock
+                    var _propertyIndex = CongressInstance.getPropertyIndex.call(s_Id, {from:web3.eth.accounts[currentAccount]});
+                    for(var i = 0; i < user_property.length; i++){
+                        if(user_property[i].propertyType == (currentUser.SyndicateLevel + 29)){
+                            if((user_property[i].propertyCount == 0) && (user_property[i].tradeable == 0)){
+                                usingPropertyInstance.updatePropertyCount_Sudo(user_property[i].id , 1, 0, {from:web3.eth.accounts[currentAccount], gas:2514068});
+                                user_property[i].propertyCount++;
+                            }
+                            break;
+                        }
+                    }
+                    set_property_table();
                     sweetAlert("Oops...", "You are not assiged to any farm right now.", "error");
                     loading(0);
                     return;
-                }             
+                }
             }
         }
         else{
@@ -1058,7 +1132,7 @@ Template.characterList.events({
             $(".missionObject").html("<div class='thiefObject'></div>");
             $('.SyndicateExp').css('visibility', 'collapse');
             $('.userExp').css('visibility', 'visible');
-            $('.crop0').css('display','block');
+            $('.crop2').css('display','block');
             $('.functionSwitch').parent().find(".nextHome").remove();
             gameMode = "Farmer"
             rerenderCropLand(s_Id);
@@ -1081,13 +1155,10 @@ Template.characterList.events({
     },
     'click .nextHome': function (event) {
         loading(1);
-        // ===== wait for further testing
         visitNode = getVisitNode();
         setStealRate(visitNode);
-        rerenderCropLand(visitNode); 
+        rerenderCropLand(visitNode);
         loading(0);
-
-
     },
     'click .musicSwitch': function (event) {
         if (!audio.paused){
@@ -1100,29 +1171,7 @@ Template.characterList.events({
         }
 
     },
-    'click .test': function(event){
-        currentUser.level+=1;
-        Session.set('userLevel', currentUser.level);
 
-        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
-        _character.changed();
-        levelUp("userLevel");
-        if (currentUser.level%5 ==0){
-            getUserData(s_Id);
-        }
-        rerenderCropLand(s_Id);
-    },
-    'click .matchmaking': function(event){
-        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
-        updateUserData(s_Id);
-        showConfirmation(s_Id);
-    },
-    'click .confirmMatches':function(event){
-        MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
-        updateUserData(s_Id);
-        showConfirmation(s_Id);
-
-    },
     // 'mouseenter .userExp':function(event){
     //     $(".expHoverText").fadeIn();
     //     $(".expHoverText").css({"left":cursorX, "top":cursorY});
@@ -1167,25 +1216,6 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
-
-var getTransformedPosition = function(target){
-    var top = target.getBoundingClientRect().top;
-    var left = target.getBoundingClientRect().left;
-
-    var landTop = ($(".canvas").height()-$(window).height())/2;
-    var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-    var areaLeft = $(".gamingArea").position().left;
-    var resizeOffsetX = (screen.width- $(window).width())/6.5;
-
-    var divHeight =$(".cropObject").height()/5;
-    var divWidth = $(".cropObject").width()*1.65;
-    // var divHeight =0;
-    // var divWidth = 0;
-    var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
-    var posY = top+landTop-divHeight-y;
-    return [posX, posY];
-}
 
 var initAllBtns = function(){
   var imgs = $(".cropLand").find("img");
@@ -1647,9 +1677,23 @@ var initCropLand = function(id){
         var divWidth = $(".cropObject").width()/4;
         */
 
-        var pos = getTransformedPosition($('.cropLand'+i)[0]);
-        var posX = pos[0];
-        var posY = pos[1];
+        var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+        var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
+
+
+        var landTop = ($(".canvas").height()-$(window).height())/2;
+        var landLeft = ($(".canvas").width()-$(window).width())/2;
+ 
+        var resizeOffsetX = ($(window).width()-400)/6.5;
+        var areaLeft = $(".gamingArea").position().left;
+        var divHeight =$(".cropObject").height()/5;
+        var divWidth = $(".cropObject").width()/1.65;
+        // var divHeight =0;
+        // var divWidth = 0;
+        var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+        //var posX = left+landLeft+divWidth-x;
+
+        var posY = top+landTop-divHeight-y;
 
         var styles = {
             top: posY,
@@ -1765,11 +1809,15 @@ var updateUserExp = function(exp){
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
-    levelUp("userLevel");
-    getUserData(s_Id);
-    rerenderCropLand(s_Id);
-    lvlCap = levelCap(currentUser.level);
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
+      levelUp("userLevel");
+      getUserData(s_Id);
+      rerenderCropLand(s_Id);
+      lvlCap = levelCap(currentUser.level);
+      Session.set("unlockCrop", cropTypeList.length);
+
+    });
+
   }else{
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
   }
@@ -1792,7 +1840,9 @@ var updateSyndicateExp = function(exp){
             if(Session.get('userCharacter') == "Guard"){
                 setGuardProperty();
             }
+
             currentUser.SyndicateLevel += 1;
+            $(".front").find("h3").text("LV. " + currentUser.SyndicateLevel);
             _character.changed();
             Session.set('SyndicateLevel', currentUser.SyndicateLevel);
             currentUser.SyndicateExp = currentUser.SyndicateExp - lvlCap;
@@ -1804,13 +1854,13 @@ var updateSyndicateExp = function(exp){
 
         var percent = (currentUser.SyndicateExp/lvlCap)*100;
         $(".SyndicateExpProgressBar").css("width", percent + "%");
-        $(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
+        //$(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
     }
 
     CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
 
 
-    var percent = (currentUser.SyndicateExp/lvlCap)*100;
+    var percent =  Math.floor((currentUser.SyndicateExp/lvlCap)*100);
     $(".SyndicateExpProgressBar").css("width", percent + "%");
     //$(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
     $(".SyndicateExpText").text(percent+"%");
@@ -1820,6 +1870,8 @@ var updateSyndicateExp = function(exp){
 var levelUp = function(_type){
     if(_type == 'userLevel'){
         Session.set('Levelup', currentUser.level);
+        Session.set('staminaCap', staminaCap(currentUser.level));
+        Session.set('expCap', levelCap(currentUser.level));
     }
     else{
         Session.set('Levelup', currentUser.SyndicateLevel);
@@ -1829,13 +1881,18 @@ var levelUp = function(_type){
 }
 
 var setGuardProperty = function(){
-    var propertyIndex;
+    var propertyIndex, userIndex;
     for(var i = 0; i < user_property.length; i++){
         if((user_property[i].propertyType - 29) == currentUser.SyndicateLevel){
             propertyIndex = user_property[i].id;
+            userIndex = i;
             break;
         }
     }
+    user_property[userIndex].propertyCount = 0;
+    user_property[userIndex].tradeable = 0;
+    user_property[userIndex + 1].propertyCount = 1;
+    user_property[userIndex + 1].tradeable = 0;
     usingPropertyInstance.updatePropertyCount_Sudo(propertyIndex, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
     usingPropertyInstance.updatePropertyCount_Sudo((propertyIndex + 1), 1, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
@@ -1983,23 +2040,6 @@ var elapsedTime = function(start, end){
 
 get_user_property_setting = function () {
     user_property = [];
-    //var propertyData = usingProperty2Instance.getAllProperty.call(s_Id, {from:web3.eth.accounts[currentAccount]}, function(err, result){
-    //    if(err){
-    //        alert(err);
-    //    }
-    //    else{
-    //        for(i = 0; i < result[0].length; i++){
-    //            var _id = result[0][i].c[0];
-    //            var _propertyType = result[1][i].c[0]
-    //            var _name = web3.toUtf8(result[2][i]);
-    //            var _propertyCount = result[3][i].c[0];
-    //            var _tradeable = result[4][i].c[0];
-    //            var _img = web3.toUtf8(result[5][i]);
-    //            var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
-    //            user_property.push(data);
-    //        }
-    //    }
-    //});
     var _propertyIndex = CongressInstance.getPropertyIndex.call(s_Id, {from:web3.eth.accounts[currentAccount]});
     var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]});
     var _goal = _propertyIndex.c[0] +  propertyTypeLength.c[0];
@@ -2041,7 +2081,8 @@ get_propertyType_setting = function(_length){
 }
 
 set_property_table = function(){
-    if(user_property.length == 0){
+    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]}).c[0];
+    if(user_property.length != propertyTypeLength){
         loading(1);
         setTimeout(set_property_table, 1000);
     }
@@ -2062,7 +2103,6 @@ set_property_table = function(){
                 if (flag == 0){
                   flag++;
                   tr = $('<tr></tr>');
-                  tr.append($('<th></th>'));
                   tr.append($('<th></th>').text('Property'));
                   tr.append($('<th></th>').text('Stock Number'));
                   tr.append($('<th></th>').text('Tradable Number'));
@@ -2073,10 +2113,7 @@ set_property_table = function(){
                 td.append($('<img></img>', {
                     src:prefix+user_property[i].img + postfix,
                     style:'width:50px; height:50px'
-                }));
-                tr.append(td);
-                td = $('<td></td>');
-                td.text(user_property[i].name);
+                })).append(user_property[i].name);
                 tr.append(td);
                 td = $('<td></td>');
                 td.text(user_property[i].propertyCount);
@@ -2140,7 +2177,7 @@ index_finder = function(_source, _mask){
 }
 
 set_propertyType_table = function () {
-    loading(1);    
+    loading(1);
     var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
     get_propertyType_setting(propertyTypeLength.c[0]);
     rend_propertyType_table(propertyTypeLength.c[0]);

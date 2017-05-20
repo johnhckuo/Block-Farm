@@ -55,8 +55,15 @@
 .statusPanelList{
   /*margin-top: -25vh;*/
   position: relative;
-  top: 6vh;
+  top: 0vh;
   transform: translateY(20px);
+  padding-right: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+
 }
 .statusPanelShow>.statusPanelList{
   transform: translateY(0vw);
@@ -69,17 +76,18 @@
   font-size: 25px;
 }
 .listHeader hr{
-  border-top: 1.5px solid rgb(130, 203, 209);
+  position: relative;
+  border-top: 1.5px solid rgb(0, 0, 0);
   margin-top: 15px;
+  width: 80%;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 .listHeader.currentList{
   font-size: 23px;
 }
 
-
-.tradeablePanel .statusPanelList{
-  top:1vh;
-}
 /****************/
 
 .operationList{
@@ -127,12 +135,7 @@
   width: 72px;
   height: 59px;
 }
-.plantButton{
-  background-color: rgba(255, 255, 255, 0);
-  border-style: none;
-  width: 72px;
-  height: 59px;
-}
+
 .rightMenuIcon{
   height: 45vh;
   width: 10vw;
@@ -160,6 +163,11 @@
 .rightMenuIcon button img{
   width: 40%;
   height: 40%;
+}
+
+.rightMenuIcon button h2{
+  font-size: 20px;
+  margin-top: 5px;
 }
 
 .rightBtn:hover{
@@ -356,29 +364,37 @@
 }
 
 .cropListDiv{
+  position: relative;
   display:flex;
   flex-direction:row;
   flex-wrap:wrap;
-  height: 55vh;
+  height: 45vh;
   overflow: auto;
-  margin-right: -3vw;
   width: 25vw;
-  padding: 50px;
-  padding-top: 20px;
+  font-size: 20px;
+  padding-left:15px;
+  padding-right: 15px;
+  left:2vw;
+  top:-20px;
 }
 
 .plantButton{
   cursor: pointer;
+  width:150px;
+  height: 100px;
   border-radius: 10px;
   text-align: center;
+  background-color: rgba(255, 255, 255, 0);
+  border-style: none;
+  font-size: 20px;
 }
 
-.plantButton:nth-child(odd){
-  margin-right: 25px;
+.plantButton img{
+  margin-bottom: -30px;
 }
 
 .plantButton:hover{
-  background: #DDDDDD;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .farm{
@@ -646,7 +662,7 @@
 #property_trade_table{
   display: flex;
   justify-content: center;
-  width: 80%;
+  width: 70%;
   font-size: 16px;
   text-align: center;
   border-spacing: 100px;
@@ -654,8 +670,12 @@
 }
 #property_trade_table td{
   width:50vw;
+  height: 130px;
   vertical-align:middle;
+  margin-top: 20px;
 }
+
+
 #property_trade_table th{
   width: 20vw;
   vertical-align:middle;
@@ -664,7 +684,7 @@
   display: flex;
   position: relative;
   width: 25vw;
-  margin-right: -10vw;
+  margin-right: -3vw;
   justify-content: center;
   align-items: center;
 }
@@ -834,12 +854,13 @@
   justify-content: space-around;
   align-items: flex-start;
   flex-direction: column;
-  right: -3.8vw;
+  left: 11.8vw;
+  top:6vh;
   z-index: 1;
   width: 5.5vw;
-    transition: all 0s;
-    transition-duration:0s;
-    transition-delay: 0s;
+  transition: all 0s;
+  transition-duration:0s;
+  transition-delay: 0s;
 }
 .controlButtons button{
   margin-top: 2vh;
@@ -861,15 +882,17 @@
   width: 100%;
 }
 .landList{
+  position: relative;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   height: 15vh;
-  margin-right: -3vw;
   width: 25vw;
-  font-size: 22px;
-  padding:50px;
-  padding-top:10px;
-
+  font-size: 20px;
+  padding-left:15px;
+  padding-right: 15px;
+  left:2vw;
+  top:0px;
 }
 
 .cropLand{
@@ -879,9 +902,11 @@
   align-items:center;
   flex-direction: column;
   margin-bottom:15px;
-  width:50%;
-  height: 150%;
+  width:150px;
+  height: 100px;
   cursor:pointer;
+  border-radius: 10px;
+
 }
 
 .removeLand img{
@@ -889,7 +914,7 @@
 }
 
 .cropLand:hover{
-  background: #DDDDDD;
+  background: rgba(0, 0, 0, 0.1);
 }
 /*
 .cropLand *{
@@ -916,10 +941,9 @@ td img{
   position: absolute;
   top: 0px;
   left: 0px;
-  padding:10px;
+  padding:30px;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   align-items: center;
   z-index:5;
 
@@ -929,7 +953,7 @@ td img{
 
 }
 
-.container{
+.imgContainer{
   position: relative;
 
   width:7vw;
@@ -947,7 +971,7 @@ td img{
   transition: all 1s;
 }
 
-.container:hover{
+.imgContainer:hover{
   background: #BBBBBB;
 }
 
@@ -1023,8 +1047,6 @@ td img{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-right: 1vw;
-  margin-left: 1vw;
 }
 
 .characterStatus *{
@@ -1039,6 +1061,7 @@ td img{
   left:2vw;
   margin-bottom: 10px;
   font-size: 40px;
+  color:black;
 
 }
 
@@ -1094,7 +1117,7 @@ td img{
 }
 
 .musicSwitch{
-  position: relative;
+  position: absolute;
   width:45px;
   height:45px;
   border-radius: 100%;
@@ -1104,7 +1127,7 @@ td img{
   align-items: center;
   cursor: pointer;
   transition: all .2s;
-  margin-left: 80px;
+  right: 15%;
 }
 
 .musicSwitch:hover{
@@ -1236,6 +1259,24 @@ td img{
   color:white;
   font-size: 36px;
 
+}
+
+.levelUpReward{
+  position: absolute;
+  bottom:0px;
+  width:100%;
+  height: 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  bottom:15px;
+}
+
+.levelUpReward h3{
+  font-size: 20px;
+  margin-bottom: 10px;
+  color:white;
 }
 
 .levelUpFlex div{

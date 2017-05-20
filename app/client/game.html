@@ -174,9 +174,7 @@
               <!-- {{> cropSelectingBtns}} -->
               </div>
           </div>
-          <div>
-            {{> cropSelectingBtns}}
-          </div>
+
         </div>
 
         <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
@@ -194,9 +192,10 @@
             </div>
           </div>
           <div>
-            {{> cropSelectingBtns}}
           </div>
         </div>
+        {{> cropSelectingBtns}}
+
         <div class="functionSwitch">
               <button type="button" name="button" class="btn-primary test">Test</button>
               <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
@@ -223,7 +222,7 @@
 
 <template name="cropSelectingBtns">
   <div class="controlButtons">
-    <button type="button" class="btnSelect crop2" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
+    <button type="button" class="btnSelect crop2" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/sprout.svg" alt=""></button>
     <button type="button" class="btnSelect crop3" name="button"><img src="/img/game/barn.svg" alt=""></button>
   </div>
 
@@ -239,7 +238,7 @@
 
 <template name="characterList">
     <div class="characterList">
-        <div class="container">
+        <div class="imgContainer">
           <div class="characterImg">
               <div class="flipDIV front">
                 <img src="/img/game/farmer.svg" alt="">
@@ -316,6 +315,12 @@
             <div class="levelUpText">
               <h2>{{currentLevel}}</h2>
             </div>
+
+            <span class="levelUpReward">
+              <h3>{{staminaCap}}</h3>
+              <h3>{{expCap}}</h3>
+              <h3>{{unlockCrop}}</h3>
+            </span>
           </div>
         </div>
 
@@ -396,9 +401,9 @@
       <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
     </div>
     <div class="rightMenuIcon" >
-      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt="">Mission</button>
-      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt="">Rating</button>
-      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt="">Rank</button>
+      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt=""><h2>Mission</h2></button>
+      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt=""><h2>Rating</h2></button>
+      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt=""><h2>Rank</h2></button>
     </div>
   </div>
 </template>
