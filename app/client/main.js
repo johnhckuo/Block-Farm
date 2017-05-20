@@ -137,29 +137,32 @@ if (Meteor.isClient) {
         var name = $(".s_Name").val().toString();
 
         if (name.trim() == ""){
-          sweetAlert("Oops...", "Please enter your username !", "error");
+            sweetAlert("Oops...", "Please enter your username !", "error");
         }else if (typeof character == 'undefined'){
-          sweetAlert("Oops...", "Please choose your character !", "error");
+            sweetAlert("Oops...", "Please choose your character !", "error");
 
         }else if (account == null){
-          sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
+            sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
 
         }
         //alert(web3.eth.accounts[currentAccount]);
         var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468});
         var s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
         var txs = MainActivityInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468});
-        var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
+        var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
         var txs = CongressInstance.setPropertyIndex(s_Id, length, {from:web3.eth.accounts[currentAccount], gas:2201468});
         //console.log(txs);
 
-        var length = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
-        console.log(length);
-        var tx = usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", {from:web3.eth.accounts[currentAccount], gas:2514068});
+        var Typelength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+        var tx = usingPropertyInstance.updatePropertyTypeRating(Typelength, 0, "new", {from:web3.eth.accounts[currentAccount], gas:2514068});
         //create user's property at first time 4/30 kokokon
-        for(i = 0; i < length; i++){
+        for(i = 0; i < Typelength; i++){
             usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468});
         }
+        if (character == "Guard"){
+            usingPropertyInstance.updatePropertyCount_Sudo((length + 30), 1, 0, {from:web3.eth.accounts[currentAccount], gas:2514068});
+        }
+
         GameCoreInstance.pushMissionAccountStatus({from:web3.eth.accounts[currentAccount], gas:2201468});
 
         //console.log(name, threshold, fund, rate, character);
