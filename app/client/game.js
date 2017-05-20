@@ -602,6 +602,7 @@ Template.gameIndex.events({
                         posX = cursorX + posX;
                         posY = cursorY + posY;
 
+
                         var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
                         temp.css({display:"inline", top: posY, left: posX});
                         temp.addClass("animationTempShow");
@@ -825,6 +826,7 @@ Template.gamingArea.events({
             //var posX = left+landLeft+divWidth-x;
 
             var posY = top+landTop-divHeight-y;
+
 
             var styles = {
                 top: posY,

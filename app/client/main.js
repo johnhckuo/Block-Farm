@@ -177,8 +177,8 @@ if (Meteor.isClient) {
                   //console.log(name, threshold, fund, rate, character);
                   var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
                   usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
-                    Router.go('game');
                     $(".loadingParent").fadeOut(1000); 
+                    Router.go('game');
                   });
                 });
               });
