@@ -6,6 +6,8 @@ var landSize = 3;
 var blockSize = 150;
 var landSrc = "/img/game/land.svg";
 
+var previousUnlockCrop = 0;
+
 var prefix = "/img/game/plant/";
 var postfix = ".svg";
 
@@ -207,6 +209,18 @@ Template.gamingArea.helpers({
       _character.depend();
         //return currentUser.level;
       return Session.get('Levelup');
+    },
+    staminaCap: function(){
+      return "Stamina Capacity: "+Session.get('staminaCap');
+    },
+    expCap: function(){
+      return "Exp Capacity: "+Session.get('expCap');
+    },
+    unlockCrop: function(){
+      if (previousUnlockCrop != Session.get('unlockCrop')){
+        previousUnlockCrop = Session.get('unlockCrop');
+        return "Unlock Crop: "+cropTypeList[Session.get('unlockCrop')].name;
+      }
     }
 });
 
@@ -670,7 +684,7 @@ Template.gameIndex.events({
     },
     'mouseout .croppedObject img':function(event){
       $(".floatCropStatus").css("display", "none");
-    },    
+    },
 })
 
 Template.crop.events({
@@ -948,7 +962,34 @@ Template.statusList.events({
     'click #btn_tradeable_cancel':function(){
         sweetAlert("Warning", 'cancel', "warning");
         set_property_table();
-    }
+    },
+    'click .test': function(event){
+        currentUser.level+=1;
+        Session.set('userLevel', currentUser.level);
+
+        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
+
+          _character.changed();
+          levelUp("userLevel");
+          if (currentUser.level%5 ==0){
+              getUserData(s_Id);
+          }
+          rerenderCropLand(s_Id);
+          Session.set("unlockCrop", cropTypeList.length);
+        });
+
+    },
+    'click .matchmaking': function(event){
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[1], gas:5000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+    },
+    'click .confirmMatches':function(event){
+        MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
+        updateUserData(s_Id);
+        showConfirmation(s_Id);
+
+    },
 })
 
 Template.characterList.events({
@@ -990,7 +1031,7 @@ Template.characterList.events({
                         return;
                     }
                     else{
-                        
+
                         PanelControl(3);
                         showThief = true;
 
@@ -1040,7 +1081,7 @@ Template.characterList.events({
                     sweetAlert("Oops...", "You are not assiged to any farm right now.", "error");
                     loading(0);
                     return;
-                }             
+                }
             }
         }
         else{
@@ -1076,7 +1117,7 @@ Template.characterList.events({
         loading(1);
         visitNode = getVisitNode();
         setStealRate(visitNode);
-        rerenderCropLand(visitNode); 
+        rerenderCropLand(visitNode);
         loading(0);
     },
     'click .musicSwitch': function (event) {
@@ -1090,29 +1131,7 @@ Template.characterList.events({
         }
 
     },
-    'click .test': function(event){
-        currentUser.level+=1;
-        Session.set('userLevel', currentUser.level);
 
-        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
-        _character.changed();
-        levelUp("userLevel");
-        if (currentUser.level%5 ==0){
-            getUserData(s_Id);
-        }
-        rerenderCropLand(s_Id);
-    },
-    'click .matchmaking': function(event){
-        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
-        updateUserData(s_Id);
-        showConfirmation(s_Id);
-    },
-    'click .confirmMatches':function(event){
-        MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
-        updateUserData(s_Id);
-        showConfirmation(s_Id);
-
-    },
     // 'mouseenter .userExp':function(event){
     //     $(".expHoverText").fadeIn();
     //     $(".expHoverText").css({"left":cursorX, "top":cursorY});
@@ -1166,7 +1185,14 @@ var getTransformedPosition = function(target){
     var landLeft = ($(".canvas").width()-$(window).width())/2;
 
     var areaLeft = $(".gamingArea").position().left;
-    var resizeOffsetX = (screen.width- $(window).width())/6.5;
+    console.log();
+    var resizeOffsetX;
+    if ($(window).width()< 1500){
+      resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+    }else if ($(window).width() > 1500){
+      resizeOffsetX = ($(window).width()-400)/6.5;
+    }
 
     var divHeight =$(".cropObject").height()/5;
     var divWidth = $(".cropObject").width()*1.65;
@@ -1755,11 +1781,15 @@ var updateUserExp = function(exp){
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000});
-    levelUp("userLevel");
-    getUserData(s_Id);
-    rerenderCropLand(s_Id);
-    lvlCap = levelCap(currentUser.level);
+    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
+      levelUp("userLevel");
+      getUserData(s_Id);
+      rerenderCropLand(s_Id);
+      lvlCap = levelCap(currentUser.level);
+      Session.set("unlockCrop", cropTypeList.length);
+
+    });
+
   }else{
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
   }
@@ -1812,6 +1842,8 @@ var updateSyndicateExp = function(exp){
 var levelUp = function(_type){
     if(_type == 'userLevel'){
         Session.set('Levelup', currentUser.level);
+        Session.set('staminaCap', staminaCap(currentUser.level));
+        Session.set('expCap', levelCap(currentUser.level));
     }
     else{
         Session.set('Levelup', currentUser.SyndicateLevel);
@@ -2043,7 +2075,6 @@ set_property_table = function(){
                 if (flag == 0){
                   flag++;
                   tr = $('<tr></tr>');
-                  tr.append($('<th></th>'));
                   tr.append($('<th></th>').text('Property'));
                   tr.append($('<th></th>').text('Stock Number'));
                   tr.append($('<th></th>').text('Tradable Number'));
@@ -2054,10 +2085,7 @@ set_property_table = function(){
                 td.append($('<img></img>', {
                     src:prefix+user_property[i].img + postfix,
                     style:'width:50px; height:50px'
-                }));
-                tr.append(td);
-                td = $('<td></td>');
-                td.text(user_property[i].name);
+                })).append(user_property[i].name);
                 tr.append(td);
                 td = $('<td></td>');
                 td.text(user_property[i].propertyCount);
@@ -2121,7 +2149,7 @@ index_finder = function(_source, _mask){
 }
 
 set_propertyType_table = function () {
-    loading(1);    
+    loading(1);
     var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
     get_propertyType_setting(propertyTypeLength.c[0]);
     rend_propertyType_table(propertyTypeLength.c[0]);

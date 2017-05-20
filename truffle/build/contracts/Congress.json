@@ -780,10 +780,10 @@
     "1495028882847": {
       "events": {},
       "links": {},
-      "address": "0x6a608b726f91ad48a8be86a17e55eb21eb759a12",
-      "updated_at": 1495128495622
+      "address": "0xdbe299dfd6605850913fc2e2b393176fd8bb03fd",
+      "updated_at": 1495260678651
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1495128495622
+  "updated_at": 1495260678651
 }
