@@ -8,13 +8,13 @@ body{
   background-attachment: fixed;
   overflow-x: hidden;
 
-  /*font-family: Copperplate, "Copperplate Gothic Light", fantasy;*/
-  font-family:"Surveyor SSm A","Surveyor SSm B",Georgia,Serif;
+  font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+  /*font-family:"Surveyor SSm A","Surveyor SSm B",Georgia,Serif;*/
 }
 
 #title.section{
   /*background-color:  #C8E9FF;*/
-  background-color: #efeae7;
+  background: #D2E48F;
   background-image: url(/img/network.svg);
   background-repeat: no-repeat;
   background-position: 20% 50%;
@@ -52,26 +52,31 @@ body{
 .header span{
   position: relative;
   height: 100%;
+  right: -15vw;
 }
 
 .header span li{
   position: relative;
   display: block;
   float: left;
-  cursor: pointer;
   top:0px;
-  height: 100%;
+  height: 90%;
   width:200px;
   text-align: center;
   line-height: 150px;
 }
 
-
 .header a{
   color:#BFBFBF;
-  font-family: "franklin-gothic-urw", "sans-serif";
   font-size: 20px;
   text-decoration: none;
+  cursor: pointer;
+  transition: all .5s;
+
+}
+
+.header a:hover{
+  color:black;
 }
 
 .header ul div{
@@ -93,22 +98,23 @@ body{
 
 #title{
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   background-size: 100% 100%;
   flex-wrap: row;
   width: 100%;
   height:100vh;
-  background: #fff;
+  background: #D2E48F;
 }
 
-.titleImage{
+/*.titleImage{
   position: absolute;
   top:22vh;
   right:5vw;
   width:45vw;
   height: 63vh;
   -webkit-filter:drop-shadow(10px 10px 10px rgba(51, 51, 51, 0.3));
-}
+}*/
 
 .titleBar{
   position: absolute;
@@ -147,16 +153,22 @@ h3{
 .titleContainer{
   position: absolute;
   z-index: 3;
-  margin-top:22vh;
   /*margin-left: 80px;*/
   background: rgba(255, 255, 255, 0.6);
   border-radius: 15px;
   color:white;
-  padding: 120px 20px 100px 100px;
+  padding: 100px 20px 100px 80px;
+  width:100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
 }
 
 .titleContainer h1{
+  font-size: 50px;
   line-height: 80px;
 
 }
@@ -211,7 +223,7 @@ h3{
 }
 
 #intro h2{
-  font-size: 40px;
+  font-size: 50px;
   float:left;
 }
 
@@ -257,13 +269,14 @@ h3{
   justify-content: center;
   align-items: center;
   float:left;
-  margin-top: 50px;
+  margin-top: 20px;
+  padding-left: 150px;
+  padding-right: 150px;
 }
 
 .introContent *{
-  margin-right: 100px;
+  margin-right: 20px;
 }
-
 
 #teamInfo{
   display: flex;
@@ -478,8 +491,6 @@ h3{
   align-items: center;
   color:white;
   background: #E8E8E8;
-  background-image: url(/img/network.svg);
-  background-repeat: no-repeat;
   background-position: 20% 50%;
   background-size: 70vh;
   background-attachment: fixed;
@@ -505,7 +516,7 @@ h3{
 }
 
 #tutorial h2{
-  font-size: 25px;
+  font-size: 50px;
   margin-bottom: 50px;
 }
 

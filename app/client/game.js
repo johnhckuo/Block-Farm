@@ -677,7 +677,7 @@ Template.gameIndex.events({
     },
     'mouseout .croppedObject img':function(event){
       $(".floatCropStatus").css("display", "none");
-    },    
+    },
 })
 
 Template.crop.events({
@@ -973,7 +973,7 @@ Template.statusList.events({
 
     },
     'click .matchmaking': function(event){
-        MainActivityInstance.findOrigin({from:web3.eth.accounts[0], gas:4000000});
+        MainActivityInstance.findOrigin({from:web3.eth.accounts[1], gas:5000000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
     },
@@ -1024,7 +1024,7 @@ Template.characterList.events({
                         return;
                     }
                     else{
-                        
+
                         PanelControl(3);
                         showThief = true;
 
@@ -1074,7 +1074,7 @@ Template.characterList.events({
                     sweetAlert("Oops...", "You are not assiged to any farm right now.", "error");
                     loading(0);
                     return;
-                }             
+                }
             }
         }
         else{
@@ -1110,7 +1110,7 @@ Template.characterList.events({
         loading(1);
         visitNode = getVisitNode();
         setStealRate(visitNode);
-        rerenderCropLand(visitNode); 
+        rerenderCropLand(visitNode);
         loading(0);
     },
     'click .musicSwitch': function (event) {
@@ -1178,7 +1178,14 @@ var getTransformedPosition = function(target){
     var landLeft = ($(".canvas").width()-$(window).width())/2;
 
     var areaLeft = $(".gamingArea").position().left;
-    var resizeOffsetX = (screen.width- $(window).width())/6.5;
+    console.log();
+    var resizeOffsetX;
+    if ($(window).width()< 1500){
+      resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+    }else if ($(window).width() > 1500){
+      resizeOffsetX = ($(window).width()-400)/6.5;
+    }
 
     var divHeight =$(".cropObject").height()/5;
     var divWidth = $(".cropObject").width()*1.65;
@@ -2135,7 +2142,7 @@ index_finder = function(_source, _mask){
 }
 
 set_propertyType_table = function () {
-    loading(1);    
+    loading(1);
     var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
     get_propertyType_setting(propertyTypeLength.c[0]);
     rend_propertyType_table(propertyTypeLength.c[0]);

@@ -113,7 +113,7 @@ if (Meteor.isClient) {
         if (ew == 16 || (ew <= 40 && ew >= 37)){
             return true;
         }
-        if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122)){
+        if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122) || ew == 189){
             if (userNameCounter >= 10){
               sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
               return true;
