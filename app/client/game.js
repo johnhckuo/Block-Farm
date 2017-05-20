@@ -455,7 +455,14 @@ Template.gameIndex.events({
 
         if(gameMode == "Farmer"){
             if (cropList[id].ripe){
+                var imgs = $(".crop").find("img");
 
+                for (var i = 0 ; i < imgs.length; i++){
+                    if ($(imgs[i]).parent().data('pressed')){
+                        $(imgs[i]).parent().data('pressed', false);
+                        $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);
+                    }
+                }
                 $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                 //var exp = cropTypeList[cropList[id].type].exp;
 
