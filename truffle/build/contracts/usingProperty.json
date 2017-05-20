@@ -1193,8 +1193,29 @@
       },
       "address": "0x3c3ddc572734d7406145fe96cbdab60ab4c1db68",
       "updated_at": 1495278355078
+    },
+    "1495276069022": {
+      "events": {
+        "0x6e98a67d07b1236151193da1b1a71c35ff356fb2dfcb683e46f63b6abf4becef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "name": "propertyAdded",
+          "type": "event"
+        }
+      },
+      "links": {
+        "StringUtils": "0x58064cc8d96521dcb49d79176cbaf2a1c8270edb"
+      },
+      "address": "0xc050e4ef613fbc17fd09e2ed7cb199d3231e7e25",
+      "updated_at": 1495280450673
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1495278355078
+  "updated_at": 1495280450673
 }

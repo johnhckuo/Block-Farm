@@ -2115,7 +2115,7 @@ set_property_table = function(){
                 td.append($('<img></img>', {
                     src:prefix+user_property[i].img + postfix,
                     style:'width:50px; height:50px'
-                })).append(user_property[i].name);
+                })).append("<div>"+user_property[i].name+"</div>");
                 tr.append(td);
                 td = $('<td></td>');
                 td.text(user_property[i].propertyCount);

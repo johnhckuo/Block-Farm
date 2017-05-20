@@ -32,7 +32,7 @@
   top:20vh;
   height: 75vh;
   left:0px;
-  width: 80%;
+  width: 24vw;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -45,7 +45,7 @@
   border-top-right-radius: 15px;
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 15px;
-  padding: 100px;
+  padding: 50px;
 }
 .statusPanelShow{
   opacity: 1;
@@ -57,7 +57,6 @@
   position: relative;
   top: 0vh;
   transform: translateY(20px);
-  padding-right: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -69,9 +68,9 @@
   transform: translateY(0vw);
   transition: all .5s;
   opacity: 1;
+  width: 100%;
 }
 .listHeader{
-  margin-right: -3vw;
   width: 25vw;
   font-size: 25px;
 }
@@ -365,17 +364,11 @@
 
 .cropListDiv{
   position: relative;
-  display:flex;
-  flex-direction:row;
-  flex-wrap:wrap;
   height: 45vh;
+  width:100%;
   overflow: auto;
-  width: 25vw;
   font-size: 20px;
-  padding-left:15px;
-  padding-right: 15px;
-  left:2vw;
-  top:-20px;
+  padding-left: 30px;
 }
 
 .plantButton{
@@ -387,10 +380,12 @@
   background-color: rgba(255, 255, 255, 0);
   border-style: none;
   font-size: 20px;
+  float: left;
+  margin-top: 20px;
 }
 
 .plantButton img{
-  margin-bottom: -30px;
+  margin-bottom: 0px;
 }
 
 .plantButton:hover{
@@ -650,7 +645,6 @@
   overflow: auto;
   width: 25vw;
   height: 50vh;
-  margin-right: -3vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -662,14 +656,13 @@
 #property_trade_table{
   display: flex;
   justify-content: center;
-  width: 70%;
+  width: 75%;
   font-size: 16px;
   text-align: center;
   border-spacing: 100px;
   height: inherit;
 }
 #property_trade_table td{
-  width:50vw;
   height: 130px;
   vertical-align:middle;
   margin-top: 20px;
@@ -684,23 +677,10 @@
   display: flex;
   position: relative;
   width: 25vw;
-  margin-right: -3vw;
   justify-content: center;
   align-items: center;
 }
-/*.btn_tradeable button{
-  border-style: none;
-  border-radius: 10px;
-  margin: 15px;
-  /*background-color: rgba(255, 255, 255, 0.3);*/
-  /*font-size: 22px;
-  height: 4vh;
-  width: 8vw;*/
-/*}*/
-/*.btn_tradeable button:hover{
-  background: rgb(135, 224, 62);
-  color: rgb(255, 255, 255);
-}*/
+
 .shop_tradable_input{
   width: 2vw;
   background-color: rgba(255, 255, 255, 0);
@@ -850,12 +830,12 @@
 
 .controlButtons{
   display: flex;
-  position: relative;
+  position: absolute;
   justify-content: space-around;
   align-items: flex-start;
   flex-direction: column;
-  left: 11.8vw;
-  top:6vh;
+  left: 24vw;
+  top:24vh;
   z-index: 1;
   width: 5.5vw;
   transition: all 0s;
@@ -885,14 +865,12 @@
   position: relative;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   flex-wrap: wrap;
-  height: 15vh;
-  width: 25vw;
+  height: 10vh;
+  width: 100%;
   font-size: 20px;
-  padding-left:15px;
-  padding-right: 15px;
-  left:2vw;
-  top:0px;
+
 }
 
 .cropLand{
@@ -909,9 +887,6 @@
 
 }
 
-.removeLand img{
-  margin-bottom: -30px;
-}
 
 .cropLand:hover{
   background: rgba(0, 0, 0, 0.1);
@@ -923,6 +898,7 @@
 
 .cropLand img{
   height:5vh;
+  margin-bottom: 10px;
 }
 
 /*td{
@@ -1117,7 +1093,7 @@ td img{
 }
 
 .musicSwitch{
-  position: absolute;
+  position: relative;
   width:45px;
   height:45px;
   border-radius: 100%;
@@ -1127,7 +1103,7 @@ td img{
   align-items: center;
   cursor: pointer;
   transition: all .2s;
-  right: -90%;
+  right: -70%;
 }
 
 .musicSwitch:hover{
@@ -1378,15 +1354,6 @@ td img{
 .thief img{
   width:100%;
   height:100%;
-}
-
-.removeLand{
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-direction: column;
-  margin-bottom: 15px;
-  cursor:pointer;
 }
 
 /*.removeLand *{
