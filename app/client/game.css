@@ -1127,7 +1127,7 @@ td img{
   align-items: center;
   cursor: pointer;
   transition: all .2s;
-  right: 15%;
+  right: -90%;
 }
 
 .musicSwitch:hover{
@@ -1738,4 +1738,15 @@ input[type="range"]:active::-webkit-slider-thumb{
   background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   width:80%;
+}
+
+.userBar{
+  display: flex;
+  flex-direction: column;
+}
+
+.userBarContainer{
+  position: relative;
+  display: flex;
+  flex-direction: row;
 }
