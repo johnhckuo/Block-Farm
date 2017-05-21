@@ -142,7 +142,7 @@
 <template name="land">
     <div class={{name}} data-pressed="false">
         <img class="" src={{img}} alt="">
-            {{content}}
+        {{content}}
     </div>
 </template>
 
@@ -163,7 +163,7 @@
                   {{> land}}
                   {{/each}}
                   <div class='cropLand removeLand' data-pressed="false">
-                      <img src="/img/game/background.svg" height='5vh' alt="">
+                      <img src="/img/game/background.svg" >
                       Grass
                   </div>
               </div>
@@ -238,7 +238,7 @@
 
 <template name="characterList">
     <div class="characterList">
-        <div class="container">
+        <div class="imgContainer">
           <div class="characterImg">
               <div class="flipDIV front">
                 <img src="/img/game/farmer.svg" alt="">
@@ -256,39 +256,46 @@
             <div class="userName">
               <h3>{{userName}}</h3>
             </div>
-            <div class="userExp">
-              <div class="expProgress">
-                  <h3>EXP</h3>
+            <div class="userBarContainer">
+              <div class="userBar">
+                <div class="userExp">
+                  <div class="expProgress">
+                      <h3>EXP</h3>
 
-                  <div class="expProgressBar"></div>
-                  <div class="expText"></div>
-                  <div class="expPopText"></div>
+                      <div class="expProgressBar"></div>
+                      <div class="expText"></div>
+                      <div class="expPopText"></div>
 
-              </div>
-            </div>
-            <div class="SyndicateExp">
-                <div class="SyndicateExpProgress">
-                    <h3>EXP</h3>
-
-                    <div class="SyndicateExpProgressBar"></div>
-                    <div class="SyndicateExpText"></div>
+                  </div>
                 </div>
-            </div>
-            <div class="userSta">
-              <div class="staProgress">
-                  <h3>STA</h3>
+                <div class="SyndicateExp">
+                    <div class="SyndicateExpProgress">
+                        <h3>EXP</h3>
 
-                  <div class="staProgressBar"></div>
-                  <div class="staText"></div>
+                        <div class="SyndicateExpProgressBar"></div>
+                        <div class="SyndicateExpText"></div>
+                    </div>
+                </div>
+                <div class="userSta">
+                  <div class="staProgress">
+                      <h3>STA</h3>
 
+                      <div class="staProgressBar"></div>
+                      <div class="staText"></div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="musicSwitch">
+                  <img src="/img/game/speaker_on.svg" alt="">
               </div>
             </div>
 
 
+
         </div>
-        <div class="musicSwitch">
-            <img src="/img/game/speaker_on.svg" alt="">
-        </div>
+
 
     </div>
 

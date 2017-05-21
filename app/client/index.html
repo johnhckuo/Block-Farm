@@ -13,7 +13,6 @@
     <ul class="flexbox">
       <div><img src="/img/BlockFarmHeader.png" alt=""></div>
       <span>
-        <li>Hi! {{currentAccount}}</li>
         <li><a href="/game">Start Farming!</a></li>
         <li><a href="/aboutus">About Us</a></li>
         <li><a href="https://gitter.im/Block-Farm/Support">Contact Us</a></li>
@@ -146,7 +145,15 @@
       </div>
 
       <div id="tutorial" class="layout section" >
-
+          <span class="loadingParent">  
+            <span class = "loading"> 
+              <div class="loadingLogo">
+                  <img src="/img/BlockFarm.png" alt="">
+              </div>
+              <img src="/img/game/loading.gif" alt="">
+              <div class="registerText">Registering...</div>
+            </span>
+          </span>
           <div id="form" class="flexbox flip-container">
               <div class="flipper" id="flipper">
                   <div class="front flexbox">

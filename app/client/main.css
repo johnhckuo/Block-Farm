@@ -1,15 +1,30 @@
 /* CSS declarations go here */
 
+@font-face {
+  font-family: Copperplate Gothic Bold;
+  src: local("Copperplate Gothic Bold"),
+    url(/fonts/CopperplateGothicBoldRegular.ttf);
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Copperplate Gothic Light;
+  src: local("Copperplate Gothic Light"),
+    url(/fonts/CopperplateGothicLightRegular.ttf);
+  font-weight: bold;
+}
+
 body{
 
-  /*background: #112027;*/
-  /**background-color: rgb(249, 204, 241);*/
   background-size: 100% 100%;
   background-attachment: fixed;
   overflow-x: hidden;
+  font-family: Copperplate Gothic Light;
 
-  font-family: Copperplate, "Copperplate Gothic Light", fantasy;
-  /*font-family:"Surveyor SSm A","Surveyor SSm B",Georgia,Serif;*/
+}
+
+body h1, h2, h3{
+  font-family: Copperplate Gothic Bold;
 }
 
 #title.section{
@@ -168,7 +183,7 @@ h3{
 }
 
 .titleContainer h1{
-  font-size: 50px;
+  font-size: 60px;
   line-height: 80px;
 
 }
@@ -504,12 +519,7 @@ h3{
   align-items: center;
 }
 
-#tutorial img{
-  display: block;
-  width:35vw;
-  height: auto;
-  margin-bottom: 50px;
-}
+
 #tutorial h1{
   font-weight: 600;
   margin-bottom: 50px;
@@ -588,9 +598,6 @@ h3{
   line-height: 2;
 }
 
-#next{
-  float:right;
-}
 #characters button:click{
   background: #fff;
 }
@@ -697,22 +704,14 @@ input, textarea{
   background: white;
   -webkit-transition-property: color;
   transition-property: color;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-
-  border-style: none;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
   border-radius: 10px;
-  margin: 15px;
   font-size: 20px;
   height: 4vh;
-  width: 12vw;
   color:black;
 
-  top:-20px;
-
-  float:none;
-  margin-left: auto;
-  margin-right: auto;
+  float:right;
 }
 .hvr-submit:before {
   content: "";
@@ -777,4 +776,51 @@ input, textarea{
 }
 .hvr-underline-from-left:hover:before, .hvr-underline-from-left:focus:before, .hvr-underline-from-left:active:before {
   right: 0;
+}
+
+.loadingParent{
+  position: fixed;
+  display: none;
+  top:0px;
+  width: 100%;
+  height: 100%;
+  z-index: 1000000;
+  transition: opacity 1s;
+}
+
+.loading{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255,255,255,0.8);
+
+}
+
+.loadingLogo{
+  width: 60vh;
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 20vh;
+}
+
+.loading img{
+  top: 5vh;
+  position: relative;
+}
+
+.loadingLogo img {
+  width:100%;
+}
+
+.registerText{
+  position: relative;
+  color:black;
+  font-size: 30px;
 }

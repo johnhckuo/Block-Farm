@@ -502,9 +502,21 @@ Template.gameIndex.events({
                 return;
             }
 
-            var pos = getTransformedPosition($(event.target)[0]);
-            var posX = pos[0];
-            var posY = pos[1];
+            var top = $(event.target)[0].getBoundingClientRect().top;
+            var left = $(event.target)[0].getBoundingClientRect().left;
+
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+            var areaLeft = $(".gamingArea").position().left;
+            var resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()*1.65;
+            // var divHeight =0;
+            // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+            var posY = top+landTop-divHeight-y;
 
             var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
             temp.css({display:"inline", top: posY, left: posX});
@@ -584,9 +596,19 @@ Template.gameIndex.events({
                         updateStaminaBar(staminaList["steal"]);
                         updateSyndicateExp(5);
 
-                        var pos = getTransformedPosition($(event.target)[0]);
-                        var posX = pos[0];
-                        var posY = pos[1];
+                        var landTop = ($(".canvas").height()-$(window).height())/2;
+                        var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+                        var areaLeft = $(".gamingArea").position().left;
+                        var resizeOffsetX = (screen.width- $(window).width())/6.5;
+
+                        var divHeight =$(".cropObject").height()/5;
+                        var divWidth = $(".cropObject").width()*1.65;
+                        var posX = cursorX+landLeft-areaLeft+divWidth-x-resizeOffsetX;
+                        var posY = cursorY+landTop-divHeight-y;
+                        posX = cursorX + posX;
+                        posY = cursorY + posY;
+
 
                         var temp = $(".animationObject").clone().attr("class", "animationTemp").appendTo(".canvas");
                         temp.css({display:"inline", top: posY, left: posX});
@@ -795,9 +817,23 @@ Template.gamingArea.events({
         if (plantMode){
             currentCropLand = event.target.className;
 
-            var pos = getTransformedPosition($(event.target)[0]);
-            var posX = pos[0];
-            var posY = pos[1];
+            var top = $(event.target)[0].getBoundingClientRect().top;
+            var left = $(event.target)[0].getBoundingClientRect().left;
+
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+            var resizeOffsetX = ($(window).width()-400)/6.5;
+            var areaLeft = $(".gamingArea").position().left;
+            var divHeight =$(".cropObject").height()/5;
+            var divWidth = $(".cropObject").width()/1.65;
+            // var divHeight =0;
+            // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+            //var posX = left+landLeft+divWidth-x;
+
+            var posY = top+landTop-divHeight-y;
+
 
             var styles = {
                 top: posY,
@@ -813,9 +849,22 @@ Template.gamingArea.events({
 
         }else if (placeMode){
             currentCropLand = event.target.className;
-            var pos = getTransformedPosition($(event.target)[0]);
-            var posX = pos[0];
-            var posY = pos[1];
+            var top = $(event.target)[0].getBoundingClientRect().top;
+            var left = $(event.target)[0].getBoundingClientRect().left;
+
+            var landTop = ($(".canvas").height()-$(window).height())/2;
+            var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+            var resizeOffsetX = ($(window).width()-400)/6.5;
+            var areaLeft = $(".gamingArea").position().left;
+            var divHeight =$(".cropObject").height()/10;
+            var divWidth = $(".cropObject").width()/1.75;
+            // var divHeight =0;
+            // var divWidth = 0;
+            var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+            //var posX = left+landLeft+divWidth-x;
+
+            var posY = top+landTop-divHeight-y;
 
             $(".farmObject").css({top: posY, left: posX, width:"150px", height:"150px", position:"absolute", opacity:0.5});
 
@@ -1176,32 +1225,6 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
-
-var getTransformedPosition = function(target){
-    var top = target.getBoundingClientRect().top;
-    var left = target.getBoundingClientRect().left;
-
-    var landTop = ($(".canvas").height()-$(window).height())/2;
-    var landLeft = ($(".canvas").width()-$(window).width())/2;
-
-    var areaLeft = $(".gamingArea").position().left;
-    console.log();
-    var resizeOffsetX;
-    if ($(window).width()< 1500){
-      resizeOffsetX = (screen.width- $(window).width())/6.5;
-
-    }else if ($(window).width() > 1500){
-      resizeOffsetX = ($(window).width()-400)/6.5;
-    }
-
-    var divHeight =$(".cropObject").height()/5;
-    var divWidth = $(".cropObject").width()*1.65;
-    // var divHeight =0;
-    // var divWidth = 0;
-    var posX = left+landLeft-areaLeft+divWidth-x-resizeOffsetX;
-    var posY = top+landTop-divHeight-y;
-    return [posX, posY];
-}
 
 var initAllBtns = function(){
   var imgs = $(".cropLand").find("img");
@@ -1636,6 +1659,10 @@ var initCropLand = function(id){
         //$('.land').append("<div></div>");
     }
 
+    console.log(cropList);
+    console.log(userLandConfiguration);
+
+
     landInfo = [];
     for (var i = 0 ; i < userLandConfiguration.length ; i++){
 
@@ -1663,9 +1690,23 @@ var initCropLand = function(id){
         var divWidth = $(".cropObject").width()/4;
         */
 
-        var pos = getTransformedPosition($('.cropLand'+i)[0]);
-        var posX = pos[0];
-        var posY = pos[1];
+        var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
+        var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
+
+
+        var landTop = ($(".canvas").height()-$(window).height())/2;
+        var landLeft = ($(".canvas").width()-$(window).width())/2;
+
+        var resizeOffsetX = ($(window).width()-400)/6.5;
+        var areaLeft = $(".gamingArea").position().left;
+        var divHeight =$(".cropObject").height()/5;
+        var divWidth = $(".cropObject").width()/1.65;
+        // var divHeight =0;
+        // var divWidth = 0;
+        var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
+        //var posX = left+landLeft+divWidth-x;
+
+        var posY = top+landTop-divHeight-y;
 
         var styles = {
             top: posY,
@@ -1691,16 +1732,18 @@ var initCropLand = function(id){
         var originDifference = elapsedTime(cropList[index].start, cropList[index].end);
         var percent = difference/originDifference;
 
-
         var typeIndex;
         for (var j = 0 ; j < cropTypeList.length ; j++){
             if (cropTypeList[j].id == cropList[index].type){
                 typeIndex = j;
                 break;
+            }else{
             }
         }
 
-
+        if (percent > 0.6){
+            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[0] + postfix +"' />");
+        }
         if (percent <= 0.6){
             $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[1] + postfix +"' />");
         }
@@ -1951,9 +1994,13 @@ var cropSummaryUpdate = function(){
         for (var j = 0 ; j < cropTypeList.length ; j++){
             if (cropTypeList[j].id == cropList[i].type){
                 index = j;
+                break;
             }
         }
 
+        if (percent > 0.6){
+            $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[0]+postfix);
+        }
         if (percent <= 0.6){
             $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[1]+postfix);
         }
@@ -2085,7 +2132,7 @@ set_property_table = function(){
                 td.append($('<img></img>', {
                     src:prefix+user_property[i].img + postfix,
                     style:'width:50px; height:50px'
-                })).append(user_property[i].name);
+                })).append("<div>"+user_property[i].name+"</div>");
                 tr.append(td);
                 td = $('<td></td>');
                 td.text(user_property[i].propertyCount);
