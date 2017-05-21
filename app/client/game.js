@@ -2338,33 +2338,43 @@ var mission_list = [];
 
 get_mission_list = function(){
     var item, result, _cropId, _cropName, _quantity, _missionId, _missionName, _exp, _lvl_limitation, _accountStatus;
-    var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]});
+    var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]}).c[0];
+    console.log(mission_count);
     mission_list = [];
-    var mission_source = GameCoreInstance.getMission.call({from:web3.eth.accounts[currentAccount]}, function(err, result){
-
-
-        for(i = 0; i < result[0].length; i++){
-            var _id = result[0][i].c[0];;
-            var _name = web3.toUtf8(result[1][i]);
-            var _exp = result[2][i].c[0];
-            var _limitation = result[3][i].c[0];
-            var _solved = result[4][i];
-            mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
-
-            item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
-            for(j = 0; j < item_source[0].length; j++){
-                var _crop_id = item_source[0][j].c[0];
-                var res = find_propertyInfo(_crop_id);
-                var _crop_name = res.name;
-                var _quantity = item_source[1][j].c[0];
-                var _img = res.img;
-                // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
-                item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
-                mission.items.push(item);
+    //var mission_source = GameCoreInstance.getMission.call(1, {from:web3.eth.accounts[currentAccount]});
+    //console.log(mission_source);
+    for(k = 1; k < mission_count; k++){
+        var mission_source = GameCoreInstance.getMission.call(k, {from:web3.eth.accounts[currentAccount]}, function(err, result){
+            if(err){
+                console.log(k + ":" + err);
             }
-            mission_list.push(mission);
-        }
-    });
+            else{
+                var _id = result[0].c[0];
+                if((_id == 0) || (_id == 999)){
+                    return;
+                }
+                var _name = web3.toUtf8(result[1]);
+                var _exp = result[2].c[0];
+                var _limitation = result[3].c[0];
+                var _solved = result[4];
+                mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
+                if((mission.id != 0) && (mission.id != 999)){
+                    item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
+                    for(j = 0; j < item_source[0].length; j++){
+                        var _crop_id = item_source[0][j].c[0];
+                        var res = find_propertyInfo(_crop_id);
+                        var _crop_name = res.name;
+                        var _quantity = item_source[1][j].c[0];
+                        var _img = res.img;
+                        // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
+                        item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
+                        mission.items.push(item);
+                    }
+                    mission_list.push(mission);
+                }
+            }
+        });
+    }
 }
 
 find_propertyInfo = function(item_id){
