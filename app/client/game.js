@@ -192,7 +192,7 @@ $(window).on("beforeunload", function() {
     CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), {from:web3.eth.accounts[currentAccount], gas:2000000} );
     CongressInstance.updateUserStamina(s_Id, currentUser.sta, {from:web3.eth.accounts[currentAccount], gas:2000000} );
 
-    console.log("saved");
+    console.log("Porgress Saved");
     return true ? "Do you really want to close?" : null;
 })
 
@@ -1008,6 +1008,8 @@ Template.statusList.events({
     'click .test': function(event){
         currentUser.level+=1;
         Session.set('userLevel', currentUser.level);
+        currentUser.sta = staminaCap(currentUser.level);
+        updateStaminaBar(0);
 
         GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
 
@@ -1814,6 +1816,9 @@ var updateUserExp = function(exp){
     _character.changed();
     Session.set('userLevel', currentUser.level);
     currentUser.exp = currentUser.exp - lvlCap;
+    //set stamina to full
+    currentUser.sta = staminaCap(currentUser.level);
+    updateStaminaBar(0);
 
     CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
