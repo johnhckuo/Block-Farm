@@ -755,10 +755,10 @@
 }
 
 .SyndicateExp{
-    visibility:collapse;
-    position: absolute;
-    margin-top: 10px;
-    left:5vw;
+  visibility:collapse;
+  position: relative;
+  left:5vw;
+  margin-bottom: 10px;
 }
 
 .SyndicateExp h3{
@@ -777,7 +777,6 @@
   text-align: center;
   border-radius: 5px;
   border:1px solid #7F7F7F;
-
 }
 
 .SyndicateExpProgressBar{
@@ -788,8 +787,6 @@
   background-color: #C7EBFC;
   transition: all 1s;
   border-radius: 5px;
-
-
 }
 
 .SyndicateExpText{

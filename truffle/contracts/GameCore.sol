@@ -1,5 +1,4 @@
 pragma solidity ^0.4.4;
-import "./StringUtils.sol";
 
 contract Congress{
 
@@ -195,7 +194,7 @@ contract GameCore{
             for (uint i = 0 ; i < difference ; i++){
                 usingPropertyInstance.addUserLandConfiguration(u_Id);
             }
-            levelupLandUpdate(landSize, u_Id);
+            //levelupLandUpdate(landSize, u_Id);
         }
         congress.updateGameData(u_Id, landSize, level);
         //congress.updateUserExp(u_Id, exp);
