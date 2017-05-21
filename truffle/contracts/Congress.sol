@@ -57,6 +57,21 @@ contract Congress{
         return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
     }
 
+    function getStakeholderRank() constant returns(bytes32[], address[], uint[]){     
+        uint length = stakeholdersGameData.length;
+        bytes32[] memory stakeholderName = new bytes32[](length);
+        address[] memory stakeholderAddress = new address[](length);
+        uint[] memory stakeholderLevel = new uint[](length);
+
+        for(uint i = 0; i < length; i++){
+            stakeholderName[i] = stakeholdersGameData[i].name;
+            stakeholderAddress[i] = stakeholders[i].addr;
+            stakeholderLevel[i] = stakeholdersGameData[i].level;
+        }
+
+        return(stakeholderName, stakeholderAddress, stakeholderLevel);
+    }
+
     function getStakeholderAddr(uint s_Id) constant returns(address){
         return stakeholders[s_Id].addr;
     }
