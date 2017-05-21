@@ -142,7 +142,7 @@
 <template name="land">
     <div class={{name}} data-pressed="false">
         <img class="" src={{img}} alt="">
-            {{content}}
+        {{content}}
     </div>
 </template>
 
@@ -163,7 +163,7 @@
                   {{> land}}
                   {{/each}}
                   <div class='cropLand removeLand' data-pressed="false">
-                      <img src="/img/game/background.svg" height='5vh' alt="">
+                      <img src="/img/game/background.svg" >
                       Grass
                   </div>
               </div>
@@ -174,9 +174,7 @@
               <!-- {{> cropSelectingBtns}} -->
               </div>
           </div>
-          <div>
-            {{> cropSelectingBtns}}
-          </div>
+
         </div>
 
         <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
@@ -194,9 +192,10 @@
             </div>
           </div>
           <div>
-            {{> cropSelectingBtns}}
           </div>
         </div>
+        {{> cropSelectingBtns}}
+
         <div class="functionSwitch">
               <button type="button" name="button" class="btn-primary test">Test</button>
               <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
@@ -223,7 +222,7 @@
 
 <template name="cropSelectingBtns">
   <div class="controlButtons">
-    <button type="button" class="btnSelect crop2" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/fertilizer.svg" alt=""></button>
+    <button type="button" class="btnSelect crop2" style="background-color:rgba(255,255,255,0.65)" name="button"><img src="/img/game/sprout.svg" alt=""></button>
     <button type="button" class="btnSelect crop3" name="button"><img src="/img/game/barn.svg" alt=""></button>
   </div>
 
@@ -239,7 +238,7 @@
 
 <template name="characterList">
     <div class="characterList">
-        <div class="container">
+        <div class="imgContainer">
           <div class="characterImg">
               <div class="flipDIV front">
                 <img src="/img/game/farmer.svg" alt="">
@@ -257,39 +256,46 @@
             <div class="userName">
               <h3>{{userName}}</h3>
             </div>
-            <div class="userExp">
-              <div class="expProgress">
-                  <h3>EXP</h3>
+            <div class="userBarContainer">
+              <div class="userBar">
+                <div class="userExp">
+                  <div class="expProgress">
+                      <h3>EXP</h3>
 
-                  <div class="expProgressBar"></div>
-                  <div class="expText"></div>
-                  <div class="expPopText"></div>
+                      <div class="expProgressBar"></div>
+                      <div class="expText"></div>
+                      <div class="expPopText"></div>
 
-              </div>
-            </div>
-            <div class="SyndicateExp">
-                <div class="SyndicateExpProgress">
-                    <h3>EXP</h3>
-
-                    <div class="SyndicateExpProgressBar"></div>
-                    <div class="SyndicateExpText"></div>
+                  </div>
                 </div>
-            </div>
-            <div class="userSta">
-              <div class="staProgress">
-                  <h3>STA</h3>
+                <div class="SyndicateExp">
+                    <div class="SyndicateExpProgress">
+                        <h3>EXP</h3>
 
-                  <div class="staProgressBar"></div>
-                  <div class="staText"></div>
+                        <div class="SyndicateExpProgressBar"></div>
+                        <div class="SyndicateExpText"></div>
+                    </div>
+                </div>
+                <div class="userSta">
+                  <div class="staProgress">
+                      <h3>STA</h3>
 
+                      <div class="staProgressBar"></div>
+                      <div class="staText"></div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="musicSwitch">
+                  <img src="/img/game/speaker_on.svg" alt="">
               </div>
             </div>
 
 
+
         </div>
-        <div class="musicSwitch">
-            <img src="/img/game/speaker_on.svg" alt="">
-        </div>
+
 
     </div>
 
@@ -303,19 +309,25 @@
             <div class="levelUpArrow">
               <img src="/img/game/levelup_arrow.svg" alt="">
             </div>
-
-            <div class="circleL">
-              <img src="/img/game/levelup_circle_1.svg" alt="">
+            <div class="circles">
+              <div class="circle circleL">
+                <img src="/img/game/levelup_circle_1.svg" alt="">
+              </div>
+              <div class="circle circleM">
+                <img src="/img/game/levelup_circle_2.svg" alt="">
+              </div>
+              <div class="circle circleS">
+                <img src="/img/game/levelup_circle_3.svg" alt="">
+              </div>
+              <div class="levelUpText">
+                <h2>{{currentLevel}}</h2>
+              </div>
             </div>
-            <div class="circleM">
-              <img src="/img/game/levelup_circle_2.svg" alt="">
-            </div>
-            <div class="circleS">
-              <img src="/img/game/levelup_circle_3.svg" alt="">
-            </div>
-            <div class="levelUpText">
-              <h2>{{currentLevel}}</h2>
-            </div>
+            <span class="levelUpReward">
+              <h3>{{staminaCap}}</h3>
+              <h3>{{expCap}}</h3>
+              <span class = "unlockCropId"></span>
+            </span>
           </div>
         </div>
 
@@ -396,9 +408,9 @@
       <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
     </div>
     <div class="rightMenuIcon" >
-      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt="">Mission</button>
-      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt="">Rating</button>
-      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt="">Rank</button>
+      <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt=""><h2>Mission</h2></button>
+      <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/grocery.svg" alt=""><h2>Rating</h2></button>
+      <button type="button" class="btnSelect btnRank rightBtn" name="button"><img src="/img/game/quality.svg" alt=""><h2>Rank</h2></button>
     </div>
   </div>
 </template>

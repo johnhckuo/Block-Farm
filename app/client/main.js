@@ -53,6 +53,25 @@ var hex2a = function(hexx) {
     return str;
 }
 
+var loading = function(on){
+    var opacity;
+    $(".cropObject").css("display", "none");
+    if (on){
+        $(".loading").css("display", "flex");
+        $(".loading").css("opacity", 0.7);
+    }else{
+        setTimeout(function(){
+            $(".loading").css("opacity", 0);
+            setTimeout(function(){
+                $(".loading").css("display", "none");
+            }, 1000);
+        },1000);
+
+    }
+
+
+}
+
 ////////////////////
 //                //
 //     Helpers    //
@@ -68,16 +87,6 @@ if (Meteor.isClient) {
 
         return Session.get("account");
       },
-      currentAccount: function(){
-        var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
-        var data = CongressInstance.getStakeholder.call(Id, {from:web3.eth.accounts[currentAccount]});
-        return hex2a(data[0]);
-      }
-
-  });
-
-  Template.header.helpers({
-
       currentAccount: function(){
         var Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}).c[0];
         var data = CongressInstance.getStakeholder.call(Id, {from:web3.eth.accounts[currentAccount]});
@@ -110,10 +119,11 @@ if (Meteor.isClient) {
     },
     'keydown .s_Name':function(event){
         var ew = event.which;
+        console.log(ew);
         if (ew == 16 || (ew <= 40 && ew >= 37)){
             return true;
         }
-        if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122)){
+        if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122) || ew == 189){
             if (userNameCounter >= 10){
               sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
               return true;
@@ -134,6 +144,7 @@ if (Meteor.isClient) {
     },
     'click #next': function (event){
         event.preventDefault();
+
         var name = $(".s_Name").val().toString();
 
         if (name.trim() == ""){
@@ -145,35 +156,53 @@ if (Meteor.isClient) {
             sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
 
         }
+        /*
+        // send request to faucet
+        var jqxhr = $.get( "http://faucet.ropsten.be:3001/donate/"+web3.eth.accounts[currentAccount], function() {
+          console.log( "request sent successfully" );
+        })
+        .done(function() {
+          console.log( "ether sent successfully" );
+        })
+        .fail(function() {
+          console.log( "An error has occured while sending ether" );
+        })
+        .always(function() {
+          alert( "finished" );
+        });
+        // ----
+        */
         //alert(web3.eth.accounts[currentAccount]);
-        var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468});
-        var s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
-        var txs = MainActivityInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468});
-        var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
-        var txs = CongressInstance.setPropertyIndex(s_Id, length, {from:web3.eth.accounts[currentAccount], gas:2201468});
-        //console.log(txs);
+        var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468}, function(){
+          $(".loadingParent").fadeIn(1000);
+          var s_Id = CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]});
+          var txs = MainActivityInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+            var length = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+            var txs = CongressInstance.setPropertyIndex(s_Id, length, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+              var Typelength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+              var tx = usingPropertyInstance.updatePropertyTypeRating(Typelength, 0, "new", {from:web3.eth.accounts[currentAccount], gas:2514068}, function(){
+                //create user's property at first time 4/30 kokokon
+                for(i = 0; i < Typelength; i++){
+                    usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468});
+                }
+                if (character == "Guard"){
+                    usingPropertyInstance.updatePropertyCount_Sudo((length + 30), 1, 0, {from:web3.eth.accounts[currentAccount], gas:2514068});
+                }
 
-        var Typelength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
-        var tx = usingPropertyInstance.updatePropertyTypeRating(Typelength, 0, "new", {from:web3.eth.accounts[currentAccount], gas:2514068});
-        //create user's property at first time 4/30 kokokon
-        for(i = 0; i < Typelength; i++){
-            usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468});
-        }
-        if (character == "Guard"){
-            usingPropertyInstance.updatePropertyCount_Sudo((length + 30), 1, 0, {from:web3.eth.accounts[currentAccount], gas:2514068});
-        }
+                GameCoreInstance.pushMissionAccountStatus({from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
 
-        GameCoreInstance.pushMissionAccountStatus({from:web3.eth.accounts[currentAccount], gas:2201468});
-
-        //console.log(name, threshold, fund, rate, character);
-        var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
-        usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468});
-        sweetAlert("Congratulations!", "Register Completed!", "success");
-
-        Router.go('game');
-
+                  //console.log(name, threshold, fund, rate, character);
+                  var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
+                  usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+                    $(".loadingParent").fadeOut(1000);
+                    Router.go('game');
+                  });
+                });
+              });
+            });
+            //console.log(txs);
+          });
+        });
     },
-
-
   });
 }
