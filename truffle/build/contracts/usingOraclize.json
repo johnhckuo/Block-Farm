@@ -45,8 +45,8 @@
     "1495028882847": {
       "events": {},
       "links": {},
-      "address": "0x56b8bc72276aa0fedd9d87ea65f7e464f5fc0f71",
-      "updated_at": 1495278355099
+      "address": "0x078ce7d2b1967bba6c33019e34329a9f839a33b6",
+      "updated_at": 1495288419456
     },
     "1495276069022": {
       "events": {},
@@ -56,5 +56,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1495280450690
+  "updated_at": 1495288419456
 }

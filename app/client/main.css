@@ -598,9 +598,6 @@ h3{
   line-height: 2;
 }
 
-#next{
-  float:right;
-}
 #characters button:click{
   background: #fff;
 }
@@ -707,22 +704,14 @@ input, textarea{
   background: white;
   -webkit-transition-property: color;
   transition-property: color;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-
-  border-style: none;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
   border-radius: 10px;
-  margin: 15px;
   font-size: 20px;
   height: 4vh;
-  width: 12vw;
   color:black;
 
-  top:-20px;
-
-  float:none;
-  margin-left: auto;
-  margin-right: auto;
+  float:right;
 }
 .hvr-submit:before {
   content: "";

@@ -500,7 +500,7 @@ Template.gameIndex.events({
 
             var landTop = ($(".canvas").height()-$(window).height())/2;
             var landLeft = ($(".canvas").width()-$(window).width())/2;
- 
+
             var areaLeft = $(".gamingArea").position().left;
             var resizeOffsetX = (screen.width- $(window).width())/6.5;
 
@@ -850,8 +850,8 @@ Template.gamingArea.events({
 
             var resizeOffsetX = ($(window).width()-400)/6.5;
             var areaLeft = $(".gamingArea").position().left;
-            var divHeight =$(".cropObject").height()/5;
-            var divWidth = $(".cropObject").width()/1.65;
+            var divHeight =$(".cropObject").height()/10;
+            var divWidth = $(".cropObject").width()/1.75;
             // var divHeight =0;
             // var divWidth = 0;
             var posX = left+landLeft-areaLeft+divWidth-x+resizeOffsetX;
@@ -1652,6 +1652,10 @@ var initCropLand = function(id){
         //$('.land').append("<div></div>");
     }
 
+    console.log(cropList);
+    console.log(userLandConfiguration);
+
+
     landInfo = [];
     for (var i = 0 ; i < userLandConfiguration.length ; i++){
 
@@ -1685,7 +1689,7 @@ var initCropLand = function(id){
 
         var landTop = ($(".canvas").height()-$(window).height())/2;
         var landLeft = ($(".canvas").width()-$(window).width())/2;
- 
+
         var resizeOffsetX = ($(window).width()-400)/6.5;
         var areaLeft = $(".gamingArea").position().left;
         var divHeight =$(".cropObject").height()/5;
@@ -1721,16 +1725,18 @@ var initCropLand = function(id){
         var originDifference = elapsedTime(cropList[index].start, cropList[index].end);
         var percent = difference/originDifference;
 
-
         var typeIndex;
         for (var j = 0 ; j < cropTypeList.length ; j++){
             if (cropTypeList[j].id == cropList[index].type){
                 typeIndex = j;
                 break;
+            }else{
             }
         }
 
-
+        if (percent > 0.6){
+            $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[0] + postfix +"' />");
+        }
         if (percent <= 0.6){
             $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[1] + postfix +"' />");
         }
@@ -1981,9 +1987,13 @@ var cropSummaryUpdate = function(){
         for (var j = 0 ; j < cropTypeList.length ; j++){
             if (cropTypeList[j].id == cropList[i].type){
                 index = j;
+                break;
             }
         }
 
+        if (percent > 0.6){
+            $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[0]+postfix);
+        }
         if (percent <= 0.6){
             $(".croppedObject"+cropList[i].id).find("img").attr("src",prefix+cropTypeList[index].img[1]+postfix);
         }

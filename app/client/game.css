@@ -309,6 +309,10 @@
   -webkit-transform:rotateX(55deg) rotateZ(45deg);
 }
 
+.farmObject img{
+  cursor: pointer;
+}
+
 .selectedLandObject{
   transform:rotateX(55deg) rotateZ(45deg);
   -moz-transform:rotateX(55deg) rotateZ(45deg);
@@ -373,7 +377,7 @@
 
 .plantButton{
   cursor: pointer;
-  width:150px;
+  width:8vw;
   height: 100px;
   border-radius: 10px;
   text-align: center;
@@ -880,7 +884,7 @@
   align-items:center;
   flex-direction: column;
   margin-bottom:15px;
-  width:150px;
+  width:8vw;
   height: 100px;
   cursor:pointer;
   border-radius: 10px;
