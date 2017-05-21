@@ -539,6 +539,65 @@
   vertical-align: middle;
 }
 
+
+.rank_template{
+  position:absolute;
+  z-index: 6;
+  height:80vh;
+  width:45vw;
+  /*margin-top:50px;*/
+  left: 40vw;
+  background-color:rgba(255,255,255,0.8);
+  display:none;
+  text-align:center;
+  color: black;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.rank_header{
+  display: flex;
+  height: 5vh;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(130, 203, 209);
+  color: rgb(255, 255, 255);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+.rank_content{
+  overflow: auto;
+  height: 100%;
+  /*width: 45vw;*/
+  padding-top: 3vh;
+}
+.rank_table{
+  width: 40vw;
+  height: 70vh;
+  text-align: center;
+  margin-top:1vh;
+  margin-left:2vw;
+}
+
+.rank_table tr{
+  border-bottom: 1px solid #000;
+  vertical-align: middle;
+}
+
+.rank_table th td{
+  height: 7vh;
+  vertical-align: middle;
+  padding-right:1vw;
+}
+
+.onBoard{
+    background-color:#ee686c;
+    color:#ffffff;
+}
+
+
 /*#mission_table tr:first-child{
   position: fixed;
   width: 40vw;
@@ -766,10 +825,10 @@
 }
 
 .SyndicateExp{
-    visibility:collapse;
-    position: absolute;
-    margin-top: 10px;
-    left:5vw;
+  visibility:collapse;
+  position: relative;
+  left:5vw;
+  margin-bottom: 10px;
 }
 
 .SyndicateExp h3{
@@ -788,7 +847,6 @@
   text-align: center;
   border-radius: 5px;
   border:1px solid #7F7F7F;
-
 }
 
 .SyndicateExpProgressBar{
@@ -799,8 +857,6 @@
   background-color: #C7EBFC;
   transition: all 1s;
   border-radius: 5px;
-
-
 }
 
 .SyndicateExpText{
