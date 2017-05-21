@@ -314,6 +314,13 @@ Template.shop.events({
     'change input[type="range"]':function(e){
       var eTarget=$(e.target);
       eTarget.css({'background-image':'-webkit-linear-gradient(left ,#82cbd1 0%,#82cbd1 '+eTarget.val()+'%,#C7FFEF '+eTarget.val()+'%, #C7FFEF 100%)'});
+    },
+    'click #btn_property_save': function () {
+      save_rating_setting();
+      $('.property_shop').css('display', 'none');
+    },
+    'click #btn_property_cancel': function () {
+      set_propertyType_table();
     }
 });
 
@@ -2241,28 +2248,28 @@ rend_propertyType_table = function(_length){
         }
         //content
         //control bar
-        tr = $('<tr></tr>');
-        td = $('<td></td>').attr('colspan', 3);
-        td.append($('<button></button>').attr( {
-            // type: 'button',
-            id: 'btn_property_save',
-            value: 'SAVE',
-            class:'hvr-rectangle-out',
-        }).append('SAVE').on('click', function () {
-            save_rating_setting();
-            $('.property_shop').css('display', 'none');
-        }));
-        td.append($('<button></button>').attr( {
-            // type: 'button',
-            id: 'btn_property_cancel',
-            value: 'CANCEL',
-            class:'hvr-rectangle-out'
-        }).append('CANCEL').on('click', function () {
-            set_propertyType_table();
-            // sweetAlert("Warning!", 'cancel', "warning");
-        }));
-        tr.append(td);
-        table.append(tr);
+        // tr = $('<tr></tr>');
+        // td = $('<td></td>').attr('colspan', 3);
+        // td.append($('<button></button>').attr( {
+        //     // type: 'button',
+        //     id: 'btn_property_save',
+        //     value: 'SAVE',
+        //     class:'hvr-rectangle-out',
+        // }).append('SAVE').on('click', function () {
+        //     save_rating_setting();
+        //     $('.property_shop').css('display', 'none');
+        // }));
+        // td.append($('<button></button>').attr( {
+        //     // type: 'button',
+        //     id: 'btn_property_cancel',
+        //     value: 'CANCEL',
+        //     class:'hvr-rectangle-out'
+        // }).append('CANCEL').on('click', function () {
+        //     set_propertyType_table();
+        //     // sweetAlert("Warning!", 'cancel', "warning");
+        // }));
+        // tr.append(td);
+        // table.append(tr);
         //control bar
         $('.shop_content').append(table);
         loading(0);

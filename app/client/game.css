@@ -68,10 +68,10 @@
   transform: translateY(0vw);
   transition: all .5s;
   opacity: 1;
-  width: 100%;
+  width: 100vw;
 }
 .listHeader{
-  width: 25vw;
+  width: 24vw;
   font-size: 25px;
 }
 .listHeader hr{
@@ -367,12 +367,16 @@
 }
 
 .cropListDiv{
+  display: flex;
   position: relative;
+  flex-direction: row;
+  justify-content: space-around;
   height: 45vh;
-  width:100%;
+  width:80%;
   overflow: auto;
   font-size: 20px;
-  padding-left: 30px;
+  flex-wrap: wrap;
+  /*padding-left: 30px;*/
 }
 
 .plantButton{
@@ -572,15 +576,18 @@
 .property_shop{
   position:absolute;
   z-index: 15;
-  height:75vh;
+  height:80vh;
   width:45vw;
   /*margin-top:10vh;*/
   left: 40vw;
-  /*background-color:rgba(255,255,255,0.7);*/
+  background-color:rgba(255,255,255,0.8);
   display:none;
   text-align:center;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+
 }
 
 .property_shop select {
@@ -608,8 +615,8 @@
 }
 .shop_content{
   text-align:center;
-  height: 100%;
-  background-color:rgba(255,255,255,0.8);
+  height: 65vh;
+  /*background-color:rgba(255,255,255,0.8);*/
   overflow: auto;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -644,6 +651,10 @@
   margin: 15px;
 
 }
+.rating_btn{
+    margin-top: 1vh;
+}
+
 /*property stock tradable in the fourth controlButtons*/
 .tradeable_content{
   overflow: auto;
@@ -869,10 +880,10 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
   flex-wrap: wrap;
   height: 10vh;
-  width: 100%;
+  width: 80%;
   font-size: 20px;
 
 }
