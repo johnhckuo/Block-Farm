@@ -144,6 +144,7 @@ if (Meteor.isClient) {
     },
     'click #next': function (event){
         event.preventDefault();
+
         var name = $(".s_Name").val().toString();
 
         if (name.trim() == ""){
@@ -155,6 +156,22 @@ if (Meteor.isClient) {
             sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
 
         }
+        /*
+        // send request to faucet
+        var jqxhr = $.get( "http://faucet.ropsten.be:3001/donate/"+web3.eth.accounts[currentAccount], function() {
+          console.log( "request sent successfully" );
+        })
+        .done(function() {
+          console.log( "ether sent successfully" );
+        })
+        .fail(function() {
+          console.log( "An error has occured while sending ether" );
+        })
+        .always(function() {
+          alert( "finished" );
+        });
+        // ----
+        */
         //alert(web3.eth.accounts[currentAccount]);
         var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468}, function(){
           $(".loadingParent").fadeIn(1000);
@@ -177,7 +194,7 @@ if (Meteor.isClient) {
                   //console.log(name, threshold, fund, rate, character);
                   var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
                   usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
-                    $(".loadingParent").fadeOut(1000); 
+                    $(".loadingParent").fadeOut(1000);
                     Router.go('game');
                   });
                 });

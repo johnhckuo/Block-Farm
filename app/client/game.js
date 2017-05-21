@@ -6,8 +6,6 @@ var landSize = 3;
 var blockSize = 150;
 var landSrc = "/img/game/land.svg";
 
-var previousUnlockCrop = 0;
-
 var prefix = "/img/game/plant/";
 var postfix = ".svg";
 
@@ -192,7 +190,7 @@ $(window).on("beforeunload", function() {
     CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), {from:web3.eth.accounts[currentAccount], gas:2000000} );
     CongressInstance.updateUserStamina(s_Id, currentUser.sta, {from:web3.eth.accounts[currentAccount], gas:2000000} );
 
-    console.log("saved");
+    console.log("Porgress Saved");
     return true ? "Do you really want to close?" : null;
 })
 
@@ -1018,25 +1016,11 @@ Template.statusList.events({
         set_property_table();
     },
     'click .test': function(event){
+
         var lvlCap = levelCap(currentUser.level);
         currentUser.exp = lvlCap;
         currentUser.totalExp += currentUser.exp;
         updateUserExp(0);
-        //currentUser.level+=1;
-        //Session.set('userLevel', currentUser.level);
-
-        //GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
-
-        //  _character.changed();
-        //  levelUp("userLevel");
-        //  if (currentUser.level%5 ==0){
-        //      GameCoreInstance.levelupLandUpdate((currentUser.landSize + 1), s_Id, {from:web3.eth.accounts[currentAccount], gas:3000000});
-        //      getUserData(s_Id);
-        //  }
-        //  rerenderCropLand(s_Id);
-        //  Session.set("unlockCrop", cropTypeList.length - 1);
-        //});
-
     },
     'click .matchmaking': function(event){
         MainActivityInstance.findOrigin({from:web3.eth.accounts[1], gas:5000000});
@@ -1842,10 +1826,22 @@ var updateUserExp = function(exp){
             Session.set('userLevel', currentUser.level);
             currentUser.exp = currentUser.exp - lvlCap;
 
+            //set stamina to full
+            currentUser.sta = staminaCap(currentUser.level);
+            updateStaminaBar(0);
+
             CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
             GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
                 levelUp("userLevel");
+                getUserData(s_Id);
+                rerenderCropLand(s_Id);
+                lvlCap = levelCap(currentUser.level);
+                if (currentUser.level % 5 == 0){
+                    $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
+                }else{
+                    $(".unlockCropId").html('');
+                }
 
                 getUserData(s_Id);
                 if((currentUser.level % 5) == 0){
@@ -1854,7 +1850,6 @@ var updateUserExp = function(exp){
                 rerenderCropLand(s_Id);
                 lvlCap = levelCap(currentUser.level);
                 Session.set("unlockCrop", cropTypeList.length - 1);
-
             });
 
         }else{
