@@ -6,8 +6,6 @@ var landSize = 3;
 var blockSize = 150;
 var landSrc = "/img/game/land.svg";
 
-var previousUnlockCrop = 0;
-
 var prefix = "/img/game/plant/";
 var postfix = ".svg";
 
@@ -216,12 +214,6 @@ Template.gamingArea.helpers({
     expCap: function(){
       return "Exp Capacity: "+Session.get('expCap');
     },
-    unlockCrop: function(){
-      if (previousUnlockCrop != Session.get('unlockCrop')){
-        previousUnlockCrop = Session.get('unlockCrop');
-        return "Unlock Crop: "+cropTypeList[Session.get('unlockCrop')].name;
-      }
-    }
 });
 
 Template.characterList.helpers({
@@ -1017,9 +1009,11 @@ Template.statusList.events({
           levelUp("userLevel");
           if (currentUser.level%5 ==0){
               getUserData(s_Id);
+              $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
+          }else{
+              $(".unlockCropId").html('');
           }
           rerenderCropLand(s_Id);
-          Session.set("unlockCrop", cropTypeList.length);
         });
 
     },
@@ -1827,7 +1821,11 @@ var updateUserExp = function(exp){
       getUserData(s_Id);
       rerenderCropLand(s_Id);
       lvlCap = levelCap(currentUser.level);
-      Session.set("unlockCrop", cropTypeList.length);
+      if (currentUser.level % 5 == 0){
+        $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
+      }else{
+        $(".unlockCropId").html('');
+      }
 
     });
 
