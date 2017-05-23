@@ -214,6 +214,17 @@ Template.gamingArea.helpers({
     expCap: function(){
       return "Exp Capacity: "+Session.get('expCap');
     },
+    unlockCrop: function(){
+        if((Session.get('userLevel') % 5) == 0){
+            if (previousUnlockCrop != Session.get('unlockCrop')){
+                previousUnlockCrop = Session.get('unlockCrop');
+                return "Unlock Crop: "+cropTypeList[Session.get('unlockCrop')].name;
+            }
+        }
+        else{
+            return "";
+        }
+    }
 });
 
 Template.characterList.helpers({
@@ -314,6 +325,13 @@ Template.shop.events({
     'change input[type="range"]':function(e){
       var eTarget=$(e.target);
       eTarget.css({'background-image':'-webkit-linear-gradient(left ,#82cbd1 0%,#82cbd1 '+eTarget.val()+'%,#C7FFEF '+eTarget.val()+'%, #C7FFEF 100%)'});
+    },
+    'click #btn_property_save': function () {
+      save_rating_setting();
+      $('.property_shop').css('display', 'none');
+    },
+    'click #btn_property_cancel': function () {
+      set_propertyType_table();
     }
 });
 
@@ -461,7 +479,14 @@ Template.gameIndex.events({
 
         if(gameMode == "Farmer"){
             if (cropList[id].ripe){
+                var imgs = $(".crop").find("img");
 
+                for (var i = 0 ; i < imgs.length; i++){
+                    if ($(imgs[i]).parent().data('pressed')){
+                        $(imgs[i]).parent().data('pressed', false);
+                        $(imgs[i]).parent().html("<img src = '" + prefix+ cropTypeList[i].img[3] + postfix +"' />" +  cropTypeList[i].name);
+                    }
+                }
                 $(".animationImg").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[3] + postfix +"' />");
                 //var exp = cropTypeList[cropList[id].type].exp;
 
@@ -998,24 +1023,11 @@ Template.statusList.events({
         set_property_table();
     },
     'click .test': function(event){
-        currentUser.level+=1;
-        Session.set('userLevel', currentUser.level);
-        currentUser.sta = staminaCap(currentUser.level);
-        updateStaminaBar(0);
 
-        GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
-
-          _character.changed();
-          levelUp("userLevel");
-          if (currentUser.level%5 ==0){
-              getUserData(s_Id);
-              $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
-          }else{
-              $(".unlockCropId").html('');
-          }
-          rerenderCropLand(s_Id);
-        });
-
+        var lvlCap = levelCap(currentUser.level);
+        currentUser.exp = lvlCap;
+        currentUser.totalExp += currentUser.exp;
+        updateUserExp(0);
     },
     'click .matchmaking': function(event){
         MainActivityInstance.findOrigin({from:web3.eth.accounts[1], gas:5000000});
@@ -1027,6 +1039,13 @@ Template.statusList.events({
         updateUserData(s_Id);
         showConfirmation(s_Id);
 
+    },
+    'click .nextHome': function (event) {
+        loading(1);
+        visitNode = getVisitNode();
+        setStealRate(visitNode);
+        rerenderCropLand(visitNode);
+        loading(0);
     },
 })
 
@@ -1151,13 +1170,7 @@ Template.characterList.events({
         $('.characterImg').addClass('flipped');
       }
     },
-    'click .nextHome': function (event) {
-        loading(1);
-        visitNode = getVisitNode();
-        setStealRate(visitNode);
-        rerenderCropLand(visitNode);
-        loading(0);
-    },
+
     'click .musicSwitch': function (event) {
         if (!audio.paused){
             audio.pause();
@@ -1192,14 +1205,22 @@ Template.operationList.events({
       }
     },
     'click .shopOpen': function (e) {
-        $(".mission_template").css("display", "none");
         $(".property_shop").css("display", "inline");
+        $(".mission_template").css("display", "none");
+        $(".rank_template").css("display", "none");
         set_propertyType_table();
     },
     'click .MissionOpen': function(event){
         $(".property_shop").css("display", "none");
         $(".mission_template").css("display", "inline");
+        $(".rank_template").css("display", "none");
         set_mission_table();
+    },
+    'click .rankOpen': function(){
+        $(".property_shop").css("display", "none");
+        $(".mission_template").css("display", "none");
+        $(".rank_template").css("display", "inline");
+        get_rank_data();
     }
 })
 
@@ -1346,7 +1367,7 @@ var getVisitNode = function(){
     var s_Length = CongressInstance.getStakeholdersLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
 
     visitNode = s_Id;
-    while (visitNode == s_Id){
+    while ((visitNode == s_Id)|| (visitNode == 0)){
         visitNode = Math.floor(s_Length*Math.random());
     }
 
@@ -1800,45 +1821,54 @@ var updateUserStamina = function(){
 }
 
 var updateUserExp = function(exp){
-  currentUser.exp += parseInt(exp);
-  currentUser.totalExp += currentUser.exp;
-  var lvlCap = levelCap(currentUser.level);
+    if(currentUser.level < 45){
+        currentUser.exp += parseInt(exp);
+        currentUser.totalExp += currentUser.exp;
+        var lvlCap = levelCap(currentUser.level);
 
-  if  (currentUser.exp >= lvlCap){
+        if  (currentUser.exp >= lvlCap){
 
-    currentUser.level += 1;
-    _character.changed();
-    Session.set('userLevel', currentUser.level);
-    currentUser.exp = currentUser.exp - lvlCap;
-    //set stamina to full
-    currentUser.sta = staminaCap(currentUser.level);
-    updateStaminaBar(0);
+            currentUser.level += 1;
+            _character.changed();
+            Session.set('userLevel', currentUser.level);
+            currentUser.exp = currentUser.exp - lvlCap;
 
-    CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            //set stamina to full
+            currentUser.sta = staminaCap(currentUser.level);
+            updateStaminaBar(0);
 
-    GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
-      levelUp("userLevel");
-      getUserData(s_Id);
-      rerenderCropLand(s_Id);
-      lvlCap = levelCap(currentUser.level);
-      if (currentUser.level % 5 == 0){
-        $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
-      }else{
-        $(".unlockCropId").html('');
-      }
+            CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-    });
+            GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
+                levelUp("userLevel");
+                getUserData(s_Id);
+                rerenderCropLand(s_Id);
+                lvlCap = levelCap(currentUser.level);
+                if (currentUser.level % 5 == 0){
+                    $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
+                }else{
+                    $(".unlockCropId").html('');
+                }
 
-  }else{
-    CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
-  }
+                getUserData(s_Id);
+                if((currentUser.level % 5) == 0){
+                    GameCoreInstance.levelupLandUpdate((currentUser.landSize), s_Id, {from:web3.eth.accounts[currentAccount], gas:3000000});
+                }
+                rerenderCropLand(s_Id);
+                lvlCap = levelCap(currentUser.level);
+                Session.set("unlockCrop", cropTypeList.length - 1);
+            });
 
-  var percent = Math.floor((currentUser.exp/lvlCap)*100);
-  $(".expProgressBar").css("width", percent + "%");
-  $(".expText").text(percent+"%");
-  //$(".expHoverText").text(currentUser.exp+ " / " +lvlCap);
+        }else{
+            CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+        }
 
+        var percent = Math.floor((currentUser.exp/lvlCap)*100);
+        $(".expProgressBar").css("width", percent + "%");
+        $(".expText").text(percent+"%");
+        //$(".expHoverText").text(currentUser.exp+ " / " +lvlCap);
 
+    }
 }
 
 var updateSyndicateExp = function(exp){
@@ -1919,7 +1949,7 @@ var setStealRate = function(visitNode){
     else{
         thisGuardLvl = 0;
     }
-    stealRate = (80 * (thisGuardLvl / 10) - 40 * (currentUser.SyndicateLevel / 10)) / 100;
+    stealRate = ((80 * (thisGuardLvl / 10) - 40 * (currentUser.SyndicateLevel / 10)) + 32) / 100;
 }
 
 var checkMission = function(){
@@ -2241,28 +2271,28 @@ rend_propertyType_table = function(_length){
         }
         //content
         //control bar
-        tr = $('<tr></tr>');
-        td = $('<td></td>').attr('colspan', 3);
-        td.append($('<button></button>').attr( {
-            // type: 'button',
-            id: 'btn_property_save',
-            value: 'SAVE',
-            class:'hvr-rectangle-out',
-        }).append('SAVE').on('click', function () {
-            save_rating_setting();
-            $('.property_shop').css('display', 'none');
-        }));
-        td.append($('<button></button>').attr( {
-            // type: 'button',
-            id: 'btn_property_cancel',
-            value: 'CANCEL',
-            class:'hvr-rectangle-out'
-        }).append('CANCEL').on('click', function () {
-            set_propertyType_table();
-            // sweetAlert("Warning!", 'cancel', "warning");
-        }));
-        tr.append(td);
-        table.append(tr);
+        // tr = $('<tr></tr>');
+        // td = $('<td></td>').attr('colspan', 3);
+        // td.append($('<button></button>').attr( {
+        //     // type: 'button',
+        //     id: 'btn_property_save',
+        //     value: 'SAVE',
+        //     class:'hvr-rectangle-out',
+        // }).append('SAVE').on('click', function () {
+        //     save_rating_setting();
+        //     $('.property_shop').css('display', 'none');
+        // }));
+        // td.append($('<button></button>').attr( {
+        //     // type: 'button',
+        //     id: 'btn_property_cancel',
+        //     value: 'CANCEL',
+        //     class:'hvr-rectangle-out'
+        // }).append('CANCEL').on('click', function () {
+        //     set_propertyType_table();
+        //     // sweetAlert("Warning!", 'cancel', "warning");
+        // }));
+        // tr.append(td);
+        // table.append(tr);
         //control bar
         $('.shop_content').append(table);
         loading(0);
@@ -2315,33 +2345,43 @@ var mission_list = [];
 
 get_mission_list = function(){
     var item, result, _cropId, _cropName, _quantity, _missionId, _missionName, _exp, _lvl_limitation, _accountStatus;
-    var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]});
+    var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]}).c[0];
+    console.log(mission_count);
     mission_list = [];
-    var mission_source = GameCoreInstance.getMission.call({from:web3.eth.accounts[currentAccount]}, function(err, result){
-
-
-        for(i = 0; i < result[0].length; i++){
-            var _id = result[0][i].c[0];;
-            var _name = web3.toUtf8(result[1][i]);
-            var _exp = result[2][i].c[0];
-            var _limitation = result[3][i].c[0];
-            var _solved = result[4][i];
-            mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
-
-            item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
-            for(j = 0; j < item_source[0].length; j++){
-                var _crop_id = item_source[0][j].c[0];
-                var res = find_propertyInfo(_crop_id);
-                var _crop_name = res.name;
-                var _quantity = item_source[1][j].c[0];
-                var _img = res.img;
-                // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
-                item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
-                mission.items.push(item);
+    //var mission_source = GameCoreInstance.getMission.call(1, {from:web3.eth.accounts[currentAccount]});
+    //console.log(mission_source);
+    for(k = 1; k < mission_count; k++){
+        var mission_source = GameCoreInstance.getMission.call(k, {from:web3.eth.accounts[currentAccount]}, function(err, result){
+            if(err){
+                console.log(k + ":" + err);
             }
-            mission_list.push(mission);
-        }
-    });
+            else{
+                var _id = result[0].c[0];
+                if((_id == 0) || (_id == 999)){
+                    return;
+                }
+                var _name = web3.toUtf8(result[1]);
+                var _exp = result[2].c[0];
+                var _limitation = result[3].c[0];
+                var _solved = result[4];
+                mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
+                if((mission.id != 0) && (mission.id != 999)){
+                    item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
+                    for(j = 0; j < item_source[0].length; j++){
+                        var _crop_id = item_source[0][j].c[0];
+                        var res = find_propertyInfo(_crop_id);
+                        var _crop_name = res.name;
+                        var _quantity = item_source[1][j].c[0];
+                        var _img = res.img;
+                        // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
+                        item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
+                        mission.items.push(item);
+                    }
+                    mission_list.push(mission);
+                }
+            }
+        });
+    }
 }
 
 find_propertyInfo = function(item_id){
@@ -2496,3 +2536,111 @@ mission_qualify_check = function(_id){
         return (false);
     }
 }
+
+get_rank_data = function(){
+    loading(1);
+    var rankData = CongressInstance.getStakeholderRank.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
+        var data = [];
+        for(i = 1; i < res[0].length; i++){
+            var _name = web3.toUtf8(res[0][i]);
+            var _address = res[1][i];
+            var _lv = res[2][i].c[0];
+            var obj = {"name" : _name, "address": _address, "lv": _lv};
+            data.push(obj);
+        }
+        sorted = selectedSort(data);
+
+        set_rank_table(sorted);
+    });
+    loading(0);
+
+}
+
+set_rank_table = function(data){
+    $('.rank_template').html('');
+
+    $('.rank_template').append($('<button></button>',{
+        type:'button',
+        id:'btn_rank_close',
+        class:'btnClose'
+    })
+    .on('click', function(){ $('.rank_template').css('display','none'); }).text('X')
+    ).append($('<div></div>',{
+        class:'rank_header'
+    }).text('Rank'));
+
+    var table, tr, td;
+    table = $('<table></table>', {id: 'rank_table', class: 'rank_table'});
+    //header
+    tr = $('<tr></tr>');
+    tr.append($('<th></th>',{text:'Rank', style:'width:5vw'}));
+    tr.append($('<th></th>',{text:'Name', style:'width:8vw'}));
+    tr.append($('<th></th>',{text:'Address', style:'width:20vw'}));
+    tr.append($('<th></th>',{text:'Lv', style:'width:5vw'}));
+    table.append(tr);
+    //header
+    //content
+    var table_length;
+    if(data.length > 2){
+        table_length = 2;
+    }
+    else{
+        table_length = data.length;
+    }
+    var onboard = 0;
+    for(i = 0; i < table_length; i++){
+        if(data[i].address == currentUser.address){
+            onboard = 1;
+            tr = $('<tr></tr>', {class:"onBoard"});
+        }
+        else{
+            tr = $('<tr></tr>');
+        }
+        td = $('<td></td>', {text: (i + 1)});
+        tr.append(td);
+        td = $('<td></td>', {text: data[i].name});
+        tr.append(td);
+        td = $('<td></td>', {text: data[i].address});
+        tr.append(td);
+        td = $('<td></td>', {text: data[i].lv});
+        tr.append(td);
+        table.append(tr);
+    }
+    if(onboard == 0){
+        for(i = 0; i < data.length; i++){
+            if(data[i].address == currentUser.address){
+                tr = $('<tr></tr>', {class:"onBoard"});
+                td = $('<td></td>', {text: (i + 1)});
+                tr.append(td);
+                td = $('<td></td>', {text: data[i].name});
+                tr.append(td);
+                td = $('<td></td>', {text: data[i].address});
+                tr.append(td);
+                td = $('<td></td>', {text: data[i].lv});
+                tr.append(td);
+                table.append(tr);
+            }
+        }
+    }
+
+    $('.rank_template').append(table);
+}
+
+var selectedSort = function(data){
+    var tmp, max;
+    for(i = 0; i < data.length; i++){
+        max = i;
+        for(j = i + 1; j < data.length; j++){
+            if(data[j].lv > data[max].lv){
+                max = j;
+            }
+        }
+        if(max != i){
+            tmp = data[i];
+            data[i] = data[max];
+            data[max] = tmp;
+        }
+    }
+    return data;
+}
+
