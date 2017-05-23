@@ -2,7 +2,7 @@ import { Session } from 'meteor/session';
 
 
 
-currentAccount = 5;
+currentAccount = 1;
 cropsPerLvl =3;
 
 cropTypeList = [
@@ -1131,7 +1131,7 @@ MissionList = [
         exp: 707000000000000,
         lvl_limitation:44,
         status:true
-    },
+    }
 
 ];
 
@@ -2455,12 +2455,12 @@ function init(event){
 
 function initGameConfig(){
 
-    for(var i = 0 ; i < MissionList.length; i++){
-        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    for(var i = 0; i < missionItem.length; i++){
-        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
+    //for(var i = 0; i < MissionList.length; i++){
+    //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
+    //for(var i = 0; i < missionItem.length; i++){
+    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
     console.log("Mission added");
 
     for (var i = 0 ; i < cropTypeList.length ; i++){
@@ -2469,7 +2469,6 @@ function initGameConfig(){
 
     for (var i = 0 ; i < landTypeList.length ; i++){
         usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
-
     }
 
 
@@ -2504,8 +2503,20 @@ Template.index.created = function() {
       initGameConfig();
       console.log(err);
     }
+    //for(var i = 0; i < 70; i++){
+    //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
+    //for(var i = 70; i < MissionList.length; i++){
+    //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
 
-
-
-
+    //for(var i = 70; i < 140; i++){
+    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
+    //for(var i = 140; i < 210; i++){
+    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
+    //for(var i = 210; i < missionItem.length; i++){
+    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
 }

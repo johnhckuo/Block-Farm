@@ -45,14 +45,6 @@ contract GameCore{
     uint unlockCropNum = 3;
     uint unlockCropLevel = 5;
 
-    uint[] _MissionId;
-    bytes32[] _MissionName;
-    uint[] _MissionExp;
-    uint[] _MissionLimit;
-    bool[] _MissionAccountstatus;
-    uint[] _MissionCropId;
-    uint[] _MissionQuantity;
-
     function GameCore(address _congressAddress, address _usingPropertyInstanceAddress){
         CongressAddress = _congressAddress;
         congress = Congress(CongressAddress);
@@ -101,31 +93,44 @@ contract GameCore{
         obj.quantity.push(_quantity);
     }
 
-    function getMission() constant returns(uint[], bytes32[], uint[], uint[], bool[]){
+    function getMission(uint m_Id) constant returns(uint, bytes32, uint, uint, bool){
+
+        uint _MissionId;
+        bytes32 _MissionName;
+        uint _MissionExp;
+        uint _MissionLimit;
+        bool _MissionAccountstatus;
 
         uint s_Id = congress.stakeholderId(msg.sender);
         uint user_level = congress.getStakeholder_Mission(s_Id);
-        for(uint i = 0; i < MissionList.length; i++){
-            Mission obj = MissionList[i];
-            if((obj.missionStatus)&&(user_level >= obj.lvl_limitation)){
-                _MissionId.push(obj.id);
-                _MissionName.push(obj.name);
-                _MissionExp.push(obj.exp);
-                _MissionLimit.push(obj.lvl_limitation);
-                _MissionAccountstatus.push(obj.accountStatus[s_Id]);
+        Mission obj = MissionList[m_Id];
+        if((obj.missionStatus)&&(user_level >= obj.lvl_limitation)){
+            _MissionId = obj.id;
+            _MissionName = obj.name;
+            _MissionExp = obj.exp;
+            _MissionLimit = obj.lvl_limitation;
+            _MissionAccountstatus = obj.accountStatus[s_Id];
+        }
+        else{
+            if(!obj.missionStatus){
+                return (0, "mission close", 0, 999, true);
+            }
+            else if(user_level < obj.lvl_limitation){
+                return (999, "lv_limited", 0, 999, true);
             }
         }
-        //else{
-        //    return ("empty_mission", 0, 999, true);
-        //}
         return (_MissionId, _MissionName, _MissionExp, _MissionLimit, _MissionAccountstatus);
     }
 
     function getMissionItemsArray(uint mId) constant returns(uint[] ,uint[]){
+
         Mission obj = MissionList[mId];
+
+        uint[] memory _MissionCropId = new uint[](obj.cropId.length);
+        uint[] memory _MissionQuantity = new uint[](obj.cropId.length);
         for(uint j = 0; j < obj.cropId.length; j++){
-            _MissionCropId.push(obj.cropId[j]);
-            _MissionQuantity.push(obj.quantity[j]);
+            _MissionCropId[j] = obj.cropId[j];
+            _MissionQuantity[j] = obj.quantity[j];
         }
         return(_MissionCropId,_MissionQuantity);
     }
