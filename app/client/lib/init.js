@@ -1152,7 +1152,7 @@ missionItem = [
         propertyId :2,
         quantity: 4
     },
-    // Mission1- 
+    // Mission1-
     {
         missionId: 4,
         propertyId :0,
@@ -2486,23 +2486,24 @@ function initGameConfig(){
 Template.index.created = function() {
     $.getScript('scripts/buttons.js');
 
-    init();
-    Session.set('currentAccount', currentAccount);
-    Session.set('cropsPerLvl', cropsPerLvl);
+    // init();
+    // Session.set('currentAccount', currentAccount);
+    // Session.set('cropsPerLvl', cropsPerLvl);
+    //
+    // if (Session.get('account') == "Account Not Found" || Session.get('account') == "Wallet Not Found"){
+    //     return false;
+    // };
+    //
+    // try{
+    //   var val = usingPropertyInstance.propertyTypeList(0);
+    //   console.log("=========== Data Inited ===========");
+    //
+    // }
+    // catch(err){
+    //   initGameConfig();
+    //   console.log(err);
+    // }
 
-    if (Session.get('account') == "Account Not Found" || Session.get('account') == "Wallet Not Found"){
-        return false;
-    };
-
-    try{
-      var val = usingPropertyInstance.propertyTypeList(0);
-      console.log("=========== Data Inited ===========");
-
-    }
-    catch(err){
-      initGameConfig();
-      console.log(err);
-    }
     //for(var i = 0; i < 70; i++){
     //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     //}

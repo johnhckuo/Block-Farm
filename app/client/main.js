@@ -72,6 +72,11 @@ var loading = function(on){
 
 }
 
+var validateEmail = function(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
 ////////////////////
 //                //
 //     Helpers    //
@@ -117,60 +122,44 @@ if (Meteor.isClient) {
         event.target.className = "btn btn-info chooseCharacters";
         character = event.target.value;
     },
-    'keydown .s_Name':function(event){
-        var ew = event.which;
-        if (ew == 16 || (ew <= 40 && ew >= 37)){
-            return true;
-        }
-        if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122) || ew == 189){
-            if ($(event.target).val().length >= 10){
-              sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
-              return true;
-            }
-            return true;
-        }else if (ew == 8){
-            if ($(event.target).val().length >0){
-            }
-            return true;
-        }else{
-            sweetAlert("Oops...", "Only english characters are accepted", "error");
-            return false;
-        }
+    'submit form': function (event){
 
-    },
-    'click #next': function (event){
         event.preventDefault();
-
-        var name = $(".s_Name").val().toString();
-
-        if (name.trim() == ""){
-            sweetAlert("Oops...", "Please enter your username !", "error");
+        var email = $('[name=email]').val();
+        var password = $('[name=password]').val();
+        if (email.trim() == ""){
+            sweetAlert("Oops...", "Please enter your email !", "error");
             return;
         }else if (typeof character == 'undefined'){
             sweetAlert("Oops...", "Please choose your character !", "error");
             return;
-        }else if (account == null){
-            sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
+        }else if (password == null){
+            sweetAlert("Oops...", "Please enter your password !", "error");
             return;
         }
-        /*
-        // send request to faucet
-        var jqxhr = $.get( "http://faucet.ropsten.be:3001/donate/"+web3.eth.accounts[currentAccount], function() {
-          console.log( "request sent successfully" );
-        })
-        .done(function() {
-          console.log( "ether sent successfully" );
-        })
-        .fail(function() {
-          console.log( "An error has occured while sending ether" );
-        })
-        .always(function() {
-          alert( "finished" );
+
+        if (!validateEmail(email)){
+          sweetAlert("Oops...", "Please enter a valid email !", "error");
+          return;
+        }
+
+        $(".loadingParent").fadeIn(1000);
+
+
+        Meteor.call('register', email, password, character, function(err, res){
+          if(err){
+            console.log(err);
+            sweetAlert("Oops", err.reason, "error");
+            Session.set("data", err.reason);
+          }else{
+            Session.set("data", res);
+            $(".loadingParent").fadeOut();
+            sweetAlert("Oh Yeah!", "Register Complete :)", "success");
+            console.log(Meteor.users.find({'email':"john"}).fetch());
+
+          }
         });
-        // ----
-        */
-        //alert(web3.eth.accounts[currentAccount]);
-        register();
+        //register();
 
     },
   });
