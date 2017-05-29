@@ -2,7 +2,7 @@ import { Session } from 'meteor/session';
 
 
 
-currentAccount = 1;
+currentAccount = 4;
 cropsPerLvl =3;
 
 cropTypeList = [
@@ -1152,7 +1152,7 @@ missionItem = [
         propertyId :2,
         quantity: 4
     },
-    // Mission1- 
+    // Mission1-
     {
         missionId: 4,
         propertyId :0,

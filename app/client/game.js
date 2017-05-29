@@ -322,9 +322,29 @@ Template.shop.events({
     'click #btn_property_tradeable':function(){
         //set_property_table();
     },
-    'change input[type="range"]':function(e){
-      var eTarget=$(e.target);
-      eTarget.css({'background-image':'-webkit-linear-gradient(left ,#82cbd1 0%,#82cbd1 '+eTarget.val()+'%,#C7FFEF '+eTarget.val()+'%, #C7FFEF 100%)'});
+    'mouseenter input[type="range"]':function(e){
+      var r=$(e.target);
+
+      var p=r.val();
+      r.on('click',function(){
+        p=r.val();
+        bg(p);
+      });
+      r.on('mousemove',function(){
+        p=r.val();
+        bg(p);
+      });
+
+      function bg(n){
+        r.css({'background-image':'-webkit-linear-gradient(left ,#82cbd1 0%,#82cbd1 '+n+'%,#C7FFEF '+n+'%, #C7FFEF 100%)'});
+      }
+    },
+    'click #btn_property_save': function () {
+      save_rating_setting();
+      $('.property_shop').css('display', 'none');
+    },
+    'click #btn_property_cancel': function () {
+      set_propertyType_table();
     }
 });
 
@@ -936,7 +956,18 @@ Template.gamingArea.events({
         }
         //$(".canvas").css("transform", "translate(" + x + "px, " +y+ "px)");
         $('.canvas').css('-webkit-transform',  'translateX(' + x+ 'px) translateY(' + y+ 'px)');
-    }
+    },
+    'click .musicSwitch': function (event) {
+        if (!audio.paused){
+            audio.pause();
+            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_off.svg");
+        }else{
+            audio.play();
+            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
+
+        }
+
+    },
 })
 
 function PanelControl(panelIndex){
@@ -945,7 +976,7 @@ function PanelControl(panelIndex){
     $(".crop"+panelCounter).css("background-color","rgba(255,255,255,0.45)");
 
     $(".crop"+panelIndex).css("background-color","rgba(255,255,255,0.65)");
-    $(".statusPanel:nth-child("+panelIndex+")").css("z-index", 1);
+    $(".statusPanel:nth-child("+panelIndex+")").css("z-index", 100);
     $(".statusPanel:nth-child("+panelIndex+")").addClass("statusPanelShow");
     panelCounter = panelIndex;
 
@@ -1054,12 +1085,14 @@ Template.characterList.events({
                 rerenderCropLand(visitNode);
                 $('.SyndicateExp').css('visibility', 'visible');
                 $('.userExp').css('visibility', 'collapse');
-                $('.functionSwitch').append($('<input></input>',{
-                    type:'button',
+                $('.nextSwitch').append($('<input></input>',{
+                    type:'image', //type:'button',
                     name:'button',
-                    class:'btn btn-primary nextHome',
-                    value:'Next'
+                    class:'nextHome',
+                    value:'Next',
+                    src:'/img/game/nextHome.svg'
                 }));
+
                 gameMode = "Thief";
                 $('.crop2').css('display','none');
                 currentCharacter = "thief";
@@ -1164,17 +1197,17 @@ Template.characterList.events({
       }
     },
 
-    'click .musicSwitch': function (event) {
-        if (!audio.paused){
-            audio.pause();
-            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_off.svg");
-        }else{
-            audio.play();
-            $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
-
-        }
-
-    },
+    // 'click .musicSwitch': function (event) {
+    //     if (!audio.paused){
+    //         audio.pause();
+    //         $(".musicSwitch").find("img").attr("src", "/img/game/speaker_off.svg");
+    //     }else{
+    //         audio.play();
+    //         $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
+    //
+    //     }
+    //
+    // },
 
     // 'mouseenter .userExp':function(event){
     //     $(".expHoverText").fadeIn();
@@ -1814,7 +1847,7 @@ var updateUserStamina = function(){
 }
 
 var updateUserExp = function(exp){
-    if(currentUser.level < 45){
+    if(currentUser.level < 46){
         currentUser.exp += parseInt(exp);
         currentUser.totalExp += currentUser.exp;
         var lvlCap = levelCap(currentUser.level);
@@ -2243,7 +2276,8 @@ rend_propertyType_table = function(_length){
         //content
         for (i = 0; i < display_field.length; i++) {
             tr = $('<tr></tr>');
-            tr.append($('<td></td>').text(display_field[i].name));
+            //tr.append($('<td></td>').text(display_field[i].name));
+            tr.append($('<td></td>').html("<div><div><img src = '"+prefix + (display_field[i].name.toLowerCase())+postfix+"'/></div>"+"<div>"+display_field[i].name+"</div></div>"));
             //tr.append($('<td></td>').text(display_field[i].propertyCount));
             td = $('<td></td>');
             td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
@@ -2264,28 +2298,28 @@ rend_propertyType_table = function(_length){
         }
         //content
         //control bar
-        tr = $('<tr></tr>');
-        td = $('<td></td>').attr('colspan', 3);
-        td.append($('<button></button>').attr( {
-            // type: 'button',
-            id: 'btn_property_save',
-            value: 'SAVE',
-            class:'hvr-rectangle-out',
-        }).append('SAVE').on('click', function () {
-            save_rating_setting();
-            $('.property_shop').css('display', 'none');
-        }));
-        td.append($('<button></button>').attr( {
-            // type: 'button',
-            id: 'btn_property_cancel',
-            value: 'CANCEL',
-            class:'hvr-rectangle-out'
-        }).append('CANCEL').on('click', function () {
-            set_propertyType_table();
-            // sweetAlert("Warning!", 'cancel', "warning");
-        }));
-        tr.append(td);
-        table.append(tr);
+        // tr = $('<tr></tr>');
+        // td = $('<td></td>').attr('colspan', 3);
+        // td.append($('<button></button>').attr( {
+        //     // type: 'button',
+        //     id: 'btn_property_save',
+        //     value: 'SAVE',
+        //     class:'hvr-rectangle-out',
+        // }).append('SAVE').on('click', function () {
+        //     save_rating_setting();
+        //     $('.property_shop').css('display', 'none');
+        // }));
+        // td.append($('<button></button>').attr( {
+        //     // type: 'button',
+        //     id: 'btn_property_cancel',
+        //     value: 'CANCEL',
+        //     class:'hvr-rectangle-out'
+        // }).append('CANCEL').on('click', function () {
+        //     set_propertyType_table();
+        //     // sweetAlert("Warning!", 'cancel', "warning");
+        // }));
+        // tr.append(td);
+        // table.append(tr);
         //control bar
         $('.shop_content').append(table);
         loading(0);
@@ -2636,4 +2670,3 @@ var selectedSort = function(data){
     }
     return data;
 }
-

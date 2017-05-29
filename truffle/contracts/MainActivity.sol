@@ -48,8 +48,10 @@ contract MainActivity is usingOraclize{
 
     uint matchLength = 0;
 
-    function MainActivity(address _congressAddress, address _propertyAddress, address _mainActivityAddress){
+    uint john=  0;
 
+    function MainActivity(address _congressAddress, address _propertyAddress, address _mainActivityAddress){
+      john = 1;
       congress = Congress(_congressAddress);
       property = usingProperty(_propertyAddress);
       mainactivity2 = MainActivity2(_mainActivityAddress);
@@ -59,6 +61,10 @@ contract MainActivity is usingOraclize{
 
       //matchmaking(0);    // start executing matchmaking algo
 
+    }
+
+    function getJohn() constant returns (uint){
+    return john;
     }
 
     function initGameData(uint s_Id, bytes32 _name, bytes32 _character){

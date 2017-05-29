@@ -1,0 +1,10 @@
+.aboutUs{
+  position: absolute;
+  height:100vh;
+}
+.aboutUs_content img{
+  position: relative;
+  top:150px;
+  width: 100vw;
+  height: auto;
+}
