@@ -1878,7 +1878,7 @@ var updateUserExp = function(exp){
 
                 getUserData(s_Id);
                 if((currentUser.level % 5) == 0){
-                    GameCoreInstance.levelupLandUpdate((currentUser.landSize), s_Id, {from:web3.eth.accounts[currentAccount], gas:3000000});
+                    GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
                 }
                 rerenderCropLand(s_Id);
                 lvlCap = levelCap(currentUser.level);

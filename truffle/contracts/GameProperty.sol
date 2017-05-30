@@ -91,11 +91,19 @@ contract GameProperty{
         |                                |
         ----------------------------------  */
 
-    function addUserLandConfiguration(uint u_Id){
-        uint _id = userLandConfigurationList[u_Id].id.length++;
-        userLandConfigurationList[u_Id].id.push(_id);
-        userLandConfigurationList[u_Id].land.push(-1);
-        userLandConfigurationList[u_Id].crop.push(-1);
+    function addUserLandConfiguration(uint u_Id, uint landSize){
+        uint difference;
+        if (landSize == 3){
+            difference = landSize*landSize;
+        }else{
+            difference = (landSize*landSize) - ((landSize-1)*(landSize-1));
+        }
+        for (uint i = 0 ; i < difference ; i++){
+            uint _id = userLandConfigurationList[u_Id].id.length++;
+            userLandConfigurationList[u_Id].id.push(_id);
+            userLandConfigurationList[u_Id].land.push(-1);
+            userLandConfigurationList[u_Id].crop.push(-1);
+        }
 
     }
 
@@ -113,11 +121,15 @@ contract GameProperty{
 
     }
 
-    function moveUserLandPosition(uint u_Id, uint oldId, uint newId){
-        userLandConfigurationList[u_Id].land[newId] = userLandConfigurationList[u_Id].land[oldId];
-        userLandConfigurationList[u_Id].crop[newId] = userLandConfigurationList[u_Id].crop[oldId];
-        userLandConfigurationList[u_Id].land[oldId] = -1;
-        userLandConfigurationList[u_Id].crop[oldId] = -1;
+    function moveUserLandPosition(uint u_Id, uint landSize){
+
+        uint length = landSize-1;
+        for (uint i = ((length*length)-1) ; i >= length  ; i--){
+            userLandConfigurationList[s_Id].land[i + (i/length)] = userLandConfigurationList[s_Id].land[i];
+            userLandConfigurationList[s_Id].crop[i + (i/length)] = userLandConfigurationList[s_Id].crop[i];
+            userLandConfigurationList[s_Id].land[i] = -1;
+            userLandConfigurationList[s_Id].crop[i] = -1;
+        }
     }
 
     /*  ----------------------------------
