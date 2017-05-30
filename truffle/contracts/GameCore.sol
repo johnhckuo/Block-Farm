@@ -45,14 +45,12 @@ contract GameCore{
     }
 
     function pushMissionAccountStatus(){
-        uint currentLength = MissionList[0].accountStatus.length;
         uint stakeholderLength = congress.getStakeholdersLength();
-        uint diff = stakeholderLength - currentLength;
-        if(diff > 0){
-            for(uint i = 1; i <= diff; i++){
-                for(uint j = 0; j < MissionList.length; j++){
-                    MissionList[j].accountStatus.push(false);
-                }
+        for(uint i = 0; i < MissionList.length; i++){
+            uint currentLength = MissionList[i].accountStatus.length;
+            uint diff = stakeholderLength - currentLength;
+            for(uint j = 0; j < diff; j++){
+                MissionList[i].accountStatus.push(false);
             }
         }
     }

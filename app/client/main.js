@@ -18,6 +18,7 @@ var stakeholderLength;
 var ownerAccount = 0;
 var renderChecked = false;
 var userNameCounter = 0;
+var name;
 Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
@@ -141,7 +142,7 @@ if (Meteor.isClient) {
     'click #next': function (event){
         event.preventDefault();
 
-        var name = $(".s_Name").val().toString();
+        name = $(".s_Name").val().toString();
 
         if (name.trim() == ""){
             sweetAlert("Oops...", "Please enter your username !", "error");
@@ -183,7 +184,7 @@ function register(){
     CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]},function(err, res){
       var s_Id = res.c[0];
       console.log(s_Id);
-      MainActivityInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+      PlayerSettingInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
         usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
           var length = res.c[0];
           CongressInstance.setPropertyIndex(s_Id, length, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
