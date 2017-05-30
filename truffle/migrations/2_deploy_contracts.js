@@ -12,7 +12,7 @@ var GameProperty = artifacts.require("GameProperty.sol");
 var Congress = artifacts.require("Congress.sol");
 var GameCore = artifacts.require("GameCore.sol");
 var PlayerSetting = artifacts.require("PlayerSetting.sol");
-
+var Matchmaking = artifacts.require("Matchmaking.sol");
 
 module.exports = function(deployer) {
   return deployer.deploy(Congress).then(function () {
@@ -20,6 +20,6 @@ module.exports = function(deployer) {
   }).then(function(){
       return deployer.deploy(usingProperty, Congress.address);
   }).then(function () {
-      return deployer.deploy([[GameCore, Congress.address, usingProperty.address], [PlayerSetting, Congress.address, usingProperty.address, GameProperty.address]]);
+      return deployer.deploy([[GameCore, Congress.address, usingProperty.address],[Matchmaking, Congress.address, usingProperty.address] , [PlayerSetting, Congress.address, usingProperty.address, GameProperty.address]]);
   });
 };
