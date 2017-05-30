@@ -1,7 +1,7 @@
 
 pragma solidity ^0.4.4;
 
-contract usingProperty2{
+contract GameProperty{
 
     struct UserLandConfiguration{
         uint[] id;
@@ -33,7 +33,7 @@ contract usingProperty2{
 
     mapping (uint => CropList) cropList;
 
-    function usingProperty2(){
+    function GameProperty(){
 
 
     }

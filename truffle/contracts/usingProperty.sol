@@ -268,7 +268,7 @@ contract usingProperty{
         ----------------------------------  */
 
     function updatePropertyTypeRating(uint _id, uint rate, string operation){
-        if (StringUtils.equal(operation,"update")){
+        if (equal(operation,"update")){
 
             uint length = congress.getStakeholdersLength();
 
@@ -280,7 +280,7 @@ contract usingProperty{
 
             propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (length-1))+rate)/length;
 
-        }else if (StringUtils.equal(operation,"new")){
+        }else if (equal(operation,"new")){
 
             for (uint j = 0 ; j < _id ; j++){
                 propertyTypeList[j].rating.push(0);
