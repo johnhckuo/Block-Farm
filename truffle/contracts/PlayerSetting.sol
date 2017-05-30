@@ -16,14 +16,14 @@ contract GameProperty{
   function moveUserLandPosition(uint u_Id, uint oldId, uint newId);
 }
 
-contract Matchmaking{
+contract PlayerSetting{
     Congress congress;
     usingProperty property;
     GameProperty gameProperty;
     uint unlockCropNum = 3;
     uint unlockCropLevel = 5;
 
-    function Matchmaking(address _congressAddress, address _usingPropertyInstanceAddress, address _gamePropertyAddress){
+    function PlayerSetting(address _congressAddress, address _usingPropertyInstanceAddress, address _gamePropertyAddress){
         congress = Congress(_congressAddress);
         property = usingProperty(_usingPropertyInstanceAddress);
         gameProperty = GameProperty(_gamePropertyAddress);
