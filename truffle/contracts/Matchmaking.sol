@@ -8,20 +8,26 @@ contract Congress{
 }
 
 contract usingProperty{
-    function addUserLandConfiguration(uint);
     function addUserPropertyType(uint, uint);
-    function moveUserLandPosition(uint u_Id, uint oldId, uint newId);
+}
+
+contract GameProperty{
+  function addUserLandConfiguration(uint);
+  function moveUserLandPosition(uint u_Id, uint oldId, uint newId);
 }
 
 contract Matchmaking{
     Congress congress;
     usingProperty property;
+    GameProperty gameProperty;
     uint unlockCropNum = 3;
     uint unlockCropLevel = 5;
 
-    function Matchmaking(address _congressAddress, address _usingPropertyInstanceAddress){
+    function Matchmaking(address _congressAddress, address _usingPropertyInstanceAddress, address _gamePropertyAddress){
         congress = Congress(_congressAddress);
         property = usingProperty(_usingPropertyInstanceAddress);
+        gameProperty = GameProperty(_gamePropertyAddress);
+
         congress.addMember();
         initGameData(0, "Moderator", "guard");
     }
@@ -45,7 +51,7 @@ contract Matchmaking{
 
             uint difference = (landSize*landSize) - ((landSize-1)*(landSize-1));
             for (uint i = 0 ; i < difference ; i++){
-                property.addUserLandConfiguration(u_Id);
+                gameProperty.addUserLandConfiguration(u_Id);
             }
             //levelupLandUpdate(landSize, u_Id);
         }
@@ -59,7 +65,7 @@ contract Matchmaking{
 
         //ignore the first line since their id remains the same
         for (uint i = ((length*length)-1) ; i >= length  ; i--){
-            property.moveUserLandPosition(s_Id, i, i + (i/length));
+            gameProperty.moveUserLandPosition(s_Id, i, i + (i/length));
         }
 
     }
@@ -67,7 +73,7 @@ contract Matchmaking{
     function initGameData(uint s_Id, bytes32 _name, bytes32 _character){
         congress.initPlayerData(_name, _character);
         for (uint i = 0 ; i < 9 ; i++){
-            property.addUserLandConfiguration(s_Id);
+            gameProperty.addUserLandConfiguration(s_Id);
         }
     }
 }

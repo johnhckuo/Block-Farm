@@ -3,61 +3,38 @@
   "abi": [
     {
       "constant": false,
+      "inputs": [],
+      "name": "addMember",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
       "inputs": [
         {
-          "name": "_id",
+          "name": "",
           "type": "uint256"
         },
         {
-          "name": "p_Id",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
           "type": "uint256"
         }
       ],
-      "name": "addProperty",
+      "name": "updateGameData",
       "outputs": [],
       "payable": false,
       "type": "function"
     },
     {
       "constant": true,
-      "inputs": [],
-      "name": "getStakeholdersLength",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
       "inputs": [
         {
-          "name": "s_Id",
-          "type": "uint256"
-        },
-        {
-          "name": "index",
-          "type": "uint256"
-        }
-      ],
-      "name": "getPropertyId",
-      "outputs": [
-        {
           "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "s_Id",
           "type": "uint256"
         }
       ],
@@ -77,57 +54,38 @@
         },
         {
           "name": "",
-          "type": "uint256"
-        },
-        {
-          "name": "",
-          "type": "address"
+          "type": "bytes32"
         },
         {
           "name": "",
           "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32"
         },
         {
           "name": "",
           "type": "bytes32"
         }
       ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "stakeholderId",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "s_Id",
-          "type": "uint256"
-        }
-      ],
-      "name": "getStakeholderPropertyCount",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "name": "initPlayerData",
+      "outputs": [],
       "payable": false,
       "type": "function"
     }
@@ -148,5 +106,5 @@
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1496136081099
+  "updated_at": 1496136690560
 }
