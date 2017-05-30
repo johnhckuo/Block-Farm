@@ -12,8 +12,7 @@ contract usingProperty{
 }
 
 contract GameProperty{
-  function addUserLandConfiguration(uint);
-  function moveUserLandPosition(uint u_Id, uint oldId, uint newId);
+  function addUserLandConfiguration(uint, uint);
 }
 
 contract PlayerSetting{
@@ -48,32 +47,17 @@ contract PlayerSetting{
 
             uint p_Id = random + ((level/unlockCropLevel)*unlockCropNum);
             property.addUserPropertyType(u_Id, p_Id);
-
-            uint difference = (landSize*landSize) - ((landSize-1)*(landSize-1));
-            for (uint i = 0 ; i < difference ; i++){
-                gameProperty.addUserLandConfiguration(u_Id);
-            }
-            //levelupLandUpdate(landSize, u_Id);
+            gameProperty.addUserLandConfiguration(u_Id, landSize);
         }
         congress.updateGameData(u_Id, landSize, level);
         //congress.updateUserExp(u_Id, exp);
 
     }
 
-    function levelupLandUpdate(uint landSize, uint s_Id){
-        uint length = landSize-1;
-
-        //ignore the first line since their id remains the same
-        for (uint i = ((length*length)-1) ; i >= length  ; i--){
-            gameProperty.moveUserLandPosition(s_Id, i, i + (i/length));
-        }
-
-    }
 
     function initGameData(uint s_Id, bytes32 _name, bytes32 _character){
         congress.initPlayerData(_name, _character);
-        for (uint i = 0 ; i < 9 ; i++){
-            gameProperty.addUserLandConfiguration(s_Id);
-        }
+        gameProperty.addUserLandConfiguration(s_Id, 3);
+
     }
 }
