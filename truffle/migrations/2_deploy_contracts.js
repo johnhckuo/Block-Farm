@@ -15,12 +15,9 @@ var PlayerSetting = artifacts.require("PlayerSetting.sol");
 
 
 module.exports = function(deployer) {
-  deployer.deploy(StringUtils);
-  deployer.deploy(Oraclize);
   return deployer.deploy(Congress).then(function () {
       return deployer.deploy(GameProperty);
   }).then(function(){
-      deployer.link(StringUtils, usingProperty);
       return deployer.deploy(usingProperty, Congress.address);
   }).then(function () {
       return deployer.deploy([[GameCore, Congress.address, usingProperty.address], [PlayerSetting, Congress.address, usingProperty.address, GameProperty.address]]);
