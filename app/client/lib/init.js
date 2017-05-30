@@ -2455,12 +2455,12 @@ function init(event){
 
 function initGameConfig(){
 
-    //for(var i = 0; i < MissionList.length; i++){
-    //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //}
-    //for(var i = 0; i < missionItem.length; i++){
-    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //}
+    for(var i = 0; i < MissionList.length; i++){
+        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    }
+    for(var i = 0; i < missionItem.length; i++){
+        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    }
     console.log("Mission added");
 
     for (var i = 0 ; i < cropTypeList.length ; i++){

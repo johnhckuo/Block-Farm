@@ -1314,23 +1314,24 @@ var eventListener = function(){
     // });
 
     // watch for an event with {some: 'args'}
-    var events = MainActivityInstance.matchSuccess({fromBlock: 0, toBlock: 'latest'});
-    events.watch(function(error, result){
-        console.log(result);
-        updateUserData(s_Id);
-        showConfirmation(s_Id);
-    });
+    //matchmakingbug
+    //var events = MainActivityInstance.matchSuccess({fromBlock: 0, toBlock: 'latest'});
+    //events.watch(function(error, result){
+    //    console.log(result);
+    //    updateUserData(s_Id);
+    //    showConfirmation(s_Id);
+    //});
 
     // would get all past logs again.
     events.get(function(error, logs){
         console.log(logs);
     });
 
-
-    var events2 = MainActivityInstance.returnOrigin({fromBlock: 0, toBlock: 'latest'});
-    events2.watch(function(error, result){
-        console.log(result);
-    });
+    //matchmakingbug
+    //var events2 = MainActivityInstance.returnOrigin({fromBlock: 0, toBlock: 'latest'});
+    //events2.watch(function(error, result){
+    //    console.log(result);
+    //});
 
     // would get all past logs again.
     events2.get(function(error, logs){
@@ -1611,7 +1612,7 @@ var fetchGameInitConfig = function(s_Id){
 
     while (flag){
         try{
-            landData.push(usingPropertyInstance.landTypeList(i));
+            landData.push(GamePropertyInstance.landTypeList(i));
             i++;
         }
         catch(err) {
