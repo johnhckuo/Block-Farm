@@ -393,9 +393,9 @@ Template.gameIndex.events({
 
             //userLandConfiguration[_landId].crop = cropTypeList[currentCropId].id;
             userLandConfiguration[_landId].crop = _id;
-            usingPropertyInstance.updateUserLandConfiguration(s_Id, _landId, _id, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
+            GamePropertyInstance.updateUserLandConfiguration(s_Id, _landId, _id, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-            usingPropertyInstance.addCropList(s_Id, cropTypeList[currentCropId].name, cropTypeList[currentCropId].img[3], start, end, parseInt(cropTypeList[currentCropId].id), 0, parseInt(cropTypeList[currentCropId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
+            GamePropertyInstance.addCropList(s_Id, cropTypeList[currentCropId].name, cropTypeList[currentCropId].img[3], start, end, parseInt(cropTypeList[currentCropId].id), 0, parseInt(cropTypeList[currentCropId].count), {from:web3.eth.accounts[currentAccount], gas:2000000});
             cropList.push({
                 id: _id,
                 name: cropTypeList[currentCropId].name,
@@ -433,7 +433,7 @@ Template.gameIndex.events({
             $("."+currentCropLand).css({"border-style":"none"});
             var _id = landList.length;
             userLandConfiguration[_landId].land = landTypeList[currentLandId].id;
-            usingPropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, landTypeList[currentLandId].id, 'land', {from:web3.eth.accounts[currentAccount], gas:2000000});
+            GamePropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, landTypeList[currentLandId].id, 'land', {from:web3.eth.accounts[currentAccount], gas:2000000});
 
             landList.push({
                 id: _id,
@@ -578,8 +578,6 @@ Template.gameIndex.events({
             }
             usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:3000000});
 
-            //usingPropertyInstance.addProperty(stockList[stockId].name, stockList[stockId].count, stockList[stockId].minUnit, stockList[stockId].extraData, stockList[stockId].type, stockList[stockId].tradeable, {from:web3.eth.accounts[currentAccount], gas:2000000});
-
             var configId;
             for (var i = 0 ; i < userLandConfiguration.length ; i++){
                 if (userLandConfiguration[i].crop == id){
@@ -588,7 +586,7 @@ Template.gameIndex.events({
                 }
             }
 
-            usingPropertyInstance.updateUserLandConfiguration(s_Id, configId, -1, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
+            GamePropertyInstance.updateUserLandConfiguration(s_Id, configId, -1, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
 
             cropList[id].name = 0;
             cropList[id].img = 0;
@@ -597,7 +595,7 @@ Template.gameIndex.events({
             cropList[id].type = 0;
             cropList[id].ripe = 0;
 
-            usingPropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            GamePropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
             //cropList.splice(id, 1);
             $("."+cropClass).remove();
@@ -699,7 +697,7 @@ Template.gameIndex.events({
             $(event.target).remove();
 
             userLandConfiguration[_landId].land = -1;
-            usingPropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, -1, 'land', {from:web3.eth.accounts[currentAccount], gas:2000000});
+            GamePropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, -1, 'land', {from:web3.eth.accounts[currentAccount], gas:2000000});
         }
     },
     'mouseenter .croppedObject img':function(event){
@@ -901,6 +899,7 @@ Template.gamingArea.events({
 
     },
     'click .matchesBtn':function(event){
+        //matchmakingbug
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
         MainActivity2Instance.updateConfirmation(m_Id, s_Id, 1, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
@@ -1062,11 +1061,13 @@ Template.statusList.events({
         updateUserExp(0);
     },
     'click .matchmaking': function(event){
+        //matchmakingbug
         MainActivityInstance.findOrigin({from:web3.eth.accounts[1], gas:5000000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
     },
     'click .confirmMatches':function(event){
+        //matchmakingbug
         MainActivity2Instance.checkConfirmation({from:web3.eth.accounts[0], gas:2000000});
         updateUserData(s_Id);
         showConfirmation(s_Id);
@@ -1107,7 +1108,7 @@ Template.characterList.events({
                 loading(0);
             }
             else if(Session.get('userCharacter') == "Guard"){
-
+                //matchmakingbug
                 var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]}).c[0];
                 var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]}).c[0];
                 var matchDiff = matchLength - gaurdMatchID;
@@ -1349,7 +1350,7 @@ var showConfirmation = function(s_Id){
     $(".matches").remove();
 
     for (var i = 0 ; i < length ; i++){
-
+        //matchmakingbug
         var data = MainActivity2Instance.getMatchMaking.call(currentUser.matches[i], {from:web3.eth.accounts[currentAccount]});
         var owners = data[1];
         var properties = data[2];
@@ -1450,9 +1451,9 @@ var fetchAllCropTypes = function(){
 
 var loadCropList = function(s_Id){
     cropList = [];
-    var data = usingPropertyInstance.getCropList(s_Id, { from:web3.eth.accounts[currentAccount]});
-    var countData = usingPropertyInstance.getCropListCount(s_Id, {from:web3.eth.accounts[currentAccount]});
-    var length = usingPropertyInstance.getCropListLength(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var data = GamePropertyInstance.getCropList(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var countData = GamePropertyInstance.getCropListCount(s_Id, {from:web3.eth.accounts[currentAccount]});
+    var length = GamePropertyInstance.getCropListLength(s_Id, { from:web3.eth.accounts[currentAccount]});
     for (var i = 0 ; i < length ; i++){
         var start = web3.toUtf8(data[3][i]).split(".")[0]+"Z";
         var end = web3.toUtf8(data[4][i]).split(".")[0]+"Z";
@@ -1562,7 +1563,7 @@ var updateUserData = function(s_Id){
 
 var getLandConfiguration = function(s_Id){
     userLandConfiguration = [];
-    var data = usingPropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var data = GamePropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
     landSize = Math.sqrt(data[0].length);
 
     var contractLandData = data[0];
@@ -1797,7 +1798,6 @@ var initCropLand = function(id){
             $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[2] + postfix +"' />");
             //cropList[i].ripe = 1;
         }
-        //0430 wait to change stolen svg
         var stolenFlag = "f";
         if(cropList[index].count != cropTypeList[typeIndex].count){
             $(".cropObject").html("<img src = '" + prefix+ cropTypeList[typeIndex].img[4] + postfix +"' />");
@@ -1875,7 +1875,7 @@ var updateUserExp = function(exp){
 
             CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-            GameCoreInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
+            PlayerSettingInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
                 levelUp("userLevel");
                 getUserData(s_Id);
                 rerenderCropLand(s_Id);
@@ -1888,7 +1888,7 @@ var updateUserExp = function(exp){
 
                 getUserData(s_Id);
                 if((currentUser.level % 5) == 0){
-                    GameCoreInstance.levelupLandUpdate((currentUser.landSize), s_Id, {from:web3.eth.accounts[currentAccount], gas:3000000});
+                    PlayerSettingInstance.levelupLandUpdate((currentUser.landSize), s_Id, {from:web3.eth.accounts[currentAccount], gas:3000000});
                 }
                 rerenderCropLand(s_Id);
                 lvlCap = levelCap(currentUser.level);
@@ -2385,10 +2385,6 @@ get_mission_list = function(){
     var mission_count = GameCoreInstance.getMissionsLength.call({from: web3.eth.accounts[currentAccount]}).c[0];
     console.log(mission_count);
     mission_list = [];
-    //var mission_source = GameCoreInstance.getMission.call(1, {from:web3.eth.accounts[currentAccount]});
-    //console.log(mission_source);
-    //var l = GameCoreInstance.getMissionStatus.call(1, {from:web3.eth.accounts[currentAccount]});
-    //console.log(l);
     for(k = 1; k < mission_count; k++){
         var mission_source = GameCoreInstance.getMission.call(k, {from:web3.eth.accounts[currentAccount]}, function(err, result){
             if(err){
@@ -2412,7 +2408,6 @@ get_mission_list = function(){
                         var _crop_name = res.name;
                         var _quantity = item_source[1][j].c[0];
                         var _img = res.img;
-                        // item = {crop_id:item_source[0].c[0], crop_name: web3.toUtf8(item_source[1]), quantity:item_source[2].c[0], img:web3.toUtf8(item_source[3])};
                         item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
                         mission.items.push(item);
                     }

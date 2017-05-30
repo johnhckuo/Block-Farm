@@ -2468,7 +2468,7 @@ function initGameConfig(){
     }
 
     for (var i = 0 ; i < landTypeList.length ; i++){
-        usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
+        GamePropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
     }
 
 
@@ -2509,7 +2509,9 @@ Template.index.created = function() {
     //for(var i = 70; i < MissionList.length; i++){
     //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     //}
-
+    //for(var i = 0; i < 70; i++){
+    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
     //for(var i = 70; i < 140; i++){
     //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     //}
