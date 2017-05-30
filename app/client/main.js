@@ -18,6 +18,7 @@ var stakeholderLength;
 var ownerAccount = 0;
 var renderChecked = false;
 var userNameCounter = 0;
+var name;
 Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
@@ -141,7 +142,7 @@ if (Meteor.isClient) {
     'click #next': function (event){
         event.preventDefault();
 
-        var name = $(".s_Name").val().toString();
+        name = $(".s_Name").val().toString();
 
         if (name.trim() == ""){
             sweetAlert("Oops...", "Please enter your username !", "error");
