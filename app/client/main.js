@@ -156,6 +156,7 @@ if (Meteor.isClient) {
           }else{
             Session.set("data", res);
             sweetAlert("Register Complete :)", "Your address is "+res, "success");
+            Router.go("game");
           }
         });
         //register();
@@ -175,8 +176,9 @@ if (Meteor.isClient) {
         }
 
         $(".loadingParent").fadeIn(1000);
+        console.log(email);
+        console.log(password)
 
-        
         Meteor.loginWithPassword(email, password, function(err, res){
           $(".loadingParent").fadeOut(100);
           console.log(Meteor.user())
@@ -212,7 +214,7 @@ if (Meteor.isClient) {
             console.log("sent");
           }
         });
-      
+
     }
   });
 }

@@ -168,6 +168,3 @@ var resetPassword = function(){
 
 
 }
-
-
-
