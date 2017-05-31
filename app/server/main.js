@@ -1,6 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
+var Web3 = require('web3');
+
+
 var token = "e22aef855bb045f7904fc4712e7668a9";
 
 
@@ -12,11 +15,20 @@ var usingProperty = "bfc454a9f57d47a81c31c2705aafff8871dfb9a8";
 var congress = "c770df271b8ee62c5cf6ffb60ee146381b880fc2";
 
 
+var prefix = "https://api.blockcypher.com/v1/beth/test/contracts/"
 
-
-var callJson = {
+var call = {
     "private": "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e",
     "gas_limit": 2000000
+};
+
+var updateCall = {
+    "data":{
+      "private": "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e",
+      "gas_limit": 2000000,
+    },
+    "header":"Content-Type:application/json"
+
 };
 
 var faucet = {
@@ -41,57 +53,46 @@ Meteor.startup(function () {
     post
 -----------*/
 
-var API_Register = function(email, password, character, callback){
-  Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/addrs?token="+token, function(error,result){
-      if (error){
-        callback(error, null);
-      }else{
-        addr = result;
-        //console.log(addr.data.private);
-        try{
-          Accounts.createUser({
-              email: email,
-              password: password,
-              address: addr.data.address,
-              private: addr.data.private,
-              character: character
-          });
-        }catch(e){
-          callback(e, null);
-
-        }
-
-        var config = {};
-        config.data = {};
-        config.headers = {};
-        config.data['address'] = addr.data.address;
-        config.data['amount'] = 1000000000000000000;
-
-        config.headers['Content-Type'] = 'application/json';
-        console.log(config);
-
-        Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/faucet?token="+token, config, function(error,result){
-            if (error){
-              console.log(error);
-              callback(error, null);
-            }else{
-              console.log(result);
-              callback(null, addr.data.address);
-
-            }
-        });
-
-      }
-  });
+var API_Register = function(email, password, character){
+    return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/addrs?token="+token);
 }
 
-var getEther = function(addr, callback){
+var updateContract = function(contract, method, args){
+  var req = prefix;
+  switch (contract){
+    case "GameCore":
+      req += gameCore;
+      break;
+    case "Congress":
+      req += congress;
+      break;
 
 
 
+  }
+  req += "/"+method+ "?token=" + token;
+  console.log(args);
+  updateCall.data.params = args;
+  return Meteor.http.call("POST",req, updateCall);
 
 }
 
+var getEther = function(addr){
+  var config = {};
+  config.data = {};
+  config.headers = {};
+  config.data['address'] = addr;
+  config.data['amount'] = 1000000000000000000;
+
+  config.headers['Content-Type'] = 'application/json';
+  console.log(config);
+
+  return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/faucet?token="+token, config);
+}
+
+var constantTxs = function(addr){
+  return Meteor.http.call("POST", + congress + "/getStakeholdersLength?token="+token, call);
+}
 
 /*----------
     get
@@ -104,7 +105,7 @@ if (Meteor.isServer){
           return "received";
       },
 	  'getStakeholderLength':function(){
-		  Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/contracts/"+CongressAddr+"/getStakeholdersLength?token="+token, JSON.stringify(callJson) , function(error,result){
+		  Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/contracts/"+CongressAddr+"/getStakeholdersLength?token="+token, JSON.stringify(call) , function(error,result){
 			   console.log(result);
 			   return "stakeholder length :"+result;
 		  });
@@ -118,20 +119,40 @@ if (Meteor.isServer){
 			   return "success";
 		  });
 	  },
-    'Register':function(email, password, character){
-      this.unblock();
+    'register' : function(email, password, character){
+      //this.unblock();
 
       // avoid blocking other method calls from the same client
       // asynchronous call to the dedicated API calling function
-      var response = Meteor.wrapAsync(API_Register)(email, password, character);
-      console.log(response);
-      return response;
+      var addr = Promise.await(API_Register(email, password, character));
+
+      Accounts.createUser({
+          email: email,
+          password: password,
+          address: addr.data.address,
+          private: addr.data.private,
+          character: character
+      });
+      var res = Promise.await(getEther(addr.data.address));
+      return addr.data.address;
 
 
     },
     'sendMail':function(userId){
         Accounts.sendVerificationEmail(userId)
 
+    },
+    'stakeholderId':function(addr){
+        return Promise.await(getStakeholderId(addr));
+    },
+    'updateContract':function(contract, method, args){
+        try{
+          var res = Promise.await(updateContract(contract, method, args));
+          console.log(res);
+          return new Promise(function(resolve, reject) { resolve(res.data.results); });
+        }catch(e){
+          console.log(e);
+        }
     }
   });
 }

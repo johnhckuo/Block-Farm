@@ -146,7 +146,7 @@ if (Meteor.isClient) {
         $(".loadingParent").fadeIn(1000);
 
 
-        Meteor.call('Register', email, password, character, function(err, res){
+        Meteor.call('register', email, password, character, function(err, res){
           $(".loadingParent").fadeOut(100);
 
           if(err){
@@ -188,7 +188,7 @@ if (Meteor.isClient) {
             Session.set("data", err.reason);
           }else{
             console.log(res);
-            Session.set("data", res);
+            Session.set("addr", res);
             sweetAlert("You are now logged in!", "Your address is "+res, "success");
             //Router.go("game");
           }
