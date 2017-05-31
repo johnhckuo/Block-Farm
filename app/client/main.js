@@ -118,6 +118,7 @@ if (Meteor.isClient) {
         event.target.className = "btn btn-info chooseCharacters";
         character = event.target.value;
     },
+
     'keydown .s_Name':function(event){
         var ew = event.which;
         if (ew == 16 || (ew <= 40 && ew >= 37)){
@@ -137,7 +138,6 @@ if (Meteor.isClient) {
             sweetAlert("Oops...", "Only english characters are accepted", "error");
             return false;
         }
-
     },
     'click #next': function (event){
         event.preventDefault();
@@ -154,28 +154,91 @@ if (Meteor.isClient) {
             sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
             return;
         }
-        /*
-        // send request to faucet
-        var jqxhr = $.get( "http://faucet.ropsten.be:3001/donate/"+web3.eth.accounts[currentAccount], function() {
-          console.log( "request sent successfully" );
-        })
-        .done(function() {
-          console.log( "ether sent successfully" );
-        })
-        .fail(function() {
-          console.log( "An error has occured while sending ether" );
-        })
-        .always(function() {
-          alert( "finished" );
+
+        if (!validateEmail(email)){
+          sweetAlert("Oops...", "Please enter a valid email !", "error");
+          return;
+        }
+
+        $(".loadingParent").fadeIn(1000);
+
+
+        Meteor.call('Register', email, password, character, function(err, res){
+          $(".loadingParent").fadeOut(100);
+
+          if(err){
+            console.log(err);
+            sweetAlert("Oops...", err.reason, "error");
+            Session.set("data", err.reason);
+          }else{
+            Session.set("data", res);
+            sweetAlert("Register Complete :)", "Your address is "+res, "success");
+            Router.go("game");
+          }
         });
-        // ----
-        */
+        //register();
+
+    },
+    'click #login': function (event){
+
+        event.preventDefault();
+        var email = $('[name=login_email]').val();
+        var password = $('[name=login_password]').val();
+        if (email.trim() == ""){
+            sweetAlert("Oops...", "Please enter your email !", "error");
+            return;
+        }else if (password == null){
+            sweetAlert("Oops...", "Please enter your password !", "error");
+            return;
+        }
+
+        $(".loadingParent").fadeIn(1000);
+        console.log(email);
+        console.log(password)
+
+        Meteor.loginWithPassword(email, password, function(err, res){
+          $(".loadingParent").fadeOut(100);
+          console.log(Meteor.user())
+          if(err){
+            console.log(err);
+            sweetAlert("Oops...", err.reason, "error");
+            Session.set("data", err.reason);
+          }else{
+            console.log(res);
+            Session.set("data", res);
+            sweetAlert("You are now logged in!", "Your address is "+res, "success");
+            //Router.go("game");
+          }
+        });
         //alert(web3.eth.accounts[currentAccount]);
         register();
 
     },
+    'click #registered': function (event){
+        $(".flipper").addClass("flipperClicked");
+
+    },
+    'click #register': function (event){
+        $(".flipper").removeClass("flipperClicked");
+
+    },
+    'click .sendMail':function(){
+        Meteor.call('sendMail', Meteor.userId(), function(err, res){
+
+          if(err){
+            console.log(err);
+
+          }else{
+            console.log("sent");
+          }
+        });
+
+    }
   });
 }
+
+
+
 
 
 function register(){

@@ -117,6 +117,17 @@ body h1, h2, h3{
   color:rgb(150,150,255);
 }
 
+.login{
+  position: absolute;
+  right:15%;
+
+}
+
+.login input{
+  background: white;
+}
+
+
 #title{
   display: flex;
   justify-content: center;
@@ -605,6 +616,11 @@ h3{
   line-height: 2;
 }
 
+.flipper button{
+  font-size: 15px;
+  margin-right: 20px;
+}
+
 #characters button:click{
   background: #fff;
 }
@@ -649,6 +665,12 @@ h3{
   align-items: center;
 }
 
+#stakeholderInfo h1{
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* back, initially hidden pane */
 .back {
 	transform: rotateY(180deg);
@@ -657,7 +679,21 @@ h3{
   justify-content: center;
   align-items: center;
 }
+
+#stakeholderLogin h1{
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .submitButtons{
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.formBtn{
   display:flex;
   flex-direction: row;
   justify-content: flex-end;
