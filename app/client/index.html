@@ -16,7 +16,11 @@
         <li><a href="/game">Start Farming!</a></li>
         <li><a href="/aboutus">About Us</a></li>
         <li><a href="https://gitter.im/Block-Farm/Support">Contact Us</a></li>
+
+
+
       </span>
+
     </ul>
   </div>
 </template>
@@ -170,22 +174,56 @@
                         </div>
                         <br>
                         <div class='formElement'>
-                            <label for="name">E-mail</label>
+                            <label for="name">E-mail:</label>
                             <div class="input-group">
                               <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
-                              <input type="text" name="email" class="form-control s_Name" placeholder="" maxlength="10">
+                              <input type="text" name="email" class="form-control s_Name" placeholder="">
                             </div>
                         </div>
                         <br>
                         <div class='formElement'>
-                            <label for="name">Password</label>
+                            <label for="name">Password:</label>
                             <div class="input-group">
-                              <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
-                              <input type="text" name="password" class="form-control s_Pass" placeholder="" maxlength="10">
+                              <span class="input-group-addon glyphicon glyphicon-password" id="name"></span>
+                              <input type="password" name="password" class="form-control s_Pass" placeholder="">
                             </div>
                         </div>
                         <br>
-                        <button type="submit" class="hvr-submit" id='next'>Start Farming !</button>
+                        <div class="formBtn">
+                          <button type="button" class="hvr-submit" id='registered'>Already registed?</button>
+                          <button type="submit" class="hvr-submit" id='next'>Register</button>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="back flexbox">
+                    <form class="navbar-form navbar-left" role="search" id="stakeholderLogin">
+                        <h1>Login</h1>
+                        <br>
+                        <div class='formElement'>
+                            <label for="name">E-mail:</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
+                              <input type="text" name="login_email" class="form-control s_Name" placeholder="">
+                            </div>
+                        </div>
+                        <br>
+                        <div class='formElement'>
+                            <label for="name">Password:</label>
+                            <div class="input-group">
+                              <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
+                              <input type="password" name="login_password" class="form-control s_Pass" placeholder="">
+                            </div>
+                        </div>
+                        <br>
+                        <div class= "formBtn">
+                          <button type="button" class="hvr-submit" id='register'>Register</button>
+                          <button type="submit" class="hvr-submit" id='login'>Login</button>
+                          <button type="button" class="hvr-submit sendMail">Send</button>
+
+                        </div>
+
                     </form>
                 </div>
             </div>
