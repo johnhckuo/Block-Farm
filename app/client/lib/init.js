@@ -2520,13 +2520,10 @@ function toHex(str) {
 
 Template.index.created = async function() {
     $.getScript('scripts/buttons.js');
-    var temp = await callPromise('updateContract', 'Congress', 'getStakeholdersLength', []);
+    var temp = await callPromise('callContract', 'Congress', 'getStakeholdersLength', []);
     console.log(temp);
 
-    Meteor.call('updateContract', 'Congress', 'getStakeholdersLength', [], function(err, res){
 
-      console.log(res);
-    })
 
     // for (var i = 0 ; i < 1 ; i++){
     //   await(Meteor.call('updateContract', 'GameCore', 'addMission', [toHex(MissionList[i].name), MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status]));

@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
-var Web3 = require('web3');
-
 
 var token = "e22aef855bb045f7904fc4712e7668a9";
 
@@ -66,7 +64,20 @@ var updateContract = function(contract, method, args){
     case "Congress":
       req += congress;
       break;
-
+    case "usingProperty":
+      req += usingProperty;
+      break;
+    case "GameProperty":
+      req += gameProperty;
+      break;
+    case "Matchmaking":
+      req += matchmaking;
+      break;
+    case "PlayerSetting":
+      req += playerSetting;
+      break;
+    default:
+      return "error";
 
 
   }
@@ -145,11 +156,13 @@ if (Meteor.isServer){
     'stakeholderId':function(addr){
         return Promise.await(getStakeholderId(addr));
     },
-    'updateContract':function(contract, method, args){
+    'callContract':function(contract, method, args){
         try{
           var res = Promise.await(updateContract(contract, method, args));
           console.log(res);
-          return new Promise(function(resolve, reject) { resolve(res.data.results); });
+          //return new Promise(function(resolve, reject) { resolve(res.data.results); });
+          return res.data.results;
+
         }catch(e){
           console.log(e);
         }
