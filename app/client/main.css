@@ -27,6 +27,7 @@ body h1, h2, h3{
   font-family: Copperplate Gothic Bold;
 }
 
+
 #title.section{
   /*background-color:  #C8E9FF;*/
   background: #D2E48F;
@@ -672,6 +673,7 @@ h3{
   justify-content: center;
   align-items: center;
 }
+
 
 #stakeholderLogin h1{
   float: none;

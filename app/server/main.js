@@ -55,6 +55,24 @@ var getEther = function(addr){
   return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/faucet?token="+token, config);
 }
 
+var Member_Register = function(email, password, address, key, character){
+  console.log(email, password, address, key, character);
+  Accounts.createUser({
+      email: email,
+      password: password,
+      address: address,
+      private: key,
+      character: character
+  });
+}
+
+var sendVerificationLink = function(){
+  let userId = Meteor.userId();
+  if ( userId ) {
+    return Accounts.sendVerificationEmail( userId );
+  }
+}
+
 /*------------
    Receiver
 -------------*/
@@ -82,20 +100,22 @@ if (Meteor.isServer){
 	  },
     'register' : function(email, password, character){
       //this.unblock();
-
       // avoid blocking other method calls from the same client
       // asynchronous call to the dedicated API calling function
-      var addr = Promise.await(API_Register(email, password, character));
+      var addr;
+      //var users = new Mongo.Collection('users');
 
-      Accounts.createUser({
-          email: email,
-          password: password,
-          address: addr.data.address,
-          private: addr.data.private,
-          character: character
-      });
-      var res = Promise.await(getEther(addr.data.address));
-      return addr.data.address;
+      try{
+        addr = Promise.await(API_Register(email, password, character));
+        var res = Promise.await(Member_Register(email, password, addr.data.address, addr.data.private, character));
+
+        var temp = Promise.await(sendVerificationLink());
+        var temp2 = Promise.await(getEther(addr.data.address));
+      }catch(e){
+        console.log(e);
+        return {type:"error", result:e};
+      }
+      return {type:"success", result:addr.data.address};
 
 
     },
@@ -109,7 +129,6 @@ if (Meteor.isServer){
     'callContract':function(contract, method, args){
         try{
           var res = Promise.await(updateContract(contract, method, args));
-          console.log(res);
           //return new Promise(function(resolve, reject) { resolve(res.data.results); });
           return res.data.results;
 
@@ -119,5 +138,3 @@ if (Meteor.isServer){
     }
   });
 }
-
-
