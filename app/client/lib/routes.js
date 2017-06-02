@@ -31,3 +31,18 @@ Router.route('/transaction', function () {
 Router.route('/game', function () {
   this.render('gameIndex');
 });
+
+
+Router.route( '/verify-email/:token', {
+  name: 'verify-email',
+  action( params ) {
+    Accounts.verifyEmail( params.token, ( error ) =>{
+      if ( error ) {
+        Bert.alert( error.reason, 'danger' );
+      } else {
+        this.render( '/' );
+        Bert.alert( 'Email verified! Thanks!', 'success' );
+      }
+    });
+  }
+});

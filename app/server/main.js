@@ -69,6 +69,7 @@ var Member_Register = function(email, password, address, key, character){
 var sendVerificationLink = function(){
   let userId = Meteor.userId();
   if ( userId ) {
+    console.log("Email Sent!!")
     return Accounts.sendVerificationEmail( userId );
   }
 }
