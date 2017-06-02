@@ -314,49 +314,90 @@ if (Meteor.isClient) {
 
 
 function register(){
-  var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468}, function(){
+    var txs = await callPromise('callContract', 'Congress', 'addMember', []);
     $(".loadingParent").fadeIn(1000);
-    CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]},function(err, res){
-      var s_Id = res.c[0];
-      console.log(s_Id);
-      PlayerSettingInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
-        usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
-          var length = res.c[0];
-          CongressInstance.setPropertyIndex(s_Id, length, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
-            usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
-              var Typelength = res.c[0];
-              console.log(Typelength)
-              usingPropertyInstance.updatePropertyTypeRating(Typelength, 0, "new", {from:web3.eth.accounts[currentAccount], gas:2514068}, function(){
-                //create user's property at first time 4/30 kokokon
-                for(i = 0; i < Typelength; i++){
-                    usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(err){
-                      if (err){
-                        console.log(err);
-                      }
-                    });
-                }
-                if (character == "Guard"){
-                    usingPropertyInstance.updatePropertyCount_Sudo((length + 30), 1, 0, {from:web3.eth.accounts[currentAccount], gas:2514068}, function(err){
-                      if (err){
-                        console.log(err);
-                      }
-                    });
-                }
+    var res = await callPromise('callContract', 'Congress', 'stakeholderId', [Session.get("addr")]);
+    if(res.type == "success"){
+        var s_Id = res.result.c[0];
+        console.log(s_Id);
+    }
+    else{
+        console.log("register fail: get Id");
+        return;
+    }
+    await callPromise('callContract', 'PlayerSetting', 'initGameData', [s_Id, name, character]);
+    var res = await callPromise('callContract', 'usingProperty', 'getPropertiesLength', []);
+    if(res.type == "success"){
+        var length = res.result.c[0];
+    }
+    else{
+        console.log("register fail : get property length");
+        return;
+    }
+    await callPromise('callContract', 'Congress', 'setPropertyIndex', [s_Id, length]);
+    var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', []);
+    if(res.type == "success"){
+        var Typelength = res.result.c[0];
+    }
+    else{
+        console.log("register fail : get propertyType length");
+        return;
+    }
+    await callPromise('callContract', 'usingProperty', 'updatePropertyTypeRating', [Typelength, 0, "new"]);
+    for(i = 0; i < Typelength; i++){
+        await callPromise('callContract', 'usingProperty', 'initUserProperty', [i]);
+    }
+    if (character == "Guard"){
+        await callPromise('callContract', 'usingProperty', 'updatePropertyCount_Sudo', [(length + 30), 1, 0]);
+    }
+    await callPromise('callContract', 'GameCore', 'pushMissionAccountStatus', []);
+    var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
+    await callPromise('callContract', 'usingProperty', 'addUserPropertyType', [s_Id, unlockCropId]);
+    $(".loadingParent").fadeOut(1000);
+    Router.go('game');
+  //var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468}, function(){
+  //  $(".loadingParent").fadeIn(1000);
+  //  CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]},function(err, res){
+  //    var s_Id = res.c[0];
+  //    console.log(s_Id);
+  //    PlayerSettingInstance.initGameData(s_Id, name, character, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+  //      usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
+  //        var length = res.c[0];
+  //        CongressInstance.setPropertyIndex(s_Id, length, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+  //          usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
+  //            var Typelength = res.c[0];
+  //            console.log(Typelength)
+  //            usingPropertyInstance.updatePropertyTypeRating(Typelength, 0, "new", {from:web3.eth.accounts[currentAccount], gas:2514068}, function(){
+  //              //create user's property at first time 4/30 kokokon
+  //              for(i = 0; i < Typelength; i++){
+  //                  usingPropertyInstance.initUserProperty(i, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(err){
+  //                    if (err){
+  //                      console.log(err);
+  //                    }
+  //                  });
+  //              }
+  //              if (character == "Guard"){
+  //                  usingPropertyInstance.updatePropertyCount_Sudo((length + 30), 1, 0, {from:web3.eth.accounts[currentAccount], gas:2514068}, function(err){
+  //                    if (err){
+  //                      console.log(err);
+  //                    }
+  //                  });
+  //              }
 
-                GameCoreInstance.pushMissionAccountStatus({from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
-                  //console.log(name, threshold, fund, rate, character);
-                  var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
-                  usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
-                    $(".loadingParent").fadeOut(1000);
-                    Router.go('game');
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
+  //              GameCoreInstance.pushMissionAccountStatus({from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+  //                //console.log(name, threshold, fund, rate, character);
+  //                var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
+  //                usingPropertyInstance.addUserPropertyType(s_Id, unlockCropId, {from:web3.eth.accounts[currentAccount], gas:2201468}, function(){
+  //                  $(".loadingParent").fadeOut(1000);
+  //                  Router.go('game');
+  //                });
+  //              });
+  //            });
+  //          });
+  //        });
+  //      });
+  //    });
+  //  });
 
-  });
+  //});
 }

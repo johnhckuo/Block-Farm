@@ -2466,19 +2466,23 @@ function init(event){
 function initGameConfig(){
 
     for(var i = 0; i < MissionList.length; i++){
-        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        await callPromise('callContract', 'GameCore', 'addMission', [MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status]);
+        //GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     }
     for(var i = 0; i < missionItem.length; i++){
-        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        await callPromise('callContract', 'GameCore', 'addMissionItem', [missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity]);
+        //GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     }
     console.log("Mission added");
 
     for (var i = 0 ; i < cropTypeList.length ; i++){
-       usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
+        await callPromise('callContract', 'usingProperty', 'addPropertyType', [cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count]);
+        //usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
     }
 
     for (var i = 0 ; i < landTypeList.length ; i++){
-        GamePropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
+        await callPromise('callContract', 'GameProperty', 'addLandType', [landTypeList[i].name, landTypeList[i].img, landTypeList[i].count]);
+        //GamePropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
     }
     console.log("Init Complete");
 }
@@ -2528,14 +2532,21 @@ Template.index.created = async function() {
     if (Session.get('account') == "Account Not Found" || Session.get('account') == "Wallet Not Found"){
         return false;
     };
+    //var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', []);
+    //if(res.type == "success"){
+    //    console.log("=========== Data Inited ===========");
+    //}
+    //else{
+    //    //console.log(res.type);
+    //    initGameConfig();
+    //}
+    //try{
+    //  var val = usingPropertyInstance.propertyTypeList(0);
+    //  console.log("=========== Data Inited ===========");
 
-    try{
-      var val = usingPropertyInstance.propertyTypeList(0);
-      console.log("=========== Data Inited ===========");
-
-    }
-    catch(err){
-      initGameConfig();
-      console.log(err);
-    }
+    //}
+    //catch(err){
+    //  initGameConfig();
+    //  console.log(err);
+    //}
 }
