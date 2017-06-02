@@ -1,6 +1,8 @@
 import { Session } from 'meteor/session';
+import { Promise } from 'meteor/promise';
 
-
+if(typeof web3 === 'undefined')
+        web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
 currentAccount = 4;
 cropsPerLvl =3;
@@ -2429,7 +2431,15 @@ missionItem = [
 
 ];
 
-
+//export const callPromise = (method, contract, contractMethod, args) => {
+callPromise = (method, contract, contractMethod, args) => {
+  return new Promise((resolve, reject) => {
+    Meteor.call(method, contract, contractMethod, args,  (error, result) => {
+      if (error) reject(error);
+      resolve(result);
+    });
+  });
+}
 
 
 function init(event){
@@ -2473,8 +2483,43 @@ function initGameConfig(){
     console.log("Init Complete");
 }
 
-Template.index.created = function() {
+function toHex(str) {
+	var hex = '';
+  var finalHex = '0x';
+
+  for (var i = 0 ; i < str.length; i++){
+    hex += ''+str.charCodeAt(i).toString(16);
+  }
+
+  for(var i=30;i > 0;i--) {
+    if (i > hex.length){
+      finalHex+= "0".toString(16);
+
+    }else{
+      finalHex += hex;
+      break;
+    }
+  }
+  console.log(web3.toHex(str));
+  console.log(finalHex);
+  console.log(parseInt(finalHex, 16));
+	return finalHex;
+}
+
+
+
+
+Template.index.created = async function() {
     $.getScript('scripts/buttons.js');
+    var temp = await callPromise('callContract', 'Congress', 'getStakeholdersLength', []);
+    console.log(temp);
+
+
+
+    // for (var i = 0 ; i < 1 ; i++){
+    //   await(Meteor.call('updateContract', 'GameCore', 'addMission', [toHex(MissionList[i].name), MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status]));
+    // }
+
 
     init();
     Session.set('currentAccount', currentAccount);
