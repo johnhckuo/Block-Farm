@@ -33,16 +33,19 @@ Router.route('/game', function () {
 });
 
 
-Router.route( '/verify-email/:token', {
-  name: 'verify-email',
-  action( params ) {
-    Accounts.verifyEmail( params.token, ( error ) =>{
-      if ( error ) {
-        Bert.alert( error.reason, 'danger' );
-      } else {
-        this.render( '/' );
-        Bert.alert( 'Email verified! Thanks!', 'success' );
-      }
-    });
+Router.route( '/verify-email/:token', async function(){
+  try{
+    var res = await Accounts.verifyEmail( this.params.token);
+  }catch(e){
+    sweetAlert( "Oops...", e.reason, 'error' );
+    this.render('index');
   }
+
+  var res = await Meteor.call("API_Register")
+
+
+  //user.profile.address= ";;";
+  sweetAlert( "Email Verified!", "yeah", 'success' );
+  //this.render('index');
+
 });

@@ -1,21 +1,30 @@
 <template name="gameIndex">
-  {{#unless currentUser.emails.[0].verified}}
-    <p class="alert alert-warning">You need to verify your email address before using GoDunk. <a href="#" class="resend-verification-link">Resend verification link</a>.</p>
+  {{#if currentUser.emails.[0].verified}}
+  {{> gameContent}}
   {{else}}
-    <div class="gameContainer">
+  {{> warning}}
+  {{/if}}
 
-      {{> firstTutorial}}
-      {{> loading}}
-      {{> statusList}}
-      {{> gamingArea}}
-      {{> shop}}
-      {{> mission}}
-      {{> rank}}
-      {{> operationList}}
-      {{> floatBubble}}
-    </div>
-  {{/unless}}
+</template>
 
+<template name="warning">
+  {{> loading}}
+  <p class="alertHeader alert alert-warning">You need to verify your email address before using Blockfarm. <a href="#" class="resend-verification-link">Resend verification link</a>.</p>
+</template>
+
+<template name="gameContent">
+  <div class="gameContainer">
+
+    {{> firstTutorial}}
+    {{> loading}}
+    {{> statusList}}
+    {{> gamingArea}}
+    {{> shop}}
+    {{> mission}}
+    {{> rank}}
+    {{> operationList}}
+    {{> floatBubble}}
+  </div>
 </template>
 
 <template name="floatBubble">

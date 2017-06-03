@@ -5,7 +5,7 @@ import { Accounts } from 'meteor/accounts-base';
     API call
 --------------*/
 
-var API_Register = function(email, password, character){
+var API_Register = function(){
     return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/addrs?token="+token);
 }
 
@@ -55,24 +55,20 @@ var getEther = function(addr){
   return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/faucet?token="+token, config);
 }
 
-var Member_Register = function(email, password, address, key, character){
-  console.log(email, password, address, key, character);
+var Member_Register = function(email, password, character){
   Accounts.createUser({
       email: email,
       password: password,
-      address: address,
-      private: key,
-      character: character
+      // address: address,
+      // private: key,
+      // character: character
+      profile:{
+        character:character
+      }
   });
+
 }
 
-var sendVerificationLink = function(){
-  let userId = Meteor.userId();
-  if ( userId ) {
-    console.log("Email Sent!!")
-    return Accounts.sendVerificationEmail( userId );
-  }
-}
 
 /*------------
    Receiver
@@ -107,18 +103,57 @@ if (Meteor.isServer){
       //var users = new Mongo.Collection('users');
 
       try{
-        addr = Promise.await(API_Register(email, password, character));
-        var res = Promise.await(Member_Register(email, password, addr.data.address, addr.data.private, character));
+        //var res = Promise.await(Member_Register(email, password, addr.data.address, addr.data.private, character));
+        var res = Promise.await(Member_Register(email, password, character));
 
-        var temp = Promise.await(sendVerificationLink());
-        var temp2 = Promise.await(getEther(addr.data.address));
+        //var userId = Promise.await(login(email, password));
+        //var temp = Promise.await(sendVerificationLink(userId));
+
+        //addr = Promise.await(API_Register(email, password, character));
+        //var temp2 = Promise.await(getEther(addr.data.address));
+
+        //update user account with addr
       }catch(e){
         console.log(e);
-        return {type:"error", result:e};
+        return {type:"error", result:e.reason};
       }
-      return {type:"success", result:addr.data.address};
+      return {type:"success", result:""};
 
 
+    },
+    'sendVerificationLink' :function(){
+      let userId = Meteor.userId();
+      if ( userId ) {
+        console.log("Email Sent!!")
+        try{
+          Accounts.sendVerificationEmail(userId);
+        }catch(e){
+          return {type:"error", result:e.reason};
+        }
+        return {type:"success", result:""};
+
+      }
+    },
+    'API_Register': function(){
+      try{
+        var userId = Meteor.userId();
+        var user = Meteor.users.findOne({_id: userId});
+
+        var res = Promise.await(API_Register());
+        //Meteor.users.update(userId, { $set: { profile: {address:res.data.address, private:res.data.private} } });
+        var profile = {};
+
+        profile.address = res.data.address;
+        profile.private = res.data.private;
+
+        Meteor.users.update({_id:userId},{$set: profile});
+
+        //update user account with addr
+      }catch(e){
+        console.log(e);
+        return {type:"error", result:e.reason};
+      }
+      return {type:"success", result:""};
     },
     'sendMail':function(userId){
         Accounts.sendVerificationEmail(userId)
@@ -128,14 +163,18 @@ if (Meteor.isServer){
         return Promise.await(getStakeholderId(addr));
     },
     'callContract':function(contract, method, args){
+        var res;
         try{
-          var res = Promise.await(updateContract(contract, method, args));
+          res = Promise.await(updateContract(contract, method, args));
           //return new Promise(function(resolve, reject) { resolve(res.data.results); });
-          return res.data.results;
 
         }catch(e){
           console.log(e);
+          return {type:"error", result:e.reason};
+
         }
+        return {type:"success", result:res.data.results};
+
     }
   });
 }

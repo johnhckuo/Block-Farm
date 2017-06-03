@@ -12,6 +12,15 @@
   overflow: hidden;
 }
 
+.alertHeader{
+  position: absolute;
+  width: 100vw;
+  z-index: 1000001;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .statusList{
   position: relative;
   height:100%;

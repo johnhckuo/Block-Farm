@@ -95,12 +95,17 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
 
 
 
-
 /////////////////
 //  onCreated  //
 /////////////////
 
-Template.gameIndex.created = function() {
+
+Template.warning.created = function() {
+  loading(1);
+  //Router.go("/");
+}
+
+Template.gameContent.created = function() {
 
     s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
     s_Id = s_Id.c[0];
@@ -145,7 +150,7 @@ Template.gameIndex.created = function() {
 //  onRendered  //
 //////////////////
 
-Template.gameIndex.rendered = function() {
+Template.gameContent.rendered = function() {
     if(!this._rendered) {
         $(".levelUp").hide();
 
@@ -336,7 +341,20 @@ Template.shop.events({
 });
 
 
-Template.gameIndex.events({
+Template.gameContent.events({
+    'click .resend-verification-link': async function( event ) {
+
+        var res = await callPromise('sendVerificationLink');
+
+        if (res.type == "success"){
+          sweetAlert("Verification mail sent!", "We've successfully sent a verification email to "+email, "success");
+          //Router.go("game");
+        }else{
+          sweetAlert("Oops...", res.result, "error");
+          Session.set("loggedIn", false);
+        }
+
+    },
     'click .cropObject': function (event){
         // var left = $(event.target).position().left;
         // var top = $(event.target).position().top;
@@ -2653,4 +2671,3 @@ var selectedSort = function(data){
     }
     return data;
 }
-

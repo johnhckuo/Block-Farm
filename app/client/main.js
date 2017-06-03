@@ -219,19 +219,30 @@ if (Meteor.isClient) {
           sweetAlert("Oops...", "Please enter a valid email !", "error");
           return;
         }
-
+        Meteor.logout();
         $(".loadingParent").fadeIn(1000);
-
         var res = await callPromise('register', email, password, character);
-        console.log(res);
+        Meteor.loginWithPassword(
+            { 'email': email},
+            password
+        );
+
+        if (res.type == "error"){
+          sweetAlert("Oops...", res.result, "error");
+          Session.set("loggedIn", false);
+          $(".loadingParent").fadeOut(100);
+          return;
+        }
+
+        var res = await callPromise('sendVerificationLink');
+
         if (res.type == "success"){
-          sweetAlert("Register Complete :)", "Your address is "+res.result, "success");
-          Session.set("loggedIn", true);
+          sweetAlert("Register Complete :)", "We've sent a verification email to "+email, "success");
           //Router.go("game");
         }else{
-          sweetAlert("Oops...", res.result.reason, "error");
-          Session.set("loggedIn", false);
+          sweetAlert("Oops...", res.result, "error");
         }
+
         $(".loadingParent").fadeOut(100);
 
         //register();
