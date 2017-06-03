@@ -4,7 +4,7 @@ import { Promise } from 'meteor/promise';
 if(typeof web3 === 'undefined')
         web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
-currentAccount = 1;
+currentAccount = 4;
 cropsPerLvl =3;
 
 cropTypeList = [
@@ -2442,127 +2442,73 @@ callPromise = (method, contract, contractMethod, args) => {
 }
 
 
-function init(event){
-  web3.eth.getAccounts(function(err, accs) {
-    if (err != null) {
-      //sweetAlert("Oops...", "There was an error fetching your accounts.", "error");
-      Session.set('account', "Wallet Not Found");
-      return;
+// function init(event){
+//   web3.eth.getAccounts(function(err, accs) {
+//     if (err != null) {
+//       //sweetAlert("Oops...", "There was an error fetching your accounts.", "error");
+//       Session.set('account', "Wallet Not Found");
+//       return;
+//     }
+//
+//     if (accs.length == 0) {
+//       //sweetAlert("Oops...", "Couldn't get any accounts! Make sure your Ethereum client is configured correctly.", "error");
+//       Session.set('account', "Account Not Found");
+//       return;
+//     }
+//
+//     accounts = accs;
+//     account = accounts[currentAccount];
+//     Session.set('account', account);
+//     //alert(account)
+//   });
+// }
+
+async function initGameConfig(){
+
+    for(var i = 0; i < MissionList.length; i++){
+        await callPromise('callContract', 'GameCore', 'addMission', [MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status]);
+        //GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     }
-
-    if (accs.length == 0) {
-      //sweetAlert("Oops...", "Couldn't get any accounts! Make sure your Ethereum client is configured correctly.", "error");
-      Session.set('account', "Account Not Found");
-      return;
+    for(var i = 0; i < missionItem.length; i++){
+        await callPromise('callContract', 'GameCore', 'addMissionItem', [missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity]);
+        //GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     }
-
-    accounts = accs;
-    account = accounts[currentAccount];
-    Session.set('account', account);
-    //alert(account)
-  });
-}
-
-function initGameConfig(){
-
-    //for(var i = 0; i < MissionList.length; i++){
-    //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //}
-    //for(var i = 0; i < missionItem.length; i++){
-    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //}
     console.log("Mission added");
 
     for (var i = 0 ; i < cropTypeList.length ; i++){
-       usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
+        await callPromise('callContract', 'usingProperty', 'addPropertyType', [cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count]);
+        //usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
     }
 
     for (var i = 0 ; i < landTypeList.length ; i++){
-        usingPropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
+        await callPromise('callContract', 'GameProperty', 'addLandType', [landTypeList[i].name, landTypeList[i].img, landTypeList[i].count]);
+        //GamePropertyInstance.addLandType(landTypeList[i].name, landTypeList[i].img, landTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2000000});
     }
-
-
-    //var length = usingPropertyInstance.getPropertyTypeLength({ from:web3.eth.accounts[currentAccount]});
-    //usingPropertyInstance.updatePropertyTypeRating(length, 0, "new", { from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    //for(var i = 0; i < length; i++){
-    //    usingPropertyInstance.initUserProperty(i, { from:web3.eth.accounts[currentAccount], gas:2000000});
-    //}
     console.log("Init Complete");
-
-
 }
-
-function toHex(str) {
-	var hex = '';
-  var finalHex = '0x';
-
-  for (var i = 0 ; i < str.length; i++){
-    hex += ''+str.charCodeAt(i).toString(16);
-  }
-
-  for(var i=30;i > 0;i--) {
-    if (i > hex.length){
-      finalHex+= "0".toString(16);
-
-    }else{
-      finalHex += hex;
-      break;
-    }
-  }
-  console.log(web3.toHex(str));
-  console.log(finalHex);
-  console.log(parseInt(finalHex, 16));
-	return finalHex;
-}
-
-
-
 
 Template.index.created = async function() {
     $.getScript('scripts/buttons.js');
     var temp = await callPromise('callContract', 'Congress', 'getStakeholdersLength', []);
-    console.log(temp);
 
+    Session.set('currentAccount', currentAccount);
+    Session.set('cropsPerLvl', cropsPerLvl);
 
-
-    // for (var i = 0 ; i < 1 ; i++){
-    //   await(Meteor.call('updateContract', 'GameCore', 'addMission', [toHex(MissionList[i].name), MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status]));
-    // }
-
-
-    // init();
-    // Session.set('currentAccount', currentAccount);
-    // Session.set('cropsPerLvl', cropsPerLvl);
-    //
-    // if (Session.get('account') == "Account Not Found" || Session.get('account') == "Wallet Not Found"){
-    //     return false;
-    // };
-    //
-    // try{
-    //   var val = usingPropertyInstance.propertyTypeList(0);
-    //   console.log("=========== Data Inited ===========");
-    //
-    // }
-    // catch(err){
-    //   initGameConfig();
-    //   console.log(err);
-    // }
-
-    //for(var i = 0; i < 70; i++){
-    //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', []);
+    //if(res.type == "success"){
+    //    console.log("=========== Data Inited ===========");
     //}
-    //for(var i = 70; i < MissionList.length; i++){
-    //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //else{
+    //    //console.log(res.type);
+    //    initGameConfig();
     //}
+    //try{
+    //  var val = usingPropertyInstance.propertyTypeList(0);
+    //  console.log("=========== Data Inited ===========");
 
-    //for(var i = 70; i < 140; i++){
-    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     //}
-    //for(var i = 140; i < 210; i++){
-    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    //}
-    //for(var i = 210; i < missionItem.length; i++){
-    //    GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //catch(err){
+    //  initGameConfig();
+    //  console.log(err);
     //}
 }
