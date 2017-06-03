@@ -37,15 +37,28 @@ Router.route( '/verify-email/:token', async function(){
   try{
     var res = await Accounts.verifyEmail( this.params.token);
   }catch(e){
-    sweetAlert( "Oops...", e.reason, 'error' );
-    this.render('index');
+    swal({
+      title: "Oops...",
+      text: e.reason,
+      type: "warning",
+      showCancelButton: false
+    },
+    function(){
+      Router.go('/');
+    });
+
   }
 
   var res = await Meteor.call("API_Register")
 
-
-  //user.profile.address= ";;";
-  sweetAlert( "Email Verified!", "yeah", 'success' );
-  //this.render('index');
+  swal({
+    title: "Email Verified !",
+    text: "You will now redirected to game page",
+    type: "success",
+    showCancelButton: false
+  },
+  function(){
+    Router.go('/game');
+  });
 
 });

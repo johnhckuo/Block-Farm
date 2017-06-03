@@ -121,6 +121,7 @@ if (Meteor.isServer){
     },
     'sendVerificationLink' :function(){
       let userId = Meteor.userId();
+      console.log(Meteor.users.findOne({_id:userId}));
       if ( userId ) {
         console.log("Email Sent!!")
         try{
@@ -135,30 +136,21 @@ if (Meteor.isServer){
     'API_Register': function(){
       try{
         var userId = Meteor.userId();
-        var user = Meteor.users.findOne({_id: userId});
-
+        var character = Meteor.users.findOne({_id:userId}).profile.character;
         var res = Promise.await(API_Register());
-        //Meteor.users.update(userId, { $set: { profile: {address:res.data.address, private:res.data.private} } });
-        var profile = {};
 
-        profile.address = res.data.address;
-        profile.private = res.data.private;
-
-        Meteor.users.update({_id:userId},{$set: profile});
-
-        //update user account with addr
+        var profile = {
+          address:res.data.address,
+          private: res.data.private,
+          character:character
+        };
+        Meteor.users.update(userId, { $set: { profile: profile } });
+        var res = Promise.await(getEther());
       }catch(e){
         console.log(e);
         return {type:"error", result:e.reason};
       }
       return {type:"success", result:""};
-    },
-    'sendMail':function(userId){
-        Accounts.sendVerificationEmail(userId)
-
-    },
-    'stakeholderId':function(addr){
-        return Promise.await(getStakeholderId(addr));
     },
     'callContract':function(contract, method, args){
         var res;

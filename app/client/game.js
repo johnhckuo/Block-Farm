@@ -186,7 +186,7 @@ gameIndexRend = function(){
 //  onCreated  //
 /////////////////
 
-Template.gameIndex.created = async function() {
+Template.gameContent.created = async function() {
 
     await gameIndexCreation();
     await gameIndexRend();
@@ -225,6 +225,17 @@ $(window).on("beforeunload", async function() {
     console.log("Porgress Saved");
     return true ? "Do you really want to close?" : null;
 })
+
+
+/////////////////
+//  Varialbes  //
+/////////////////
+
+Template.gameIndex.loggedIn=function(){
+  return Session.get("loggedIn");
+}
+
+
 
 ///////////////
 //  Helpers  //
@@ -386,21 +397,39 @@ Template.shop.events({
     }
 });
 
+Template.gameIndex.events({
+  'click .resend-verification-link': async function( event ) {
+
+      var res = await callPromise('sendVerificationLink');
+      loading(0);
+      if (res.type == "success"){
+        swal({
+          title: "Verification mail sent!",
+          text: "Please go check your email :D",
+          type: "success",
+          showCancelButton: false
+        },
+        function(){
+          Router.go('/');
+        });
+      }else{
+        swal({
+          title: "Oops...",
+          text: res.result,
+          type: "error",
+          showCancelButton: false
+        },
+        function(){
+          Router.go('/');
+        });
+        Session.set("loggedIn", false);
+      }
+
+  },
+})
 
 Template.gameContent.events({
-    'click .resend-verification-link': async function( event ) {
 
-        var res = await callPromise('sendVerificationLink');
-
-        if (res.type == "success"){
-          sweetAlert("Verification mail sent!", "We've successfully sent a verification email to "+email, "success");
-          //Router.go("game");
-        }else{
-          sweetAlert("Oops...", res.result, "error");
-          Session.set("loggedIn", false);
-        }
-
-    },
     'click .cropObject': async function (event){
         // var left = $(event.target).position().left;
         // var top = $(event.target).position().top;
@@ -804,16 +833,6 @@ Template.gameContent.events({
     'mouseout .croppedObject img':function(event){
         $(".floatCropStatus").css("display", "none");
     },
-    'click .resend-verification-link' ( event, template ) {
-        Meteor.call( 'sendVerificationLink', ( error, response ) => {
-          if ( error ) {
-            Bert.alert( error.reason, 'danger' );
-          } else {
-            let email = Meteor.user().emails[ 0 ].address;
-            Bert.alert( `Verification sent to ${ email }!`, 'success' );
-          }
-        });
-    }
 })
 
 Template.crop.events({
@@ -1840,14 +1859,12 @@ var loading = function(on){
     $(".cropObject").css("display", "none");
     if (on){
         $(".loading").css("display", "flex");
-        $(".loading").css("opacity", 0.7);
+        $(".loading").css("opacity", 0.8);
     }else{
+        $(".loading").css("opacity", 0);
         setTimeout(function(){
-            $(".loading").css("opacity", 0);
-            setTimeout(function(){
-                $(".loading").css("display", "none");
-            }, 1000);
-        },1000);
+            $(".loading").css("display", "none");
+        }, 1000);
     }
 }
 

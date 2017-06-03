@@ -21,6 +21,10 @@
   align-items: center;
 }
 
+.alertHeader a{
+  margin-left: 10px;
+}
+
 .statusList{
   position: relative;
   height:100%;

@@ -1,11 +1,20 @@
 <template name="gameIndex">
-  {{#if currentUser.emails.[0].verified}}
-  {{> gameContent}}
+  {{#if loggedIn}}
+      {{#if currentUser.emails.[0].verified}}
+          {{> gameContent}}
+      {{else}}
+          {{> warning}}
+      {{/if}}
   {{else}}
-  {{> warning}}
+      {{> loginWarning}}
   {{/if}}
-
 </template>
+
+<template name="loginWarning">
+  {{> loading}}
+  <p class="alertHeader alert alert-warning">You need to login first! <a href="#" class="forget-password">Forget password?</a>.</p>
+</template>
+
 
 <template name="warning">
   {{> loading}}

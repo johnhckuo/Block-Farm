@@ -60,17 +60,14 @@ var hex2a = function(hexx) {
 
 var loading = function(on){
     var opacity;
-    $(".cropObject").css("display", "none");
     if (on){
-        $(".loading").css("display", "flex");
-        $(".loading").css("opacity", 0.7);
+        $(".loadingParent").css("display", "flex");
+        $(".loadingParent").css("opacity", 0.8);
     }else{
+        $(".loadingParent").css("opacity", 0);
         setTimeout(function(){
-            $(".loading").css("opacity", 0);
-            setTimeout(function(){
-                $(".loading").css("display", "none");
-            }, 1000);
-        },1000);
+            $(".loadingParent").css("display", "none");
+        }, 1000);
 
     }
 
@@ -158,12 +155,12 @@ if (Meteor.isClient) {
           return;
       }
 
-      $(".loadingParent").fadeIn(1000);
+      loading(1);
       console.log(email);
       console.log(password)
 
       Meteor.loginWithPassword(email, password, function(err, res){
-        $(".loadingParent").fadeOut(100);
+        loading(0);
         console.log(Meteor.user())
         if(err){
           console.log(err);
@@ -198,7 +195,7 @@ if (Meteor.isClient) {
         event.target.className = "btn btn-info chooseCharacters";
         character = event.target.value;
     },
-    'click #next': async function (event){
+    'submit form': async function (event){
         event.preventDefault();
 
         var email = $('[name=email]').val();
@@ -219,7 +216,7 @@ if (Meteor.isClient) {
           return;
         }
         Meteor.logout();
-        $(".loadingParent").fadeIn(1000);
+        loading(1);
         var res = await callPromise('register', email, password, character);
         Meteor.loginWithPassword(
             { 'email': email},
@@ -229,7 +226,7 @@ if (Meteor.isClient) {
         if (res.type == "error"){
           sweetAlert("Oops...", res.result, "error");
           Session.set("loggedIn", false);
-          $(".loadingParent").fadeOut(100);
+          loading(0);
           return;
         }
 
@@ -237,12 +234,13 @@ if (Meteor.isClient) {
 
         if (res.type == "success"){
           sweetAlert("Register Complete :)", "We've sent a verification email to "+email, "success");
+          Session.set("loggedIn", true);
           //Router.go("game");
         }else{
           sweetAlert("Oops...", res.result, "error");
         }
 
-        $(".loadingParent").fadeOut(100);
+        loading(0);
 
         //register();
 
@@ -259,12 +257,12 @@ if (Meteor.isClient) {
             return;
         }
 
-        $(".loadingParent").fadeIn(1000);
+        loading(1);
         console.log(email);
         console.log(password)
 
         Meteor.loginWithPassword(email, password, function(err, res){
-          $(".loadingParent").fadeOut(100);
+          loading(0);
           console.log(Meteor.user())
           if(err){
             console.log(err);
@@ -309,7 +307,7 @@ if (Meteor.isClient) {
 
 async function register(){
     var txs = await callPromise('callContract', 'Congress', 'addMember', []);
-    $(".loadingParent").fadeIn(1000);
+    loading(1);
     var res = await callPromise('callContract', 'Congress', 'stakeholderId', [Session.get("addr")]);
     if(res.type == "success"){
         var s_Id = res.result.c[0];
@@ -347,7 +345,7 @@ async function register(){
     await callPromise('callContract', 'GameCore', 'pushMissionAccountStatus', []);
     var unlockCropId = Math.floor(Session.get("cropsPerLvl")*Math.random());
     await callPromise('callContract', 'usingProperty', 'addUserPropertyType', [s_Id, unlockCropId]);
-    $(".loadingParent").fadeOut(1000);
+    loading(0);
     Router.go('game');
   //var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468}, function(){
   //  $(".loadingParent").fadeIn(1000);
