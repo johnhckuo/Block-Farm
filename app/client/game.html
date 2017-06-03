@@ -12,13 +12,32 @@
 
 <template name="loginWarning">
   {{> loading}}
-  <p class="alertHeader alert alert-warning">You need to login first! <a href="#" class="forget-password">Forget password?</a>.</p>
+  <p class="alertHeader alert alert-warning">
+    <span class="home glyphicon glyphicon-home"></span>
+    You need to login first before playing Blockfarm!
+    <a href="#" class="forget-password">
+      Forget your password?
+    </a>
+  </p>
+  <div class="resetPasswordContainer">
+    <p class="resetPasswordFlexContainer">
+      <label for="">Your registed email:</label>
+      <input type="text" name="resetPassword" value="">
+      <button type="button" class="btn btn-info resetPassword" name="button">Submit</button>
+    </p>
+  </div>
 </template>
 
 
 <template name="warning">
   {{> loading}}
-  <p class="alertHeader alert alert-warning">You need to verify your email address before using Blockfarm. <a href="#" class="resend-verification-link">Resend verification link</a>.</p>
+  <p class="alertHeader alert alert-warning">
+    <span class="home glyphicon glyphicon-home"></span>
+    You need to verify your email address before playing Blockfarm.
+    <a href="#" class="resend-verification-link">
+      Resend verification link
+    </a>
+  </p>
 </template>
 
 <template name="gameContent">

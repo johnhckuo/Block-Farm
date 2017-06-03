@@ -215,6 +215,11 @@ if (Meteor.isClient) {
           sweetAlert("Oops...", "Please enter a valid email !", "error");
           return;
         }
+        if (password.length < 6){
+          sweetAlert("Oops...", "Password must be at least 6 characters long !", "error");
+          return;
+        }
+
         Meteor.logout();
         loading(1);
         var res = await callPromise('register', email, password, character);
@@ -278,24 +283,15 @@ if (Meteor.isClient) {
         //alert(web3.eth.accounts[currentAccount]);
         register();
     },
-    'click #registered': function (event){
-        $(".flipper").addClass("flipperClicked");
-
-    },
-    'click #register': function (event){
-        $(".flipper").removeClass("flipperClicked");
-
-    },
-    'click .sendMail':function(){
-        Meteor.call('sendMail', Meteor.userId(), function(err, res){
-
-          if(err){
-            console.log(err);
-
-          }else{
-            console.log("sent");
-          }
-        });
+    'click .forget-password':async function(){
+        let email = this.refs.email.value;
+        try{
+          var res = await Accounts.forgotPassword({email: email});
+        }catch(e){
+          sweetAlert("Oops...", e,reason, "error");
+          return;
+        }
+        sweetAlert("Please check your email!", "We've just sent an e-mail to reset your password!", "success");
 
     }
   });

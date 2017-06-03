@@ -398,7 +398,21 @@ Template.shop.events({
 });
 
 Template.gameIndex.events({
-  'click .resend-verification-link': async function( event ) {
+    'click .forget-password': function(){
+      $(".resetPasswordContainer").fadeIn(1000);
+      loading(0);
+    },
+    'click .resetPassword':async function(){
+      var email = $("[name=resetPassword]").val();
+      try{
+        var res = await Accounts.forgotPassword({email: email});
+      }catch(e){
+        sweetAlert("Oops...", e,reason, "error");
+        return;
+      }
+      sweetAlert("Please check your email!", "We've just sent an e-mail to reset your password!", "success");
+    },
+    'click .resend-verification-link': async function( event ) {
 
       var res = await callPromise('sendVerificationLink');
       loading(0);
@@ -426,6 +440,9 @@ Template.gameIndex.events({
       }
 
   },
+  'click .home':function(){
+    Router.go("/");
+  }
 })
 
 Template.gameContent.events({
