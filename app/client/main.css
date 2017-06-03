@@ -31,11 +31,14 @@ body h1, h2, h3{
 #title.section{
   /*background-color:  #C8E9FF;*/
   background: #D2E48F;
-  background-image: url(/img/network.svg);
+  background-image: url(/img/cover.png);
+  background-size: 100%;
   background-repeat: no-repeat;
-  background-position: 20% 50%;
-  background-size: 70vh;
+  background-position: 50% 80%;
   background-attachment: fixed;
+  /*background-position: 20% 50%;
+  background-size: 70vh;
+  background-attachment: fixed;*/
 }
 .layout{
   /*display:flex;*/
@@ -52,23 +55,25 @@ body h1, h2, h3{
   display:flex;
   align-items: center;
   width:100vw;
-  height:150px;
-  color:#fff;
+  height:10vh;
+  color:#282727;
   top:0px;
   z-index: 100;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 .header ul{
   display: flex;
   align-items: center;
+  justify-content: space-around;
   width:100vw;
   height:20vh;
 }
 
 .header span{
   position: relative;
-  height: 100%;
-  right: -15vw;
+  /*height: 100%;*/
+  /*right: -15vw;*/
 }
 
 .header span li{
@@ -83,7 +88,7 @@ body h1, h2, h3{
 }
 
 .header a{
-  color:#BFBFBF;
+  color:#393939;
   font-size: 20px;
   text-decoration: none;
   cursor: pointer;
@@ -93,14 +98,15 @@ body h1, h2, h3{
 
 .header a:hover{
   color:black;
+  font-size: 22px;
 }
 
 .header ul div{
   position: relative;
-  left: 100px;
+  /*left: 100px;*/
   top:0px;
   width: 360px;
-  height: 90px;
+  /*height: 90px;*/
 
 }
 
@@ -184,7 +190,7 @@ h3{
   background: rgba(255, 255, 255, 0.6);
   border-radius: 15px;
   color:white;
-  padding: 100px 20px 100px 80px;
+  padding: 100px 20px 100px 20px;
   width:100vw;
   height: 100vh;
   display: flex;
@@ -543,7 +549,7 @@ h3{
 }
 
 #footer{
-  padding-top: 10vh;
+  padding-top: 5vh;
 }
 #footer> .copyRight{
   display:flex;
@@ -569,13 +575,14 @@ h3{
 #footer>.contact{
   display:flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-start;
   padding-top: 5vh;
   padding-bottom:7vh;
   font-size: 12px;
   line-height: 20px;
   letter-spacing: 0.8px;
   color: #7F7F7F;
+  padding-left: 8vw;
 }
 .footerLine{
   position: relative;

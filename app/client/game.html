@@ -157,7 +157,7 @@
         {{> characterList}}
 
         <!-- <div class="cropListButton statusListButton"> -->
-        <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:1;">
+        <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:100;">
           <div class="statusPanelList">
 
               <div class="listHeader">
@@ -173,6 +173,9 @@
                       Grass
                   </div>
               </div>
+              <div class="devideLine">
+                <hr>
+              </div>
               <div class="cropListDiv">
               {{#each crops}}
                       {{> crop}}
@@ -184,7 +187,7 @@
         </div>
 
         <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
-          <div class="statusPanelList">
+          <div class="statusPanelList tradeableList">
             <div class="listHeader">
               <h2>Stock</h2>
               <hr>
@@ -202,12 +205,12 @@
         </div>
         {{> cropSelectingBtns}}
 
-        <div class="functionSwitch">
+        <!-- <div class="functionSwitch">
               <button type="button" name="button" class="btn-primary test">Test</button>
               <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
               <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
 
-
+ -->
 
 
               <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
@@ -222,7 +225,7 @@
 
 
 
-        </div>
+        <!-- </div> -->
     </div>
 </template>
 
@@ -235,11 +238,16 @@
 </template>
 
 <template name="logo">
+  <div class="logoAudio">
     <div class="logo">
         <a href="/">
           <img src="/img/BlockFarm.png" alt="">
         </a>
     </div>
+    <div class="musicSwitch">
+        <img src="/img/game/speaker_on.svg" alt="">
+    </div>
+  </div>
 </template>
 
 <template name="characterList">
@@ -293,8 +301,12 @@
                 </div>
               </div>
 
-              <div class="musicSwitch">
+              <div class="switch">
+              <!-- <div class="musicSwitch">
                   <img src="/img/game/speaker_on.svg" alt="">
+              </div> -->
+              <div class="nextSwitch">
+              </div>
               </div>
             </div>
 

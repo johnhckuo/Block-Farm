@@ -83,10 +83,25 @@
   margin-left: auto;
   margin-right: auto;
 }
+.devideLine{
+    height: 3vh;
+    width: 24vw;
+}
+.devideLine hr{
+  position: relative;
+  border-top: 1.5px solid rgb(0, 0, 0);
+  margin-top: 15px;
+  width: 80%;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+}
 .listHeader.currentList{
   font-size: 23px;
 }
-
+.tradeableList{
+  margin-top:0vh;
+}
 /****************/
 
 .operationList{
@@ -172,7 +187,10 @@
 .rightBtn:hover{
   background-color: rgba(255,255,255,0.65);
 }
-
+.rightBtn img:hover{
+  width: 45%;
+  height: 45%;
+}
 .open{
   position: relative;
   right:7px;
@@ -281,7 +299,7 @@
 .land div img{
   height: 100%;
   width: 100%;
-
+  vertical-align: baseline;
  /*-webkit-transform :rotateX(20deg) rotateY(45deg) rotateZ(130deg);*/
 }
 
@@ -377,6 +395,7 @@
   font-size: 20px;
   flex-wrap: wrap;
   /*padding-left: 30px;*/
+  align-content: flex-start;
 }
 
 .plantButton{
@@ -404,21 +423,33 @@
   width:150px;
   height:150px;
 }
-
-.logo{
+.logoAudio{
+  display: flex;
   position: absolute;
+  width: 200px;
+  height: 78px;
+  z-index: 99;
+  bottom:10px;
+  right: 10px;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+}
+.logo{
+  position: relative;
   width: 137px;
   height: 78px;
   z-index: 99;
+  bottom: -5px;
   /*background: rgba(0,0,0,0.5);*/
-  bottom:10px;
-  right: 10px;
-  color:white;
+  /*bottom:10px;*/
+  /*right: 10px;*/
+  /*color:white;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow-y: hidden;
+  overflow-y: hidden;*/
 }
 
 .logo img{
@@ -690,19 +721,28 @@
 #property_table{
   width: 45vw;
   height: 130vh;
-  margin-top: 2vh;
+  margin-top: 1vh;
 }
 #property_table label{
-  padding-bottom: 2px;
+  padding-bottom: 1vh;
 }
 #property_table th{
   vertical-align: middle;
-  font-weight: 500;
+  font-size:20px;
   height: 7vh;
 }
 #property_table td{
   vertical-align: middle;
-  height: 7vh;
+  height: 9vh;
+}
+#property_table img{
+  width: 40px;
+  height: 40px;
+}
+#property_table img:hover{
+  width: 55px;
+  height: 55px;
+  transition: all .1s;
 }
 #btn_property_save{
   border-style: none;
@@ -737,7 +777,7 @@
   height: inherit;
 }
 #property_trade_table td{
-  height: 130px;
+  height: 12vh;
   vertical-align:middle;
   margin-top: 20px;
 }
@@ -756,7 +796,7 @@
 }
 
 .shop_tradable_input{
-  width: 2vw;
+  width: 4vw;
   background-color: rgba(255, 255, 255, 0);
   color: rgb(0, 0, 0);
   border-style: dotted;
@@ -826,9 +866,10 @@
 
 .SyndicateExp{
   visibility:collapse;
-  position: relative;
+  position: absolute;
   left:5vw;
   margin-bottom: 10px;
+  bottom: 3vh;
 }
 
 .SyndicateExp h3{
@@ -907,7 +948,7 @@
   flex-direction: column;
   left: 24vw;
   top:24vh;
-  z-index: 1;
+  z-index: 10;
   width: 5.5vw;
   transition: all 0s;
   transition-duration:0s;
@@ -941,13 +982,13 @@
   height: 10vh;
   width: 80%;
   font-size: 20px;
-
+  top:-1vh;
 }
 
 .cropLand{
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items:center;
   flex-direction: column;
   margin-bottom:15px;
@@ -955,7 +996,7 @@
   height: 100px;
   cursor:pointer;
   border-radius: 10px;
-
+  padding-top: 1.5vh;
 }
 
 
@@ -1105,7 +1146,7 @@ td img{
 
 .userName h3{
   position: relative;
-  left:2vw;
+  left:2.5vw;
   margin-bottom: 10px;
   font-size: 40px;
   color:black;
@@ -1123,7 +1164,8 @@ td img{
 .userExp{
   position: relative;
   left:5vw;
-  margin-bottom: 10px;
+  /*margin-bottom: 10px;*/
+  margin-bottom: 1.5vh;
 }
 
 .expProgress h3{
@@ -1163,20 +1205,23 @@ td img{
   border-style: none;
 }
 
-.musicSwitch{
+
+.switch{
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: -6vw;
+}
+.musicSwitch{
   width:45px;
   height:45px;
   border-radius: 100%;
   background: #E5E5E5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   cursor: pointer;
   transition: all .2s;
-  right: -70%;
+  text-align: center;
 }
-
 .musicSwitch:hover{
   background: rgba(255,255,255,0.3);
 }
@@ -1184,8 +1229,18 @@ td img{
 .musicSwitch img{
   width:80%;
   height: 80%;
+  margin-top: 3px;
 }
-
+.nextSwitch input{
+  background:none;
+}
+.nextHome{
+  height: 7vh;
+}
+.nextHome:hover{
+  background-color: rgba(229, 246, 36, 0.7);
+  border-radius: 100%;
+}
 .croppedObject{
   cursor: pointer;
 }
@@ -1596,7 +1651,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   display: flex;
   justify-content: center;
   align-items: center;
-
+  z-index: 99;
 
 }
 
@@ -1655,7 +1710,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   background: rgba(255, 255, 255, 0.9);
   left:0px;
   top:0px;
-  z-index: 100;
+  z-index: 101;
   transition: all 1s;
   display: none;
 }
@@ -1687,15 +1742,16 @@ input[type="range"]:active::-webkit-slider-thumb{
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   width: 100%;
-  height: 50%;
+  height: auto;
 }
 
 .tutorial_img img{
   position: relative;
   border: 1px solid black;
   width:50%;
-  height:100%;
+  height:auto;
 }
 
 .tutorial_content{
