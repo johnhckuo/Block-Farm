@@ -9,7 +9,7 @@
 </template>
 
 <template name="loginPanel">
-  <!-- <div class="loginBG"></div>
+  <div class="loginBG"></div>
   <div class="loginPanel">
 
     <form class="navbar-form navbar-left" role="search" id="stakeholderLogin">
@@ -32,15 +32,13 @@
         </div>
         <br>
         <div class= "formBtn">
-          <button type="button" class="hvr-submit" id='register'>Register</button>
+          <button type="submit" class="hvr-submit forget-password">Forgot password?</button>
           <button type="submit" class="hvr-submit" id='login'>Login</button>
-          <button type="button" class="hvr-submit sendMail">Send</button>
-
         </div>
 
     </form>
 
-  </div> -->
+  </div>
 </template>
 
 <template name="header">
@@ -51,10 +49,7 @@
         <li><a href="/game">Start Farming!</a></li>
         <li><a href="/aboutus">About Us</a></li>
         <li><a href="https://gitter.im/Block-Farm/Support">Contact Us</a></li>
-        {{#if loggedIn}}
-        {{else}}
         <li><a href="" class="loginHref">Login</a></li>
-        {{/if}}
 
 
       </span>
@@ -84,6 +79,10 @@
   {{> header}}
   <div id="fullpage">
       <div id="title" class="section" >
+
+          {{# if loggin}}
+          {{> loginPanel}}
+          {{else}}
           <div class="titleContainer">
             <!-- <h1>A Blockchain-based <br/>Bartering System</h1> -->
             <h1>A Blockchain-based Farming Game</h1>
@@ -92,7 +91,10 @@
           <!-- <div class="titleImage">
               <img src="/img/test2.png" alt="">
           </div> -->
+
+
           <a href="#section2" data-title="" id="arrow-down">Get started</a>
+          {{/if}}
       </div>
 
       <div id="intro" class="layout section" >

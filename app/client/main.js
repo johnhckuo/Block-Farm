@@ -82,8 +82,16 @@ var loading = function(on){
 
 if (Meteor.isClient) {
 
-  Template.index.helpers({
+  Template.header.helpers({
+      loggedIn: function(){
+        return Session.get("loggedIn");
+      },
+  });
 
+  Template.index.helpers({
+      loggin: function(){
+        return Session.get("loggin");
+      },
       currentAddress: function(){
 
         return Session.get("account");
@@ -96,15 +104,6 @@ if (Meteor.isClient) {
 
   });
 
-  ///////////////////////
-  //                   //
-  //     variable      //
-  //                   //
-  ///////////////////////
-
-  Template.header.loggedIn = function () {
-    return Session.get('loggedIn');
-  }
 
   ////////////////////
   //                //
@@ -112,38 +111,15 @@ if (Meteor.isClient) {
   //                //
   ////////////////////
 
-  Template.loginPanel.events({
-    "click #login-trigger": function(event){
-      // if (!loginClicked){
-      //   $(".loginPanel form").addClass("showLoginPanel");
-      //   $(".loginPanel form").fadeIn(500);
-      //   $(".loginBG").fadeIn(1000);
-      //   $('html, body').css({
-      //       overflow: 'hidden',
-      //       height: '100%'
-      //   });
-      // }else{
-      //   $(".loginPanel form").removeClass("showLoginPanel");
-      //   $(".loginPanel form").fadeOut(1000);
-      //   $(".loginBG").fadeOut(1000);
-      //   $('html, body').css({
-      //       overflow: 'auto',
-      //       height: 'auto'
-      //   });
-      // }
-      // loginClicked = !loginClicked;
-      $(this).next('#login-content').slideToggle();
-      $(this).toggleClass('active');
-
-      if ($(this).hasClass('active')) $(this).find('span').html('&#x25B2;')
-      else $(this).find('span').html('&#x25BC;')
-    },
+  Template.header.events({
+    'click .loginHref':function(){
+        var isLogin = Session.get("loggin");
+        Session.set("loggin", !isLogin);
+    }
   })
 
-
-
   Template.loginPanel.events({
-    "submit form": function(event){
+    "click #login": async function(event){
       event.preventDefault();
       var email = $('[name=login_email]').val();
       var password = $('[name=login_password]').val();
@@ -161,21 +137,44 @@ if (Meteor.isClient) {
 
       Meteor.loginWithPassword(email, password, function(err, res){
         loading(0);
-        console.log(Meteor.user())
+        var userId = Meteor.userId();
+        var info = Meteor.users.findOne({_id:userId});
         if(err){
           console.log(err);
           sweetAlert("Oops...", err.reason, "error");
           Session.set("data", err.reason);
+        }else if (!Meteor.user().emails[0].verified){
+          sweetAlert("You haven't verified your email!", "Please go check your mailbox", "error");
         }else{
-          console.log(res);
-          Session.set("addr", res);
-          sweetAlert("You are now logged in!", "Your address is "+res, "success");
+          Session.set("address", info.profile.address);
+          Session.set("private", info.profile.private);
           Session.set('loggedIn', true);
-          //Router.go("game");
+
+          swal({
+            title: "You are now logged in!",
+            text: "Your address is "+info.profile.address,
+            type: "success",
+            showCancelButton: false
+          },
+          function(){
+            Router.go('/game');
+          });
+
         }
       });
       //register();
 
+
+    },
+    'click .forget-password':async function(){
+        let email = this.refs.email.value;
+        try{
+          var res = await Accounts.forgotPassword({email: email});
+        }catch(e){
+          sweetAlert("Oops...", e,reason, "error");
+          return;
+        }
+        sweetAlert("Please check your email!", "We've just sent an e-mail to reset your password!", "success");
 
     }
   });
@@ -249,39 +248,6 @@ if (Meteor.isClient) {
 
         //register();
 
-    },
-    'click #login': function (event){
-        event.preventDefault();
-        var email = $('[name=login_email]').val();
-        var password = $('[name=login_password]').val();
-        if (email.trim() == ""){
-            sweetAlert("Oops...", "Please enter your email !", "error");
-            return;
-        }else if (password == null){
-            sweetAlert("Oops...", "Please enter your password !", "error");
-            return;
-        }
-
-        loading(1);
-        console.log(email);
-        console.log(password)
-
-        Meteor.loginWithPassword(email, password, function(err, res){
-          loading(0);
-          console.log(Meteor.user())
-          if(err){
-            console.log(err);
-            sweetAlert("Oops...", err.reason, "error");
-            Session.set("data", err.reason);
-          }else{
-            console.log(res);
-            Session.set("data", res);
-            sweetAlert("You are now logged in!", "Your address is "+res, "success");
-            //Router.go("game");
-          }
-        });
-        //alert(web3.eth.accounts[currentAccount]);
-        register();
     },
     'click .forget-password':async function(){
         let email = this.refs.email.value;
