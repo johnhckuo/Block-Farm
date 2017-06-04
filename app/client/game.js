@@ -132,6 +132,13 @@ getStakeholderId = async function(){
 //  onCreated  //
 /////////////////
 
+Template.gameIndex.created = function(){
+  if (Meteor.userId() != null){
+    Session.set("loggedIn", true);
+  }else{
+    Session.set("loggedIn", false);
+  }
+}
 
 Template.warning.created = function() {
   loading(1);

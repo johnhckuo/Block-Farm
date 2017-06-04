@@ -20,6 +20,15 @@ var renderChecked = false;
 var userNameCounter = 0;
 var name;
 var loginClicked = false;
+
+Template.index.created = function() {
+  if (Meteor.userId() != null){
+    Session.set("loggedIn", true);
+  }else{
+    Session.set("loggedIn", false);
+  }
+}
+
 Template.index.rendered = function() {
     if(!this._rendered && !renderChecked) {
       console.log('Template render complete');
@@ -115,6 +124,10 @@ if (Meteor.isClient) {
     'click .loginHref':function(){
         var isLogin = Session.get("loggin");
         Session.set("loggin", !isLogin);
+    },
+    'click .logout':function(){
+        Meteor.logout();
+        Session.set("loggedIn", false);
     }
   })
 
