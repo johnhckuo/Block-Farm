@@ -18,7 +18,7 @@ contract usingProperty{
 }
 
 
-contract MainActivity2{
+contract Matchmaking{
 
     Congress congress;
     usingProperty property;
@@ -26,6 +26,7 @@ contract MainActivity2{
     uint floatOffset = 1000;
     uint matchMakingThreshold = 500;
     uint matchMakingInterval = 1800;
+    uint matchesConfirmThreshold = 2;
 
     struct Match{
         uint id;
@@ -42,7 +43,7 @@ contract MainActivity2{
 
     Match[] public matches;
 
-    function MainActivity2(address _congressAddress, address _propertyAddress){
+    function Matchmaking(address _congressAddress, address _propertyAddress){
 
       congress = Congress(_congressAddress);
       property = usingProperty(_propertyAddress);
@@ -58,8 +59,34 @@ contract MainActivity2{
         return (matches[m_Id].confirmed[s_Id]);
     }
 
+    function updateConfirmation(uint m_Id, uint s_Id, uint confirmation){
+        uint s_Index;
+        for (uint i = 0 ; i < matches[m_Id].visitedOwners.length; i++){
+            if (matches[m_Id].visitedOwners[i] == s_Id){
+                s_Index = i;
+                break;
+            }
+        }
+        matches[m_Id].confirmation[s_Index] = confirmation;
+        matches[m_Id].confirmed[s_Index] = true;
+    }
+
+    function getMatchMakingLength() constant returns(uint){
+        return matches.length;
+    }
+
+
+    function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result){
+        matches.length++;
+
+        matches[_matchId].id = _matchId;
+        matches[_matchId].visitedCount = _visitedCount;
+        matches[_matchId].result = _result;
+    }
+
+/*
     function checkConfirmation() returns(bool){
-        for (uint j = 0 ; j < matches.length ; j++){
+        for (uint j = 0 ; j < matches.length - matchesConfirmThreshold ; j++){
             uint confirm = 0;
             for (uint i = 0 ; i < matches[j].confirmation.length-1; i++){
                 if (matches[j].confirmation[i] == 1){
@@ -109,31 +136,6 @@ contract MainActivity2{
 
     }
 
-    function updateConfirmation(uint m_Id, uint s_Id, uint confirmation){
-        uint s_Index;
-        for (uint i = 0 ; i < matches[m_Id].visitedOwners.length; i++){
-            if (matches[m_Id].visitedOwners[i] == s_Id){
-                s_Index = i;
-                break;
-            }
-        }
-        matches[m_Id].confirmation[s_Index] = confirmation;
-        matches[m_Id].confirmed[s_Index] = true;
-    }
-
-    function getMatchMakingLength() constant returns(uint){
-        return matches.length;
-    }
-
-
-    function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result){
-        matches.length++;
-
-        matches[_matchId].id = _matchId;
-        matches[_matchId].visitedCount = _visitedCount;
-        matches[_matchId].result = _result;
-    }
-
     function gameCoreMatchingDetail(uint _matchId, int256 _priority, uint _owner, uint _property){
         matches[_matchId].visitedPriorities.push(_priority);
         matches[_matchId].visitedOwners.push(_owner);
@@ -156,6 +158,7 @@ contract MainActivity2{
         }
 
     }
+*/
 
 
 
