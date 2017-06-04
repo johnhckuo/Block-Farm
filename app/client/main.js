@@ -173,6 +173,26 @@ if (Meteor.isClient) {
         register();
 
     },
+    'click #sign-up':function (event) {
+      event.preventDefault();
+      var height = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
+        scrollDuration = 1000;
+      $(window).scrollTo(height*3, scrollDuration);
+    },
+    'click #login-trigger': function (event){
+      $('#login-container').slideToggle('fast');
+      $('#login-container').toggleClass('hidden');
+      // if($(event.target).hasClass('active')) $(event.target).find('span')
+    },
+    'click #forgot-passward':function(event){
+      // $('.flipper').slideToggle();
+      $('.flipper').toggleClass('flipperClicked');
+    },
+    'click #forgot-back':function (event) {
+      $('.flipper').toggleClass('flipperClicked');
+    }
   });
 }
 

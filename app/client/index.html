@@ -16,6 +16,24 @@
         <li><a href="/game">Start Farming!</a></li>
         <li><a href="/aboutus">About Us</a></li>
         <li><a href="https://gitter.im/Block-Farm/Support">Contact Us</a></li>
+        <!-- <li id="login">
+          <a id="login-trigger" href="#">Log in</a>
+          <div id="login-content">
+            <form>
+              <fieldset id="login-inputs">
+                <input id="login-username" type="email" name="Email" placeholder="Your email address" required>
+                <input id="login-password" type="password" name="Password" placeholder="Password" required>
+              </fieldset>
+              <div id="login-actions">
+                <button type="submit" id="login-submit" class="login-btn" value="Log in">Log In</button>
+                <a href="#tutorial" id="sign-up" class="login-btn" value="">Sign Up</a>
+              </div>
+              <div id="forgot-action">
+                <a href="#tutorial" id="forgot-passward">Forgot password?</a>
+              </div>
+            </form>
+          </div>
+        </li> -->
       </span>
     </ul>
   </div>
@@ -25,7 +43,9 @@
   <div class="socialIcons">
       <a class="github-button" href="https://github.com/johnhckuo/Block-Farm" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star johnhckuo/Block-Farm on GitHub">Star</a>
       <a class="github-button" href="https://github.com/johnhckuo/Block-Farm/fork" data-icon="octicon-repo-forked" data-size="large" data-show-count="true" aria-label="Fork johnhckuo/Block-Farm on GitHub">Fork</a>
-      <a href="https://gitter.im/Block-Farm/Support"><img src="https://badges.gitter.im/gitterHQ/gitter.png" alt="gitter chat"></a>
+      <!-- <a href="https://gitter.im/Block-Farm/Support"><img src="https://badges.gitter.im/gitterHQ/gitter.png" alt="gitter chat"></a> -->
+      <a class="cover-btn" href="https://gitter.im/Block-Farm/Support">Contact Us</a>
+      <a class="cover-btn" href="/aboutus">About Us</a>
   </div>
 
 </template>
@@ -38,18 +58,60 @@
 
 
 <template name="index">
-  {{> header}}
+  <!-- {{> header}} -->
   <div id="fullpage">
       <div id="title" class="section" >
           <div class="titleContainer">
             <!-- <h1>A Blockchain-based <br/>Bartering System</h1> -->
+            <img class="cover_img" src="/img/BlockFarm.png" alt="">
             <h1>A Blockchain-based Farming Game</h1>
             {{> socialIcons}}
+            <div class="cover-start">
+              <div class="start-tri"></div>
+              <a id="login-trigger" href="#">Play</a>
+
+            <div id="login-container" class="hidden">
+              <div id="" class="flexbox flip-container">
+                  <div class="flipper">
+
+                    <div class="front flexbox login-content-front login-content">
+                      <form class="form-box">
+                        <div class="login-inputs">
+                          <input id="login-username" type="email" name="Email" placeholder="Your email address" required>
+                          <input id="login-password" type="password" name="Password" placeholder="Password" required>
+                        </div>
+                        <div class="login-actions">
+                          <button type="submit" id="login-submit" class="login-btn login-left" value="Log in">Log In</button>
+                          <a href="#tutorial" id="sign-up" class="login-btn login-right" value="">Sign Up</a>
+                        </div>
+                        <div id="forgot-action">
+                          <a id="forgot-passward">Forgot password?</a>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div class="back flexbox login-content-back login-content">
+                      <form class="form-box">
+                        <fieldset class="login-inputs">
+                          <input id="login-username-b" type="email" name="Email" placeholder="Enter your email address" required>
+
+                        </fieldset>
+                        <div class="login-actions">
+                          <button type="submit" id="forgot-submit" class="login-btn login-left" value="">Send</button>
+                          <a id="forgot-back" class="login-btn login-right" value="">Back</a>
+                        </div>
+                      </form>
+                    </div>
+
+                </div>
+              </div>
+            </div>
+            </div>
           </div>
           <!-- <div class="titleImage">
               <img src="/img/test2.png" alt="">
           </div> -->
-          <a href="#section2" data-title="" id="arrow-down">Get started</a>
+
       </div>
 
       <div id="intro" class="layout section" >
@@ -63,7 +125,7 @@
               |
             </div>
             <div>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
             </div>
           </div>
           <hr>
@@ -74,72 +136,57 @@
             </div> -->
           </div>
 
-
       </div>
-      <div id="whyUs" class="layout section" >
+      <div class="whyUs_section layout section" >
         <h2>Why Us</h2>
-        <div class="whyUs whyUs_1">
-          <div class="whyUs_background">
-            <div class="whyUs_head">
-                <h3>01</h3>
-                <hr>
-            </div>
-            <div class="whyUs_content">
-                <div class="whyUs_content_head">
-                  <img src="/img/blockchain_logo.png" alt="">
-                  <h3> | Blockchain</h3>
-                </div>
-                <div class="whyUs_content_body">
-                  Based on blockchain, players can save efforts of monitoring every transaction proceed.
-                  Besides, transactions always follow our bartering system, providing an equitable,
-                  impartial, and transparent commercial channel.
-                </div>
-            </div>
+        <div class="whyUs_container">
+          <div class="whyUs flexbox flip-container">
+              <div class="whyUs_content whyUs_flipper">
+                  <div class="whyUs_front front flexbox">
+                    <img src="/img/blockchain_logo.png" alt="">
+                    <h3>Blockchain</h3>
+                  </div>
+                  <div class="whyUs_back back flexbox">
+                    <h3>Blockchain</h3>
+                    Based on blockchain, players can save efforts of monitoring every transaction proceed.
+                    Besides, transactions always follow our bartering system, providing an equitable,
+                    impartial, and transparent commercial channel.
+                  </div>
+              </div>
+          </div>
+
+          <div class="whyUs flexbox flip-container">
+              <div class="whyUs_content whyUs_flipper">
+                  <div class="whyUs_front front flexbox">
+                    <img src="/img/alliance.svg" alt="">
+                    <h3>Alliance</h3>
+                  </div>
+                  <div class="whyUs_back back flexbox">
+                    <h3>Alliance</h3>
+                    In this game, players are not only farmers and traders, but also have to choose a faction of
+                    thief or policeman. To steal others’ crops and to block the thief from stealing crops, so that
+                    they can earn additional experience points.
+                  </div>
+              </div>
+          </div>
+
+          <div class="whyUs flexbox flip-container">
+              <div class="whyUs_content whyUs_flipper">
+                  <div class="whyUs_front front flexbox">
+                    <img src="/img/share.svg" alt="">
+                    <h3>Trading</h3>
+                  </div>
+                  <div class="whyUs_back back flexbox">
+                    <h3>Trading</h3>
+                    Bartering mechanism, players can set up an
+                    importance of their crops, and also take down
+                    the ranking of other crops they do not have.
+                    When our system complete match-making, their
+                    crops will be exchanged automatically.
+                  </div>
+              </div>
           </div>
         </div>
-
-        <div class="whyUs whyUs_2">
-          <div class="whyUs_background">
-            <div class="whyUs_head">
-                <h3>02</h3>
-                <hr>
-            </div>
-            <div class="whyUs_content">
-                <div class="whyUs_content_head">
-                  <img src="/img/alliance.svg" alt="">
-                  <h3> | Alliance</h3>
-                </div>
-                <div class="whyUs_content_body">
-                  In this game, players are not only farmers and traders, but also have to choose a faction of
-                  thief or policeman. To steal others’ crops and to block the thief from stealing crops, so that
-                  they can earn additional experience points.
-                </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="whyUs whyUs_3">
-          <div class="whyUs_background w3back">
-            <div class="whyUs_head">
-                <h3>03</h3>
-                <hr>
-            </div>
-            <div class="whyUs_content w3c">
-                <div class="whyUs_content_head w3h">
-                  <img src="/img/share.svg" alt="">
-                  <h3> | Trading</h3>
-                </div>
-                <div class="whyUs_content_body w3b">
-                  Bartering mechanism, players can set up an
-                  importance of their crops, and also take down
-                  the ranking of other crops they do not have.
-                  When our system complete match-making, their
-                  crops will be exchanged automatically.
-                </div>
-            </div>
-          </div>
-        </div>
-
 
 
       </div>
@@ -154,8 +201,8 @@
               <div class="registerText">Registering...</div>
             </span>
           </span>
-          <div id="form" class="flexbox flip-container">
-              <div class="flipper" id="flipper">
+          <div id="form" class="flexbox">
+              <div class="" id="flipper">
                   <div class="front flexbox">
 
                     <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
