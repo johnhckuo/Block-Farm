@@ -14,6 +14,7 @@ import './game.html';
 //                //
 ////////////////////
 
+
 var stakeholderLength;
 var ownerAccount = 0;
 var renderChecked = false;
