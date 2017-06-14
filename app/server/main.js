@@ -5,40 +5,12 @@ import { Accounts } from 'meteor/accounts-base';
     API call
 --------------*/
 
-var API_Register = function(){
+var API_Register_backend = function(){
+    console.log(token);
     return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/addrs?token="+token);
 }
 
-var updateContract = function(contract, method, args){
-  var req = prefix;
-  switch (contract){
-    case "GameCore":
-      req += gameCore;
-      break;
-    case "Congress":
-      req += congress;
-      break;
-    case "usingProperty":
-      req += usingProperty;
-      break;
-    case "GameProperty":
-      req += gameProperty;
-      break;
-    case "Matchmaking":
-      req += matchmaking;
-      break;
-    case "PlayerSetting":
-      req += playerSetting;
-      break;
-    default:
-      return "error";
-  }
-  req += "/"+method+ "?token=" + token;
-  console.log(args);
-  updateCall.data.params = args;
-  return Meteor.http.call("POST",req, updateCall);
 
-}
 
 var getEther = function(addr){
   var config = {};
@@ -64,6 +36,37 @@ var Member_Register = function(email, password, character){
         character:character
       }
   });
+
+}
+
+var updateContract = function (contract, method, args) {
+  var req = prefix;
+  switch (contract) {
+    case "GameCore":
+      req += gameCore;
+      break;
+    case "Congress":
+      req += congress;
+      break;
+    case "usingProperty":
+      req += usingProperty;
+      break;
+    case "GameProperty":
+      req += gameProperty;
+      break;
+    case "Matchmaking":
+      req += matchmaking;
+      break;
+    case "PlayerSetting":
+      req += playerSetting;
+      break;
+    default:
+      return "error";
+  }
+  req += "/" + method + "?token=" + token;
+  console.log(args);
+  updateCall.data.params = args;
+  return Meteor.http.call("POST", req, updateCall);
 
 }
 
@@ -119,6 +122,17 @@ if (Meteor.isServer){
 
 
     },
+    'getUser' :function(){
+        let userId = Meteor.userId();
+        var result = Meteor.users.findOne({_id:userId});
+        if ( userId ) {
+            console.log("User found!")
+            return {type:"success", profile:result.profile, email:result.emails};
+
+        }else{
+            return {type:"fail"};
+        }
+    },
     'sendVerificationLink' :function(){
       let userId = Meteor.userId();
       console.log(Meteor.users.findOne({_id:userId}));
@@ -137,7 +151,8 @@ if (Meteor.isServer){
       try{
         var userId = Meteor.userId();
         var character = Meteor.users.findOne({_id:userId}).profile.character;
-        var res = Promise.await(API_Register());
+        console.log("1");
+        var res = Promise.await(API_Register_backend());
 
         var profile = {
           address:res.data.address,
@@ -155,7 +170,7 @@ if (Meteor.isServer){
     'callContract':function(contract, method, args){
         var res;
         try{
-          res = Promise.await(updateContract(contract, method, args));
+          res = updateContract(contract, method, args);
           //return new Promise(function(resolve, reject) { resolve(res.data.results); });
 
         }catch(e){
@@ -163,8 +178,48 @@ if (Meteor.isServer){
           return {type:"error", result:e.reason};
 
         }
-        return {type:"success", result:res.data.results};
-
+        return {type:"success", result:res.data}; 
+    },
+    'callContract_NoAwait': function (contract, method, args) {
+      var req = prefix;
+      req += usingProperty;
+      // switch (contract) {
+      //   case "GameCore":
+      //     req += gameCore;
+      //     break;
+      //   case "Congress":
+      //     req += congress;
+      //     break;
+      //   case "usingProperty":
+      //     req += usingProperty;
+      //     break;
+      //   case "GameProperty":
+      //     req += gameProperty;
+      //     break;
+      //   case "Matchmaking":
+      //     req += matchmaking;
+      //     break;
+      //   case "PlayerSetting":
+      //     req += playerSetting;
+      //     break;
+      //   default:
+      //     return "error";
+      // }
+      req += "/" + method + "?token=" + token;
+      console.log(args);
+      updateCall.data.params = args;
+       Meteor.http.call("POST", req, updateCall, function(err, res){
+         if(err)
+         console.log(err);
+         else
+         {
+           console.log(1);
+         return(res);
+         }
+       });
+    },
+    'test':function(){
+      console.log('speed');
     }
   });
 }

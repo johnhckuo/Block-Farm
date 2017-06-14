@@ -1,5 +1,6 @@
 import { Session } from 'meteor/session';
 import { Promise } from 'meteor/promise';
+import { BigNumber } from 'bignumber.js';
 
 if(typeof web3 === 'undefined')
         web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
@@ -2441,43 +2442,39 @@ callPromise = (method, contract, contractMethod, args) => {
   });
 }
 
-
-// function init(event){
-//   web3.eth.getAccounts(function(err, accs) {
-//     if (err != null) {
-//       //sweetAlert("Oops...", "There was an error fetching your accounts.", "error");
-//       Session.set('account', "Wallet Not Found");
-//       return;
-//     }
-//
-//     if (accs.length == 0) {
-//       //sweetAlert("Oops...", "Couldn't get any accounts! Make sure your Ethereum client is configured correctly.", "error");
-//       Session.set('account', "Account Not Found");
-//       return;
-//     }
-//
-//     accounts = accs;
-//     account = accounts[currentAccount];
-//     Session.set('account', account);
-//     //alert(account)
-//   });
-// }
+      Base64Decode = function(str){
+          var arrStr = Base64.decode(str);
+          var oriStr = "";
+          for(i = 0; i< arrStr.length; i++){
+              if(arrStr[i] == 0){
+                  break;
+              }
+              oriStr += String.fromCharCode(arrStr[i]);
+          }
+          return(oriStr);
+      }
 
 async function initGameConfig(){
+    // await callPromise('callContract', 'Congress', 'addMember', ["2cdd7eef11071781785b130bec04ba04ccf9df6d"]);
+    // await callPromise('callContract', 'Congress', 'initPlayerData', ["Moderator", "guard"]);    
+    // await callPromise('callContract', 'GameProperty', 'addUserLandConfiguration', ["2cdd7eef11071781785b130bec04ba04ccf9df6d", 3]);
+    // //for(var i = 0; i < MissionList.length; i++){
+    //for(var i = 0; i < 10; i++){
+    //    await callPromise('callContract', 'GameCore', 'addMission', [MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status]);
+    //    //GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
+    ////for(var i = 0; i < missionItem.length; i++){
+    //for(var i = 0; i < 20; i++){
+    //    await callPromise('callContract', 'GameCore', 'addMissionItem', [missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity]);
+    //    //GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    //}
+    //console.log("Mission added");
 
-    for(var i = 0; i < MissionList.length; i++){
-        await callPromise('callContract', 'GameCore', 'addMission', [MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status]);
-        //GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    for(var i = 0; i < missionItem.length; i++){
-        await callPromise('callContract', 'GameCore', 'addMissionItem', [missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity]);
-        //GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    console.log("Mission added");
-
-    for (var i = 0 ; i < cropTypeList.length ; i++){
-        await callPromise('callContract', 'usingProperty', 'addPropertyType', [cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count]);
-        //usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
+    //for (var i = 0 ; i < cropTypeList.length ; i++){
+    for (var i = 0 ; i < 10; i++){
+        await callPromise('callContract', 'usingProperty', 'addPropertyType', [cropTypeList[i].name,  cropTypeList[i].time, cropTypeList[i].count]);
+        await callPromise('callContract', 'usingProperty', 'addPropertyTypeImg', [i, cropTypeList[i].img[0], cropTypeList[i].img[1], cropTypeList[i].img[2], cropTypeList[i].img[3], cropTypeList[i].img[4]]);
+    //    //usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
     }
 
     for (var i = 0 ; i < landTypeList.length ; i++){
@@ -2489,26 +2486,33 @@ async function initGameConfig(){
 
 Template.index.created = async function() {
     $.getScript('scripts/buttons.js');
-    var temp = await callPromise('callContract', 'Congress', 'getStakeholdersLength', []);
-
     Session.set('currentAccount', currentAccount);
     Session.set('cropsPerLvl', cropsPerLvl);
 
-    //var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', []);
-    //if(res.type == "success"){
-    //    console.log("=========== Data Inited ===========");
-    //}
-    //else{
-    //    //console.log(res.type);
-    //    initGameConfig();
-    //}
-    //try{
-    //  var val = usingPropertyInstance.propertyTypeList(0);
-    //  console.log("=========== Data Inited ===========");
+    var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', []);
+    if(res.type == "success"){
+        if(res.result.results[0] != 0){
+            console.log("=========== Data Inited ===========");
+        }
+        else{
+            //initGameConfig();
+        }
+    }
+    else{
+        console.log(res.type);
+    }
 
-    //}
-    //catch(err){
-    //  initGameConfig();
-    //  console.log(err);
-    //}
+    for (var i = 6; i < 10; i++) {
+        //Meteor.call('test');
+        //var r = Meteor.call('callContract_NoAwait', 'usingProperty', 'addPropertyType', [cropTypeList[i].name, cropTypeList[i].time, cropTypeList[i].count]);
+        var r = await Meteor.call('callContract_NoAwait', 'usingProperty', 'getPropertyType', [i]);
+
+        console.log(r);
+    }
+    for (var i = 0 ; i < 5; i++){
+        //callPromise('callContract', 'usingProperty', 'addPropertyType', [cropTypeList[i].name,  cropTypeList[i].time, cropTypeList[i].count]);
+ //       await callPromise('callContract', 'usingProperty', 'addPropertyTypeImg', [i, cropTypeList[i].img[0], cropTypeList[i].img[1], cropTypeList[i].img[2], cropTypeList[i].img[3], cropTypeList[i].img[4]]);
+    //    //usingPropertyInstance.addPropertyType(cropTypeList[i].name, cropTypeList[i].img, cropTypeList[i].time, cropTypeList[i].count, { from:web3.eth.accounts[currentAccount], gas:2500000});
+    }
+
 }

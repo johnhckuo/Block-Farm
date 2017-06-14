@@ -83,6 +83,18 @@ callPromise = (method, contract, contractMethod, args) => {
     });
 }
 
+Base64Decode = function(str){
+    var arrStr = Base64.decode(str);
+    var oriStr = "";
+    for(i = 0; i< arrStr.length; i++){
+        if(arrStr[i] == 0){
+            break;
+        }
+        oriStr += String.fromCharCode(arrStr[i]);
+    }
+    return(oriStr);
+}
+
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -97,6 +109,26 @@ Date.prototype.addTime = function(days, hours, minutes, seconds) {
     dat.setSeconds(dat.getSeconds() + seconds);
 
     return dat;
+}
+
+var hex2a = function(hexx) {
+    var hex = hexx.toString();//force conversion
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
+
+stringToUni = function(s) {
+    var temp = "";
+    for (i = 0; i < s.length; i++) {
+        var code = s.charCodeAt(i).toString();
+        if(code.length == 2){
+            code = "0" + code;
+        }
+        temp += code;
+    }
+    return (parseInt(temp));
 }
 
 //////////////////////
@@ -118,9 +150,10 @@ gameIndexCreation = async function(){
 /////////////////////////
 
 getStakeholderId = async function(){
-    var res = await callPromise('callContract', 'Congress', 'stakeholderId', [Session.get("addr")]);
+    console.log(Session.get("address"));
+    var res = await callPromise('callContract', 'Congress', 'getStakeholderId', [Session.get("address")]);
     if(res.type == "success"){
-        s_Id = res.result.c[0];
+        s_Id = res.result.results[0];
     }
     else{
         s_Id = 0;
@@ -132,13 +165,6 @@ getStakeholderId = async function(){
 //  onCreated  //
 /////////////////
 
-Template.gameIndex.created = function(){
-  if (Meteor.userId() != null){
-    Session.set("loggedIn", true);
-  }else{
-    Session.set("loggedIn", false);
-  }
-}
 
 Template.warning.created = function() {
   loading(1);
@@ -146,8 +172,6 @@ Template.warning.created = function() {
 }
 
 Template.gameContent.created = function() {
-
-
     getStakeholderId();
     if (s_Id == 0){
         sweetAlert("Oops...", "Please Register First", "error");
@@ -674,7 +698,7 @@ Template.gameContent.events({
             });
             var res = await callPromise('callContract', 'usingProperty', 'getPropertiesLength', []);
             if(res.type == "success"){
-                var propertyLength = res.result.c[0];
+                var propertyLength = res.result.results[0];
             }
             else{
                 console.log("chain error: propertyLength");
@@ -763,7 +787,7 @@ Template.gameContent.events({
                         cropCount = cropCount - stealCount;
                         var res = await callPromise('callContract', 'usingProperty', 'getPropertiesLength', []);
                         if(res.type == "success"){
-                            var propertyLength = res.result.c[0];
+                            var propertyLength = res.result.results[0];
                         }
                         else{
                             console.log("chain error : propertyLength");
@@ -1234,14 +1258,14 @@ Template.characterList.events({
             }
             else if(Session.get('userCharacter') == "Guard"){
                 //matchmakingbug
-                var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]}).c[0];
-                var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]}).c[0];
+                var gaurdMatchID = CongressInstance.getGuardMatchId.call(s_Id, {from: web3.eth.accounts[currentAccount]});
+                var matchLength = MainActivity2Instance.getMatchMakingLength.call(s_Id,  {from: web3.eth.accounts[currentAccount]});
                 var matchDiff = matchLength - gaurdMatchID;
                 matchDiff = 3;
                 if(matchDiff <= 2){
                     var guardData = CongressInstance.getGuardReqInfo.call(s_Id, {from:web3.eth.accounts[currentAccount]});
-                    var guardLand = guardData[0].c[0];
-                    var progress = guardData[1].c[0];
+                    var guardLand = guardData[0];
+                    var progress = guardData[1];
                     if(guardLand == 0){
                         sweetAlert("Oops...", "You have completed your mission.", "error");
                         loading(0);
@@ -1440,27 +1464,27 @@ var showConfirmation = function(s_Id){
         var index;
 
         for (var j = 0 ; j < owners.length ; j++){
-            if (s_Id == owners[j].c[0]){
+            if (s_Id == owners[j]){
                 index = j;
             }
         }
 
         var previousIndex = (index-1+owners.length)%owners.length
 
-        var previousName = web3.toUtf8(CongressInstance.getStakeholder.call(parseInt(owners[previousIndex].c[0]), {from:web3.eth.accounts[currentAccount]})[0]);
-        var type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[previousIndex].c[0]), {from:web3.eth.accounts[currentAccount]});
+        var previousName = Base64Decode(CongressInstance.getStakeholder.call(parseInt(owners[previousIndex]), {from:web3.eth.accounts[currentAccount]})[0]);
+        var type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[previousIndex]), {from:web3.eth.accounts[currentAccount]});
         var receiveProperty = usingPropertyInstance.getPropertyType.call(type_Id, {from:web3.eth.accounts[currentAccount]});
 
-        type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[index].c[0]), {from:web3.eth.accounts[currentAccount]});
+        type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[index]), {from:web3.eth.accounts[currentAccount]});
         var provideProperty = usingPropertyInstance.getPropertyType.call(type_Id, {from:web3.eth.accounts[currentAccount]});
 
         var row = $("<div>").attr("class", "matches match"+i);
         var fromAddr = $("<div>").text("from "+previousName);
-        var receive = $("<div>").text("for " +web3.toUtf8(receiveProperty[0]) + "X" + tradeables[previousIndex].c[0]);
-        var provide = $("<div>").text("You exchange " + web3.toUtf8(provideProperty[0]) + "X" + tradeables[index].c[0]);
+        var receive = $("<div>").text("for " +Base64Decode(receiveProperty[0]) + "X" + tradeables[previousIndex]);
+        var provide = $("<div>").text("You exchange " + Base64Decode(provideProperty[0]) + "X" + tradeables[index]);
         var checkBtn = $('<input>').attr( {
             type: 'button',
-            class: "btn btn-info matchesBtn matchBtn"+currentUser.matches[i].c[0],
+            class: "btn btn-info matchesBtn matchBtn"+currentUser.matches[i],
             value: 'Confirm'
         });
         row.append(provide).append(receive).append(fromAddr).append(checkBtn);
@@ -1471,8 +1495,8 @@ var showConfirmation = function(s_Id){
 
         var confirmed = MainActivity2Instance.getMatchMakingConfirmed.call(currentUser.matches[i], s_Id, {from:web3.eth.accounts[currentAccount]});
         if (confirmed){
-            $(".matchBtn"+currentUser.matches[i].c[0]).prop("value", "Waiting");
-            $(".matchBtn"+currentUser.matches[i].c[0]).prop("disabled", true);
+            $(".matchBtn"+currentUser.matches[i]).prop("value", "Waiting");
+            $(".matchBtn"+currentUser.matches[i]).prop("disabled", true);
 
         }
     }
@@ -1481,7 +1505,7 @@ var showConfirmation = function(s_Id){
 var getVisitNode = async function(){
     var res = await callPromise('callContract', 'Congress', 'getStakeholdersLength', []);
     if(res.type == "success"){
-        var s_Length = res.result.c[0];
+        var s_Length = res.result.results[0];
     }
     else{
         console.log("chain error: getStakeholdersLength");
@@ -1519,9 +1543,9 @@ var fetchAllCropTypes = async function(){
     for (var i = 0 ; i < cropData.length ; i++){
         var tempImg = [];
         for (var j = 0 ; j < 4; j++){
-            var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeImg', [cropData[i][1].c[0], j]);
+            var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeImg', [cropData[i][1], j]);
             if(res.type == "success"){
-                var tempStr = web3.toUtf8(res.result);
+                var tempStr = hex2a(res.result.results[0]);
                 tempImg.push(tempStr);
             }
             else{
@@ -1534,11 +1558,11 @@ var fetchAllCropTypes = async function(){
             //tempImg.push("carrot_grow");
         }
         typesList.push({
-            name : web3.toUtf8(cropData[i][0]),
-            id : cropData[i][1].c[0],
+            name : Base64Decode(cropData[i][0]),
+            id : cropData[i][1],
             img: tempImg,
-            time: web3.toUtf8(cropData[i][3]),
-            count:cropData[i][4].c[0]
+            time: Base64Decode(cropData[i][3]),
+            count:cropData[i][4]
 
         })
     }
@@ -1550,7 +1574,7 @@ var loadCropList = async function(s_Id){
     cropList = [];
     var res = await callPromise('callContract', 'GameProperty', 'getCropList', [s_Id]);
     if(res.type == "success"){
-        var data = res.result;
+        var data = res.result.results;
     }
     else{
         console.log("chain error : getCropList");
@@ -1558,7 +1582,7 @@ var loadCropList = async function(s_Id){
     }
     var res = await callPromise('callContract', 'GameProperty', 'getCropListCount', [s_Id]);
     if(res.type == "success"){
-        var countData = res.result;
+        var countData = res.result.results;
     }
     else{
         console.log("chain error : getCropListCount");
@@ -1566,7 +1590,7 @@ var loadCropList = async function(s_Id){
     }
     var res = await callPromise('callContract', 'GameProperty', 'getCropListLength', [s_Id]);
     if(res.type == "success"){
-        var length = res.result.c[0];
+        var length = res.result.results[0];
     }
     else{
         console.log("chain error : getCropListLength");
@@ -1576,21 +1600,21 @@ var loadCropList = async function(s_Id){
     //var countData = GamePropertyInstance.getCropListCount(s_Id, {from:web3.eth.accounts[currentAccount]});
     //var length = GamePropertyInstance.getCropListLength(s_Id, { from:web3.eth.accounts[currentAccount]});
     for (var i = 0 ; i < length ; i++){
-        var start = web3.toUtf8(data[3][i]).split(".")[0]+"Z";
-        var end = web3.toUtf8(data[4][i]).split(".")[0]+"Z";
+        var start = Base64Decode(data[3][i]).split(".")[0]+"Z";
+        var end = Base64Decode(data[4][i]).split(".")[0]+"Z";
 
         start = start.split("\"")[1];
         end = end.split("\"")[1];
 
         cropList.push({
-            id: data[0][i].c[0],
-            name: web3.toUtf8(data[1][i]),
-            img: web3.toUtf8(data[2][i]),
+            id: data[0][i],
+            name: Base64Decode(data[1][i]),
+            img: Base64Decode(data[2][i]),
             start: new Date(start),
             end: new Date(end),
-            type: data[5][i].c[0],
+            type: data[5][i],
             ripe: data[6][i],
-            count: countData[i].c[0]
+            count: countData[i]
         });
     }
 
@@ -1600,7 +1624,7 @@ var loadCropList = async function(s_Id){
 var getUserStockList = async function(s_Id){
     var res = await callPromise('callContract', 'Congress', 'getPropertyList', [s_Id]);
     if(res.type == "success"){
-        var p_List = res.result;
+        var p_List = res.result.results[0];
     }
     else{
         console.log("chain error : getPropertyList");
@@ -1610,25 +1634,25 @@ var getUserStockList = async function(s_Id){
 
     var data = [];
     for (var i = 0 ; i < p_List.length ; i++){
-        var res = await callPromise('callContract', 'usingProperty', 'getPropertyByOwner', [p_List[i].c[0]]);
+        var res = await callPromise('callContract', 'usingProperty', 'getPropertyByOwner', [p_List[i]]);
         if(res.type == "success"){
-            data.push(res.result);
+            data.push(res.result.results);
         }
         else{
             console.log("chain error : getPropertyByOwner");
             return;
         }
-        //data.push(usingPropertyInstance.getPropertyByOwner(p_List[i].c[0], { from:web3.eth.accounts[currentAccount]}));
+        //data.push(usingPropertyInstance.getPropertyByOwner(p_List[i], { from:web3.eth.accounts[currentAccount]}));
     }
     for (var i = 0 ; i < data.length ; i++){
         stockList.push({
-            id: data[i][0].c[0],
-            name: web3.toUtf8(data[i][1]),
-            count: data[i][2].c[0],
-            minUnit: data[i][3].c[0],
-            extraData: web3.toUtf8(data[i][4]),
-            type: data[i][5].c[0],
-            tradeable: data[i][6].c[0]
+            id: data[i][0],
+            name: Base64Decode(data[i][1]),
+            count: data[i][2],
+            minUnit: data[i][3],
+            extraData: Base64Decode(data[i][4]),
+            type: data[i][5],
+            tradeable: data[i][6]
         });
     }
 
@@ -1637,7 +1661,7 @@ var getUserStockList = async function(s_Id){
 var getUserData = async function(s_Id){
     var res = await callPromise('callContract', 'Congress', 'getStakeholder', [s_Id]);
     if(res.type == "success"){
-        var data = res.result;
+        var data = res.result.results;
     }
     else{
         console.log("chain error : getStakeholder");
@@ -1645,7 +1669,7 @@ var getUserData = async function(s_Id){
     }
     var res = await callPromise('callContract', 'Congress', 'getSyndicateData', [s_Id]);
     if(res.type == "success"){
-        var syndicateData = res.result;
+        var syndicateData = res.result.results;
     }
     else{
         console.log("chain error : getSyndicateData");
@@ -1653,7 +1677,7 @@ var getUserData = async function(s_Id){
     }
     var res = await callPromise('callContract', 'Congress', 'getStakeholderMatches', [s_Id]);
     if(res.type == "success"){
-        var matches = res.result;
+        var matches = res.result.results;
     }
     else{
         console.log("chain error : getStakeholderMatches");
@@ -1665,27 +1689,26 @@ var getUserData = async function(s_Id){
 
     currentUser = {
         id:s_Id,
-        address:web3.eth.accounts[currentAccount],
-
-        name: web3.toUtf8(data[0]),
-        exp: data[1].c[0],
-        totalExp: data[2].c[0],
-        type: web3.toUtf8(data[3]),
-        landSize: data[4].c[0],
-        level:data[5].c[0],
-        sta: data[6].c[0],
+        address:Session.get("address"),
+        name: Base64Decode(data[0]),
+        exp: data[1],
+        totalExp: data[2],
+        type: Base64Decode(data[3]),
+        landSize: data[4],
+        level:data[5],
+        sta: data[6],
         guardId: null,
         thiefId: null,
-        SyndicateExp:syndicateData[0].c[0],
-        SyndicateTotalExp:syndicateData[1].c[0],
-        SyndicateLevel:syndicateData[2].c[0],
+        SyndicateExp:syndicateData[0],
+        SyndicateTotalExp:syndicateData[1],
+        SyndicateLevel:syndicateData[2],
         SyndicateProgress:0,
         matches : matches
     };
 
     var res = await callPromise('callContract', 'Congress', 'getStakeholderLastLogin', [s_Id]);
     if(res.type == "success"){
-        var lastLogin = res.result;
+        var lastLogin = res.result.results[0];
     }
     else{
         console.log("chain error : getStakeholderLastLogin");
@@ -1693,11 +1716,11 @@ var getUserData = async function(s_Id){
     }
     //var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
 
-    if (web3.toUtf8(lastLogin) == 0){
+    if (Base64Decode(lastLogin) == 0){
         return;
     }
 
-    lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
+    lastLogin = Base64Decode(lastLogin).split(".")[0]+"Z";
     lastLogin = new Date(lastLogin.split("\"")[1]);
 
     var difference = elapsedTime(lastLogin, new Date());
@@ -1715,7 +1738,7 @@ var getUserData = async function(s_Id){
 var updateUserData = async function(s_Id){
     var res = await callPromise('callContract', 'Congress', 'getStakeholder', [s_Id]);
     if(res.type == "success"){
-        var data = res.result;
+        var data = res.result.results;
     }
     else{
         console.log("chain error : getStakeholder");
@@ -1723,7 +1746,7 @@ var updateUserData = async function(s_Id){
     }
     var res = await callPromise('callContract', 'Congress', 'getSyndicateData', [s_Id]);
     if(res.type == "success"){
-        var syndicateData = res.result;
+        var syndicateData = res.result.results;
     }
     else{
         console.log("chain error : getSyndicateData");
@@ -1731,33 +1754,28 @@ var updateUserData = async function(s_Id){
     }
     var res = await callPromise('callContract', 'Congress', 'getStakeholderMatches', [s_Id]);
     if(res.type == "success"){
-        var matches = res.result;
+        var matches = res.result.results;
     }
     else{
         console.log("chain error : getStakeholderMatches");
         return;
     }
-    //var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
-    //var syndicateData = CongressInstance.getSyndicateData.call(s_Id, {from:web3.eth.accounts[currentAccount]});
-    //var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from:web3.eth.accounts[currentAccount]});
-
-    currentUser.exp =  data[1].c[0];
-    currentUser.totalExp = data[2].c[0];
-    currentUser.landSize = data[4].c[0];
-    currentUser.level = data[5].c[0];
-    currentUser.SyndicateExp = syndicateData[0].c[0];
-    currentUser.SyndicateTotalExp = syndicateData[1].c[0];
-    currentUser.SyndicateLevel = syndicateData[2].c[0];
+    currentUser.exp =  data[1];
+    currentUser.totalExp = data[2];
+    currentUser.landSize = data[4];
+    currentUser.level = data[5];
+    currentUser.SyndicateExp = syndicateData[0];
+    currentUser.SyndicateTotalExp = syndicateData[1];
+    currentUser.SyndicateLevel = syndicateData[2];
     currentUser.matches = matches;
     // end = end.split("\"")[1];
-
 }
 
 var getLandConfiguration = async function(s_Id){
     userLandConfiguration = [];
     var res = await callPromise('callContract', 'GameProperty', 'getUserLandConfiguration', [s_Id]);
     if(res.type == "success"){
-        var data = res.result;
+        var data = res.result.results;
     }
     else{
         console.log("chain error : getUserLandConfiguration");
@@ -1770,17 +1788,17 @@ var getLandConfiguration = async function(s_Id){
     var contractCropData = data[1];
 
     for (var i = 0 ; i < landSize*landSize ; i++){
-        if (contractLandData[i].s != -1){
-            contractLandData[i].s = contractLandData[i].c[0];
+        if (contractLandData[i]!= 9999){
+            contractLandData[i] = contractLandData[i];
         }
-        if (contractCropData[i].s != -1){
-            contractCropData[i].s = contractCropData[i].c[0];
+        if (contractCropData[i] != 9999){
+            contractCropData[i] = contractCropData[i];
         }
         userLandConfiguration.push(
           {
               id: i,
-              land: contractLandData[i].s,
-              crop: contractCropData[i].s
+              land: contractLandData[i],
+              crop: contractCropData[i]
           }
         );
     }
@@ -1796,7 +1814,7 @@ var fetchGameInitConfig = async function(s_Id){
 
     var res = await callPromise('callContract', 'usingProperty', 'getUserPropertyType', [s_Id]);
     if(res.type == "success"){
-        var userCropTypeData = res.result;
+        var userCropTypeData = res.result.results;
     }
     else{
         console.log("chain error : getUserPropertyType");
@@ -1805,21 +1823,22 @@ var fetchGameInitConfig = async function(s_Id){
     //var userCropTypeData = usingPropertyInstance.getUserPropertyType(s_Id, { from:web3.eth.accounts[currentAccount]});
     for (var i = 0 ; i < userCropTypeData[0].length ; i++){
         userCropType.push({
-            id: userCropTypeData[0][i].c[0],
-            count: userCropTypeData[1][i].c[0],
+            id: userCropTypeData[0][i],
+            count: userCropTypeData[1][i],
         });
     }
     //wait for check cropData
     for (var i = 0 ; i < userCropType.length; i++){
-        var res = await callPromise('callContract', 'usingProperty', 'getUserPropertyType', [s_Id]);
+        var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeAll', [ userCropType[0][i]]);
         if(res.type == "success"){
-            var userCropTypeData = res.result;
+            var userCropData = res.result.results;
         }
         else{
             console.log("chain error : getUserPropertyType");
             return;
         }
-        cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
+        cropData.push(userCropData);
+        //cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
     }
 
     var flag = true;
@@ -1829,7 +1848,7 @@ var fetchGameInitConfig = async function(s_Id){
         try{
             var res = await callPromise('callContract', 'GameProperty', 'getLandType', [i]);
             if(res.type == "success"){
-                var data = res.result;
+                var data = res.result.results;
             }
             else{
                 console.log("chain error : getLandType");
@@ -1847,17 +1866,26 @@ var fetchGameInitConfig = async function(s_Id){
     for (var i = 0 ; i < cropData.length ; i++){
         var tempImg = [];
         for (var j = 0 ; j < 5; j++){
-            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(cropData[i][1].c[0], j, { from:web3.eth.accounts[currentAccount]})).toString();
+            var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeImg', [cropData[i][1], j]);
+            if(res.type == "success"){
+                tempStr = Base64Decode(res.result.results[0]);
+                tempImg.push(tempStr);
+            }
+            else{
+                console.log("chain error : getPropertyTypeImg");
+            }
+            //var tempStr =  Base64Decode(usingPropertyInstance.getPropertyTypeImg(cropData[i][1], j, { from:web3.eth.accounts[currentAccount]})).toString();
+
             tempImg.push(tempStr);
             //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
             //tempImg.push("carrot_grow");
         }
         cropTypeList.push({
-            name : web3.toUtf8(cropData[i][0]),
-            id : cropData[i][1].c[0],
+            name : Base64Decode(cropData[i][0]),
+            id : cropData[i][1],
             img: tempImg,
-            time: web3.toUtf8(cropData[i][3]),
-            count:cropData[i][4].c[0]
+            time: Base64Decode(cropData[i][3]),
+            count:cropData[i][4]
 
         })
     }
@@ -1868,10 +1896,10 @@ var fetchGameInitConfig = async function(s_Id){
     for (var i = 0 ; i < landData.length ; i++){
 
         landTypeList.push({
-            id : landData[i][0].c[0],
-            name : web3.toUtf8(landData[i][1]),
-            img: web3.toUtf8(landData[i][2]),
-            count:landData[i][3].c[0]
+            id : landData[i][0],
+            name : Base64Decode(landData[i][1]),
+            img: Base64Decode(landData[i][2]),
+            count:landData[i][3]
 
         })
     }
@@ -2181,7 +2209,7 @@ var setGuardProperty = async function(){
 var setStealRate = async function(visitNode){
     var res = await callPromise('callContract', 'Congress', 'getGuardId', [visitNode]);
     if(res.type == "success"){
-        var thisGuardId = res.result.c[0];
+        var thisGuardId = res.result.results[0];
     }
     else{
         console.log("chain error : getGuardId");
@@ -2192,14 +2220,14 @@ var setStealRate = async function(visitNode){
     if(thisGuardId != 0){
         var res = await callPromise('callContract', 'Congress', 'getSyndicateData', [thisGaurdId]);
         if(res.type == "success"){
-            var GuardData = res.result.c[0];
+            var GuardData = res.result.results[0];
         }
         else{
             console.log("chain error : getGuardId");
             return;
         }
         //var GuardData = CongressInstance.getSyndicateData.call(thisGaurdId, {from: web3.eth.accounts[currentAccount]});
-        thisGuardLvl = GuardData[2].c[0];
+        thisGuardLvl = GuardData[2];
     }
     else{
         thisGuardLvl = 0;
@@ -2319,7 +2347,7 @@ get_user_property_setting = async function () {
     user_property = [];
     var res = await callPromise('callContract', 'usingProperty', 'getPropertyIndex', [s_Id]);
     if(res.type == "success"){
-        var _propertyIndex = res.result.c[0];
+        var _propertyIndex = res.result.results[0];
     }
     else{
         console.log("chain error : getPropertyIndex");
@@ -2327,7 +2355,7 @@ get_user_property_setting = async function () {
     }
     var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', [s_Id]);
     if(res.type == "success"){
-        var propertyTypeLength = res.result.c[0];
+        var propertyTypeLength = res.result.results[0];
     }
     else{
         console.log("chain error : getPropertyTypeLength");
@@ -2335,11 +2363,11 @@ get_user_property_setting = async function () {
     }
     //var _propertyIndex = CongressInstance.getPropertyIndex.call(s_Id, {from:web3.eth.accounts[currentAccount]});
     //var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]});
-    var _goal = _propertyIndex.c[0] +  propertyTypeLength.c[0];
-    for(i = _propertyIndex.c[0]; i < _goal; i++){
-        var res = await callPromise('callContract', 'usingProperty', 'getPropertyTo2', [i, Session.get('addr')]);
+    var _goal = _propertyIndex +  propertyTypeLength;
+    for(i = _propertyIndex; i < _goal; i++){
+        var res = await callPromise('callContract', 'usingProperty', 'getPropertyTo2', [i, Session.get('address')]);
         if(res.type == "success"){
-            var result = res.result;
+            var result = res.result.results;
         }
         else{
             console.log("chain error : getPropertyTo2");
@@ -2350,12 +2378,12 @@ get_user_property_setting = async function () {
         //        console.log(err);
         //    }
         //    else{
-                var _id = result[0].c[0];
-                var _propertyType = result[1].c[0]
-                var _name = web3.toUtf8(result[2]);
-                var _propertyCount = result[3].c[0];
-                var _tradeable = result[4].c[0];
-                var _img = web3.toUtf8(result[5]);
+                var _id = result[0];
+                var _propertyType = result[1];
+                var _name = hex2a(result[2]);
+                var _propertyCount = result[3];
+                var _tradeable = result[4];
+                var _img = hex2a(result[5]);
                 var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
                 user_property.push(data);
                 console.log(i);
@@ -2371,17 +2399,17 @@ get_propertyType_setting = async function(_length){
     for(i = 0; i < _length; i++){
         var res = await callPromise('callContract', 'usingProperty', 'getPropertyType', [i]);
         if(res.type == "success"){
-            var result = res.result;
+            var result = res.result.results;
         }
         else{
             console.log("chain error : getPropertyType");
             return;
         }
         //var property_type = usingPropertyInstance.getPropertyType.call(i,currentAccount, {from:web3.eth.accounts[currentAccount]}, function(err, result){
-            var _name = web3.toUtf8(result[0]);
-            var _id =  result[1].c[0];
-            var _rating = result[3].c[0]/floatOffset;
-            var _averageRating = result[2].c[0]/floatOffset;
+            var _name = hex2a(result[0]);
+            var _id =  result[1];
+            var _rating = result[3]/floatOffset;
+            var _averageRating = result[2]/floatOffset;
 
             var data = {"name": _name,"id":_id, "rating": _rating, "averageRating":_averageRating};
             display_field.push(data);
@@ -2392,13 +2420,13 @@ get_propertyType_setting = async function(_length){
 set_property_table = async function(){
     var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', [s_Id]);
     if(res.type == "success"){
-        var propertyTypeLength = res.result.c[0];
+        var propertyTypeLength = res.result.results[0];
     }
     else{
         console.log("chain error : getPropertyTypeLength");
         return;
     }
-    //var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]}).c[0];
+    //var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
     if(user_property.length != propertyTypeLength){
         loading(1);
         setTimeout(set_property_table, 1000);
@@ -2497,15 +2525,15 @@ set_propertyType_table = async function () {
     loading(1);
     var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', [s_Id]);
     if(res.type == "success"){
-        var propertyTypeLength = res.result.c[0];
+        var propertyTypeLength = res.result.results[0];
     }
     else{
         console.log("chain error : getPropertyTypeLength");
         return;
     }
     //var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]});
-    get_propertyType_setting(propertyTypeLength.c[0]);
-    rend_propertyType_table(propertyTypeLength.c[0]);
+    get_propertyType_setting(propertyTypeLength);
+    rend_propertyType_table(propertyTypeLength);
 }
 
 rend_propertyType_table = function(_length){
@@ -2606,7 +2634,7 @@ get_mission_list = async function(){
     var item, result, _cropId, _cropName, _quantity, _missionId, _missionName, _exp, _lvl_limitation, _accountStatus;
     var res = await callPromise('callContract', 'GameCore', 'getMissionsLength', []);
     if(res.type == "success"){
-        var mission_count = res.result.c[0];
+        var mission_count = res.result.results[0];
     }
     else{
         console.log("chain error : getMissionsLength");
@@ -2617,25 +2645,25 @@ get_mission_list = async function(){
     for(k = 1; k < mission_count; k++){
         var res = await callPromise('callContract', 'GameCore', 'getMission', [k]);
         if(res.type == "success"){
-            var result = res.result;
+            var result = res.result.results;
         }
         else{
             console.log("chain error : getMission");
             return;
         }
-        var _id = result[0].c[0];
+        var _id = result[0];
         if((_id == 0) || (_id == 999)){
             return;
         }
-        var _name = web3.toUtf8(result[1]);
-        var _exp = result[2].c[0];
-        var _limitation = result[3].c[0];
+        var _name = hex2a(result[1]);
+        var _exp = result[2];
+        var _limitation = result[3];
         var _solved = result[4];
         mission = {id: _id, name:_name, exp: _exp, lvl_limitation: _limitation, solved:_solved,items:[]};
         if((mission.id != 0) && (mission.id != 999)){
             var item_res = await callPromise('callContract', 'GameCore', 'getMissionItemsArray', [_id]);
             if(res.type == "success"){
-                var item_source = item_res.result;
+                var item_source = item_res.result.results;
             }
             else{
                 console.log("chain error : getMission");
@@ -2643,10 +2671,10 @@ get_mission_list = async function(){
             }
             //item_source = GameCoreInstance.getMissionItemsArray.call(_id, {from:web3.eth.accounts[currentAccount]});
             for(j = 0; j < item_source[0].length; j++){
-                var _crop_id = item_source[0][j].c[0];
+                var _crop_id = item_source[0][j];
                 var res = find_propertyInfo(_crop_id);
                 var _crop_name = res.name;
-                var _quantity = item_source[1][j].c[0];
+                var _quantity = item_source[1][j];
                 var _img = res.img;
                 item = {crop_id:_crop_id, crop_name:_crop_name, quantity:_quantity, img:_img};
                 mission.items.push(item);
@@ -2860,21 +2888,29 @@ mission_qualify_check = function(_id){
     }
 }
 
-get_rank_data = function(){
+get_rank_data = async function(){
     loading(1);
-    var rankData = CongressInstance.getStakeholderRank.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
+    var res = await callPromise('callContract', 'Congress', 'getStakeholderRank', [s_Id]);
+    if(res.type == "success"){
+        var rankData = res.result.results;
+    }
+    else{
+        console.log("chain error : getStakeholderRank");
+        return;
+    }
+    //var rankData = CongressInstance.getStakeholderRank.call({from:web3.eth.accounts[currentAccount]}, function(err, res){
         var data = [];
         for(i = 1; i < res[0].length; i++){
-            var _name = web3.toUtf8(res[0][i]);
+            var _name = hex2a(res[0][i]);
             var _address = res[1][i];
-            var _lv = res[2][i].c[0];
+            var _lv = res[2][i];
             var obj = {"name" : _name, "address": _address, "lv": _lv};
             data.push(obj);
         }
         sorted = selectedSort(data);
 
         set_rank_table(sorted);
-    });
+    //});
     loading(0);
 
 }
