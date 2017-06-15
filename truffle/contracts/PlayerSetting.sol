@@ -3,16 +3,15 @@ pragma solidity ^0.4.4;
 contract Congress{
     function getStakeholder(uint) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
     function updateGameData(uint, uint, uint);
-    function addMember();
-    function initPlayerData(bytes32, bytes32);
+    function addMember(address);
 }
 
 contract usingProperty{
-    function addUserPropertyType(uint, uint);
+    function addUserPropertyType(uint, address, uint);
 }
 
 contract GameProperty{
-  function addUserLandConfiguration(uint, uint);
+  function addUserLandConfiguration(uint, address, uint);
 }
 
 contract PlayerSetting{
@@ -46,18 +45,12 @@ contract PlayerSetting{
             landSize += 1;
 
             uint p_Id = random + ((level/unlockCropLevel)*unlockCropNum);
-            property.addUserPropertyType(u_Id, p_Id);
-            gameProperty.addUserLandConfiguration(u_Id, landSize);
+            property.addUserPropertyType(u_Id, 0x000, p_Id);
+            gameProperty.addUserLandConfiguration(u_Id, 0x000, landSize);
         }
         congress.updateGameData(u_Id, landSize, level);
         //congress.updateUserExp(u_Id, exp);
 
     }
 
-
-    function initGameData(uint s_Id, bytes32 _name, bytes32 _character){
-        congress.initPlayerData(_name, _character);
-        gameProperty.addUserLandConfiguration(s_Id, 3);
-
-    }
 }

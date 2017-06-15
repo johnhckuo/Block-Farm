@@ -43,12 +43,12 @@ Router.route( '/verify-email/:token', async function(){
     }
     registered = true;
     console.log(registered);
-    if (!userObj.email[0].verified) {
-        var res = await Meteor.call("API_Register");
-        var userObj = await callPromise("getUser");
+    var userObj = await callPromise("getUser");
+    //if (!userObj.email[0].verified) {
+        //var res = await Meteor.call("API_Register");
         userData = { name: userObj.email[0].address, address: userObj.profile.address, character: userObj.profile.character };
         await register();
-    }
+    //}
     try {
         var res = await Accounts.verifyEmail(this.params.token);
     } catch (e) {
@@ -78,19 +78,9 @@ Router.route( '/verify-email/:token', async function(){
 
 async function register(){
     var txs = await callPromise('callContract', 'Congress', 'addMember', [userData.address]);  
-    res = await callPromise('callContract', 'Congress', 'getStakeholderId', [userData.address]);
-    if (res.type == "success") {
-        s_Id = res.result.results[0];
-        console.log(s_Id);
-    }
-    else {
-        console.log("register fail: get Id");
-        return;
-    }
-
     Session.set('cropsPerLvl', 3);
     await callPromise('callContract', 'Congress', 'initPlayerData', [userData.name, userData.character]);
-    await callPromise('callContract', 'GameProperty', 'addUserLandConfiguration', [userData.address, 3]);
+    await callPromise('callContract', 'GameProperty', 'addUserLandConfiguration', [0, userData.address, 3]);
     var res = await callPromise('callContract', 'usingProperty', 'getPropertiesLength', []);
     if (res.type == "success") {
         var length = res.result.results[0];
@@ -99,7 +89,7 @@ async function register(){
         console.log("register fail : get property length");
         return;
     }
-    await callPromise('callContract', 'Congress', 'setPropertyIndex', [userData.address, length]);
+    await callPromise('callContract', 'Congress', 'setPropertyIndex', [0, userData.address, length]);
     var res = await callPromise('callContract', 'usingProperty', 'getPropertyTypeLength', []);
     if (res.type == "success") {
         var Typelength = res.result.results[0];
@@ -117,7 +107,7 @@ async function register(){
     }
     await callPromise('callContract', 'GameCore', 'pushMissionAccountStatus', []);
     var unlockCropId = Math.floor(Session.get("cropsPerLvl") * Math.random());
-    await callPromise('callContract', 'usingProperty', 'addUserPropertyType', [userData.address, unlockCropId]);
+    await callPromise('callContract', 'usingProperty', 'addUserPropertyType', [0, userData.address, unlockCropId]);
 
 
     

@@ -1,5 +1,9 @@
 
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.2;
+
+contract Congress{
+    mapping (address => uint) public stakeholderId;
+}
 
 contract GameProperty{
 
@@ -32,41 +36,50 @@ contract GameProperty{
     }
 
     mapping (uint => CropList) cropList;
+    address CongressAddress;
+    Congress congress;
 
-    function GameProperty(){
-
-
+    function GameProperty(address _congressAddress){
+        CongressAddress = _congressAddress;
+        congress = Congress(CongressAddress);
     }
-    /*  ----------------------------------
-        |                                |
-        |            Crop List           |
-        |                                |
-        ----------------------------------  */
 
-    function addCropList(uint u_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
+    function stringToBytes(string memory source) returns (bytes32) {
+        bytes memory bytesString = new bytes(32);
+        bytesString = bytes(source);
+            
+        uint val;
+
+        for (uint i = 0; i < 32; i++)  {
+            val *= 256;
+            if (i < bytesString.length)
+                val |= uint8(bytesString[i]);
+        }
+        return bytes32(val);
+    }
+
+    function addCropList(uint u_Id, string _name, string _img, string _start, string _end, uint _cropType, bool _ripe, uint _count){
         uint _id = cropList[u_Id].id.length++;
         cropList[u_Id].id[_id] = _id;
-        cropList[u_Id].name.push(_name);
-        cropList[u_Id].img.push(_img);
-        cropList[u_Id].start.push(_start);
-        cropList[u_Id].end.push(_end);
+        cropList[u_Id].name.push(stringToBytes(_name));
+        cropList[u_Id].img.push(stringToBytes(_img));
+        cropList[u_Id].start.push(stringToBytes(_start));
+        cropList[u_Id].end.push(stringToBytes(_end));
         cropList[u_Id].cropType.push(_cropType);
         cropList[u_Id].ripe.push(_ripe);
         cropList[u_Id].count.push(_count);
-
     }
 
-    function updateCropList(uint u_Id, uint p_Id, bytes32 _name, bytes32 _img, bytes32 _start, bytes32 _end, uint _cropType, bool _ripe, uint _count){
-
-        cropList[u_Id].name[p_Id] = _name;
-        cropList[u_Id].img[p_Id] = _img;
-        cropList[u_Id].start[p_Id] = _start;
-        cropList[u_Id].end[p_Id] = _end;
+    function updateCropList(uint u_Id, uint p_Id, string _name, string _img, string _start, string _end, uint _cropType, bool _ripe, uint _count){
+        cropList[u_Id].name[p_Id] = stringToBytes(_name);
+        cropList[u_Id].img[p_Id] = stringToBytes(_img);
+        cropList[u_Id].start[p_Id] = stringToBytes(_start);
+        cropList[u_Id].end[p_Id] = stringToBytes(_end);
         cropList[u_Id].cropType[p_Id] = _cropType;
         cropList[u_Id].ripe[p_Id] = _ripe;
         cropList[u_Id].count[p_Id] = _count;
     }
-    //for thief
+
     function updateCropCount(uint u_Id, uint p_Id, uint _count){
         cropList[u_Id].count[p_Id] = _count;
     }
@@ -83,28 +96,23 @@ contract GameProperty{
         return cropList[u_Id].id.length;
     }
 
-
-
-    /*  ----------------------------------
-        |                                |
-        |       land configuration       |
-        |                                |
-        ----------------------------------  */
-
-    function addUserLandConfiguration(uint u_Id, uint landSize){
+    function addUserLandConfiguration(uint u_Id, address u_addr, uint landSize){
+        if(u_addr == 0x000){
+            u_Id = congress.stakeholderId(u_addr);
+        }
         uint difference;
         if (landSize == 3){
             difference = landSize*landSize;
         }else{
             difference = (landSize*landSize) - ((landSize-1)*(landSize-1));
         }
+        uint _id = userLandConfigurationList[u_Id].id.length++;
         for (uint i = 0 ; i < difference ; i++){
-            uint _id = userLandConfigurationList[u_Id].id.length++;
             userLandConfigurationList[u_Id].id.push(_id);
-            userLandConfigurationList[u_Id].land.push(-1);
-            userLandConfigurationList[u_Id].crop.push(-1);
+            userLandConfigurationList[u_Id].land.push(9999);
+            userLandConfigurationList[u_Id].crop.push(9999);
+            _id++;
         }
-
     }
 
     function updateUserLandConfiguration(uint u_Id, uint c_Id, int256 cropId, int256 landId, string operation){
@@ -118,34 +126,27 @@ contract GameProperty{
 
     function getUserLandConfiguration(uint u_Id) constant returns(int256[], int256[]){
         return (userLandConfigurationList[u_Id].land, userLandConfigurationList[u_Id].crop);
-
     }
 
     function moveUserLandPosition(uint u_Id, uint landSize){
 
         uint length = landSize-1;
         for (uint i = ((length*length)-1) ; i >= length  ; i--){
-            userLandConfigurationList[s_Id].land[i + (i/length)] = userLandConfigurationList[s_Id].land[i];
-            userLandConfigurationList[s_Id].crop[i + (i/length)] = userLandConfigurationList[s_Id].crop[i];
-            userLandConfigurationList[s_Id].land[i] = -1;
-            userLandConfigurationList[s_Id].crop[i] = -1;
+            userLandConfigurationList[u_Id].land[i + (i/length)] = userLandConfigurationList[u_Id].land[i];
+            userLandConfigurationList[u_Id].crop[i + (i/length)] = userLandConfigurationList[u_Id].crop[i];
+            userLandConfigurationList[u_Id].land[i] = -1;
+            userLandConfigurationList[u_Id].crop[i] = -1;
         }
     }
 
-    /*  ----------------------------------
-        |                                |
-        |            land type           |
-        |                                |
-        ----------------------------------  */
-
-    function addLandType(bytes32 _name, bytes32 _img, uint _count){
+    function addLandType(string _name, string _img, uint _count){
 
         uint _id = landTypeList.length++;
 
         LandType land = landTypeList[_id];
-        land.name = _name;
+        land.name = stringToBytes(_name);
         land.id= _id;
-        land.img = _img;
+        land.img = stringToBytes(_img);
         land.count = _count;
     }
 
@@ -154,7 +155,6 @@ contract GameProperty{
     }
 
     // StringUtils
-
     /// @dev Does a byte-by-byte lexicographical comparison of two strings.
     /// @return a negative number if `_a` is smaller, zero if they are equal
     /// and a positive numbe if `_b` is smaller.
@@ -208,5 +208,4 @@ contract GameProperty{
     		return -1;
     	}
     }
-
 }

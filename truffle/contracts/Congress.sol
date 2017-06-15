@@ -49,12 +49,34 @@ contract Congress{
        owner = msg.sender;
     }
 
+    function stringToBytes(string memory source) returns (bytes32) {
+        bytes memory bytesString = new bytes(32);
+        bytesString = bytes(source);
+            
+        uint val;
+
+        for (uint i = 0; i < 32; i++)  {
+            val *= 256;
+            if (i < bytesString.length)
+                val |= uint8(bytesString[i]);
+        }
+        return bytes32(val);
+    }
+
     function getStakeholdersLength() constant returns(uint){
         return stakeholders.length;
     }
 
+    function getStakeholderId(address addr) constant returns(uint){
+        return stakeholderId[addr];
+    }
+
     function getStakeholder(uint s_Id) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint){
         return (stakeholdersGameData[s_Id].name, stakeholdersGameData[s_Id].exp, stakeholdersGameData[s_Id].totalExp, stakeholdersGameData[s_Id].character, stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level, stakeholdersGameData[s_Id].stamina);
+    }
+
+    function getStakeholderLevel(uint s_Id) constant returns(uint, uint){
+        return (stakeholdersGameData[s_Id].landSize, stakeholdersGameData[s_Id].level);
     }
 
     function getStakeholderRank() constant returns(bytes32[], address[], uint[]){     
@@ -105,15 +127,15 @@ contract Congress{
         stakeholdersGameData[_id].propertyId.push(p_Id);
     }
 
-    function addMember(){
+    function addMember(address sender){
         uint id;
-        address targetStakeholder = msg.sender;
-        if (stakeholderId[targetStakeholder] == 0) {
-           stakeholderId[targetStakeholder] = stakeholders.length;
+        //address targetStakeholder = msg.sender;
+        if (stakeholderId[sender] == 0) {
+           stakeholderId[sender] = stakeholders.length;
            id = stakeholders.length++;
 
            stakeholders[id].id=id;
-           stakeholders[id].addr=msg.sender;
+           stakeholders[id].addr=sender;
            stakeholders[id].since=now;
            stakeholders[id].farmerLevel = 0;
         }
@@ -123,25 +145,25 @@ contract Congress{
         return stakeholders[u_Id].propertyIndex;
     }
 
-
-
-
-    function setPropertyIndex(uint u_Id, uint _index){
+    function setPropertyIndex(uint u_Id, address u_addr, uint _index){
+        if(u_addr != 0x000){
+            u_Id = stakeholderId[u_addr];
+        }
         stakeholders[u_Id].propertyIndex = _index;
     }
 
-    function initPlayerData(bytes32 _name, bytes32 _character){
+    function initPlayerData(string _name, string _character){
 
        uint _id = stakeholdersGameData.length++;
-       stakeholdersGameData[_id].name=_name;
-       stakeholdersGameData[_id].character= _character;
+       stakeholdersGameData[_id].name = stringToBytes(_name);
+       stakeholdersGameData[_id].character= stringToBytes(_character);
 
        stakeholdersGameData[_id].exp = 0;
        stakeholdersGameData[_id].totalExp = 0;
        stakeholdersGameData[_id].landSize = 3;
        stakeholdersGameData[_id].level = 0;
        stakeholdersGameData[_id].stamina = 100;
-       stakeholdersGameData[_id].lastLogin = 0;
+       stakeholdersGameData[_id].lastLogin = "0";
        stakeholdersGameData[_id].guardId = 0;
 
        initSyndicateData(_character);
@@ -156,7 +178,7 @@ contract Congress{
         return stakeholdersGameData[s_Id].guardId;
     }
     
-    function initSyndicateData(bytes32 _character){
+    function initSyndicateData(string _character){
         uint _id = SyndicateData.length++;
         SyndicateData[_id].id = _id;
         SyndicateData[_id].exp = 0;
@@ -165,7 +187,7 @@ contract Congress{
         SyndicateData[_id].success = 0;
         SyndicateData[_id].fail = 0;
         SyndicateData[_id].progress = 0;
-        SyndicateData[_id].character = _character;
+        SyndicateData[_id].character = stringToBytes(_character);
         SyndicateData[_id].guardMatchId = -1;
         SyndicateData[_id].guardFarmerId = 0;
 
@@ -221,8 +243,8 @@ contract Congress{
         stakeholdersGameData[u_Id].stamina = sta;
     }
 
-    function updateStakeholderLastLogin(uint u_Id, bytes32 _lastLogin){
-        stakeholdersGameData[u_Id].lastLogin = _lastLogin;
+    function updateStakeholderLastLogin(uint u_Id, string _lastLogin){
+        stakeholdersGameData[u_Id].lastLogin = stringToBytes(_lastLogin);
     }
 
     function updateGameData(uint u_Id, uint _landSize, uint _level){

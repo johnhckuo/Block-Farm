@@ -7,7 +7,6 @@ contract Congress{
     function getStakeholder_Mission(uint s_Id) constant returns(uint);
     function getStakeholdersLength() constant returns(uint);
     function getStakeholder(uint) constant returns(bytes32, uint, uint, bytes32, uint, uint, uint);
-
 }
 
 contract usingProperty{
@@ -40,6 +39,20 @@ contract GameCore{
         addMission("Mission0", 9999, 9999, false);
     }
 
+    function stringToBytes(string memory source) returns (bytes32) {
+        bytes memory bytesString = new bytes(32);
+        bytesString = bytes(source);
+            
+        uint val;
+
+        for (uint i = 0; i < 32; i++)  {
+            val *= 256;
+            if (i < bytesString.length)
+                val |= uint8(bytesString[i]);
+        }
+        return bytes32(val);
+    }
+
     function getPropertyTypeLength() constant returns(uint){
         return usingPropertyInstance.getPropertyTypeLength();
     }
@@ -55,7 +68,7 @@ contract GameCore{
         }
     }
 
-    function addMission(bytes32 _name, uint _exp, uint _lvl_limitation, bool _missionStatus){
+    function addMission(string _name, uint _exp, uint _lvl_limitation, bool _missionStatus){
         uint stakeholderLength = congress.getStakeholdersLength();
         uint _id = MissionList.length++;
         Mission obj = MissionList[_id];
@@ -64,7 +77,7 @@ contract GameCore{
             obj.accountStatus.push(false);
         }
         obj.id = _id;
-        obj.name = _name;
+        obj.name = stringToBytes(_name);
         obj.exp = _exp;
         obj.lvl_limitation = _lvl_limitation;
         obj.missionStatus = _missionStatus;
@@ -138,5 +151,4 @@ contract GameCore{
     uint s_Id = congress.stakeholderId(msg.sender);
     MissionList[mId].accountStatus[s_Id] = true;
     }
-
 }

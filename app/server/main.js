@@ -182,29 +182,28 @@ if (Meteor.isServer){
     },
     'callContract_NoAwait': function (contract, method, args) {
       var req = prefix;
-      req += usingProperty;
-      // switch (contract) {
-      //   case "GameCore":
-      //     req += gameCore;
-      //     break;
-      //   case "Congress":
-      //     req += congress;
-      //     break;
-      //   case "usingProperty":
-      //     req += usingProperty;
-      //     break;
-      //   case "GameProperty":
-      //     req += gameProperty;
-      //     break;
-      //   case "Matchmaking":
-      //     req += matchmaking;
-      //     break;
-      //   case "PlayerSetting":
-      //     req += playerSetting;
-      //     break;
-      //   default:
-      //     return "error";
-      // }
+      switch (contract) {
+        case "GameCore":
+          req += gameCore;
+          break;
+        case "Congress":
+          req += congress;
+          break;
+        case "usingProperty":
+          req += usingProperty;
+          break;
+        case "GameProperty":
+          req += gameProperty;
+          break;
+        case "Matchmaking":
+          req += matchmaking;
+          break;
+        case "PlayerSetting":
+          req += playerSetting;
+          break;
+        default:
+          return "error";
+      }
       req += "/" + method + "?token=" + token;
       console.log(args);
       updateCall.data.params = args;

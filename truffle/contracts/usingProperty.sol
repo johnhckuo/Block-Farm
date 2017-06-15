@@ -1,13 +1,9 @@
 pragma solidity ^0.4.4;
 
 contract Congress{
-
     mapping (address => uint) public stakeholderId;
     function addProperty(uint _id, uint p_Id);
     function getStakeholdersLength() constant returns(uint);
-    function getStakeholder(uint s_Id) constant returns(bytes32, uint256, uint256, uint, address, uint, bytes32);
-    function getPropertyId(uint s_Id, uint index) constant returns(uint);
-    function getStakeholderPropertyCount(uint s_Id) constant returns(uint);
 }
 
 contract usingProperty{
@@ -38,11 +34,11 @@ contract usingProperty{
         uint id;
         uint since;
         uint propertyCount;
-        uint256 minUnit; //可拆分最小單位
+        uint256 minUnit;
         address owner;
         bytes32 extraData;
         uint propertyType;
-        uint tradeable; //可被交易的數量
+        uint tradeable;
         bool isTrading;
     }
 
@@ -59,22 +55,19 @@ contract usingProperty{
         owner = msg.sender;
     }
 
-    /*  ----------------------------------
-        |                                |
-        |       utility functions        |
-        |                                |
-        ----------------------------------  */
+    function stringToBytes(string memory source) returns (bytes32) {
+        bytes memory bytesString = new bytes(32);
+        bytesString = bytes(source);
+            
+        uint val;
 
-
-    function getStakeholdersLength() constant returns(uint){
-        return congress.getStakeholdersLength();
+        for (uint i = 0; i < 32; i++)  {
+            val *= 256;
+            if (i < bytesString.length)
+                val |= uint8(bytesString[i]);
+        }
+        return bytes32(val);
     }
-
-    /*  ----------------------------------
-        |                                |
-        |            property            |
-        |                                |
-        ----------------------------------  */
 
     function initUserProperty(uint p_Id){
         uint _id = propertyList.length++;
@@ -90,45 +83,25 @@ contract usingProperty{
         prop.extraData= "";
         prop.propertyType = pt.id;
         prop.tradeable = 0;
+        prop.isTrading = false;
+        uint s_Id = congress.stakeholderId(msg.sender);
+        //congress.addProperty(s_Id, _id);
+    }
+
+    function getstakeholderid(address a) constant returns(uint){
+        return congress.stakeholderId(a);
+    }
+
+    function init(address a){
+        uint l = propertyList.length++;
+        uint s_Id = congress.stakeholderId(a);
+        congress.addProperty(0,l);
     }
 
     function getPropertyTo2(uint i, address _from) constant returns(uint, uint, bytes32, uint, uint, bytes32){
         if(propertyList[i].owner == _from){
             return ( propertyList[i].id, propertyList[i].propertyType, propertyTypeList[propertyList[i].propertyType].name, propertyList[i].propertyCount, propertyList[i].tradeable, propertyTypeList[propertyList[i].propertyType].img[3]);
         }
-
-    }
-
-
-    function addProperty(bytes32 _name, uint _propertyCount, uint256 _minUnit, bytes32 _extraData, uint _type, uint _tradeable) returns(uint _id){
-        bool flag = true;
-        for (uint w = 0 ; w < propertyTypeList.length ; w++){
-            if (_type == propertyTypeList[w].id){
-                flag = false;
-                break;
-            }
-        }
-        if (flag){
-            propertyAdded("Property Type Not Found");
-        }
-
-        _id = propertyList.length++;
-
-        uint s_Id = congress.stakeholderId(msg.sender);
-        congress.addProperty(s_Id, _id);
-
-        Property prop = propertyList[_id];
-
-        prop.name = _name;
-        prop.id= _id;
-        prop.propertyCount= _propertyCount;
-        prop.since= now;
-        prop.minUnit= _minUnit;
-        prop.owner= msg.sender;
-        prop.extraData= _extraData;
-        prop.propertyType = _type;
-        prop.tradeable = _tradeable;
-        prop.isTrading = false;
     }
 
     function getPropertyByOwner(uint p_Id) constant returns (uint, bytes32, uint, uint256, bytes32, uint, uint){
@@ -137,16 +110,6 @@ contract usingProperty{
         }else{
             throw;
         }
-    }
-
-    function removeProperty(uint _id){
-        if (getPropertiesLength() == 0) throw;
-
-        for (uint i = 0; i<propertyList.length; i++){
-            propertyList[i] = propertyList[i+1];
-        }
-        delete propertyList[propertyList.length-1];
-        propertyList.length--;
     }
 
     function getPropertiesLength() constant returns(uint){
@@ -198,7 +161,7 @@ contract usingProperty{
         return propertyTypeList[propertyList[p_Id].propertyType].rating[s_Id];
     }
 
-    function getPropertyTypeAverageRating(uint p_Id, uint s_Id) constant returns(uint){
+    function getPropertyTypeAverageRating(uint p_Id) constant returns(uint){
         return propertyTypeList[propertyList[p_Id].propertyType].averageRating;
     }
 
@@ -227,26 +190,19 @@ contract usingProperty{
 
         updatePropertyCount_Sudo(receivedPID, receivedCount + currentTradeable, receivedTradeable);
         updatePropertyCount_Sudo(currentPID, currentCount, 0);
-
     }
 
     function getPropertiesOwner(uint visitedProperty) constant returns(uint){
-
          uint visitedOwner;
-         address owner = getPartialProperty(visitedProperty);
+         address owner = propertyList[visitedProperty].owner;
          visitedOwner = congress.stakeholderId(owner);
          return visitedOwner;
-
     }
 
-
-    /*  ----------------------------------
-        |                                |
-        |       user property type       |
-        |                                |
-        ----------------------------------  */
-
-    function addUserPropertyType(uint u_Id, uint p_Id){
+    function addUserPropertyType(uint u_Id, address u_addr, uint p_Id){
+        if(u_addr == 0x000){
+            u_Id = congress.stakeholderId(u_addr);
+        }
         userPropertyTypeList[u_Id].id.push(p_Id);
         userPropertyTypeList[u_Id].count.push(0);
     }
@@ -258,14 +214,6 @@ contract usingProperty{
     function getUserPropertyType(uint u_Id) constant returns(uint[], uint[]){
         return (userPropertyTypeList[u_Id].id, userPropertyTypeList[u_Id].count);
     }
-
-
-
-    /*  ----------------------------------
-        |                                |
-        |       property type            |
-        |                                |
-        ----------------------------------  */
 
     function updatePropertyTypeRating(uint _id, uint rate, string operation){
         if (equal(operation,"update")){
@@ -288,7 +236,7 @@ contract usingProperty{
         }
     }
 
-    function addPropertyType(bytes32 _name, bytes32[] _img, bytes32 _time, uint _harvestUnit){
+    function addPropertyType(string _name, string _time, uint _harvestUnit){
         uint _id = propertyTypeList.length++;
         uint length = congress.getStakeholdersLength();
         for (uint j = 0 ; j < length ; j++){
@@ -297,22 +245,29 @@ contract usingProperty{
 
         PropertyType prop = propertyTypeList[_id];
 
-        prop.name = _name;
+        prop.name = stringToBytes(_name);
         prop.id= _id;
         prop.averageRating = 0;
-
-        uint imgLength = _img.length;
-        for (uint i = 0 ; i < imgLength ; i++){
-            propertyTypeList[_id].img.push(_img[i]);
-        }
-
-        prop.time = _time;
+        prop.time = stringToBytes(_time);
         prop.harvestUnit = _harvestUnit;
+    }
+
+    function addPropertyTypeImg(uint p_Id, string img1, string img2, string img3, string img4, string img5){
+        PropertyType prop = propertyTypeList[p_Id];
+        prop.img.push(stringToBytes(img1));
+        prop.img.push(stringToBytes(img2));
+        prop.img.push(stringToBytes(img3));
+        prop.img.push(stringToBytes(img4));
+        prop.img.push(stringToBytes(img5));
     }
 
     function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, uint){
         uint s_Id = congress.stakeholderId(msg.sender);
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].rating[s_Id]);
+    }
+
+    function getPropertyTypeAll(uint p_Id) constant returns(bytes32, uint, uint[], uint, bytes32[], bytes32, uint){
+        return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].rating, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].img, propertyTypeList[p_Id].time, propertyTypeList[p_Id].harvestUnit);
     }
 
     function getPropertyTypeId(uint p_Id) constant returns(uint){
