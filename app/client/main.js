@@ -56,22 +56,23 @@ var hex2a = function(hexx) {
 
 var loading = function(on){
     var opacity;
-    $(".cropObject").css("display", "none");
     if (on){
-        $(".loading").css("display", "flex");
-        $(".loading").css("opacity", 0.7);
+        $(".loadingParent").css("display", "flex");
+        $(".loadingParent").css("opacity", 0.8);
     }else{
+        $(".loadingParent").css("opacity", 0);
         setTimeout(function(){
-            $(".loading").css("opacity", 0);
-            setTimeout(function(){
-                $(".loading").css("display", "none");
-            }, 1000);
-        },1000);
-
+            $(".loadingParent").css("display", "none");
+        }, 1000);
     }
-
-
 }
+
+
+var validateEmail = function(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
 
 ////////////////////
 //                //
@@ -118,61 +119,115 @@ if (Meteor.isClient) {
         event.target.className = "btn btn-info chooseCharacters";
         character = event.target.value;
     },
-    'keydown .s_Name':function(event){
-        var ew = event.which;
-        if (ew == 16 || (ew <= 40 && ew >= 37)){
-            return true;
+    'click #login-submit': function (event){
+        event.preventDefault();
+        var email = $('[name=login_email]').val();
+        var password = $('[name=login_password]').val();
+        if (email.trim() == ""){
+            sweetAlert("Oops...", "Please enter your email !", "error");
+            return;
+        }else if (password == null){
+            sweetAlert("Oops...", "Please enter your password !", "error");
+            return;
         }
-        if((65 <= ew && ew <= 90) || (97 <= ew && ew <= 122) || ew == 189){
-            if ($(event.target).val().length >= 10){
-              sweetAlert("Oops...", "Length of username must not exceed a number of 10", "error");
-              return true;
+        Meteor.loginWithPassword(email, password, function(err, res){
+            loading(0);
+            var userId = Meteor.userId();
+            var info = Meteor.users.findOne({_id:userId});
+            if(err){
+                console.log(err);
+                sweetAlert("Oops...", err.reason, "error");
+                Session.set("data", err.reason);
+            }else if (!Meteor.user().emails[0].verified){
+                sweetAlert("You haven't verified your email!", "Please go check your mailbox", "error");
+            }else{
+                Session.set("address", info.profile.address);
+                Session.set("private", info.profile.private);
+                Session.set('loggedIn', true);
+
+                swal({
+                    title: "You are now logged in!",
+                    text: "Your address is "+info.profile.address,
+                    type: "success",
+                    showCancelButton: false
+                },
+                function(){
+                    Router.go('/game');
+                });
+
             }
-            return true;
-        }else if (ew == 8){
-            if ($(event.target).val().length >0){
-            }
-            return true;
-        }else{
-            sweetAlert("Oops...", "Only english characters are accepted", "error");
-            return false;
-        }
+        });
 
     },
-    'click #next': function (event){
+    'click .forget-password':async function(event){
         event.preventDefault();
 
-        name = $(".s_Name").val().toString();
+        let email = $('[name=forget-password-email]').val();
+        // var res = Meteor.users.findOne({: email}});
+        // console.log(res);
+        try{
+          var res = await Accounts.forgotPassword({email: email});
+        }catch(e){
+          sweetAlert("Oops...", e,reason, "error");
+          return;
+        }
+        sweetAlert("Please check your email!", "We've just sent an e-mail to reset your password!", "success");
+    },
+    'click .register': async function(e){
+        e.preventDefault();
 
-        if (name.trim() == ""){
+        var email = $('[name=email]').val();
+        var password = $('[name=password]').val();
+        if (email.trim() == ""){
             sweetAlert("Oops...", "Please enter your username !", "error");
+            return;
+        }else if (password.trim() == ""){
+            sweetAlert("Oops...", "Please enter your password !", "error");
             return;
         }else if (typeof character == 'undefined'){
             sweetAlert("Oops...", "Please choose your character !", "error");
             return;
-        }else if (account == null){
-            sweetAlert("Oops...", "Make sure your Ethereum client is configured correctly.", "error");
-            return;
         }
-        /*
-        // send request to faucet
-        var jqxhr = $.get( "http://faucet.ropsten.be:3001/donate/"+web3.eth.accounts[currentAccount], function() {
-          console.log( "request sent successfully" );
-        })
-        .done(function() {
-          console.log( "ether sent successfully" );
-        })
-        .fail(function() {
-          console.log( "An error has occured while sending ether" );
-        })
-        .always(function() {
-          alert( "finished" );
-        });
-        // ----
-        */
-        //alert(web3.eth.accounts[currentAccount]);
-        register();
 
+        if (!validateEmail(email)){
+          sweetAlert("Oops...", "Please enter a valid email !", "error");
+          return;
+        }
+        if (password.length < 6){
+          sweetAlert("Oops...", "Password must be at least 6 characters long !", "error");
+          return;
+        }
+
+        Meteor.logout();
+        loading(1);
+
+        console.log("get Parameter"+email+"."+password+"."+character);
+        var res = await callPromise('register', email, password, character);
+
+        Meteor.loginWithPassword(
+            { 'email': email},
+            password
+        );
+
+        if (res.type == "error"){
+          sweetAlert("Oops...", res.result, "error");
+          Session.set("loggedIn", false);
+          loading(0);
+          return;
+        }
+
+        var res = await callPromise('sendVerificationLink');
+
+        if (res.type == "success"){
+          sweetAlert("Register Complete :)", "We've sent a verification email to "+email, "success");
+          Session.set("loggedIn", true);
+          //Router.go("game");
+        }else{
+          sweetAlert("Oops...", res.result, "error");
+        }
+        loading(0);
+        //register();
+  
     },
     'click #sign-up':function (event) {
       event.preventDefault();
