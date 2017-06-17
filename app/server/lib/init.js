@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
 
-if (Meteor.isServer){
+if (Meteor.isServer) {
 
 
     /*----------------------
@@ -17,7 +17,7 @@ if (Meteor.isServer){
     gameProperty = "e030d8bb75740cf1ae4556b11206a48f4d310f75";
     playerSetting = "f8fe88aacd6a23cdb96fbb9195439493ab324b17";
     gameCore = "f94b7ee3ede3b04df0633eaa28c1bba485e6cb13";
-    matchmaking= "cecf2d43a689bab41cba2c81526ea1885533cb6d";
+    matchmaking = "cecf2d43a689bab41cba2c81526ea1885533cb6d";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
@@ -27,11 +27,11 @@ if (Meteor.isServer){
     };
 
     updateCall = {
-        "data":{
+        "data": {
             "private": "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e",
-        "gas_limit": 2000000,
+            "gas_limit": 2000000,
         },
-        "header":"Content-Type:application/json"
+        "header": "Content-Type:application/json"
     };
 
 
@@ -44,14 +44,14 @@ if (Meteor.isServer){
         game data
     ----------------*/
 
-    gameInitData = {stakeholder:{},syndicateData:{},property:{},mission:{}, landConfig:{}};
-    initGameData = function(){
+    gameInitData = { stakeholder: {}, syndicateData: {}, property: {}, mission: {}, landConfig: {} };
+    initGameData = function () {
         console.log("initializing...");
         var userId = Meteor.userId();
-        var character = Meteor.users.findOne({_id:userId}).profile.basic.character;
-        var username = Meteor.users.findOne({_id:userId}).emails[0].address;
+        var character = Meteor.users.findOne({ _id: userId }).profile.basic.character;
+        var username = Meteor.users.findOne({ _id: userId }).emails[0].address;
 
-        gameInitData.stakeholder.id = Meteor.users.find().count(); 
+        gameInitData.stakeholder.id = Meteor.users.find().count();
         gameInitData.stakeholder.farmerLevel = 0;
         gameInitData.stakeholder.name = username.split("@")[0];
         gameInitData.stakeholder.exp = 0;
@@ -76,9 +76,15 @@ if (Meteor.isServer){
         gameInitData.property.type = [];
         gameInitData.property.tradeable = [];
         gameInitData.property.isTrading = [];
-        gameInitData.property.start = [];
-        gameInitData.property.end = [];
-        gameInitData.property.ripe = [];
+
+        gameInitData.cropList.id = [];
+        gameInitData.cropList.name = [];
+        gameInitData.cropList.img = [];
+        gameInitData.cropList.start = [];
+        gameInitData.cropList.end = [];
+        gameInitData.cropList.ripe = [];
+        gameInitData.cropList.count = [];
+        gameInitData.cropList.cropType = [];
 
         gameInitData.landConfig.id = [];
         gameInitData.landConfig.crop = [];
