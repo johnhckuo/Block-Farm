@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import '../imports/api/settings.js';
+
 import './GameLogic/Congress.js';
 
 if (Meteor.isServer){
