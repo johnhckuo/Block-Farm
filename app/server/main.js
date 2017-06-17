@@ -72,6 +72,7 @@ var Member_Register = function(email, password, character){
         try{
           Accounts.sendVerificationEmail(userId);
         }catch(e){
+
           return {type:"error", result:e.reason};
         }
         return {type:"success", result:""};

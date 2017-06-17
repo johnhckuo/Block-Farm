@@ -203,19 +203,16 @@ if (Meteor.isClient) {
 
         console.log("get Parameter"+email+"."+password+"."+character);
         var res = await callPromise('register', email, password, character);
-
         Meteor.loginWithPassword(
             { 'email': email},
             password
         );
-
         if (res.type == "error"){
           sweetAlert("Oops...", res.result, "error");
           Session.set("loggedIn", false);
           loading(0);
           return;
         }
-
         var res = await callPromise('sendVerificationLink');
 
         if (res.type == "success"){
