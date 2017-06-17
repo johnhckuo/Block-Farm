@@ -87,28 +87,5 @@ if (Meteor.isServer){
         gameInitData.mission.accountStatus = [];
     }
 
-    /*---------
-        init
-    -----------*/
-
-
-    Meteor.startup(function () {
-    smtp = {
-        username: 'blockfarm.ssrc',   
-        password: 'Aesl85024',   
-        server:   'smtp.gmail.com',  
-        port: 25
-    }
-
-    process.env.MAIL_URL = 'smtp://' + encodeURIComponent(smtp.username) + ':' + encodeURIComponent(smtp.password) + '@' + encodeURIComponent(smtp.server) + ':' + smtp.port;
-
-    //   Accounts.config({
-    //     loginExpirationInDays: null
-
-    //   });
-
-
-
-    });
 
 }

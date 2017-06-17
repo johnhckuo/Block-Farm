@@ -1,5 +1,7 @@
 import { Session } from 'meteor/session';
-
+import { PropertyType } from '../../imports/api/settings.js';
+import { LandType } from '../../imports/api/settings.js';
+import { Mission } from '../../imports/api/settings.js';
 
 
 currentAccount = 3;
@@ -2485,6 +2487,9 @@ function initGameConfig(){
 
 Template.index.created = function() {
     $.getScript('scripts/buttons.js');
+
+    PropertyType.insert({text:"hi"});
+
 
     // init();
     // Session.set('currentAccount', currentAccount);

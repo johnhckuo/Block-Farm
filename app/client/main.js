@@ -1,6 +1,9 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
+import { PropertyType } from '../imports/api/settings.js';
+import { LandType } from '../imports/api/settings.js';
+import { Mission } from '../imports/api/settings.js';
 
 import './main.html';
 import './index.html';
