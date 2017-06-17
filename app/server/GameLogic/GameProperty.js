@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
+if(Meteor.isServer){
 
 addUserLandConfiguration = function (landsize) {
     var userId = Meteor.userId();
-    console.log(userId);
+    var t = Meteor.users.findOne({ _id: userId });
     var _landConfig = Meteor.users.findOne({ _id: userId }).profile.game.landConfig;
-    console.log(_landConfig);
     if (landsize == 3) {
         difference = landsize * landsize;
     }
@@ -12,6 +12,9 @@ addUserLandConfiguration = function (landsize) {
         difference = (landsize * landsize) - ((landsize - 1) * (landsize - 1));
     }
     var _id = _landConfig.length;
+    if(!Number.isInteger(_id)){
+        _id = 0;
+    }
     for (var i = 0; i < difference; i++) {
         _landConfig.id.push(_id);
         _landConfig.land.push(-1);
@@ -24,6 +27,5 @@ addUserLandConfiguration = function (landsize) {
 
 
 
-if(Meteor.isServer){
 
 }

@@ -27,7 +27,8 @@ Template.index.rendered = function() {
       console.log('Template render complete');
       //$('#fullpage').fullpage();
       renderChecked = true;
-
+    // var nu = Meteor.users.findOne({_id:uid});
+    // console.log(nu);
       // MainActivityInstance.matchSuccess().watch(function(error, result){
       //   if (!error)
       //     console.log(result.args);
