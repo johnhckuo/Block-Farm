@@ -1,5 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import './GameLogic/Congress.js';
+
+if (Meteor.isServer){
 
 var API_Register_backend = function(){
     return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/addrs?token="+token);
@@ -40,7 +43,6 @@ var Member_Register = function(email, password, character){
    Receiver
 -------------*/
 
-if (Meteor.isServer){
   Meteor.methods({
     'register' : function(email, password, character){
       var addr;
