@@ -74,7 +74,7 @@ var Member_Register = function(email, password, character){
         try{
           Accounts.sendVerificationEmail(userId);
         }catch(e){
-
+          console.log(e);
           return {type:"error", result:e.reason};
         }
         return {type:"success", result:""};
@@ -113,6 +113,7 @@ var Member_Register = function(email, password, character){
         var character = Meteor.users.findOne({_id:userId}).profile.basic.character;
         var res = Promise.await(API_Register_backend());
         initGameData();
+        addUserLandConfiguration();
         var profile = {
           basic:{
             address:res.data.address,

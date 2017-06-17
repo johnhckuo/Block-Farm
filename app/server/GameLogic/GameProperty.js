@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 
 addUserLandConfiguration = function (landsize) {
     var userId = Meteor.userId();
+    console.log(userId);
     var _landConfig = Meteor.users.findOne({ _id: userId }).profile.game.landConfig;
+    console.log(_landConfig);
     if (landsize == 3) {
         difference = landsize * landsize;
     }
@@ -17,7 +19,7 @@ addUserLandConfiguration = function (landsize) {
         _id++;
     }
 
-    Meteor.users.update(userId, { $set: { 'profile.$.landConfig': _landConfig } });
+    Meteor.users.update(userId, { $set: { 'profile.game.landConfig': _landConfig } });
 }
 
 

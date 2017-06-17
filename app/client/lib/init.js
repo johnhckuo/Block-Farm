@@ -2488,7 +2488,7 @@ function initGameConfig(){
 Template.index.created = function() {
     $.getScript('scripts/buttons.js');
 
-    PropertyType.insert({text:"hi"});
+    //PropertyType.insert({text:"hi"});
 
 
     // init();
