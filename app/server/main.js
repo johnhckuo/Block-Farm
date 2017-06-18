@@ -7,6 +7,8 @@ import './GameLogic/Congress.js';
 import './GameLogic/usingProperty.js';
 import './GameLogic/GameProperty.js';
 
+var cropsPerLvl = 3;
+
 if (Meteor.isServer) {
 
 
@@ -144,6 +146,9 @@ if (Meteor.isServer) {
         Meteor.users.update(userId, { $set: { profile: profile } });
         Meteor.call('addUserLandConfiguration',[3]);
         Meteor.call('initUserProperty');
+        var unlockCropId = Math.floor(cropsPerLvl * Math.random());
+        console.log(unlockCropId);
+        Meteor.call('addUserPropertyType', [unlockCropId]);
         var res = Promise.await(getEther(res.data.address));
       } catch (e) {
         console.log("[API_Register]" + e);
