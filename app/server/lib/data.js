@@ -318,6 +318,12 @@ landTypeList = [
 
 MissionList = [
     {
+        name: "Mission0-0",
+        exp: 0,
+        lvl_limitation:999,
+        status:false
+    },
+    {
         name: "Mission0-1",
         exp: 20,
         lvl_limitation:0,

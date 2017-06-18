@@ -144,7 +144,7 @@ if (Meteor.isServer) {
           game: gameInitData
         };
         Meteor.users.update(userId, { $set: { profile: profile } });
-        Meteor.call('addUserLandConfiguration',[3]);
+        Meteor.call('addUserLandConfiguration', [3]);
         Meteor.call('initUserProperty');
         var unlockCropId = Math.floor(cropsPerLvl * Math.random());
         console.log(unlockCropId);
@@ -163,7 +163,15 @@ if (Meteor.isServer) {
     'init': function () {
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });
-      mission.insert({ data: MissionList });
+      var _missionList = MissionList;
+      for (var i = 0; i < _missionList.length; i++) {
+        _missionList[i].missionItem = [];
+      }
+      for (var i = 0; i < missionItem.length; i++) {
+        var obj = { propertyId: missionItem[i].propertyId, quantity: missionItem[i].quantity };
+        _missionList[missionItem[i].missionId].missionItem.push(obj);
+      }
+      mission.upsert({ name: _missionList.name }, { data: _missionList });
     }
   });
 }

@@ -1,7 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { property_type } from '../../imports/collections.js';
-import { land_type } from '../../imports/collections.js';
-
 
 if (Meteor.isServer) {
     Meteor.methods({

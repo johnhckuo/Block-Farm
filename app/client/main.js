@@ -79,6 +79,9 @@ if (Meteor.isClient) {
         var fetcher = setInterval(function(){ 
           if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
               console.log("Mongo is ready to go :D");
+              var m = mission.findOne({});
+
+              console.log(m);
               clearInterval(fetcher);
           }else{
               console.log("Establishing Mongo connection... Hold on!")

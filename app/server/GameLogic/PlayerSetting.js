@@ -1,6 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { property_type } from '../../imports/collections.js';
-import { land_type } from '../../imports/collections.js';
 import './GameProperty.js';
 import './usingProperty.js';
 import './Congress.js';
