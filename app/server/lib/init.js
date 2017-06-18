@@ -56,7 +56,7 @@ if (Meteor.isServer) {
         game data
     ----------------*/
 
-    gameInitData = { stakeholder: {}, syndicateData: {}, property: {}, mission: {}, landConfig: {} };
+    gameInitData = { stakeholder: {}, syndicateData: {}, property: {}, mission: {}, cropList:{}, landConfig: {} };
     initGameData = function () {
         console.log("initializing...");
         var userId = Meteor.userId();
@@ -73,6 +73,7 @@ if (Meteor.isServer) {
         gameInitData.stakeholder.stamina = 100;
         gameInitData.stakeholder.lastLogin = 0;
         gameInitData.stakeholder.guardId = 0;
+        gameInitData.stakeholder.unlockedCropType = [];
 
         gameInitData.syndicateData.exp = 0;
         gameInitData.syndicateData.totalExp = 0;
@@ -86,8 +87,8 @@ if (Meteor.isServer) {
         gameInitData.property.name = [];
         gameInitData.property.count = [];
         gameInitData.property.type = [];
-        gameInitData.property.tradeable = [];
-        gameInitData.property.isTrading = [];
+        gameInitData.property.tradable = [];
+        gameInitData.property.isTrading = [];        
 
         gameInitData.cropList.id = [];
         gameInitData.cropList.name = [];
