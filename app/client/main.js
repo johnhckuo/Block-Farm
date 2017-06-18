@@ -23,7 +23,6 @@ var renderChecked = false;
 var userNameCounter = 0;
 var name;
 
-
 ////////////////////
 //                //
 //     Utility    //
@@ -111,20 +110,6 @@ if (Meteor.isClient) {
   //                //
   ////////////////////
 
-  Template.socialIcons.events({
-    'click .test': async function(e){
-      console.log(propertyTypeSub.ready());
-
-
-        //property_type.insert({text:"hihiheee"});
-        console.log(property_type.find().fetch());
-        //property_type.insert({text:"hihissssssssssheee"});
-        //console.log(property_type.find().fetch());
-        if (Session.get("property_loaded")) {
-            console.log(property_type.find().fetch());
-        }
-    }
-  })
   Template.index.events({
     'click #arrow-down': function (e) {
         e.preventDefault();
@@ -224,19 +209,16 @@ if (Meteor.isClient) {
 
         console.log("get Parameter"+email+"."+password+"."+character);
         var res = await callPromise('register', email, password, character);
-
         Meteor.loginWithPassword(
             { 'email': email},
             password
         );
-
         if (res.type == "error"){
           sweetAlert("Oops...", res.result, "error");
           Session.set("loggedIn", false);
           loading(0);
           return;
         }
-
         var res = await callPromise('sendVerificationLink');
 
         if (res.type == "success"){

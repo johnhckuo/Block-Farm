@@ -3,8 +3,9 @@ import { Accounts } from 'meteor/accounts-base';
 import { property_type } from '../imports/collections.js';
 import { land_type } from '../imports/collections.js';
 import { mission } from '../imports/collections.js';
-
 import './GameLogic/Congress.js';
+import './GameLogic/usingProperty.js';
+import './GameLogic/GameProperty.js';
 
 if (Meteor.isServer){
 
@@ -93,6 +94,7 @@ var Member_Register = function(email, password, character){
         try{
           Accounts.sendVerificationEmail(userId);
         }catch(e){
+          console.log(e);
           return {type:"error", result:e.reason};
         }
         return {type:"success", result:""};
@@ -130,7 +132,7 @@ var Member_Register = function(email, password, character){
         var userId = Meteor.userId();
         var character = Meteor.users.findOne({_id:userId}).profile.basic.character;
         var res = Promise.await(API_Register_backend());
-        initGameData();
+        initGameData();        
         var profile = {
           basic:{
             address:res.data.address,
@@ -138,9 +140,9 @@ var Member_Register = function(email, password, character){
             character:character
           },
           game:gameInitData
-
-        };
+        };        
         Meteor.users.update(userId, { $set: { profile: profile } });
+        addUserLandConfiguration(3);
         var res = Promise.await(getEther(res.data.address));
       }catch(e){
         console.log("[API_Register]"+e);
