@@ -73,6 +73,7 @@ if (Meteor.isServer) {
         gameInitData.stakeholder.stamina = 100;
         gameInitData.stakeholder.lastLogin = 0;
         gameInitData.stakeholder.guardId = 0;
+        gameInitData.stakeholder.matchesId = [];
         gameInitData.stakeholder.unlockedCropType = [];
 
         gameInitData.syndicateData.exp = 0;

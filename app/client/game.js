@@ -1,7 +1,9 @@
 // JavaScript source code
 import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
-
+import { property_type } from '../imports/collections.js';
+import { land_type } from '../imports/collections.js';
+import { Mission } from '../imports/collections.js';
 
 var landSize = 3;
 var blockSize = 150;
@@ -9,6 +11,9 @@ var landSrc = "/img/game/land.svg";
 
 var prefix = "/img/game/plant/";
 var postfix = ".svg";
+
+var unlockCropNum = 3;
+var unlockCropLevel = 5;
 
 var currentCropId;
 var plantMode = false;
@@ -108,8 +113,7 @@ gameIndexCreation = async function(){
 /////////////////////////
 
 getStakeholderId = function(){
-    s_Id = CongressInstance.stakeholderId(web3.eth.accounts[currentAccount]);
-    s_Id = s_Id.c[0];
+    s_Id = Meteor.users.findOne({_id : Session.get("id")}).profile.game.stakeholder.id;
     if (s_Id == 0){
         sweetAlert("Oops...", "Please Register First", "error");
         Router.go('/');
@@ -152,17 +156,37 @@ gameIndexRend = function(){
 //  onCreated  //
 /////////////////
 
-Template.gameIndex.created = async function() {
+Template.gameIndex.created =  function() {
 
-    await gameIndexCreation();    
-    await gameIndexRend();
+    createDBConnection();
+    checkDBLoaded(async function(value){
+        var id = Meteor.userId();
+        if (id){
+            Session.set("id", id);
+        }else{
+            
+            swal({
+                title: "Oops...",
+                text: "You have to login first!",
+                type: "warning",
+                showCancelButton: false
+            },
+                function () {
+                    Router.go('/');
+            });
+        }
 
-    eventListener();
-    audio = new Audio('/music/background_music.mp3');
-    //audio.play();
-    $(window).resize(function(evt) {
-        initCropLand(s_Id);
+        await gameIndexCreation();    
+        await gameIndexRend();
+
+        eventListener();
+        audio = new Audio('/music/background_music.mp3');
+        //audio.play();
+        $(window).resize(function(evt) {
+            initCropLand(s_Id);
+        });
     });
+
 }
 
 //////////////////
@@ -1270,6 +1294,30 @@ document.onmousemove = function(e){
     cursorY = e.pageY;
 }
 
+var checkDBLoaded = function(callback){
+    var fetcher = setInterval(function(){ 
+        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
+            console.log("Mongo is ready to go :D");
+            clearInterval(fetcher);
+            callback("done");
+        }else{
+            console.log("Establishing Mongo connection... Hold on!")
+        }
+    
+    }, 1000);
+}
+
+var createDBConnection = function(){
+    propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function(){
+        Session.set("crop_loaded", true);
+    });
+    landTypeSub = Meteor.subscribe("landTypeChannel", function(){
+        Session.set("land_loaded", true);
+    });
+    missionSub = Meteor.subscribe("missionChannel", function(){
+        Session.set("mission_loaded", true);
+    });
+}
 
 var initAllBtns = function(){
     var imgs = $(".cropLand").find("img");
@@ -1452,25 +1500,31 @@ var fetchAllCropTypes = function(){
 
 var loadCropList = function(s_Id){
     cropList = [];
-    var data = GamePropertyInstance.getCropList(s_Id, { from:web3.eth.accounts[currentAccount]});
-    var countData = GamePropertyInstance.getCropListCount(s_Id, {from:web3.eth.accounts[currentAccount]});
-    var length = GamePropertyInstance.getCropListLength(s_Id, { from:web3.eth.accounts[currentAccount]});
-    for (var i = 0 ; i < length ; i++){
-        var start = web3.toUtf8(data[3][i]).split(".")[0]+"Z";
-        var end = web3.toUtf8(data[4][i]).split(".")[0]+"Z";
+    var data = Meteor.users.findOne({_id : Session.get("id")}).profile.game.cropList;
 
-        start = start.split("\"")[1];
-        end = end.split("\"")[1];
+
+    var countData = data.count;
+    var length = data.id.length;
+    for (var i = 0 ; i < length ; i++){
+
+        // TODO  check format
+        // var start = web3.toUtf8(data[i].start).split(".")[0]+"Z";
+        // var end = web3.toUtf8(data[i].end).split(".")[0]+"Z";
+
+        // start = start.split("\"")[1];
+        // end = end.split("\"")[1];
+        var start = data[i].start;
+        var end = data[i].end;
 
         cropList.push({
-            id: data[0][i].c[0],
-            name: web3.toUtf8(data[1][i]),
-            img: web3.toUtf8(data[2][i]),
+            id: data.id[i],
+            name: data.name[i],
+            img: data.img[i],
             start: new Date(start),
             end: new Date(end),
-            type: data[5][i].c[0],
-            ripe: data[6][i],
-            count: countData[i].c[0]
+            type: data.cropType[i],
+            ripe: data.ripe[i],
+            count: data.count[i]
         });
     }
 
@@ -1478,59 +1532,54 @@ var loadCropList = function(s_Id){
 
 
 var getUserStockList = function(s_Id){
-    var p_List = CongressInstance.getPropertyList(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var p_List = Meteor.users.findOne({_id : Session.get("id")}).profile.game.property;
 
-    var data = [];
-    for (var i = 0 ; i < p_List.length ; i++){
-        data.push(usingPropertyInstance.getPropertyByOwner(p_List[i].c[0], { from:web3.eth.accounts[currentAccount]}));
-    }
-    for (var i = 0 ; i < data.length ; i++){
+    for (var i = 0 ; i < p_List.name.length ; i++){
         stockList.push({
-            id: data[i][0].c[0],
-            name: web3.toUtf8(data[i][1]),
-            count: data[i][2].c[0],
-            minUnit: data[i][3].c[0],
-            extraData: web3.toUtf8(data[i][4]),
-            type: data[i][5].c[0],
-            tradeable: data[i][6].c[0]
+            name: p_List.name[i],
+            count: p_List.count[i],
+            type: p_List.type[i],
+            tradeable: p_List.tradeable[i],
+            isTrading: p_List.isTrading[i]
         });
     }
 
 }
 
 var getUserData = function(s_Id){
-
-    var data = CongressInstance.getStakeholder.call(s_Id, { from:web3.eth.accounts[currentAccount]});
-    var syndicateData = CongressInstance.getSyndicateData.call(s_Id, {from:web3.eth.accounts[currentAccount]});
-    var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var data = Meteor.users.findOne({_id : Session.get("id")}).profile.game.stakeholder;
+    var syndicateData = Meteor.users.findOne({_id : Session.get("id")}).profile.game.syndicateData;
+    var matches = data.matchesId;
 
     currentUser = {
         id:s_Id,
-        address:web3.eth.accounts[currentAccount],
+        address:Meteor.users.findOne({_id : Session.get("id")}).profile.basic.address,
 
-        name: web3.toUtf8(data[0]),
-        exp: data[1].c[0],
-        totalExp: data[2].c[0],
-        type: web3.toUtf8(data[3]),
-        landSize: data[4].c[0],
-        level:data[5].c[0],
-        sta: data[6].c[0],
+        name: data.name,
+        exp: data.exp,
+        totalExp: data.totalExp,
+        type: Meteor.users.findOne({_id : Session.get("id")}).profile.basic.character,
+        landSize: data.landSize,
+        level:data.level,
+        sta: data.stamina,
         guardId: null,
         thiefId: null,
-        SyndicateExp:syndicateData[0].c[0],
-        SyndicateTotalExp:syndicateData[1].c[0],
-        SyndicateLevel:syndicateData[2].c[0],
+        SyndicateExp:syndicateData.exp,
+        SyndicateTotalExp:syndicateData.totalExp,
+        SyndicateLevel:syndicateData.level,
         SyndicateProgress:0,
         matches : matches
     };
-    var lastLogin = CongressInstance.getStakeholderLastLogin(s_Id, { from:web3.eth.accounts[currentAccount]});
+    var lastLogin = data.lastLogin;
 
-    if (web3.toUtf8(lastLogin) == 0){
+    if (lastLogin == 0){
         return;
     }
 
-    lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
-    lastLogin = new Date(lastLogin.split("\"")[1]);
+
+    // TODO : check last login format
+    //lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
+    //lastLogin = new Date(lastLogin.split("\"")[1]);
 
     var difference = elapsedTime(lastLogin, new Date());
 
@@ -1564,24 +1613,19 @@ var updateUserData = function(s_Id){
 
 var getLandConfiguration = function(s_Id){
     userLandConfiguration = [];
-    var data = GamePropertyInstance.getUserLandConfiguration.call(s_Id, { from:web3.eth.accounts[currentAccount]});
-    landSize = Math.sqrt(data[0].length);
+    
+    var data = Meteor.users.findOne({_id : Session.get("id")}).profile.game.landConfig;
+    landSize = Math.sqrt(data.land.length);
 
-    var contractLandData = data[0];
-    var contractCropData = data[1];
+    var contractLandData = data.land;
+    var contractCropData = data.crop;
 
     for (var i = 0 ; i < landSize*landSize ; i++){
-        if (contractLandData[i].s != -1){
-            contractLandData[i].s = contractLandData[i].c[0];
-        }
-        if (contractCropData[i].s != -1){
-            contractCropData[i].s = contractCropData[i].c[0];
-        }
         userLandConfiguration.push(
           {
               id: i,
-              land: contractLandData[i].s,
-              crop: contractCropData[i].s
+              land: contractLandData[i],
+              crop: contractCropData[i]
           }
         );
     }
@@ -1589,22 +1633,18 @@ var getLandConfiguration = function(s_Id){
 }
 
 var fetchGameInitConfig = function(s_Id){
-    var cropData = [];
-    var landData = [];
     userCropType = [];
     cropTypeList = [];
     landTypeList = [];
 
-    var userCropTypeData = usingPropertyInstance.getUserPropertyType(s_Id, { from:web3.eth.accounts[currentAccount]});
-    for (var i = 0 ; i < userCropTypeData[0].length ; i++){
-        userCropType.push({
-            id: userCropTypeData[0][i].c[0],
-            count: userCropTypeData[1][i].c[0],
-        });
-    }
+    userCropType = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder.unlockedCropType;
+    //var userCropTypeData = usingPropertyInstance.getUserPropertyType(s_Id, { from:web3.eth.accounts[currentAccount]});
+
+    var allCropType = property_type.find().fetch();
+    var allLandType = land_type.find().fetch();
 
     for (var i = 0 ; i < userCropType.length; i++){
-        cropData.push(usingPropertyInstance.propertyTypeList(userCropType[i].id));
+        cropTypeList.push(allCropType.data[userCropType[i]]);
     }
 
     var flag = true;
@@ -1612,7 +1652,7 @@ var fetchGameInitConfig = function(s_Id){
 
     while (flag){
         try{
-            landData.push(GamePropertyInstance.landTypeList(i));
+            landTypeList.push(allLandType.data[i]);
             i++;
         }
         catch(err) {
@@ -1620,37 +1660,9 @@ var fetchGameInitConfig = function(s_Id){
         }
     }
 
-    for (var i = 0 ; i < cropData.length ; i++){
-        var tempImg = [];
-        for (var j = 0 ; j < 5; j++){
-            var tempStr =  web3.toUtf8(usingPropertyInstance.getPropertyTypeImg(cropData[i][1].c[0], j, { from:web3.eth.accounts[currentAccount]})).toString();
-            tempImg.push(tempStr);
-            //tempImg.push(["carrot_seed", "carrot_grow", "carrot_harvest", "carrot"]);
-            //tempImg.push("carrot_grow");
-        }
-        cropTypeList.push({
-            name : web3.toUtf8(cropData[i][0]),
-            id : cropData[i][1].c[0],
-            img: tempImg,
-            time: web3.toUtf8(cropData[i][3]),
-            count:cropData[i][4].c[0]
-
-        })
-    }
-
     Session.set('cropTypeList' , cropTypeList);
     _crop.changed();
 
-    for (var i = 0 ; i < landData.length ; i++){
-
-        landTypeList.push({
-            id : landData[i][0].c[0],
-            name : web3.toUtf8(landData[i][1]),
-            img: web3.toUtf8(landData[i][2]),
-            count:landData[i][3].c[0]
-
-        })
-    }
     Session.set('landTypeList' , landTypeList);
 }
 
@@ -1874,30 +1886,84 @@ var updateUserExp = function(exp){
             currentUser.sta = staminaCap(currentUser.level);
             updateStaminaBar(0);
 
-            CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            var db_totalExp = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder.totalExp;
+            Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.exp': currentUser.exp, 'profile.game.stakeholder.totalExp': db_totalExp+currentUser.exp } });
 
-            PlayerSettingInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
-                levelUp("userLevel");
-                getUserData(s_Id);
-                rerenderCropLand(s_Id);
-                lvlCap = levelCap(currentUser.level);
-                if (currentUser.level % 5 == 0){
-                    $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
+            var user_data = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder;
+            var landSize = user_data.landSize;
+            var level = user_data.level;
+            level += 1;
+            if (level % 5 == 0){
+                landSize += 1;
+
+                //addUserPropertyType
+                var p_Id = Math.floor(Math.random()*3) + ((level/unlockCropLevel)*unlockCropNum);
+                Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.unlockedCropType': p_Id } });
+
+                //addUserLandConfiguration
+                var difference;
+                if (landSize == 3){
+                    difference = landSize*landSize;
                 }else{
-                    $(".unlockCropId").html('');
+                    difference = (landSize*landSize) - ((landSize-1)*(landSize-1));
                 }
 
-                getUserData(s_Id);
-                if((currentUser.level % 5) == 0){
-                    GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
+                var land_data = Meteor.users.findOne({_id:Session.get("id")}).profile.game.landConfig;
+
+
+                for (var i = 0 ; i < difference ; i++){
+                    var _id = land_data.id.length;
+                    land_data.id.push(_id);
+                    land_data.land.push(-1);
+                    land_data.crop.push(-1);
+
                 }
-                rerenderCropLand(s_Id);
-                lvlCap = levelCap(currentUser.level);
-                Session.set("unlockCrop", cropTypeList.length - 1);
-            });
+                Meteor.users.update(Session.get("id"), { $set: { 'profile.game.landConfig.id': land_data.id, 'profile.game.landConfig.crop': land_data.crop, 'profile.game.landConfig.land': land_data.land } });
+
+            }
+            //update game data
+            Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.landSize': landSize, 'profile.game.stakeholder.level': level } });
+
+
+            levelUp("userLevel");
+            getUserData(s_Id);
+            lvlCap = levelCap(currentUser.level);
+            if (currentUser.level % 5 == 0){
+    //         GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
+
+                $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
+            }else{
+                $(".unlockCropId").html('');
+            }
+            rerenderCropLand(s_Id);
+            lvlCap = levelCap(currentUser.level);
+            Session.set("unlockCrop", cropTypeList.length - 1);
+
+            // PlayerSettingInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
+            //     levelUp("userLevel");
+            //     getUserData(s_Id);
+            //     rerenderCropLand(s_Id);
+            //     lvlCap = levelCap(currentUser.level);
+            //     if (currentUser.level % 5 == 0){
+            //         $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
+            //     }else{
+            //         $(".unlockCropId").html('');
+            //     }
+
+            //     getUserData(s_Id);
+            //     if((currentUser.level % 5) == 0){
+            //         GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            //     }
+            //     rerenderCropLand(s_Id);
+            //     lvlCap = levelCap(currentUser.level);
+            //     Session.set("unlockCrop", cropTypeList.length - 1);
+            // });
 
         }else{
-            CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            var db_totalExp = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder.totalExp;
+            Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.exp': currentUser.exp, 'profile.game.stakeholder.totalExp': db_totalExp+currentUser.exp } });
+            //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
         }
 
         var percent = Math.floor((currentUser.exp/lvlCap)*100);
@@ -1927,15 +1993,19 @@ var updateSyndicateExp = function(exp){
             levelUp('Syndicate');
             lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
         }
-        CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
 
+        var db_totalExp = Meteor.users.findOne({_id:Session.get("id")}).profile.game.syndicateData.totalExp;
+        Meteor.users.update(Session.get("id"), { $set: { 'profile.game.syndicateData.exp': currentUser.SyndicateExp, 'profile.game.syndicateData.totalExp': db_totalExp+currentUser.SyndicateExp, 'profile.game.syndicateData.level': currentUser.level } });
+        //CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
 
         var percent = (currentUser.SyndicateExp/lvlCap)*100;
         $(".SyndicateExpProgressBar").css("width", percent + "%");
         //$(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
     }
 
-    CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
+    var db_totalExp = Meteor.users.findOne({_id:Session.get("id")}).profile.game.syndicateData.totalExp;
+    Meteor.users.update(Session.get("id"), { $set: { 'profile.game.syndicateData.exp': currentUser.SyndicateExp, 'profile.game.syndicateData.totalExp': db_totalExp+currentUser.SyndicateExp, 'profile.game.syndicateData.level': currentUser.level } });
+    //CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
 
 
     var percent =  Math.floor((currentUser.SyndicateExp/lvlCap)*100);
