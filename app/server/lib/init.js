@@ -1,9 +1,21 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import { property_type } from '../../imports/collections.js';
+import { land_type } from '../../imports/collections.js';
+import { mission } from '../../imports/collections.js';
 
 
 if (Meteor.isServer){
 
+
+    // const PropertyType = new Mongo.Collection('PropertyType');
+    // PropertyType.allow({
+    //     'insert': function (userId,doc) {
+    //     /* user and doc checks ,
+    //     return true to allow insert */
+    //     return true; 
+    //     }
+    // });
 
     /*----------------------
         init declaration

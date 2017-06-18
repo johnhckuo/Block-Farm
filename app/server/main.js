@@ -1,10 +1,29 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
-import '../imports/api/settings.js';
+import { property_type } from '../imports/collections.js';
+import { land_type } from '../imports/collections.js';
+import { mission } from '../imports/collections.js';
 
 import './GameLogic/Congress.js';
 
 if (Meteor.isServer){
+
+
+Meteor.startup(function () {
+  Meteor.publish('propertyTypeChannel', function () {
+   return property_type.find();
+  });
+
+  Meteor.publish('landTypeChannel', function () {
+   return land_type.find();
+  });
+
+  Meteor.publish('missionChannel', function () {
+   return mission.find();
+  });
+
+})
+
 
 var API_Register_backend = function(){
     return Meteor.http.call("POST","https://api.blockcypher.com/v1/beth/test/addrs?token="+token);
@@ -128,6 +147,15 @@ var Member_Register = function(email, password, character){
         return {type:"error", result:e.reason};
       }
       return {type:"success", result:""};
+    },
+    'test':function(){
+            property_type.insert({text:"hihiheee"});
+
+    },
+    'init':function(){
+        property_type.insert({data:cropTypeList});
+        land_type.insert({data:landTypeList});
+        mission.insert({data:MissionList});
     }
   });
 }

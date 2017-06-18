@@ -1,9 +1,9 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
-import { PropertyType } from '../imports/api/settings.js';
-import { LandType } from '../imports/api/settings.js';
-import { Mission } from '../imports/api/settings.js';
+import { property_type } from '../imports/collections.js';
+import { land_type } from '../imports/collections.js';
+import { mission } from '../imports/collections.js';
 
 import './main.html';
 import './index.html';
@@ -22,23 +22,7 @@ var ownerAccount = 0;
 var renderChecked = false;
 var userNameCounter = 0;
 var name;
-Template.index.rendered = function() {
-    if(!this._rendered && !renderChecked) {
-      console.log('Template render complete');
-      //$('#fullpage').fullpage();
-      renderChecked = true;
 
-      // MainActivityInstance.matchSuccess().watch(function(error, result){
-      //   if (!error)
-      //     console.log(result.args);
-      // });
-
-      // MainActivityInstance.test().watch(function(error, result2){
-      //   if (!error)
-      //     console.log(result2.args);
-      // });
-    }
-}
 
 ////////////////////
 //                //
@@ -84,7 +68,28 @@ var validateEmail = function(email) {
 ////////////////////
 
 if (Meteor.isClient) {
-  var matchResult = new Meteor.Collection(null);
+
+
+  Template.index.rendered = async function() {
+
+      var res = await Meteor.call('init');
+
+      if(!this._rendered && !renderChecked) {
+        console.log('Template render complete');
+        renderChecked = true;
+        var fetcher = setInterval(function(){ 
+          if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
+              console.log("Mongo is ready to go :D");
+              clearInterval(fetcher);
+          }else{
+              console.log("Establishing Mongo connection... Hold on!")
+          }
+        
+      }, 1000);
+
+      }
+  }
+
 
   Template.index.helpers({
 
@@ -106,7 +111,20 @@ if (Meteor.isClient) {
   //                //
   ////////////////////
 
+  Template.socialIcons.events({
+    'click .test': async function(e){
+      console.log(propertyTypeSub.ready());
 
+
+        //property_type.insert({text:"hihiheee"});
+        console.log(property_type.find().fetch());
+        //property_type.insert({text:"hihissssssssssheee"});
+        //console.log(property_type.find().fetch());
+        if (Session.get("property_loaded")) {
+            console.log(property_type.find().fetch());
+        }
+    }
+  })
   Template.index.events({
     'click #arrow-down': function (e) {
         e.preventDefault();

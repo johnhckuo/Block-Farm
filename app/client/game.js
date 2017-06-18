@@ -1,9 +1,7 @@
 // JavaScript source code
 import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
-import { PropertyType } from '../imports/api/settings.js';
-import { LandType } from '../imports/api/settings.js';
-import { Mission } from '../imports/api/settings.js';
+
 
 var landSize = 3;
 var blockSize = 150;
