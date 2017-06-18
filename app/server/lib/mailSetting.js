@@ -3,29 +3,6 @@ import { Accounts } from 'meteor/accounts-base';
 
 if (Meteor.isServer){
 
-    /*---------
-        init
-    -----------*/
-
-
-    Meteor.startup(function () {
-    smtp = {
-        username: 'noreply.blockfarm',   
-        password: 'IH8Blockchain85024',   
-        server:   'smtp.gmail.com',  
-        port: 25
-    }
-
-    process.env.MAIL_URL = 'smtp://' + encodeURIComponent(smtp.username) + ':' + encodeURIComponent(smtp.password) + '@' + encodeURIComponent(smtp.server) + ':' + smtp.port;
-
-    //   Accounts.config({
-    //     loginExpirationInDays: null
-
-    //   });
-
-    });
-
-
     /*--------------------
         email Setting
     ---------------------*/
