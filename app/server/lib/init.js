@@ -88,7 +88,7 @@ if (Meteor.isServer) {
         gameInitData.property.name = [];
         gameInitData.property.count = [];
         gameInitData.property.type = [];
-        gameInitData.property.tradable = [];
+        gameInitData.property.tradeable = [];
         gameInitData.property.isTrading = [];        
 
         gameInitData.cropList.id = [];

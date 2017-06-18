@@ -78,7 +78,7 @@ if (Meteor.isClient) {
         renderChecked = true;
         var fetcher = setInterval(function(){ 
           if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
-              console.log("Mongo is ready to go :D");
+              console.log("Mongo is now ready to go :D");
               var m = mission.findOne({});
 
               console.log(m);

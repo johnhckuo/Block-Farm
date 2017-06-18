@@ -144,21 +144,20 @@ if (Meteor.isServer) {
           game: gameInitData
         };
         Meteor.users.update(userId, { $set: { profile: profile } });
-        Meteor.call('addUserLandConfiguration', [3]);
+        Meteor.call('addUserLandConfiguration', 3);
         Meteor.call('initUserProperty');
         var unlockCropId = Math.floor(cropsPerLvl * Math.random());
         console.log(unlockCropId);
-        Meteor.call('addUserPropertyType', [unlockCropId]);
+        Meteor.call('addUserPropertyType', unlockCropId);
+        if (character == "Guard") {
+          Meteor.call('updatePropertyCount_Setting', 30, 1, 0);
+        }
         var res = Promise.await(getEther(res.data.address));
       } catch (e) {
         console.log("[API_Register]" + e);
         return { type: "error", result: e.reason };
       }
       return { type: "success", result: "" };
-    },
-    'test': function () {
-      property_type.insert({ text: "hihiheee" });
-
     },
     'init': function () {
       property_type.insert({ data: cropTypeList });
