@@ -75,9 +75,10 @@ if (Meteor.isServer) {
             _cropList.count[t_Id] = _count;
             Meteor.users.update(userId, { $set: { 'profile.game.cropList': _cropList } });
         },
-        'updateCropCount': function (t_Id, _count) {
-            var userId = Meteor.userId();
-            var _cropList = Meteor.users.findOne({ _id: userId }).profile.game.cropList;
+        'updateCropCount': function (u_Id, t_Id, _count) {
+            var targetUser = Meteor.users.findOne({'profile.game.stakeholder.id': u_Id});
+            var userId = targetUser._id;
+            var _cropList =targetUser.profile.game.cropList;
             _cropList.count[t_Id] = _count;
             Meteor.users.update(userId, { $set: { 'profile.game.cropList': _cropList } });
         }
