@@ -123,6 +123,7 @@ getStakeholderId = function(){
 
 gameIndexRend = function(){
     $(".levelUp").hide();
+    get_user_property_setting();
 
     updateUserExp(0);
     updateSyndicateExp(0);
@@ -144,7 +145,6 @@ gameIndexRend = function(){
 
     loading(0);
     //need to be async 0513
-    get_user_property_setting();
 
     if (currentUser.level == 0){
         $(".tutorialContainer").fadeIn();
@@ -179,12 +179,10 @@ Template.gameIndex.created =  function() {
         await gameIndexCreation();    
         await gameIndexRend();
 
-        eventListener();
+        //eventListener();
         audio = new Audio('/music/background_music.mp3');
         //audio.play();
-        $(window).resize(function(evt) {
-            initCropLand(s_Id);
-        });
+
     });
 
 }
@@ -195,8 +193,9 @@ Template.gameIndex.created =  function() {
 
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
-      
-
+        $(window).resize(function(evt) {
+            initCropLand(s_Id);
+        });
     }
 }
 
@@ -1533,7 +1532,7 @@ var loadCropList = function(s_Id){
 
 var getUserStockList = function(s_Id){
     var p_List = Meteor.users.findOne({_id : Session.get("id")}).profile.game.property;
-
+    console.log(p_List)
     for (var i = 0 ; i < p_List.name.length ; i++){
         stockList.push({
             name: p_List.name[i],
@@ -1640,9 +1639,9 @@ var fetchGameInitConfig = function(s_Id){
     userCropType = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder.unlockedCropType;
     //var userCropTypeData = usingPropertyInstance.getUserPropertyType(s_Id, { from:web3.eth.accounts[currentAccount]});
 
-    var allCropType = property_type.find().fetch();
-    var allLandType = land_type.find().fetch();
-
+    var allCropType = property_type.findOne({});
+    var allLandType = land_type.findOne({});
+    console.log(userCropType)
     for (var i = 0 ; i < userCropType.length; i++){
         cropTypeList.push(allCropType.data[userCropType[i]]);
     }
@@ -2037,6 +2036,8 @@ var setGuardProperty = function(){
             break;
         }
     }
+        console.log(user_property);
+
     user_property[userIndex].propertyCount = 0;
     user_property[userIndex].tradeable = 0;
     user_property[userIndex + 1].propertyCount = 1;
@@ -2192,28 +2193,12 @@ var elapsedTime = function(start, end){
 
 get_user_property_setting = function () {
     user_property = [];
-    var _propertyIndex = CongressInstance.getPropertyIndex.call(s_Id, {from:web3.eth.accounts[currentAccount]});
-    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call({from:web3.eth.accounts[currentAccount]});
-    var _goal = _propertyIndex.c[0] +  propertyTypeLength.c[0];
-    for(i = _propertyIndex.c[0]; i < _goal; i++){
-        var propertyData = usingPropertyInstance.getPropertyTo2(i, web3.eth.accounts[currentAccount], {from:web3.eth.accounts[currentAccount]}, function(err, result){
-            if(err){
-                console.log(err);
-            }
-            else{
-                var _id = result[0].c[0];
-                var _propertyType = result[1].c[0]
-                var _name = web3.toUtf8(result[2]);
-                var _propertyCount = result[3].c[0];
-                var _tradeable = result[4].c[0];
-                var _img = web3.toUtf8(result[5]);
-                var data = {"id":_id, "propertyType":_propertyType, "name":_name, "propertyCount":_propertyCount,  "tradeable":_tradeable, "img": _img};
-                user_property.push(data);
-                console.log(i);
-            }
-        });
+    var db_property = Meteor.users.findOne({_id:Session.get("id")}).profile.game.property;
+    
+    //propertyTypeList
+    for (var i = 0 ; i < db_property.name.length ; i++){
+        user_property.push({"name":db_property.name[i], "propertyType":db_property.type[i], "propertyCount":db_property.count[i],  "tradeable":db_property.tradeable[i], "img": cropTypeList[db_property.type[i]].img[5]})
     }
-
 }
 
 get_propertyType_setting = function(_length){
@@ -2233,94 +2218,91 @@ get_propertyType_setting = function(_length){
 }
 
 set_property_table = function(){
-    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, {from:web3.eth.accounts[currentAccount]}).c[0];
-    if(user_property.length != propertyTypeLength){
-        loading(1);
-        setTimeout(set_property_table, 1000);
-    }
-    else{
-        //loading(1);
-        //get_user_property_setting();
+    var propertyTypeLength = cropTypeList.length;
 
-        loading(0);
-        var table, tr, td;
+    //loading(1);
+    //get_user_property_setting();
 
-        $('.tradeable_content').html('');
-        table = $('<table></table>').attr('id', 'property_trade_table')
-                                    .attr('class', 'property_shop_table');
-        //content
-        var flag = 0;
-        for(i = 0; i < user_property.length; i++){
-            if((user_property[i].propertyCount != 0) || (user_property[i].tradeable != 0)){
-                if (flag == 0){
-                    flag++;
-                    tr = $('<tr></tr>');
-                    tr.append($('<th></th>').text('Property'));
-                    tr.append($('<th></th>').text('Stock Number'));
-                    tr.append($('<th></th>').text('Tradable Number'));
-                    table.append(tr);
-                }
+    loading(1);
+    var table, tr, td;
+
+    $('.tradeable_content').html('');
+    table = $('<table></table>').attr('id', 'property_trade_table')
+                                .attr('class', 'property_shop_table');
+    //content
+    var flag = 0;
+    for(i = 0; i < user_property.length; i++){
+        if((user_property[i].propertyCount != 0) || (user_property[i].tradeable != 0)){
+            if (flag == 0){
+                flag++;
                 tr = $('<tr></tr>');
-                td = $('<td></td>');
-                td.append($('<img></img>', {
-                    src:prefix+user_property[i].img + postfix,
-                    style:'width:50px; height:50px'
-                })).append("<div>"+user_property[i].name+"</div>");
-                tr.append(td);
-                td = $('<td></td>');
-                td.text(user_property[i].propertyCount);
-                tr.append(td);
-                td = $('<td></td>');
-                td.append(
-                        $('<input></input>',{
-                            type:'text',
-                            class:'shop_tradable_input',
-                            id:'tradable_input_' + user_property[i].id,
-                            value:user_property[i].tradeable
-                        })
-                        .on('keydown',function (e) {
-                            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-                                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                                (e.keyCode >= 35 && e.keyCode <= 40)) {
-                                return;
-                            }
-                            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                                e.preventDefault();
-                            }
-                        })
-                        .on('change',function(e){
-                            var _id = index_finder($(this).attr('id'), 'tradable_input_');
-                            if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
-                                $(this).val($('#shop_stock_' + _id).val());
-                            }
-                            $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
-                        })
-                        .on('click', function(){
-                            $(this).select();
-                        })
-                        );
-                td.append($('<input></input>',{
-                    type:'hidden',
-                    id:'shop_stock_' + user_property[i].id,
-                    value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
-                }));
-                tr.append(td);
+                tr.append($('<th></th>').text('Property'));
+                tr.append($('<th></th>').text('Stock Number'));
+                tr.append($('<th></th>').text('Tradable Number'));
                 table.append(tr);
             }
-        }
-
-
-        if (!flag){
             tr = $('<tr></tr>');
-            tr.append($('<th></th>').text('No Stock Found'));
+            td = $('<td></td>');
+            td.append($('<img></img>', {
+                src:prefix+user_property[i].img + postfix,
+                style:'width:50px; height:50px'
+            })).append("<div>"+user_property[i].name+"</div>");
+            tr.append(td);
+            td = $('<td></td>');
+            td.text(user_property[i].propertyCount);
+            tr.append(td);
+            td = $('<td></td>');
+            td.append(
+                    $('<input></input>',{
+                        type:'text',
+                        class:'shop_tradable_input',
+                        id:'tradable_input_' + user_property[i].id,
+                        value:user_property[i].tradeable
+                    })
+                    .on('keydown',function (e) {
+                        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                            (e.keyCode >= 35 && e.keyCode <= 40)) {
+                            return;
+                        }
+                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                            e.preventDefault();
+                        }
+                    })
+                    .on('change',function(e){
+                        var _id = index_finder($(this).attr('id'), 'tradable_input_');
+                        if(parseInt($(this).val(),10) > parseInt($('#shop_stock_' + _id).val())){
+                            $(this).val($('#shop_stock_' + _id).val());
+                        }
+                        $('#shop_stock_' + _id)[0].parentNode.previousSibling.textContent= parseInt($('#shop_stock_' + _id).val(),10) -  parseInt($(this).val(),10);
+                    })
+                    .on('click', function(){
+                        $(this).select();
+                    })
+                    );
+            td.append($('<input></input>',{
+                type:'hidden',
+                id:'shop_stock_' + user_property[i].id,
+                value: parseInt(user_property[i].propertyCount,10) + parseInt(user_property[i].tradeable,10)
+            }));
+            tr.append(td);
             table.append(tr);
         }
-        //content
-        //control bar
-
-        //control bar
-        $('.tradeable_content').append(table);
     }
+
+
+    if (!flag){
+        tr = $('<tr></tr>');
+        tr.append($('<th></th>').text('No Stock Found'));
+        table.append(tr);
+    }
+    //content
+    //control bar
+
+    //control bar
+    $('.tradeable_content').append(table);
+    loading(0);
+    
 }
 
 index_finder = function(_source, _mask){

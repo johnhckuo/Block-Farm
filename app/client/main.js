@@ -78,8 +78,6 @@ if (Meteor.isClient) {
         if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
           console.log("Mongo is ready to go :D");
           var initCounter = property_type.find().fetch().length;
-          console.log(initCounter);
-
           if (initCounter == 0) {
             var res = await Meteor.call('init');
           }

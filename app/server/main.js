@@ -158,10 +158,6 @@ if (Meteor.isServer) {
       }
       return { type: "success", result: "" };
     },
-    'test': function () {
-      property_type.insert({ text: "hihiheee" });
-
-    },
     'init': function () {
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });
