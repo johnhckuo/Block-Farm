@@ -181,7 +181,6 @@ Template.gameIndex.created = function () {
                     Router.go('/');
                 });
         }
-
         await gameIndexCreation();
         await gameIndexRend();
 
@@ -189,6 +188,7 @@ Template.gameIndex.created = function () {
         audio = new Audio('/music/background_music.mp3');
         //audio.play();
     });
+
 }
 
 //////////////////
@@ -1551,7 +1551,6 @@ var getVisitNode = function () {
 var fetchAllCropTypes = function () {
     var allCropType = property_type.find().fetch()[0].data;
     var allLandType = land_type.find().fetch()[0].data;
-
     cropData = allCropType;
     landData = allLandType;
 }
@@ -1568,7 +1567,6 @@ var loadCropList = function (s_Id) {
         // TODO  check format
         // var start = web3.toUtf8(data[i].start).split(".")[0]+"Z";
         // var end = web3.toUtf8(data[i].end).split(".")[0]+"Z";
-
         // start = start.split("\"")[1];
         // end = end.split("\"")[1];
         var start = data.start[i];
@@ -1609,7 +1607,6 @@ var getUserData = function (s_Id) {
     var matches = data.matchesId;
 
     currentUser = {
-
         id: s_Id,
         address: Meteor.users.findOne({ _id: Session.get("id") }).profile.basic.address,
         name: data.name,
@@ -1705,7 +1702,6 @@ var fetchGameInitConfig = function (s_Id) {
     }
     Session.set('cropTypeList', cropTypeList);
     _crop.changed();
-console.log(landTypeList);
     Session.set('landTypeList', landTypeList);
 }
 
@@ -1965,14 +1961,11 @@ var updateUserExp = function (exp) {
             }
             //update game data
             Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.landSize': landSize, 'profile.game.stakeholder.level': level } });
-
-
             levelUp("userLevel");
             getUserData(s_Id);
             lvlCap = levelCap(currentUser.level);
             if (currentUser.level % 5 == 0) {
                 //         GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
-
                 $(".unlockCropId").html("<h3>Unlock Crop: " + cropTypeList[cropTypeList.length - 1].name + "</h3>");
             } else {
                 $(".unlockCropId").html('');
@@ -2286,7 +2279,6 @@ set_property_table = function () {
                     );
                     table.append(tr);
                 }
-
             tr = $('<tr></tr>');
             td = $('<td></td>');
             td.append($('<img></img>', {
