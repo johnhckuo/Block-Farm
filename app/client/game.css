@@ -907,7 +907,7 @@
 /*property stock tradable in the fourth controlButtons*/
 .tradeable_content{
   overflow: auto;
-  width: 25vw;
+  width: 24vw;
   height: 50vh;
   display: flex;
   justify-content: center;

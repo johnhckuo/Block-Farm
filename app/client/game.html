@@ -22,6 +22,69 @@
   </div>
 </template>
 
+<!-- wait for merging -->
+
+<!--
+<template name="gameIndex">
+  {{#if loggedIn}}
+      {{#if currentUser.emails.[0].verified}}
+          {{> gameContent}}
+      {{else}}
+          {{> warning}}
+      {{/if}}
+  {{else}}
+      {{> loginWarning}}
+  {{/if}}
+</template>
+
+
+<template name="loginWarning">
+  {{> loading}}
+  <p class="alertHeader alert alert-warning">
+    <span class="home glyphicon glyphicon-home"></span>
+    You need to login first before playing Blockfarm!
+    <a href="#" class="forget-password">
+      Forget your password?
+    </a>
+  </p>
+  <div class="resetPasswordContainer">
+    <p class="resetPasswordFlexContainer">
+      <label for="">Your registered email:</label>
+      <input type="text" name="resetPassword" value="">
+      <button type="button" class="btn btn-info resetPassword" name="button">Submit</button>
+    </p>
+  </div>
+</template>
+
+
+<template name="warning">
+  {{> loading}}
+  <p class="alertHeader alert alert-warning">
+    <span class="home glyphicon glyphicon-home"></span>
+    You need to verify your email address before playing Blockfarm.
+    <a href="#" class="resend-verification-link">
+      Resend verification link
+    </a>
+  </p>
+</template>
+
+<template name="gameContent">
+  <div class="gameContainer">
+
+    {{> firstTutorial}}
+    {{> loading}}
+    {{> statusList}}
+    {{> gamingArea}}
+    {{> shop}}
+    {{> mission}}
+    {{> rank}}
+    {{> operationList}}
+    {{> floatBubble}}
+  </div>
+</template>
+
+-->
+
 <template name="floatBubble">
   <div class="floatCropStatus">
     <img src="" alt="">

@@ -77,8 +77,8 @@
                     <div class="front flexbox login-content-front login-content">
                       <form class="form-box">
                         <div class="login-inputs">
-                          <input id="login-username" type="email" name="Email" placeholder="Your email address" required>
-                          <input id="login-password" type="password" name="Password" placeholder="Password" required>
+                          <input id="login-username" type="email" name="login_email" placeholder="Your email address" required>
+                          <input id="login-password" type="password" name="login_password" placeholder="Password" required>
                         </div>
                         <div class="login-actions">
                           <button type="submit" id="login-submit" class="login-btn login-left" value="Log in">Log In</button>
@@ -93,11 +93,11 @@
                     <div class="back flexbox login-content-back login-content">
                       <form class="form-box">
                         <fieldset class="login-inputs">
-                          <input id="login-username-b" type="email" name="Email" placeholder="Enter your email address" required>
+                          <input id="login-username-b" type="email" name="forget-password-email" placeholder="Enter your email address" required>
 
                         </fieldset>
                         <div class="login-actions">
-                          <button type="submit" id="forgot-submit" class="login-btn login-left" value="">Send</button>
+                          <button type="submit" id="forgot-submit" class="login-btn login-left forget-password" value="">Send</button>
                           <a id="forgot-back" class="login-btn login-right" value="">Back</a>
                         </div>
                       </form>
@@ -201,8 +201,8 @@
               <div class="registerText">Registering...</div>
             </span>
           </span>
-          <div id="form" class="flexbox">
-              <div class="" id="flipper">
+          <div id="form" class="flexbox flip-container">
+              <div class="flipper" id="flipper">
                   <div class="front flexbox">
 
                     <form class="navbar-form navbar-left" role="search" id="stakeholderInfo">
@@ -217,25 +217,29 @@
                         </div>
                         <br>
                         <div class='formElement'>
-                            <label for="address">Address</label>
+                            <label for="name">E-mail</label>
                             <div class="input-group">
-                              <span class="input-group-addon glyphicon glyphicon-globe"></span>
-                              <input type="text" class="form-control" value={{currentAddress}} disabled>
+                              <span class="input-group-addon glyphicon glyphicon-envelope" id="name"></span>
+                              <input type="text" name="email" class="form-control s_Name" placeholder="">
                             </div>
                         </div>
                         <br>
                         <div class='formElement'>
-                            <label for="name">Username</label>
+                            <label for="name">Password</label>
                             <div class="input-group">
-                              <span class="input-group-addon glyphicon glyphicon-user" id="name"></span>
-                              <input type="text" class="form-control s_Name" placeholder="" maxlength="10">
+                              <span class="input-group-addon glyphicon glyphicon-lock" id="name"></span>
+                              <input type="password" name="password" class="form-control s_Pass" placeholder="">
                             </div>
                         </div>
                         <br>
-                        <button type="submit" class="hvr-submit" id='next'>Start Farming !</button>
+                        <div class="formBtn">
+                          <button type="submit" class="hvr-submit register">Register</button>
+                        </div>
+
+
                     </form>
-                </div>
-            </div>
+                  </div>
+              </div>
         </div>
       </div>
 
