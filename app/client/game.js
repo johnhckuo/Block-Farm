@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { property_type } from '../imports/collections.js';
 import { land_type } from '../imports/collections.js';
 import { mission } from '../imports/collections.js';
+import { callPromise } from '../imports/promise.js';
 
 var landSize = 3;
 var blockSize = 150;
@@ -81,6 +82,8 @@ var theifId = 0;
 var landInfo = [];
 var stealRate;
 
+var tutorialMode = false;
+var targetCircleDiv = null;
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -103,7 +106,7 @@ gameIndexCreation = async function () {
     await getLandConfiguration(s_Id);
     await loadCropList(s_Id);
     await getUserStockList(s_Id);
-    await fetchGameInitConfig(s_Id);
+    await fetchGameInitConfig(s_Id);  //bryant
 }
 
 getStakeholderId = function () {
@@ -167,7 +170,6 @@ Template.gameIndex.created = function () {
                     Router.go('/');
                 });
         }
-
         await gameIndexCreation();
         await gameIndexRend();
 
@@ -188,6 +190,7 @@ Template.gameIndex.rendered = function () {
         });
     }
 }
+
 
 Template.shop.rendered = function () {
 
@@ -256,7 +259,19 @@ Template.characterList.helpers({
             return "/img/game/guard.svg";
 
         }
-    }
+    },
+    characterTypeName: function () {
+        return Session.get('userCharacter');
+    },
+    expTip: function () {
+        return currentUser.Exp + "/" + levelCap(currentUser.level);
+    },
+    staTip: function () {
+        return currentUser.sta + "/" + staminaCap(currentUser.level);
+    },
+    expSyndicate: function () {
+        return currentUser.SyndicateExp + "/" + SyndicateLevelCap(currentUser.SyndicateLevel);
+    },
 });
 
 Template.statusList.helpers({
@@ -302,6 +317,12 @@ Template.statusList.helpers({
 //////////////
 //  Events  //
 //////////////
+Template.advTutorial.events({
+    // 'click .gameGuideImg':function(event){
+    //   // $('.landList');
+    //   $('.advTutorialContainer').css("background","rgba(255, 255, 255, 1)");
+    // },
+});
 
 Template.firstTutorial.events({
     'click .tutorialNextBtn': function (event) {
@@ -960,7 +981,73 @@ Template.gamingArea.events({
             $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
         }
     },
+    'click .gameGuideImg': function (event) {
+        // display original tutorial
+        // $(".tutorialContainer").css("opacity", "1");
+        // $(".tutorialContainer").css("display", "inline");
+        // $(".tutorialContainer").css("transform", "translateX("+ (0) +"vw)");
+
+        // display cover color tutorial
+        // $('.advTutorialContainer').css("display","inline");
+        // $('.advTutorialContainer').css("background","rgba(255, 255, 255, 0.7)");
+        // $('.advTutorialContainer').css("z-index","100");
+        // $('.landList').css("z-index","101");
+
+        tutorialMode = true;
+        targetCircleDiv = $('.cropLand');
+        $('.cropLand0').css("-webkit-animation", "circleLandAnimation 1s infinite");
+        createCircle();
+        // createCircle($('.cropLand0'));
+        // createCircle($('.characterStatus'));
+    },
 })
+// for create tutorial highlight circle by the div class
+function createCircle() {
+    if (!tutorialMode) {
+        return;
+    }
+    var topT = targetCircleDiv[0].getBoundingClientRect().top;
+    var leftT = targetCircleDiv[0].getBoundingClientRect().left;
+    var heightT = targetCircleDiv.height();
+    var widthT = targetCircleDiv.width();
+    console.log(topT + "," + leftT + "," + heightT + "," + widthT);
+    // top: topT-heightT/4.5,
+    // left: leftT-widthT/7.5,
+    var cricleStyle = {
+        top: topT - (0.25 * heightT),
+        left: leftT - ((1.5 * heightT - widthT) / 2),
+        width: heightT * 1.5,
+        height: heightT * 1.5,
+        position: "absolute",
+        opacity: 1,
+        "border": "2px solid rgb(255, 31, 0)",
+        "border-radius": "99em",
+        "z-index": 99,
+        "-webkit-animation": "circleCorlorAnimation 1s infinite"
+    };
+    $('.guideCircleStatus').css(cricleStyle);
+    console.log(leftT);
+    createTip(topT, leftT, heightT, widthT);
+}
+function createTip(_cTop, _cLeft, _cHeight, _cWidth) {
+    var tipStyle = {
+        position: "absolute",
+        opacity: 1,
+        top: _cTop + (_cHeight / 3),
+        left: _cLeft + (_cWidth * 5 / 4),
+        // width:"100px",
+        // height:"100px",
+        padding: "20px",
+        "border-radius": "15px",
+        "background-color": "rgb(255, 255, 255)",
+        "z-index": 120,
+    };
+    $('.guideCircleText').css(tipStyle);
+    $('.guideCircleText').text("123");
+}
+function tipContent() {
+
+}
 
 function PanelControl(panelIndex) {
     $(".statusPanel:nth-child(" + panelCounter + ")").removeClass("statusPanelShow");
@@ -1422,7 +1509,6 @@ var loadCropList = function (s_Id) {
         // TODO  check format
         // var start = web3.toUtf8(data[i].start).split(".")[0]+"Z";
         // var end = web3.toUtf8(data[i].end).split(".")[0]+"Z";
-
         // start = start.split("\"")[1];
         // end = end.split("\"")[1];
         var start = data.start[i];
@@ -1555,10 +1641,8 @@ var fetchGameInitConfig = function (s_Id) {
     for (var i = 0; i < landData.length; i++) {
         landTypeList.push(landData[i]);
     }
-
     Session.set('cropTypeList', cropTypeList);
     _crop.changed();
-
     Session.set('landTypeList', landTypeList);
 }
 
@@ -1581,7 +1665,7 @@ var loading = function (on) {
 var rerenderCropLand = function (id) {
     getLandConfiguration(id);
     loadCropList(id);
-    fetchGameInitConfig(id);
+    fetchGameInitConfig(id); //bryant
     initCropLand(id);
     getUserStockList(id);
     loading(0);
@@ -1679,6 +1763,8 @@ var initCropLand = function (id) {
         }
         $(".cropObject").clone().attr("class", "croppedObject croppedObject" + index).attr("cropCount", cropList[index].count).attr("stolenFlag", stolenFlag).appendTo(".surfaceObject").css(styles);
     }
+    createCircle();
+
 }
 
 var levelCap = function (n) {
@@ -2002,27 +2088,38 @@ get_user_property = function () {
     }
 }
 
-get_propertyType_setting = function (_length) {
+get_propertyType_setting = async function (_length) {
     display_field = [];
     for (i = 0; i < _length; i++) {
-        var property_type = usingPropertyInstance.getPropertyType.call(i, currentAccount, { from: web3.eth.accounts[currentAccount] }, function (err, result) {
-            var _name = web3.toUtf8(result[0]);
-            var _id = result[1].c[0];
-            var _rating = result[3].c[0] / floatOffset;
-            var _averageRating = result[2].c[0] / floatOffset;
-
-            var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
-            display_field.push(data);
-        });
+        var property_type = await callPromise("callContract", "Property", "getPropertyType", i);
+        if (property_type.type == "error") {
+            loading(0);
+            sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
+            return;
+        }
+        var _name = property_type[0];
+        var _id = property_type[1].c[0];
+        var _rating = property_type[3].c[0];
+        var _averageRating = property_type[2].c[0];
+        var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
+        display_field.push(data);
     }
 }
 
 set_property_table = function () {
+
     get_user_property();
     var table, tr, td;
     $('.tradeable_content').html('');
     table = $('<table></table>').attr('id', 'property_trade_table')
         .attr('class', 'property_shop_table');
+    // for tip content
+    var tipPropertyString = "";
+    if (Session.get('userCharacter') == "Thief") {
+        tipPropertyString = "It consists the crops which you gathered or stole.";
+    } else {
+        tipPropertyString = "It consists crops and guard of which level is decided by playing in Guard mode.";
+    }
     //content
     var flag = 0;
     for (i = 0; i < user_property.length; i++) {
@@ -2030,9 +2127,12 @@ set_property_table = function () {
             if (flag == 0) {
                 flag++;
                 tr = $('<tr></tr>');
-                tr.append($('<th></th>').text('Property'));
-                tr.append($('<th></th>').text('Stock Number'));
-                tr.append($('<th></th>').text('Tradable Number'));
+                // tr.append($('<th></th>').text('Property'));
+                // tr.append($('<th></th>').text('Stock Number'));
+                // tr.append($('<th></th>').text('Tradable Number'));
+                tr.html(
+                    '<th><div class="TradablePropertyTH">Property<div class="tipContainer tipContainerProperty"><img id="tipPropertyImg" src="/img/game/question-mark.png" alt=""><div class="tipPropertyText tipText">' + tipPropertyString + '</div></div></div></th><th>Stock Number</th><th><div class="TradableNumTH">Tradable Number<div class="tipContainer tipContainerTradable"><img id="tipTradableImg" src="/img/game/question-mark.png" alt=""><div class="tipTradableText tipText">The quantity of the crop which you want to provide for joining the exchange.</div></div></div></th>'
+                );
                 table.append(tr);
             }
             tr = $('<tr></tr>');
@@ -2100,9 +2200,10 @@ index_finder = function (_source, _mask) {
 
 set_propertyType_table = function () {
     loading(1);
-    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, { from: web3.eth.accounts[currentAccount] });
-    get_propertyType_setting(propertyTypeLength.c[0]);
-    rend_propertyType_table(propertyTypeLength.c[0]);
+    //var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, { from: web3.eth.accounts[currentAccount] });
+    var propertyTypeLength = cropTypeList.length;
+    get_propertyType_setting(propertyTypeLength);
+    rend_propertyType_table(propertyTypeLength);
 }
 
 rend_propertyType_table = function (_length) {
@@ -2114,14 +2215,21 @@ rend_propertyType_table = function (_length) {
     else {
         var table, tr, td, property_index;
         loading(1);
-        $('.shop_content').html('');
+        $('.shop_content').html(
+            '<div class="ratingRange">Rating Tolerance<div class="tipTolerance tipContainer"><img src="/img/game/question-mark.png" alt=""><div class="tipToleranceText tipText">The lower represents that you can only accept the equipollently important crop while exchanging. The higher means you may not receive the expected crop, but the higher success rate will occur.</div></div><input type="range" value="0" max="100" min="0" step="1" id="ratingPercent"><label for="ratingPercent">0%</label></div><hr>'
+        );
+        $('#ratingPercent').on('change', function () {
+            $('label[for = ratingPercent]').html($(this).val() + "%");
+        });
         table = $('<table></table>').attr('id', 'property_table')
             .attr('class', 'property_shop_table');
         //header
         tr = $('<tr></tr>');
-        tr.append($('<th></th>').text('Property'));
-        tr.append($('<th></th>').text('Rating'));
-        tr.append($('<th></th>').text('AVG Rating'));
+        // tr.append($('<th></th>').text('Property'));
+        // tr.append($('<th></th>').text('Rating'));
+        // tr.append($('<th></th>').text('AVG Rating'));
+        tr.html('<th>Property</th><th><div class="RatingTH">Rating<div class="tipContainer tipContainerRating"><img id="tipRatingImg" src="/img/game/question-mark.png" alt=""><div class="tipRatingText tipText">It represents how important the crop is to you.</div></div></div></th><th><div class="AvgRatingTH">AVG Rating<div class="tipContainer tipContainerAvg"><img id="tipAvgRatingImg" src="/img/game/question-mark.png" alt=""><div class="tipAvgRatingText tipText">Current average rating from all the gamers.</div></div></div></th>'
+        );
         table.append(tr);
         //header
         //content
@@ -2175,16 +2283,21 @@ save_tradable_setting = function () {
     sweetAlert("Congratulations!", "Setting Saved!", "success");
 }
 
-save_rating_setting = function () {
+save_rating_setting = async function () {
     loading(1);
+    var s_Length = Meteor.users.find().count();
+    var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
     for (i = 0; i < display_field.length; i++) {
         var _id = parseInt(display_field[i].id, 10);
         var _rate = parseInt($('#rating' + i).val(), 10);
+        var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate * floatOffset, "update", s_Length, s_Id]);
+        /*
         usingPropertyInstance.updatePropertyTypeRating(_id, _rate * floatOffset, "update", { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
             if (err) {
                 console.log(err);
             }
         });
+        */
     }
     loading(0);
     sweetAlert("Congratulations!", "Rating Saved!", "success");

@@ -30,8 +30,6 @@ var name;
 //                //
 ////////////////////
 
-
-
 var hex2a = function (hexx) {
   var hex = hexx.toString();//force conversion
   var str = '';
@@ -84,8 +82,8 @@ if (Meteor.isClient) {
           clearInterval(fetcher);
         } else {
           console.log("Establishing Mongo connection... Hold on!")
-        }      
-      }, 1000);    
+        }
+      }, 1000);
     }
   }
 
@@ -167,7 +165,6 @@ if (Meteor.isClient) {
     },
     'click .forget-password': async function (event) {
       event.preventDefault();
-
       let email = $('[name=forget-password-email]').val();
       // var res = Meteor.users.findOne({: email}});
       // console.log(res);
@@ -254,7 +251,6 @@ if (Meteor.isClient) {
     }
   });
 }
-
 
 function register() {
   var txs = CongressInstance.addMember({ from: web3.eth.accounts[currentAccount], gas: 221468 }, function () {
