@@ -125,10 +125,10 @@ contract GameProperty{
 
         uint length = landSize-1;
         for (uint i = ((length*length)-1) ; i >= length  ; i--){
-            userLandConfigurationList[s_Id].land[i + (i/length)] = userLandConfigurationList[s_Id].land[i];
-            userLandConfigurationList[s_Id].crop[i + (i/length)] = userLandConfigurationList[s_Id].crop[i];
-            userLandConfigurationList[s_Id].land[i] = -1;
-            userLandConfigurationList[s_Id].crop[i] = -1;
+            userLandConfigurationList[u_Id].land[i + (i/length)] = userLandConfigurationList[u_Id].land[i];
+            userLandConfigurationList[u_Id].crop[i + (i/length)] = userLandConfigurationList[u_Id].crop[i];
+            userLandConfigurationList[u_Id].land[i] = -1;
+            userLandConfigurationList[u_Id].crop[i] = -1;
         }
     }
 
