@@ -63,9 +63,13 @@ if (Meteor.isServer) {
         'updateSyndicateExp': function (_exp, _level) {
             var userId = Meteor.userId();
             var _syndicateData = Meteor.users.findOne({ _id: userId }).profile.game.syndicateData;
-            _syndicateData.exp += _exp;
+            _syndicateData.exp = _exp;
+            _syndicateData.totalExp += _exp;
             _syndicateData.level = _level;
             Meteor.users.update(userId, { $set: { 'profile.game.syndicateData': _syndicateData } });
+        },
+        'testa' :function(){
+
         }
     });
 }

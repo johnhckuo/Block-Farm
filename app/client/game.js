@@ -86,7 +86,6 @@ var stealRate;
 ///////////////////////////
 
 Date.prototype.addTime = function (days, hours, minutes, seconds) {
-    //var dat = new Date(this.valueOf());
     var dat = new Date();
 
     dat.setDate(dat.getDate() + days);
@@ -97,10 +96,6 @@ Date.prototype.addTime = function (days, hours, minutes, seconds) {
     return dat;
 }
 
-//////////////////////
-//  async function  //
-//////////////////////
-
 gameIndexCreation = async function () {
     await getStakeholderId();
     await fetchAllCropTypes();
@@ -110,11 +105,6 @@ gameIndexCreation = async function () {
     await getUserStockList(s_Id);
     await fetchGameInitConfig(s_Id);
 }
-
-
-/////////////////////////
-//  async subfunction  //
-/////////////////////////
 
 getStakeholderId = function () {
     s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
@@ -127,7 +117,7 @@ getStakeholderId = function () {
 
 gameIndexRend = function () {
     $(".levelUp").hide();
-    get_user_property_setting();
+    get_user_property();
 
     updateUserExp(0);
     updateSyndicateExp(0);
@@ -148,13 +138,11 @@ gameIndexRend = function () {
     setInterval(updateUserStamina, 500);
 
     loading(0);
-    //need to be async 0513
 
     if (currentUser.level == 0) {
         $(".tutorialContainer").fadeIn();
     }
 }
-
 
 /////////////////
 //  onCreated  //
@@ -186,9 +174,7 @@ Template.gameIndex.created = function () {
         //eventListener();
         audio = new Audio('/music/background_music.mp3');
         //audio.play();
-
     });
-
 }
 
 //////////////////
@@ -212,8 +198,10 @@ Template.shop.rendered = function () {
 //////////////////
 
 $(window).on("beforeunload", function () {
-    CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    CongressInstance.updateUserStamina(s_Id, currentUser.sta, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    Meteor.call('updateStakeholderLastLogin', new Date());
+    Meteor.call('updateUserStamina', currentUser.sta);
+    // CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    // CongressInstance.updateUserStamina(s_Id, currentUser.sta, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
 
     console.log("Porgress Saved");
     return true ? "Do you really want to close?" : null;
@@ -349,10 +337,6 @@ Template.shop.events({
     'click #btn_shop_close': function () {
         $('.property_shop').css('display', 'none');
     },
-
-    'click #btn_property_tradeable': function () {
-        //set_property_table();
-    },
     'mouseenter input[type="range"]': function (e) {
         var r = $(e.target);
 
@@ -382,8 +366,6 @@ Template.shop.events({
 
 Template.gameIndex.events({
     'click .cropObject': function (event) {
-        // var left = $(event.target).position().left;
-        // var top = $(event.target).position().top;
         if (currentCropId != null && plantMode) {
             var _landId = currentCropLand.split("cropLand")[1];
 
@@ -406,7 +388,6 @@ Template.gameIndex.events({
             };
             $(".cropObject").clone().attr("class", "croppedObject croppedObject" + cropList.length).attr("cropcount", cropTypeList[currentCropId].count).appendTo(".surfaceObject").css(styles);
 
-            //var start = Date.now();
             var start = new Date();
             var end = new Date();
 
@@ -416,8 +397,6 @@ Template.gameIndex.events({
 
             var _id = cropList.length;
 
-
-            //userLandConfiguration[_landId].crop = cropTypeList[currentCropId].id;
             userLandConfiguration[_landId].crop = _id;
             Meteor.call('updateUserLandConfiguration', _landId, _id, 0, 'crop');
             //GamePropertyInstance.updateUserLandConfiguration(s_Id, _landId, _id, 0, 'crop', {from:web3.eth.accounts[currentAccount], gas:2000000});
@@ -434,17 +413,10 @@ Template.gameIndex.events({
                 count: cropTypeList[currentCropId].count
             });
             _dep.changed();
-
-            //userCropType[currentCropId].count++;
-            //usingPropertyInstance.updateUserPropertyType(s_Id, currentCropId, {from:web3.eth.accounts[currentAccount], gas:2000000});
-
         } else {
             sweetAlert("Oops...", "Please specify Crop first", "error");
             return;
         }
-
-
-
     },
     'click .farmObject': function (event) {
         if (currentLandId != null && placeMode) {
@@ -479,7 +451,8 @@ Template.gameIndex.events({
         landInfo[$(event.target).parent().attr('bindindex')].showed = 0;
         updateSyndicateExp(2);
         currentUser.SyndicateProgress -= 1;
-        CongressInstance.updateSyndicateProgress(s_Id, currentUser.SyndicateProgress, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        Meteor.call('updateSyndicateProgress', currentUser.SyndicateProgress);
+        //CongressInstance.updateSyndicateProgress(s_Id, currentUser.SyndicateProgress, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
         setTimeout(function () {
             $(event.target).parent().remove();
         }, 1000);
@@ -490,16 +463,14 @@ Template.gameIndex.events({
                 $('.thief:eq(' + i + ')').css({ opacity: 0, transform: "translateY(50px)" });
                 $('.thief:eq(' + i + ')').remove();
             }
-            CongressInstance.updateFarmerId(s_Id, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+            Meteor.call('updateFarmerId', 0);
+            //CongressInstance.updateFarmerId(s_Id, 0, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
             updateSyndicateExp(30);
             sweetAlert("Congratulations!", "Mission Completed!", "success");
 
         }
     },
     'click .croppedObject': function (event) {
-        // var left = $(event.target).position().left;
-        // var top = $(event.target).position().top;
-
         var id, cropClass, cropCount;
 
         if (event.target.className == "") {
@@ -508,7 +479,6 @@ Template.gameIndex.events({
         } else {
             cropClass = event.target.className.split(" ")[1];
             id = cropClass.split("croppedObject")[1];
-
         }
 
         cropCount = $(event.target).parent().attr("cropcount");
@@ -533,7 +503,6 @@ Template.gameIndex.events({
                     }
                 }
                 $(".animationImg").html("<img src = '" + prefix + cropTypeList[typeIndex].img[3] + postfix + "' />");
-                //var exp = cropTypeList[cropList[id].type].exp;
 
                 var difference = elapsedTime(cropList[id].start, cropList[id].end);
                 var exp = Math.floor((difference / (1000 * 30)) * 20);
@@ -568,8 +537,7 @@ Template.gameIndex.events({
 
             var divHeight = $(".cropObject").height() / 5;
             var divWidth = $(".cropObject").width() * 1.65;
-            // var divHeight =0;
-            // var divWidth = 0;
+
             var posX = left + landLeft - areaLeft + divWidth - x - resizeOffsetX;
             var posY = top + landTop - divHeight - y;
 
@@ -595,7 +563,6 @@ Template.gameIndex.events({
                 count: cropCount,
                 tradeable: 0
             });
-            //var propertyLength = usingPropertyInstance.getPropertiesLength.call({from:web3.eth.accounts[currentAccount]});
             var p_Id;
             for (var i = 0; i < user_property.length; i++) {
                 if (user_property[i].propertyType == stockList[stockId].type) {
@@ -625,10 +592,8 @@ Template.gameIndex.events({
             cropList[id].type = 0;
             cropList[id].ripe = 0;
             Meteor.call('updateCropList', id, 0, 0, 0, 0, 0, 0, 0);
-
             //GamePropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
-            //cropList.splice(id, 1);
             $("." + cropClass).remove();
 
             //reload propertyTable
@@ -679,17 +644,18 @@ Template.gameIndex.events({
                         }, 1000);
                         stealCount = Math.round(cropCount / 2);
                         cropCount = cropCount - stealCount;
-                        var propertyLength = usingPropertyInstance.getPropertiesLength.call({ from: web3.eth.accounts[currentAccount] });
-                        var propertyIndex;
+                        var p_Id;
                         for (var i = 0; i < user_property.length; i++) {
                             if (user_property[i].propertyType == cropList[id].type) {
-                                propertyIndex = user_property[i].id;
+                                p_Id = user_property.id;
                                 user_property[i].propertyCount += parseInt(cropCount);
                                 break;
                             }
                         }
-                        usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, stealCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-                        usingPropertyInstance.updateCropCount(visitNode, id, cropCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+                        Meteor.call('updatePropertyCount', p_Id, stealCount);
+                        Meteor.call('updateCropCount', visitNode, id, cropCount);
+                        // usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, stealCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+                        // usingPropertyInstance.updateCropCount(visitNode, id, cropCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
                         $(event.target).parent().attr("cropcount", parseInt(cropCount));
                         $(event.target).parent().attr("stolenFlag", "t");
 
@@ -702,7 +668,8 @@ Template.gameIndex.events({
                         sweetAlert("Oops...", "You are under arrest!", "warning");
                         updateStaminaBar(staminaList["stealFail"]);
                     }
-                    CongressInstance.updateStealRecord(s_Id, stealResult, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+                    Meteor.call('updateStealRecord', stealResult);
+                    // CongressInstance.updateStealRecord(s_Id, stealResult, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
                 }
                 else {
                     sweetAlert("Oops...", "Don't be so greedy", "error");
@@ -728,7 +695,8 @@ Template.gameIndex.events({
             $(event.target).remove();
 
             userLandConfiguration[_landId].land = -1;
-            GamePropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, -1, 'land', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+            Meteor.call('updateUserLandConfiguration', _landId, -1, -1, 'land');
+            //GamePropertyInstance.updateUserLandConfiguration(s_Id, _landId, -1, -1, 'land', { from: web3.eth.accounts[currentAccount], gas: 2000000 });
         }
     },
     'mouseenter .croppedObject img': function (event) {
@@ -809,8 +777,7 @@ Template.crop.events({
         currentCropId = id;
 
         $(".cropObject").css("display", "inline");
-        clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>")
-
+        clickTarget.html("<img src='/img/game/cancel2.svg' width='50%'>");
     },
 
 })
@@ -852,8 +819,6 @@ Template.land.events({
         $(imgs[1]).parent().data('pressed', false);
         $(imgs[1]).parent().html('<img src="/img/game/background.svg">Grass');
 
-
-
         $(".farmObject").html("<img src = '" + prefix + landTypeList[id].img + postfix + "' />");
         currentLandId = id;
 
@@ -885,13 +850,10 @@ Template.gamingArea.events({
             var areaLeft = $(".gamingArea").position().left;
             var divHeight = $(".cropObject").height() / 5;
             var divWidth = $(".cropObject").width() / 1.65;
-            // var divHeight =0;
-            // var divWidth = 0;
+
             var posX = left + landLeft - areaLeft + divWidth - x + resizeOffsetX;
-            //var posX = left+landLeft+divWidth-x;
 
             var posY = top + landTop - divHeight - y;
-
 
             var styles = {
                 top: posY,
@@ -917,15 +879,12 @@ Template.gamingArea.events({
             var areaLeft = $(".gamingArea").position().left;
             var divHeight = $(".cropObject").height() / 10;
             var divWidth = $(".cropObject").width() / 1.75;
-            // var divHeight =0;
-            // var divWidth = 0;
+
             var posX = left + landLeft - areaLeft + divWidth - x + resizeOffsetX;
-            //var posX = left+landLeft+divWidth-x;
 
             var posY = top + landTop - divHeight - y;
 
             $(".farmObject").css({ top: posY, left: posX, width: "150px", height: "150px", position: "absolute", opacity: 0.5 });
-
         }
 
     },
@@ -990,7 +949,6 @@ Template.gamingArea.events({
         } else if (event.target.className.split(" ")[1] == 'navRight' && x > negativeBoundary) {
             x -= moveSpeed;
         }
-        //$(".canvas").css("transform", "translate(" + x + "px, " +y+ "px)");
         $('.canvas').css('-webkit-transform', 'translateX(' + x + 'px) translateY(' + y + 'px)');
     },
     'click .musicSwitch': function (event) {
@@ -1000,9 +958,7 @@ Template.gamingArea.events({
         } else {
             audio.play();
             $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
-
         }
-
     },
 })
 
@@ -1034,7 +990,6 @@ Template.statusList.events({
         PanelControl(3);
     },
     'click .removeLand': function (event) {
-
         clickTarget = null;
         $(".farmObject").css("display", "none");
         if (plantMode) {
@@ -1066,7 +1021,6 @@ Template.statusList.events({
         $(imgs[0]).parent().data('pressed', false);
         $(imgs[0]).parent().html('<img src="/img/game/plant/land.svg">Dirt');
 
-
         clickTarget.data('pressed', true);
 
         if (removeMode) {
@@ -1076,7 +1030,6 @@ Template.statusList.events({
             clickTarget.html("<img src='/img/game/background.svg'>Grass");
         }
     },
-    // for tradable table to save
     'click #btn_tradeable_save': function () {
         save_tradable_setting();
     },
@@ -1085,7 +1038,6 @@ Template.statusList.events({
         set_property_table();
     },
     'click .test': function (event) {
-
         var lvlCap = levelCap(currentUser.level);
         currentUser.exp = lvlCap;
         currentUser.totalExp += currentUser.exp;
@@ -1102,7 +1054,6 @@ Template.statusList.events({
         MainActivity2Instance.checkConfirmation({ from: web3.eth.accounts[0], gas: 2000000 });
         updateUserData(s_Id);
         showConfirmation(s_Id);
-
     },
     'click .nextHome': function (event) {
         loading(1);
@@ -1118,7 +1069,6 @@ Template.characterList.events({
         loading(1);
         if (currentCharacter == "farmer") {
             if (Session.get('userCharacter') == "Thief") {
-
                 PanelControl(3);
                 visitNode = getVisitNode();
                 setStealRate(visitNode);
@@ -1154,7 +1104,6 @@ Template.characterList.events({
                         return;
                     }
                     else {
-
                         PanelControl(3);
                         showThief = true;
 
@@ -1165,7 +1114,8 @@ Template.characterList.events({
                         if (progress == 0) {
                             progress = thiefNumber(currentUser.SyndicateLevel);
                             currentUser.SyndicateProgress = progress;
-                            CongressInstance.updateSyndicateProgress(s_Id, progress, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+                            Meteor.call('updateSyndicateProgress', progress);
+                            // CongressInstance.updateSyndicateProgress(s_Id, progress, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
                         }
 
                         PanelControl(3);
@@ -1190,11 +1140,11 @@ Template.characterList.events({
                 }
                 else {
                     //check guard property stock
-                    var _propertyIndex = CongressInstance.getPropertyIndex.call(s_Id, { from: web3.eth.accounts[currentAccount] });
                     for (var i = 0; i < user_property.length; i++) {
                         if (user_property[i].propertyType == (currentUser.SyndicateLevel + 29)) {
                             if ((user_property[i].propertyCount == 0) && (user_property[i].tradeable == 0)) {
-                                usingPropertyInstance.updatePropertyCount_Sudo(user_property[i].id, 1, 0, { from: web3.eth.accounts[currentAccount], gas: 2514068 });
+                                Meteor.call('updatePropertyCount_Setting', 1, 0);
+                                // usingPropertyInstance.updatePropertyCount_Sudo(user_property[i].id, 1, 0, { from: web3.eth.accounts[currentAccount], gas: 2514068 });
                                 user_property[i].propertyCount++;
                             }
                             break;
@@ -1308,9 +1258,8 @@ var checkDBLoaded = function (callback) {
             clearInterval(fetcher);
             callback("done");
         } else {
-            console.log("Establishing Mongo connection... Hold on!")
+            console.log("Establishing Mongo connection... Hold on!");
         }
-
     }, 1000);
 }
 
@@ -1392,7 +1341,6 @@ var eventListener = function () {
     events2.get(function (error, logs) {
         console.log(logs);
     });
-
 }
 
 var showConfirmation = function (s_Id) {
@@ -1419,8 +1367,7 @@ var showConfirmation = function (s_Id) {
             }
         }
 
-        var previousIndex = (index - 1 + owners.length) % owners.length
-
+        var previousIndex = (index - 1 + owners.length) % owners.length;
 
         var previousName = web3.toUtf8(CongressInstance.getStakeholder.call(parseInt(owners[previousIndex].c[0]), { from: web3.eth.accounts[currentAccount] })[0]);
         var type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[previousIndex].c[0]), { from: web3.eth.accounts[currentAccount] });
@@ -1440,18 +1387,14 @@ var showConfirmation = function (s_Id) {
         });
         row.append(provide).append(receive).append(fromAddr).append(checkBtn);
 
-
-
         $(".systemInfo").append(row);
 
         var confirmed = MainActivity2Instance.getMatchMakingConfirmed.call(currentUser.matches[i], s_Id, { from: web3.eth.accounts[currentAccount] });
         if (confirmed) {
             $(".matchBtn" + currentUser.matches[i].c[0]).prop("value", "Waiting");
             $(".matchBtn" + currentUser.matches[i].c[0]).prop("disabled", true);
-
         }
     }
-
 }
 
 var getVisitNode = function () {
@@ -1461,27 +1404,21 @@ var getVisitNode = function () {
     while ((visitNode == s_Id) || (visitNode == 0)) {
         visitNode = Math.floor(s_Length * Math.random());
     }
-
     return visitNode;
 }
 
 var fetchAllCropTypes = function () {
-    var allCropType = property_type.find().fetch()[0].data;
-    var allLandType = land_type.find().fetch()[0].data;
-
-    cropData = allCropType;
-    landData = allLandType;
+    cropData = property_type.find().fetch()[0].data;
+    landData = land_type.find().fetch()[0].data;
 }
 
 var loadCropList = function (s_Id) {
     cropList = [];
     var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.cropList;
 
-
     var countData = data.count;
     var length = data.id.length;
     for (var i = 0; i < length; i++) {
-
         // TODO  check format
         // var start = web3.toUtf8(data[i].start).split(".")[0]+"Z";
         // var end = web3.toUtf8(data[i].end).split(".")[0]+"Z";
@@ -1502,7 +1439,6 @@ var loadCropList = function (s_Id) {
             count: data.count[i]
         });
     }
-
 }
 
 
@@ -1517,7 +1453,6 @@ var getUserStockList = function (s_Id) {
             isTrading: p_List.isTrading[i]
         });
     }
-
 }
 
 var getUserData = function (s_Id) {
@@ -1528,7 +1463,6 @@ var getUserData = function (s_Id) {
     currentUser = {
         id: s_Id,
         address: Meteor.users.findOne({ _id: Session.get("id") }).profile.basic.address,
-
         name: data.name,
         exp: data.exp,
         totalExp: data.totalExp,
@@ -1550,7 +1484,6 @@ var getUserData = function (s_Id) {
         return;
     }
 
-
     // TODO : check last login format
     //lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
     //lastLogin = new Date(lastLogin.split("\"")[1]);
@@ -1569,20 +1502,22 @@ var getUserData = function (s_Id) {
 
 var updateUserData = function (s_Id) {
 
-    var data = CongressInstance.getStakeholder.call(s_Id, { from: web3.eth.accounts[currentAccount] });
-    var syndicateData = CongressInstance.getSyndicateData.call(s_Id, { from: web3.eth.accounts[currentAccount] });
-    var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from: web3.eth.accounts[currentAccount] });
+    var oriData = Meteor.users.findOne({ _id: Session.get("id") }).profile.game;
+    var data = oriData.stakeholder;
+    var syndicateData = oriData.syndicateData;
 
-    currentUser.exp = data[1].c[0];
-    currentUser.totalExp = data[2].c[0];
-    currentUser.landSize = data[4].c[0];
-    currentUser.level = data[5].c[0];
-    currentUser.SyndicateExp = syndicateData[0].c[0];
-    currentUser.SyndicateTotalExp = syndicateData[1].c[0];
-    currentUser.SyndicateLevel = syndicateData[2].c[0];
-    currentUser.matches = matches;
-    // end = end.split("\"")[1];
+    // var data = CongressInstance.getStakeholder.call(s_Id, { from: web3.eth.accounts[currentAccount] });
+    // var syndicateData = CongressInstance.getSyndicateData.call(s_Id, { from: web3.eth.accounts[currentAccount] });
+    // var matches = CongressInstance.getStakeholderMatches.call(s_Id, { from: web3.eth.accounts[currentAccount] });
 
+    currentUser.exp = data.exp;
+    currentUser.totalExp = data.totalExp;
+    currentUser.landSize = data.landSize;
+    currentUser.level = data.level;
+    currentUser.SyndicateExp = syndicateData.exp;
+    currentUser.SyndicateTotalExp = syndicateData.totalExp;
+    currentUser.SyndicateLevel = syndicateData.level;
+    currentUser.matches = data.matchesId;
 }
 
 var getLandConfiguration = function (s_Id) {
@@ -1627,14 +1562,6 @@ var fetchGameInitConfig = function (s_Id) {
     Session.set('landTypeList', landTypeList);
 }
 
-var hex2a = function (hexx) {
-    var hex = hexx.toString();//force conversion
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-}
-
 var loading = function (on) {
     var opacity;
     $(".cropObject").css("display", "none");
@@ -1648,10 +1575,7 @@ var loading = function (on) {
                 $(".loading").css("display", "none");
             }, 1000);
         }, 1000);
-
     }
-
-
 }
 
 var rerenderCropLand = function (id) {
@@ -1664,8 +1588,6 @@ var rerenderCropLand = function (id) {
 }
 
 var initCropLand = function (id) {
-
-
     $('.land').html("");
     $(".surfaceObject").html("");
     $(".surfaceObject").append("<div class='cropObject'></div>");
@@ -1677,7 +1599,6 @@ var initCropLand = function (id) {
         if (userLandConfiguration[i].land == -1) {
             $('.cropLand' + i).css("border", '1px solid black');
         }
-        //$('.land').append("<div></div>");
     }
 
     landInfo = [];
@@ -1694,19 +1615,6 @@ var initCropLand = function (id) {
             continue;
         }
 
-        /*
-        var top = $('.cropLand'+i)[0].getBoundingClientRect().top;
-        var left = $('.cropLand'+i)[0].getBoundingClientRect().left;
-
-        var landTop = $(".land").position().top;
-        var landLeft = $(".land").position().left;
-
-        var areaLeft = $(".gamingArea").position().left;
-
-        var divHeight =$(".cropObject").height()/5;
-        var divWidth = $(".cropObject").width()/4;
-        */
-
         var top = $('.cropLand' + i)[0].getBoundingClientRect().top;
         var left = $('.cropLand' + i)[0].getBoundingClientRect().left;
 
@@ -1718,10 +1626,8 @@ var initCropLand = function (id) {
         var areaLeft = $(".gamingArea").position().left;
         var divHeight = $(".cropObject").height() / 5;
         var divWidth = $(".cropObject").width() / 1.65;
-        // var divHeight =0;
-        // var divWidth = 0;
+
         var posX = left + landLeft - areaLeft + divWidth - x + resizeOffsetX;
-        //var posX = left+landLeft+divWidth-x;
 
         var posY = top + landTop - divHeight - y;
 
@@ -1734,8 +1640,6 @@ var initCropLand = function (id) {
             opacity: 1,
             "z-index": 2
         };
-
-
 
         var info = { top: posY, left: posX, showed: 0 };
         landInfo.push(info);
@@ -1773,14 +1677,7 @@ var initCropLand = function (id) {
             $(".cropObject").html("<img src = '" + prefix + cropTypeList[typeIndex].img[4] + postfix + "' />");
             stolenFlag = "t";
         }
-        //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
-        //$(".currentCrop"+index).html(diffData);
-
-
-        //$(".cropObject").html("<img src = '" + prefix+ cropTypeList[config[i].crop].img[0] + postfix +"' />");
         $(".cropObject").clone().attr("class", "croppedObject croppedObject" + index).attr("cropCount", cropList[index].count).attr("stolenFlag", stolenFlag).appendTo(".surfaceObject").css(styles);
-
-
     }
 }
 
@@ -1812,9 +1709,7 @@ var updateStaminaBar = function (consumedSta) {
     $(".staProgressBar").css("width", percent + "%");
     $(".staText").text(Math.floor(percent) + "%");
     //$(".staHoverText").text(currentUser.sta+"/"+staCap);
-
 }
-
 
 var updateUserStamina = function () {
     var staCap = staminaCap(currentUser.level);
@@ -1843,52 +1738,18 @@ var updateUserExp = function (exp) {
             currentUser.sta = staminaCap(currentUser.level);
             updateStaminaBar(0);
 
-            //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
             var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.totalExp;
-            Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.exp': currentUser.exp, 'profile.game.stakeholder.totalExp': db_totalExp + currentUser.exp } });
-
-            var user_data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder;
-            var landSize = user_data.landSize;
-            var level = user_data.level;
-            level += 1;
-            if (level % 5 == 0) {
-                landSize += 1;
-
-                //addUserPropertyType
-                var p_Id = Math.floor(Math.random() * 3) + ((level / unlockCropLevel) * unlockCropNum);
-                Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.unlockedCropType': p_Id } });
-
-                //addUserLandConfiguration
-                var difference;
-                if (landSize == 3) {
-                    difference = landSize * landSize;
-                } else {
-                    difference = (landSize * landSize) - ((landSize - 1) * (landSize - 1));
-                }
-
-                var land_data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.landConfig;
-
-
-                for (var i = 0; i < difference; i++) {
-                    var _id = land_data.id.length;
-                    land_data.id.push(_id);
-                    land_data.land.push(-1);
-                    land_data.crop.push(-1);
-
-                }
-                Meteor.users.update(Session.get("id"), { $set: { 'profile.game.landConfig.id': land_data.id, 'profile.game.landConfig.crop': land_data.crop, 'profile.game.landConfig.land': land_data.land } });
-
-            }
-            //update game data
-            Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.landSize': landSize, 'profile.game.stakeholder.level': level } });
-
+            Meteor.call('updateUserExp', currentUser.exp);
+            //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            var p_Id = Math.floor(Math.random() * 3) + ((level / unlockCropLevel) * unlockCropNum);
+            Meteor.call('playerLevelUp', p_Id);
 
             levelUp("userLevel");
             getUserData(s_Id);
             lvlCap = levelCap(currentUser.level);
             if (currentUser.level % 5 == 0) {
-                //         GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
-
+                Meteor.call('moveUserLandPosition', currentUser.landSize);
+                //GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
                 $(".unlockCropId").html("<h3>Unlock Crop: " + cropTypeList[cropTypeList.length - 1].name + "</h3>");
             } else {
                 $(".unlockCropId").html('');
@@ -1919,7 +1780,8 @@ var updateUserExp = function (exp) {
 
         } else {
             var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.totalExp;
-            Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.exp': currentUser.exp, 'profile.game.stakeholder.totalExp': db_totalExp + currentUser.exp } });
+            Meteor.call('updateUserExp', currentUser.exp);
+            //Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.exp': currentUser.exp, 'profile.game.stakeholder.totalExp': db_totalExp + currentUser.exp } });
             //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
         }
 
@@ -1927,7 +1789,6 @@ var updateUserExp = function (exp) {
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
         //$(".expHoverText").text(currentUser.exp+ " / " +lvlCap);
-
     }
 }
 
@@ -1950,26 +1811,20 @@ var updateSyndicateExp = function (exp) {
             levelUp('Syndicate');
             lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
         }
-
-        var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.syndicateData.totalExp;
-        Meteor.users.update(Session.get("id"), { $set: { 'profile.game.syndicateData.exp': currentUser.SyndicateExp, 'profile.game.syndicateData.totalExp': db_totalExp + currentUser.SyndicateExp, 'profile.game.syndicateData.level': currentUser.SyndicateLevel } });
+        Meteor.call('updateSyndicateExp', currentUser.SyndicateExp, currentUser.SyndicateLevel);
+        //var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.syndicateData.totalExp;
+        //Meteor.users.update(Session.get("id"), { $set: { 'profile.game.syndicateData.exp': currentUser.SyndicateExp, 'profile.game.syndicateData.totalExp': db_totalExp + currentUser.SyndicateExp, 'profile.game.syndicateData.level': currentUser.SyndicateLevel } });
         //CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
 
         var percent = (currentUser.SyndicateExp / lvlCap) * 100;
         $(".SyndicateExpProgressBar").css("width", percent + "%");
         //$(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
     }
-
-    var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.syndicateData.totalExp;
-    Meteor.users.update(Session.get("id"), { $set: { 'profile.game.syndicateData.exp': currentUser.SyndicateExp, 'profile.game.syndicateData.totalExp': db_totalExp + currentUser.SyndicateExp, 'profile.game.syndicateData.level': currentUser.SyndicateLevel } });
     //CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
-
 
     var percent = Math.floor((currentUser.SyndicateExp / lvlCap) * 100);
     $(".SyndicateExpProgressBar").css("width", percent + "%");
-    //$(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
     $(".SyndicateExpText").text(percent + "%");
-
 }
 
 var levelUp = function (_type) {
@@ -2003,15 +1858,21 @@ var setGuardProperty = function () {
 }
 
 var setStealRate = function (visitNode) {
-    var thisGuardId = CongressInstance.getGuardId.call(visitNode, { from: web3.eth.accounts[currentAccount] });
-    var thisGuardLvl;
-    if (thisGuardId != 0) {
-        var GuardData = CongressInstance.getSyndicateData.call(thisGaurdId, { from: web3.eth.accounts[currentAccount] });
-        thisGuardLvl = GuardData[2].c[0];
+    var thisGuard_s_Id = Meteor.users.findOne({ 'profile.game.stakeholder.id': visitNode }).profile.stakeholder.guardId;
+    var thisGuardLvl = 1;
+    if (thisGuard_s_Id != 0) {
+        var thisGuard = Meteor.users.findOne({ 'profile.game.stakeholder.id': thisGuard_s_Id });
+        thisGuardLvl = thisGuard.syndicateData.level;
     }
-    else {
-        thisGuardLvl = 0;
-    }
+    //var thisGuardId = CongressInstance.getGuardId.call(visitNode, { from: web3.eth.accounts[currentAccount] });
+    // var thisGuardLvl;
+    // if (thisGuardId != 0) {
+    //     var GuardData = CongressInstance.getSyndicateData.call(thisGaurdId, { from: web3.eth.accounts[currentAccount] });
+    //     thisGuardLvl = GuardData[2].c[0];
+    // }
+    // else {
+    //     thisGuardLvl = 0;
+    // }
     stealRate = ((80 * (thisGuardLvl / 10) - 40 * (currentUser.SyndicateLevel / 10)) + 32) / 100;
 }
 
@@ -2042,7 +1903,6 @@ var checkMission = function () {
             var divHeight = $(".cropObject").height() / 5;
             var divWidth = $(".cropObject").width() / 1.65;
 
-
             var missionStyles = {
                 top: top - (divHeight * 2),
                 left: left - areaLeft + (divWidth * 3),
@@ -2066,7 +1926,6 @@ var checkMission = function () {
     else {
         $(".missionObject").html("<div class='thiefObject'></div>");
     }
-
 }
 
 var cropSummaryUpdate = function () {
@@ -2100,36 +1959,27 @@ var cropSummaryUpdate = function () {
                 $(".croppedObject" + cropList[i].id).find("img").attr("src", prefix + cropTypeList[index].img[2] + postfix);
             }
             cropList[i].ripe = 1;
-            //$(".currentCrop"+cropList[i].id).parent().remove();
             $(".timeLeft" + cropList[i].id).html("Ready to harvest");
 
             continue;
         }
 
-        //var diffData = (difference.getDate()-1)+" Days. "+(difference.getHours()-8)+' Hrs. '+difference.getMinutes()+' Mins. '+difference.getSeconds()+" Secs";
         var diffData = (difference.getHours() - 8) + ' Hrs. ' + difference.getMinutes() + ' Mins. ' + difference.getSeconds() + " Secs";
         $(".timeLeft" + i).html(diffData);
     }
 }
 
 var elapsedTime = function (start, end) {
-
     //var elapsed = end.getTime() - start.getTime();
-
     var elapsed = end - start; // time in milliseconds
     var difference = new Date(elapsed);
     //var diff_days = difference.getDate();
-
     //var diff_hours = difference.getHours();
     //var diff_mins = difference.getMinutes();
     //var diff_secs = difference.getSeconds();
-
     //return difference;
     return difference;
-
 }
-
-
 
 // var farmObjectLoader = function(){
 //     $('.land').css("width", blockSize*currentUser.landSize );
@@ -2140,24 +1990,20 @@ var elapsedTime = function (start, end) {
 //     }
 // }
 
-
 /////////////////////////
 //  Shop Functions  //
 /////////////////////////
 
-get_user_property_setting = function () {
+get_user_property = function () {
     user_property = [];
     var db_property = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.property;
-
-    //propertyTypeList
     for (var i = 0; i < db_property.name.length; i++) {
-        user_property.push({ "name": db_property.name[i], "propertyType": db_property.type[i], "propertyCount": db_property.count[i], "tradeable": db_property.tradeable[i], "img": cropData[db_property.type[i]].img[3] })
+        user_property.push({ "id": db_property.id[i], "name": db_property.name[i], "propertyType": db_property.type[i], "propertyCount": db_property.count[i], "tradeable": db_property.tradeable[i], "img": cropData[db_property.type[i]].img[3] })
     }
 }
 
 get_propertyType_setting = function (_length) {
     display_field = [];
-
     for (i = 0; i < _length; i++) {
         var property_type = usingPropertyInstance.getPropertyType.call(i, currentAccount, { from: web3.eth.accounts[currentAccount] }, function (err, result) {
             var _name = web3.toUtf8(result[0]);
@@ -2172,14 +2018,8 @@ get_propertyType_setting = function (_length) {
 }
 
 set_property_table = function () {
-    var propertyTypeLength = cropTypeList.length;
-
-    //loading(1);
-    //get_user_property_setting();
-
-    //loading(1);
+    get_user_property();
     var table, tr, td;
-
     $('.tradeable_content').html('');
     table = $('<table></table>').attr('id', 'property_trade_table')
         .attr('class', 'property_shop_table');
@@ -2244,19 +2084,13 @@ set_property_table = function () {
         }
     }
 
-
     if (!flag) {
         tr = $('<tr></tr>');
         tr.append($('<th></th>').text('No Stock Found'));
         table.append(tr);
     }
     //content
-    //control bar
-
-    //control bar
     $('.tradeable_content').append(table);
-    //loading(0);
-
 }
 
 index_finder = function (_source, _mask) {
@@ -2293,9 +2127,7 @@ rend_propertyType_table = function (_length) {
         //content
         for (i = 0; i < display_field.length; i++) {
             tr = $('<tr></tr>');
-            //tr.append($('<td></td>').text(display_field[i].name));
             tr.append($('<td></td>').html("<div><div><img src = '" + prefix + (display_field[i].name.toLowerCase()) + postfix + "'/></div>" + "<div>" + display_field[i].name + "</div></div>"));
-            //tr.append($('<td></td>').text(display_field[i].propertyCount));
             td = $('<td></td>');
             td.append($('<label>').attr('for', 'rating' + i).html(display_field[i].rating));
             td.append($('<input>', {
@@ -2332,15 +2164,15 @@ save_tradable_setting = function () {
                 break;
             }
         }
-        usingPropertyInstance.updatePropertyCount(_id, _propertyCount, _tradable, { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-        });
+        Meteor.call('updatePropertyCount_Setting', _id, _propertyCount, _tradable);
+        // usingPropertyInstance.updatePropertyCount(_id, _propertyCount, _tradable, { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
+        //     if (err) {
+        //         console.log(err);
+        //     }
+        // });
     }
     loading(0);
     sweetAlert("Congratulations!", "Setting Saved!", "success");
-
 }
 
 save_rating_setting = function () {
@@ -2398,102 +2230,90 @@ set_mission_table = async function () {
 }
 
 mission_rending = function () {
-    if (mission_list.length == 0) {
-        setTimeout(function () {
-            mission_rending();
-        }, 1000);
-    }
-    else {
-        $('.mission_template').html('');
-        $('.mission_template').append($('<button></button>', {
-            type: 'button',
-            id: 'btn_mission_close',
-            class: 'btnClose'
-            // html:$("<img>",{src:"/img/game/cancel.svg",alt:""})
-        })
-            .on('click', function () { $('.mission_template').css('display', 'none'); }).text('X')
-        ).append($('<div></div>', {
-            class: 'mission_header'
-        }).text('Mission'));
+    loading(1);
+    $('.mission_template').html('');
+    $('.mission_template').append($('<button></button>', {
+        type: 'button',
+        id: 'btn_mission_close',
+        class: 'btnClose'
+    })
+        .on('click', function () { $('.mission_template').css('display', 'none'); }).text('X')
+    ).append($('<div></div>', {
+        class: 'mission_header'
+    }).text('Mission'));
 
-
-        var div, table, tr, td;
-        div = $('<div></div>', { class: 'mission_content' })
-        table = $('<table></table>', { id: 'mission_table' });
-        //header
-        tr = $('<tr></tr>');
-        tr.append($('<th></th>').text('Mission'));
-        tr.append($('<th></th>').text('Requirement'));
-        tr.append($('<th></th>').text('Exp'));
-        tr.append($('<th></th>').text('Submit'));
-        table.append(tr);
-        //header
-        //content
-        for (i = 0; i < mission_list.length; i++) {
-
-            if (!mission_list[i].solved) {
-                tr = $('<tr></tr>');
-                td = $('<td></td>', {
-                    text: mission_list[i].name
-                });
-                tr.append(td);
-                td = $('<td></td>');
-                for (j = 0; j < mission_list[i].missionItem.length; j++) {
-                    td.append($('<img></img>', {
-                        src: prefix + mission_list[i].missionItem[j].img + postfix,
-                        alt: mission_list[i].missionItem[j].name
-                    }));
-                    td.append($('<span></span>', {
-                        text: ' X ' + mission_list[i].missionItem[j].quantity
-                    }));
-                }
-                tr.append(td);
-                td = $('<td></td>', {
-                    text: mission_list[i].exp
-                });
-                tr.append(td);
-                td = $('<td></td>');
-                td.append($('<input></input>', {
-                    type: 'hidden',
-                    id: 'mission_exp_' + mission_list[i].id,
-                    value: mission_list[i].exp
+    var div, table, tr, td;
+    div = $('<div></div>', { class: 'mission_content' })
+    table = $('<table></table>', { id: 'mission_table' });
+    //header
+    tr = $('<tr></tr>');
+    tr.append($('<th></th>').text('Mission'));
+    tr.append($('<th></th>').text('Requirement'));
+    tr.append($('<th></th>').text('Exp'));
+    tr.append($('<th></th>').text('Submit'));
+    table.append(tr);
+    //header
+    //content
+    for (i = 0; i < mission_list.length; i++) {
+        if (!mission_list[i].solved) {
+            tr = $('<tr></tr>');
+            td = $('<td></td>', {
+                text: mission_list[i].name
+            });
+            tr.append(td);
+            td = $('<td></td>');
+            for (j = 0; j < mission_list[i].missionItem.length; j++) {
+                td.append($('<img></img>', {
+                    src: prefix + mission_list[i].missionItem[j].img + postfix,
+                    alt: mission_list[i].missionItem[j].name
                 }));
-                td.append($('<input></input>', {
-                    type: 'hidden',
-                    id: 'mission_id_' + mission_list[i].id
+                td.append($('<span></span>', {
+                    text: ' X ' + mission_list[i].missionItem[j].quantity
                 }));
-
-                td.append($('<input></input>', {
-                    type: 'button',
-                    value: 'Submit',
-                    id: 'btn_mission_submit_' + mission_list[i].id
-                })
-                    .on('click', function () {
-                        var _id = index_finder($(this).prev('input').attr('id'), 'mission_id_');
-                        var mission_qualify = mission_qualify_check(_id);
-                        if (mission_qualify) {
-                            mission_submit(_id);
-                        }
-                    })
-                );
             }
             tr.append(td);
-            table.append(tr);
-            div.append(table);
+            td = $('<td></td>', {
+                text: mission_list[i].exp
+            });
+            tr.append(td);
+            td = $('<td></td>');
+            td.append($('<input></input>', {
+                type: 'hidden',
+                id: 'mission_exp_' + mission_list[i].id,
+                value: mission_list[i].exp
+            }));
+            td.append($('<input></input>', {
+                type: 'hidden',
+                id: 'mission_id_' + mission_list[i].id
+            }));
+            td.append($('<input></input>', {
+                type: 'button',
+                value: 'Submit',
+                id: 'btn_mission_submit_' + mission_list[i].id
+            })
+                .on('click', function () {
+                    var _id = index_finder($(this).prev('input').attr('id'), 'mission_id_');
+                    var mission_qualify = mission_qualify_check(_id);
+                    if (mission_qualify) {
+                        mission_submit(_id);
+                    }
+                })
+            );
         }
-        //content
-        $('.mission_template').append(div);
-        //get_user_property_setting();
-        for (k = 0; k < mission_list.length; k++) {
-            mission_qualify_check(mission_list[k].id);
-        }
-        loading(0);
+        tr.append(td);
+        table.append(tr);
+        div.append(table);
     }
+    //content
+    $('.mission_template').append(div);
+    for (k = 0; k < mission_list.length; k++) {
+        mission_qualify_check(mission_list[k].id);
+    }
+    loading(0);
 }
 
-mission_submit = function (_id) {
+mission_submit = async function (_id) {
     updateUserExp(parseInt($('#mission_exp_' + _id).val(), 10));
-
     var target_mission;
     for (i = 0; i < mission_list.length; i++) {
         if (mission_list[i].id == _id) {
@@ -2509,7 +2329,7 @@ mission_submit = function (_id) {
     for (k = 0; k < target_mission.missionItem.length; k++) {
         for (i = 0; i < user_property.length; i++) {
             if (user_property[i].propertyType == target_mission.missionItem[k].propertyId) {
-                //user_property[i].propertyCount -= parseInt(target_mission.missionItem[k].quantity);
+                user_property[i].propertyCount += (parseInt(target_mission.missionItem[k].quantity) * -1);
                 Meteor.call('updatePropertyCount', i, (parseInt(target_mission.missionItem[k].quantity) * -1));
                 //usingPropertyInstance.updatePropertyCount_MissionSubmit(user_property[i].id, user_property[i].propertyCount,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
                 break;
@@ -2524,7 +2344,6 @@ mission_submit = function (_id) {
 }
 
 mission_qualify_check = function (_id) {
-
     var target_mission;
     for (i = 0; i < mission_list.length; i++) {
         if (mission_list[i].id == _id) {
@@ -2563,19 +2382,21 @@ mission_qualify_check = function (_id) {
 
 get_rank_data = function () {
     loading(1);
-    var rankData = CongressInstance.getStakeholderRank.call({ from: web3.eth.accounts[currentAccount] }, function (err, res) {
-        var data = [];
-        for (i = 1; i < res[0].length; i++) {
-            var _name = web3.toUtf8(res[0][i]);
-            var _address = res[1][i];
-            var _lv = res[2][i].c[0];
-            var obj = { "name": _name, "address": _address, "lv": _lv };
-            data.push(obj);
-        }
-        sorted = selectedSort(data);
+    // var rankData = Meteor.users.find({}, {sort:{'profile.game.stakeholder.id':-1}});
+    // console.log(rankData);
+    // var rankData = CongressInstance.getStakeholderRank.call({ from: web3.eth.accounts[currentAccount] }, function (err, res) {
+    //     var data = [];
+    //     for (i = 1; i < res[0].length; i++) {
+    //         var _name = web3.toUtf8(res[0][i]);
+    //         var _address = res[1][i];
+    //         var _lv = res[2][i].c[0];
+    //         var obj = { "name": _name, "address": _address, "lv": _lv };
+    //         data.push(obj);
+    //     }
+    //     sorted = selectedSort(data);
 
-        set_rank_table(sorted);
-    });
+    //     set_rank_table(sorted);
+    // });
     loading(0);
 
 }
