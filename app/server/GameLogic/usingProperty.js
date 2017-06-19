@@ -26,7 +26,8 @@ if (Meteor.isServer) {
         'updatePropertyCount': function (p_Id, _count) {
             var u_Id = Meteor.userId();
             var _property = Meteor.users.findOne({ _id: u_Id }).profile.game.property;
-            _property.count[p_Id] += _count;
+            _property.count[p_Id] += parseInt(_count);
+            console.log(_count);
             Meteor.users.update(u_Id, { $set: { 'profile.game.property': _property } });
         },
         'updateTradingStatus': function (p_Id, _isTrading) {

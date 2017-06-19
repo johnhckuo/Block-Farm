@@ -147,10 +147,11 @@ if (Meteor.isServer) {
         Meteor.call('addUserLandConfiguration', 3);
         Meteor.call('initUserProperty');
         var unlockCropId = Math.floor(cropsPerLvl * Math.random());
-        Meteor.call('addUserPropertyType', [unlockCropId]);
+        Meteor.call('addUserPropertyType', unlockCropId);
         if (character == "Guard") {
           Meteor.call('updatePropertyCount_Setting', 30, 1, 0);
         }
+        Meteor.call('pushMissionAccountStatus');
         var res = Promise.await(getEther(res.data.address));
       } catch (e) {
         console.log("[API_Register]" + e);

@@ -84,12 +84,9 @@ if (Meteor.isClient) {
           clearInterval(fetcher);
         } else {
           console.log("Establishing Mongo connection... Hold on!")
-        }
-
-      }, 1000);
-
+        }      
+      }, 1000);    
     }
-
   }
 
 
@@ -156,7 +153,7 @@ if (Meteor.isClient) {
 
           swal({
             title: "You are now logged in!",
-            text: "Your address is " + info.profile.address,
+            text: "Your address is " + info.profile.basic.address,
             type: "success",
             showCancelButton: false
           },
