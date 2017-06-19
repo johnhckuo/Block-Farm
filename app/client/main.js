@@ -30,8 +30,6 @@ var name;
 //                //
 ////////////////////
 
-
-
 var hex2a = function (hexx) {
   var hex = hexx.toString();//force conversion
   var str = '';

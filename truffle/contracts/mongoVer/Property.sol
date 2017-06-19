@@ -42,7 +42,7 @@ contract usingProperty{
         }
     }
 
-    function addPropertyType(bytes32 _name, uint s_Length){
+    function addPropertyType(string _name, uint s_Length){
         uint _id = propertyTypeList.length++;
         for (uint j = 0 ; j < s_Length ; j++){
             propertyTypeList[_id].rating.push(0);

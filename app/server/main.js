@@ -51,9 +51,6 @@ if (Meteor.isServer) {
     Accounts.createUser({
       email: email,
       password: password,
-      // address: address,
-      // private: key,
-      // character: character
       profile: {
         basic: {
           character: character
@@ -63,11 +60,42 @@ if (Meteor.isServer) {
 
   }
 
+  
+var callContract_backend = function (contract, method, args) {
+    var req = prefix;
+    switch (contract) {
+      case "Property":
+        req += usingProperty;
+        break;
+      case "Matchmaking":
+        req += matchmaking;
+        break;
+      default:
+        return "error";
+    }
+    req += "/" + method + "?token=" + token;
+    console.log("[updateContract args] "+args);
+    updateCall.data.params = args;
+    return Meteor.http.call("POST", req, updateCall);
+
+}
+
+
   /*------------
      Receiver
   -------------*/
 
   Meteor.methods({
+    'callContract':function(contract, method, args){
+        var res;
+        try{
+          res = callContract_backend(contract, method, args);
+        }catch(e){
+          console.log("[callContract] "+e.reason);
+          return {type:"error", result:e.reason};
+        }
+        return {type:"success", result:res.data}; 
+    },
     'register': function (email, password, character) {
       var addr;
       try {
@@ -103,32 +131,6 @@ if (Meteor.isServer) {
 
       }
     },
-    'callContract': function (contract, method, args) {
-      var res;
-
-      let userId = Meteor.userId();
-
-      var key;
-      try {
-        key = Meteor.users.findOne({ _id: userId }).profile.private;
-      } catch (e) {
-        console.log(e);
-        console.log("Switch to Administrator Mode!");
-        key = privateKey;
-      }
-
-
-      try {
-        res = updateContract(contract, method, args, key);
-        //return new Promise(function(resolve, reject) { resolve(res.data.results); });
-
-      } catch (e) {
-        console.log(e);
-        return { type: "error", result: e.reason };
-
-      }
-      return { type: "success", result: res.data };
-    },
     'API_Register': function () {
       try {
         var userId = Meteor.userId();
@@ -160,6 +162,9 @@ if (Meteor.isServer) {
       return { type: "success", result: "" };
     },
     'init': function () {
+      var res = Promise.await(callContract_backend("Property", "getPropertyType", 0));
+      console.log(res);
+
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });
       var _missionList = MissionList;

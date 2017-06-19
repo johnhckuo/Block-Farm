@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { property_type } from '../imports/collections.js';
 import { land_type } from '../imports/collections.js';
 import { mission } from '../imports/collections.js';
+import { callPromise } from '../imports/promise.js';
 
 var landSize = 3;
 var blockSize = 150;
@@ -1394,7 +1395,7 @@ var checkDBLoaded = function (callback) {
             console.log("Establishing Mongo connection... Hold on!")
         }
 
-    }, 500);
+    }, 1000);
 }
 
 var createDBConnection = function () {
@@ -2232,19 +2233,21 @@ get_user_property_setting = function () {
     }
 }
 
-get_propertyType_setting = function (_length) {
+get_propertyType_setting = async function (_length) {
     display_field = [];
-
     for (i = 0; i < _length; i++) {
-        var property_type = usingPropertyInstance.getPropertyType.call(i, currentAccount, { from: web3.eth.accounts[currentAccount] }, function (err, result) {
-            var _name = web3.toUtf8(result[0]);
-            var _id = result[1].c[0];
-            var _rating = result[3].c[0] / floatOffset;
-            var _averageRating = result[2].c[0] / floatOffset;
-
-            var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
-            display_field.push(data);
-        });
+        var property_type = await callPromise("callContract", "Property", "getPropertyType", i);
+        if (property_type.type == "error"){
+            loading(0);
+            sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
+            return;
+        }
+        var _name = property_type[0];
+        var _id = property_type[1].c[0];
+        var _rating = property_type[3].c[0];
+        var _averageRating = property_type[2].c[0];
+        var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
+        display_field.push(data);
     }
 }
 
@@ -2339,7 +2342,6 @@ set_property_table = function () {
     //control bar
     $('.tradeable_content').append(table);
     //loading(0);
-
 }
 
 index_finder = function (_source, _mask) {
@@ -2349,9 +2351,10 @@ index_finder = function (_source, _mask) {
 
 set_propertyType_table = function () {
     loading(1);
-    var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, { from: web3.eth.accounts[currentAccount] });
-    get_propertyType_setting(propertyTypeLength.c[0]);
-    rend_propertyType_table(propertyTypeLength.c[0]);
+    //var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, { from: web3.eth.accounts[currentAccount] });
+    var propertyTypeLength = cropTypeList.length;
+    get_propertyType_setting(propertyTypeLength);
+    rend_propertyType_table(propertyTypeLength);
 }
 
 rend_propertyType_table = function (_length) {
@@ -2433,16 +2436,21 @@ save_tradable_setting = function () {
 
 }
 
-save_rating_setting = function () {
+save_rating_setting = async function () {
     loading(1);
+    var s_Length = Meteor.users.find().count();
+    var s_Id = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder.id;
     for (i = 0; i < display_field.length; i++) {
         var _id = parseInt(display_field[i].id, 10);
         var _rate = parseInt($('#rating' + i).val(), 10);
+        var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate * floatOffset, "update", s_Length, s_Id]);
+        /*
         usingPropertyInstance.updatePropertyTypeRating(_id, _rate * floatOffset, "update", { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
             if (err) {
                 console.log(err);
             }
         });
+        */
     }
     loading(0);
     sweetAlert("Congratulations!", "Rating Saved!", "success");
