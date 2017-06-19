@@ -1311,7 +1311,7 @@ var checkDBLoaded = function (callback) {
             console.log("Establishing Mongo connection... Hold on!")
         }
 
-    }, 1000);
+    }, 500);
 }
 
 var createDBConnection = function () {
