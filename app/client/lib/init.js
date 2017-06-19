@@ -3,7 +3,7 @@ import { property_type } from '../../imports/collections.js';
 import { land_type } from '../../imports/collections.js';
 import { mission } from '../../imports/collections.js';
 
-currentAccount = 3;
+currentAccount = 9;
 cropsPerLvl =3;
 
 Template.index.created = async function() {
@@ -38,5 +38,4 @@ Template.index.created = async function() {
     //   initGameConfig();
     //   console.log(err);
     // }
-
 }
