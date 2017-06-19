@@ -2,7 +2,7 @@ import { Session } from 'meteor/session';
 
 
 
-currentAccount = 3;
+currentAccount = 9;
 cropsPerLvl =3;
 
 cropTypeList = [
@@ -2455,12 +2455,12 @@ function init(event){
 
 function initGameConfig(){
 
-    for(var i = 0; i < MissionList.length; i++){
-        GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
-    for(var i = 0; i < missionItem.length; i++){
-        GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    }
+    // for(var i = 0; i < MissionList.length; i++){
+    //     GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    // }
+    // for(var i = 0; i < missionItem.length; i++){
+    //     GameCoreInstance.addMissionItem(missionItem[i].missionId, missionItem[i].propertyId, missionItem[i].quantity, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+    // }
     console.log("Mission added");
 
     for (var i = 0 ; i < cropTypeList.length ; i++){
@@ -2493,7 +2493,7 @@ Template.index.created = function() {
     if (Session.get('account') == "Account Not Found" || Session.get('account') == "Wallet Not Found"){
         return false;
     };
-
+    //------------bryant-----------//
     try{
       var val = usingPropertyInstance.propertyTypeList(0);
       console.log("=========== Data Inited ===========");
@@ -2503,6 +2503,9 @@ Template.index.created = function() {
       initGameConfig();
       console.log(err);
     }
+    //-----------------------------//
+
+
     //for(var i = 0; i < 70; i++){
     //    GameCoreInstance.addMission(MissionList[i].name, MissionList[i].exp, MissionList[i].lvl_limitation, MissionList[i].status,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     //}

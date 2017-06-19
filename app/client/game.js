@@ -73,6 +73,8 @@ var theifId = 0;
 var landInfo = [];
 var stealRate;
 
+var tutorialMode=false;
+var targetCircleDiv=null;
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -99,7 +101,7 @@ gameIndexCreation = async function(){
     await getLandConfiguration(s_Id);
     await loadCropList(s_Id);
     await getUserStockList(s_Id);
-    await fetchGameInitConfig(s_Id);
+    //await fetchGameInitConfig(s_Id);  bryant
 }
 
 
@@ -154,15 +156,13 @@ gameIndexRend = function(){
 
 Template.gameIndex.created = async function() {
 
-    await gameIndexCreation();    
+    await gameIndexCreation();
     await gameIndexRend();
 
     eventListener();
     audio = new Audio('/music/background_music.mp3');
     //audio.play();
-    $(window).resize(function(evt) {
-        initCropLand(s_Id);
-    });
+
 }
 
 //////////////////
@@ -171,7 +171,9 @@ Template.gameIndex.created = async function() {
 
 Template.gameIndex.rendered = function() {
     if(!this._rendered) {
-      
+      $(window).resize(function(evt) {
+          initCropLand(s_Id);
+      });
 
     }
 }
@@ -241,7 +243,19 @@ Template.characterList.helpers({
             return "/img/game/guard.svg";
 
         }
-    }
+    },
+    characterTypeName: function(){
+      return Session.get('userCharacter');
+    },
+    expTip: function(){
+      return currentUser.Exp+"/"+levelCap(currentUser.level);
+    },
+    staTip:function(){
+      return currentUser.sta+"/"+staminaCap(currentUser.level);
+    },
+    expSyndicate:function(){
+      return currentUser.SyndicateExp+"/"+SyndicateLevelCap(currentUser.SyndicateLevel);
+    },
 });
 
 Template.statusList.helpers({
@@ -287,6 +301,12 @@ Template.statusList.helpers({
 //////////////
 //  Events  //
 //////////////
+Template.advTutorial.events({
+  // 'click .gameGuideImg':function(event){
+  //   // $('.landList');
+  //   $('.advTutorialContainer').css("background","rgba(255, 255, 255, 1)");
+  // },
+});
 
 Template.firstTutorial.events({
     'click .tutorialNextBtn': function (event) {
@@ -821,7 +841,7 @@ Template.land.events({
         $(imgs[1]).parent().data('pressed', false);
         $(imgs[1]).parent().html('<img src="/img/game/background.svg">Grass');
 
-        
+
 
         $(".farmObject").html("<img src = '" + prefix+ landTypeList[id].img + postfix +"' />");
         currentLandId = id;
@@ -973,8 +993,73 @@ Template.gamingArea.events({
         }
 
     },
-})
+    'click .gameGuideImg':function(event){
+      // display original tutorial
+      // $(".tutorialContainer").css("opacity", "1");
+      // $(".tutorialContainer").css("display", "inline");
+      // $(".tutorialContainer").css("transform", "translateX("+ (0) +"vw)");
 
+      // display cover color tutorial
+      // $('.advTutorialContainer').css("display","inline");
+      // $('.advTutorialContainer').css("background","rgba(255, 255, 255, 0.7)");
+      // $('.advTutorialContainer').css("z-index","100");
+      // $('.landList').css("z-index","101");
+
+      tutorialMode=true;
+      targetCircleDiv=$('.cropLand');
+      $('.cropLand0').css("-webkit-animation","circleLandAnimation 1s infinite");
+      createCircle();
+      // createCircle($('.cropLand0'));
+      // createCircle($('.characterStatus'));
+    },
+})
+// for create tutorial highlight circle by the div class
+function createCircle(){
+  if (!tutorialMode){
+    return;
+  }
+  var topT=targetCircleDiv[0].getBoundingClientRect().top;
+  var leftT = targetCircleDiv[0].getBoundingClientRect().left;
+  var heightT=targetCircleDiv.height();
+  var widthT=targetCircleDiv.width();
+  console.log(topT+","+leftT+","+heightT+","+widthT);
+      // top: topT-heightT/4.5,
+      // left: leftT-widthT/7.5,
+  var cricleStyle={
+    top: topT-(0.25*heightT),
+    left: leftT-((1.5*heightT-widthT)/2),
+    width: heightT*1.5,
+    height: heightT*1.5,
+    position:"absolute",
+    opacity:1,
+    "border":"2px solid rgb(255, 31, 0)",
+    "border-radius":"99em",
+    "z-index":99,
+    "-webkit-animation":"circleCorlorAnimation 1s infinite"
+  };
+  $('.guideCircleStatus').css(cricleStyle);
+  console.log(leftT);
+  createTip(topT,leftT,heightT,widthT);
+}
+function createTip(_cTop,_cLeft,_cHeight,_cWidth){
+  var tipStyle={
+    position:"absolute",
+    opacity:1,
+    top:_cTop+(_cHeight/3),
+    left:_cLeft+(_cWidth*5/4),
+    // width:"100px",
+    // height:"100px",
+    padding:"20px",
+    "border-radius":"15px",
+    "background-color":"rgb(255, 255, 255)",
+    "z-index":120,
+  };
+  $('.guideCircleText').css(tipStyle);
+  $('.guideCircleText').text("123");
+}
+function tipContent(){
+
+}
 function PanelControl(panelIndex){
     $(".statusPanel:nth-child("+panelCounter+")").removeClass("statusPanelShow");
     $(".statusPanel:nth-child("+panelCounter+")").css("z-index", -1);
@@ -1508,7 +1593,8 @@ var getUserData = function(s_Id){
         id:s_Id,
         address:web3.eth.accounts[currentAccount],
 
-        name: web3.toUtf8(data[0]),
+        // name: web3.toUtf8(data[0]),
+        name:"keep_tryin_style",
         exp: data[1].c[0],
         totalExp: data[2].c[0],
         type: web3.toUtf8(data[3]),
@@ -1684,7 +1770,7 @@ var loading = function(on){
 var rerenderCropLand = function(id){
     getLandConfiguration(id);
     loadCropList(id);
-    fetchGameInitConfig(id);
+    //fetchGameInitConfig(id); bryant
     initCropLand(id);
     getUserStockList(id);
     loading(0);
@@ -1813,6 +1899,8 @@ var initCropLand = function(id){
 
 
     }
+    createCircle();
+
 }
 
 var levelCap = function(n){
@@ -2178,6 +2266,13 @@ set_property_table = function(){
         $('.tradeable_content').html('');
         table = $('<table></table>').attr('id', 'property_trade_table')
                                     .attr('class', 'property_shop_table');
+        // for tip content
+        var tipPropertyString="";
+        if(Session.get('userCharacter') == "Thief"){
+          tipPropertyString="It consists the crops which you gathered or stole.";
+        }else{
+          tipPropertyString="It consists crops and guard of which level is decided by playing in Guard mode.";
+        }
         //content
         var flag = 0;
         for(i = 0; i < user_property.length; i++){
@@ -2185,9 +2280,12 @@ set_property_table = function(){
                 if (flag == 0){
                     flag++;
                     tr = $('<tr></tr>');
-                    tr.append($('<th></th>').text('Property'));
-                    tr.append($('<th></th>').text('Stock Number'));
-                    tr.append($('<th></th>').text('Tradable Number'));
+                    // tr.append($('<th></th>').text('Property'));
+                    // tr.append($('<th></th>').text('Stock Number'));
+                    // tr.append($('<th></th>').text('Tradable Number'));
+                    tr.html(
+                      '<th><div class="TradablePropertyTH">Property<div class="tipContainer tipContainerProperty"><img id="tipPropertyImg" src="/img/game/question-mark.png" alt=""><div class="tipPropertyText tipText">'+tipPropertyString+'</div></div></div></th><th>Stock Number</th><th><div class="TradableNumTH">Tradable Number<div class="tipContainer tipContainerTradable"><img id="tipTradableImg" src="/img/game/question-mark.png" alt=""><div class="tipTradableText tipText">The quantity of the crop which you want to provide for joining the exchange.</div></div></div></th>'
+                    );
                     table.append(tr);
                 }
                 tr = $('<tr></tr>');
@@ -2274,14 +2372,21 @@ rend_propertyType_table = function(_length){
     else{
         var table, tr, td, property_index;
         loading(1);
-        $('.shop_content').html('');
+        $('.shop_content').html(
+          '<div class="ratingRange">Rating Tolerance<div class="tipTolerance tipContainer"><img src="/img/game/question-mark.png" alt=""><div class="tipToleranceText tipText">The lower represents that you can only accept the equipollently important crop while exchanging. The higher means you may not receive the expected crop, but the higher success rate will occur.</div></div><input type="range" value="0" max="100" min="0" step="1" id="ratingPercent"><label for="ratingPercent">0%</label></div><hr>'
+        );
+        $('#ratingPercent').on('change',function(){
+          $('label[for = ratingPercent]').html($(this).val()+"%");
+        });
         table = $('<table></table>').attr('id', 'property_table')
                                     .attr('class', 'property_shop_table');
         //header
         tr = $('<tr></tr>');
-        tr.append($('<th></th>').text('Property'));
-        tr.append($('<th></th>').text('Rating'));
-        tr.append($('<th></th>').text('AVG Rating'));
+        // tr.append($('<th></th>').text('Property'));
+        // tr.append($('<th></th>').text('Rating'));
+        // tr.append($('<th></th>').text('AVG Rating'));
+        tr.html('<th>Property</th><th><div class="RatingTH">Rating<div class="tipContainer tipContainerRating"><img id="tipRatingImg" src="/img/game/question-mark.png" alt=""><div class="tipRatingText tipText">It represents how important the crop is to you.</div></div></div></th><th><div class="AvgRatingTH">AVG Rating<div class="tipContainer tipContainerAvg"><img id="tipAvgRatingImg" src="/img/game/question-mark.png" alt=""><div class="tipAvgRatingText tipText">Current average rating from all the gamers.</div></div></div></th>'
+      );
         table.append(tr);
         //header
         //content

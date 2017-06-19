@@ -199,7 +199,11 @@ if (Meteor.isClient) {
 
 
 function register(){
+  console.log("yo");
+
   var txs = CongressInstance.addMember({from:web3.eth.accounts[currentAccount], gas:221468}, function(){
+    console.log("s_Id");
+
     $(".loadingParent").fadeIn(1000);
     CongressInstance.stakeholderId.call(web3.eth.accounts[currentAccount], { from:web3.eth.accounts[currentAccount]},function(err, res){
       var s_Id = res.c[0];

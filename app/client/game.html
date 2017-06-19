@@ -1,7 +1,8 @@
 <template name="gameIndex">
   <div class="gameContainer">
-
+    {{> guideCircle}}
     {{> firstTutorial}}
+    {{> advTutorial}}
     {{> loading}}
     {{> statusList}}
     {{> gamingArea}}
@@ -10,6 +11,14 @@
     {{> rank}}
     {{> operationList}}
     {{> floatBubble}}
+  </div>
+</template>
+
+<template name="guideCircle">
+  <div class="guideCircleStatus">
+  </div>
+  <div class="guideCircleText">
+
   </div>
 </template>
 
@@ -124,6 +133,12 @@
   </div>
 </template>
 
+<template name="advTutorial">
+  <div class="advTutorialContainer">
+
+  </div>
+</template>
+
 <template name="loading">
     <div class="loading">
       <div class="loadingLogo">
@@ -156,7 +171,13 @@
           <div class="statusPanelList">
 
               <div class="listHeader">
-                <h2>Plants</h2>
+                <div class="listHeaderPlantTip">
+                  <h2>Plants</h2>
+                  <div class="tipContainer">
+                    <img id="tipPlantsImg" src="/img/game/question-mark.png" alt="">
+                    <div class="tipTextPlants tipText">You need to add "land" before planting. Add "grass" could remove the land.</div>
+                  </div>
+                </div>
                 <hr>
               </div>
               <div class="landList">
@@ -245,13 +266,21 @@
   </div>
 </template>
 
+<template name="gameGuide">
+  <div class="gameGuideLink">
+      <img class="gameGuideImg" src="/img/game/info.svg" alt="">
+  </div>
+</template>
+
 <template name="characterList">
     <div class="characterList">
         <div class="imgContainer">
+          <div class="tipTextSwitch tipText">switch to {{characterTypeName}}</div>
           <div class="characterImg">
               <div class="flipDIV front">
                 <img src="/img/game/farmer.svg" alt="">
                 <h3>{{userLevel}}</h3>
+                <!-- <div class="tipTextSwitch tipText">switch to XX</div> -->
               </div>
               <div class="flipDIV back">
                 <img src={{characterType}} alt="">
@@ -268,30 +297,31 @@
             <div class="userBarContainer">
               <div class="userBar">
                 <div class="userExp">
-                  <div class="expProgress">
+                  <div class="expProgress tipContainer">
                       <h3>EXP</h3>
 
                       <div class="expProgressBar"></div>
                       <div class="expText"></div>
                       <div class="expPopText"></div>
-
+                      <div class="tipTextExp tipText">{{expTip}}</div>
                   </div>
                 </div>
-                <div class="SyndicateExp">
+                <div class="SyndicateExp tipContainer">
                     <div class="SyndicateExpProgress">
                         <h3>EXP</h3>
 
                         <div class="SyndicateExpProgressBar"></div>
                         <div class="SyndicateExpText"></div>
+                        <div class="tipTextSyndicate tipText">{{expSyndicate}}</div>
                     </div>
                 </div>
                 <div class="userSta">
-                  <div class="staProgress">
+                  <div class="staProgress tipContainer">
                       <h3>STA</h3>
 
                       <div class="staProgressBar"></div>
                       <div class="staText"></div>
-
+                      <div class="tipTextSta tipText">{{staTip}}</div>
                   </div>
                 </div>
               </div>
@@ -375,6 +405,7 @@
 
         </div>
     {{> logo}}
+    {{> gameGuide}}
     <div class="systemInfo">
         <h2>New Transaction !</h2>
     </div>
@@ -398,10 +429,14 @@
     <div class="property_shop" >
         <button type="button" id="btn_shop_close" class="btnClose" value="close">X</button>
         <div class="shop_header">
-            <input type="button" id="btn_show_property" value="Ratings" />
+            <input type="button" disabled="disabled" id="btn_show_property" value="Ratings" />
             <!-- <input type="button" id="btn_property_tradeable" value="Tradable" /> -->
             <!-- <input type="button" id="btn_shop_close" value="close" /> -->
             <!-- <input type="button" id="btn_shop_add" value="add" /> -->
+        </div>
+        <div class="rating_tolerance">
+          <!-- <input type="range" value="0" max="100" min="0" step="1" id="ratingPercent">
+          <label for="ratingPercent">0</label> -->
         </div>
         <div class="shop_content">
 
