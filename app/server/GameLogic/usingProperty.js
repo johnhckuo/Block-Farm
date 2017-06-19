@@ -11,7 +11,7 @@ if (Meteor.isServer) {
                 _property.name.push(propertyType[i].name);
                 _property.count.push(0);
                 _property.type.push(i);
-                _property.tradable.push(0);
+                _property.tradeable.push(0);
                 _property.isTrading.push(0);
             }
             Meteor.users.update(u_Id, { $set: { 'profile.game.property': _property } });
@@ -20,7 +20,7 @@ if (Meteor.isServer) {
             var u_Id = Meteor.userId();
             var _property = Meteor.users.findOne({ _id: u_Id }).profile.game.property;
             _property.count[p_Id] = _count;
-            _property.tradable[p_Id] = _tradable;
+            _property.tradeable[p_Id] = _tradable;
             Meteor.users.update(u_Id, { $set: { 'profile.game.property': _property } });
         },
         'updatePropertyCount': function (p_Id, _count) {
