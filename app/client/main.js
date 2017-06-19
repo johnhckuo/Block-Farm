@@ -73,15 +73,15 @@ if (Meteor.isClient) {
       console.log('Template render complete');
       renderChecked = true;
       var fetcher = setInterval(async function () {
-        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
-          console.log("Mongo is ready to go :D");
+        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")  && Session.get("other_user_loaded")) {
+          console.log("Connection established!");
           var initCounter = property_type.find().fetch().length;
           if (initCounter == 0) {
             var res = await Meteor.call('init');
           }
           clearInterval(fetcher);
         } else {
-          console.log("Establishing Mongo connection... Hold on!")
+          console.log("Establishing db connection... Hold on!")
         }
       }, 1000);
     }

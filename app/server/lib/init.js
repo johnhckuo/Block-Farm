@@ -20,27 +20,23 @@ if (Meteor.isServer) {
     /*----------------------
         init declaration
     -----------------------*/
-    token = "e22aef855bb045f7904fc4712e7668a9";
+    token = "99fc27a26a42455cbc529923e3a6f8ad";
     //token = "68a657243ee1461db6376af481cdb479";
-    privateKey = "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e";
+    privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
 
-    congress = "2ffc892c4b62844335972e7860521e5a41fea568";
-    usingProperty = "736329caba7eef597a96ac48c75ad0e1eb9a8be9";
-    gameProperty = "e030d8bb75740cf1ae4556b11206a48f4d310f75";
-    playerSetting = "f8fe88aacd6a23cdb96fbb9195439493ab324b17";
-    gameCore = "f94b7ee3ede3b04df0633eaa28c1bba485e6cb13";
-    matchmaking = "cecf2d43a689bab41cba2c81526ea1885533cb6d";
+    Property = "1070dcf3255bed81fc0885d17bcf1039d9caa99f";
+    Matchmaking = "cecf2d43a689bab41cba2c81526ea1885533cb6d";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
     call = {
-        "private": "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e",
+        "private": "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8",
         "gas_limit": 2000000
     };
 
     updateCall = {
         "data": {
-            "private": "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e",
+            "private": "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8",
             "gas_limit": 2000000,
         },
         "header": "Content-Type:application/json"

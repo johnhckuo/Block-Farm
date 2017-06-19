@@ -25,6 +25,14 @@ if (Meteor.isServer) {
       return mission.find();
     });
 
+    Meteor.publish("currentUserChannel", function () {
+        return Meteor.users.find({_id:this.userId});
+    });
+
+    Meteor.publish("otherUserChannel", function () {
+        return Meteor.users.find({},{fields: {'profile.game.stakeholder.name': 1, 'profile.basic.address': 1, "profile.game.stakeholder.level":1}});
+    });
+
   })
 
 
@@ -61,20 +69,20 @@ if (Meteor.isServer) {
   }
 
   
-var callContract_backend = function (contract, method, args) {
+var callContract_api = function (contract, method, args) {
     var req = prefix;
     switch (contract) {
       case "Property":
-        req += usingProperty;
+        req += Property;
         break;
       case "Matchmaking":
-        req += matchmaking;
+        req += Matchmaking;
         break;
       default:
         return "error";
     }
     req += "/" + method + "?token=" + token;
-    console.log("[updateContract args] "+args);
+    console.log("[updateContract] => Contract:"+contract+" | Method:"+method+" | args:"+args);
     updateCall.data.params = args;
     return Meteor.http.call("POST", req, updateCall);
 
@@ -89,9 +97,9 @@ var callContract_backend = function (contract, method, args) {
     'callContract':function(contract, method, args){
         var res;
         try{
-          res = callContract_backend(contract, method, args);
+          res = callContract_api(contract, method, args);
         }catch(e){
-          console.log("[callContract] "+e.reason);
+          console.log("[callContract] "+e);
           return {type:"error", result:e.reason};
         }
         return {type:"success", result:res.data}; 
@@ -155,6 +163,7 @@ var callContract_backend = function (contract, method, args) {
         }
         Meteor.call('pushMissionAccountStatus');
         var res = Promise.await(getEther(res.data.address));
+        var res = Promise.await(callContract_api("Property", "updatePropertyTypeRating", [cropTypeList.length, 0, "new", 0, 0]));
       } catch (e) {
         console.log("[API_Register]" + e);
         return { type: "error", result: e.reason };
@@ -162,8 +171,20 @@ var callContract_backend = function (contract, method, args) {
       return { type: "success", result: "" };
     },
     'init': function () {
-      var res = Promise.await(callContract_backend("Property", "getPropertyType", 0));
-      console.log(res);
+      console.log("------------------ Data Init ------------------");
+      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      if (res.data.results[0] != 0){
+        console.log("[init] Data has been initialized");
+        return;
+      }
+
+      try{
+          for (var i = 0; i< cropTypeList.length ; i++){
+            var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+          }
+      }catch(e){
+          console.log("[init] Error initializing data on blockcypher");
+      }
 
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });

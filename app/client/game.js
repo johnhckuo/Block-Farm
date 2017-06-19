@@ -84,6 +84,8 @@ var stealRate;
 
 var tutorialMode=false;
 var targetCircleDiv=null;
+var ratingOpened = false;
+var onchangedIndex = [];
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -164,7 +166,6 @@ gameIndexRend = function () {
 /////////////////
 
 Template.gameIndex.created = function () {
-
     createDBConnection();
     checkDBLoaded(async function (value) {
         var id = Meteor.userId();
@@ -1358,7 +1359,10 @@ Template.operationList.events({
         $(".property_shop").css("display", "inline");
         $(".mission_template").css("display", "none");
         $(".rank_template").css("display", "none");
-        set_propertyType_table();
+        if (!ratingOpened){
+            set_propertyType_table();
+        }
+        ratingOpened = true;
     },
     'click .MissionOpen': function (event) {
         $(".property_shop").css("display", "none");
@@ -1387,7 +1391,7 @@ document.onmousemove = function (e) {
 
 var checkDBLoaded = function (callback) {
     var fetcher = setInterval(function () {
-        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
+        if (Session.get("crop_loaded") && Session.get("land_loaded") && Session.get("mission_loaded") && Session.get("current_user_loaded") && Session.get("other_user_loaded")) {
             console.log("Mongo is ready to go :D");
             clearInterval(fetcher);
             callback("done");
@@ -2236,16 +2240,16 @@ get_user_property_setting = function () {
 get_propertyType_setting = async function (_length) {
     display_field = [];
     for (i = 0; i < _length; i++) {
-        var property_type = await callPromise("callContract", "Property", "getPropertyType", i);
+        var property_type = await callPromise("callContract", "Property", "getPropertyType", [i]);
         if (property_type.type == "error"){
             loading(0);
             sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
             return;
         }
-        var _name = property_type[0];
-        var _id = property_type[1].c[0];
-        var _rating = property_type[3].c[0];
-        var _averageRating = property_type[2].c[0];
+        var _name = property_type.result.results[0];
+        var _id = property_type.result.results[1];
+        var _rating = property_type.result.results[3];
+        var _averageRating = property_type.result.results[2];
         var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
         display_field.push(data);
     }
@@ -2349,15 +2353,15 @@ index_finder = function (_source, _mask) {
     return res;
 }
 
-set_propertyType_table = function () {
+set_propertyType_table = async function () {
     loading(1);
-    //var propertyTypeLength = usingPropertyInstance.getPropertyTypeLength.call(0, { from: web3.eth.accounts[currentAccount] });
-    var propertyTypeLength = cropTypeList.length;
-    get_propertyType_setting(propertyTypeLength);
-    rend_propertyType_table(propertyTypeLength);
+    var res = await callPromise("callContract", "Property", "getPropertyTypeLength", []);
+    get_propertyType_setting(res.result.results[0]);
+    rend_propertyType_table(res.result.results[0]);
 }
 
 rend_propertyType_table = function (_length) {
+    onchangedIndex = [];
     if (display_field.length != _length) {
         setTimeout(function () {
             rend_propertyType_table(_length);
@@ -2399,6 +2403,10 @@ rend_propertyType_table = function (_length) {
                 step: 1,
                 id: 'rating' + i
             }).on('change', function () {
+                var id = $(this).attr('id').split("rating")[1];
+                if(jQuery.inArray(id, onchangedIndex) == -1){
+                    onchangedIndex.push(id);
+                }
                 $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
             })
             );
@@ -2440,9 +2448,9 @@ save_rating_setting = async function () {
     loading(1);
     var s_Length = Meteor.users.find().count();
     var s_Id = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder.id;
-    for (i = 0; i < display_field.length; i++) {
-        var _id = parseInt(display_field[i].id, 10);
-        var _rate = parseInt($('#rating' + i).val(), 10);
+    for (i = 0; i < onchangedIndex.length; i++) {
+        var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
+        var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
         var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate * floatOffset, "update", s_Length, s_Id]);
         /*
         usingPropertyInstance.updatePropertyTypeRating(_id, _rate * floatOffset, "update", { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
@@ -2452,6 +2460,7 @@ save_rating_setting = async function () {
         });
         */
     }
+    onchangedIndex = [];
     loading(0);
     sweetAlert("Congratulations!", "Rating Saved!", "success");
 }

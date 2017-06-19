@@ -14,6 +14,8 @@ Template.index.created = async function() {
     Session.set("crop_loaded", false);
     Session.set("land_loaded", false);
     Session.set("mission_loaded", false);
+    Session.set("current_user_loaded", false);
+    Session.set("other_user_loaded", false);
 
     propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function(){
         Session.set("crop_loaded", true);
@@ -25,6 +27,14 @@ Template.index.created = async function() {
         Session.set("mission_loaded", true);
     });
 
+    userSub = Meteor.subscribe("currentUserChannel", function(){
+        Session.set("current_user_loaded", true);
+    });
+
+    otherUserSub = Meteor.subscribe("otherUserChannel", function(){
+        Session.set("other_user_loaded", true);
+    });
+    
     // if (Session.get('account') == "Account Not Found" || Session.get('account') == "Wallet Not Found"){
     //     return false;
     // };

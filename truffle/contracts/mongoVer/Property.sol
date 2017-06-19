@@ -1,11 +1,11 @@
 pragma solidity ^0.4.4;
 
-contract usingProperty{
+contract Property{
 
     event propertyAdded(bytes32);
 
     struct PropertyType{
-        bytes32 name;
+        string name;
         uint id;
         uint[] rating;
         uint averageRating;
@@ -55,11 +55,17 @@ contract usingProperty{
 
     }
 
-    function getPropertyType(uint p_Id) constant returns(bytes32, uint, uint, uint[]){
+    function getPropertyType(uint p_Id) constant returns(string, uint, uint, uint[]){
+        if (propertyTypeList[p_Id].name == 0){
+            throw;
+        }
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].rating);
     }
 
     function getPropertyTypeId(uint p_Id) constant returns(uint){
+        if (propertyTypeList[p_Id].name == 0){
+            throw;
+        }
         return propertyTypeList[p_Id].id;
     }
 
