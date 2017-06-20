@@ -102,18 +102,6 @@ var callContract_api_callback = function(args, callback){
       });
 }
 
-
-var multipleApiCall = function(callback){
-    var results = [];
-    try{
-
-    }catch(e){
-      console.log("[multipleApiCall] "+e);
-      return e;
-    }
-}
-
-
 function wait(ms){
    var start = new Date().getTime();
    var end = start;
@@ -139,7 +127,7 @@ function wait(ms){
                     results.push(res.data.results);
                     if (results.length == cropTypeList.length){
                       finalResult = results;
-                      //console.log(res);
+                      console.log(finalResult);
 
                       //return {type:"success", result:res}; 
                     }
