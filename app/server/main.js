@@ -11,7 +11,6 @@ var cropsPerLvl = 3;
 
 if (Meteor.isServer) {
 
-
   Meteor.startup(function () {
     Meteor.publish('propertyTypeChannel', function () {
       return property_type.find();
@@ -225,20 +224,20 @@ function wait(ms){
       return { type: "success", result: "" };
     },
     'init': function () {
-      console.log("------------------ Data Init ------------------");
-      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      if (res.data.results[0] != 0){
-        console.log("[init] Data has been initialized");
-        return;
-      }
+      // console.log("------------------ Data Init ------------------");
+      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      // if (res.data.results[0] != 0){
+      //   console.log("[init] Data has been initialized");
+      //   return;
+      // }
 
-      try{
-          for (var i = 0; i< cropTypeList.length ; i++){
-            var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-          }
-      }catch(e){
-          console.log("[init] Error initializing data on blockcypher");
-      }
+      // try{
+      //     for (var i = 0; i< cropTypeList.length ; i++){
+      //       var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+      //     }
+      // }catch(e){
+      //     console.log("[init] Error initializing data on blockcypher");
+      // }
 
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });

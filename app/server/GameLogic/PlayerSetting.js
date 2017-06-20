@@ -19,13 +19,13 @@ if (Meteor.isServer) {
             var u_Id = Meteor.userId();
             var _stakeholder = Meteor.users.findOne({ _id: u_Id }).profile.game.stakeholder;
             _stakeholder.level += 1;
-            if (level % 5 == 0) {
+            if (_stakeholder.level % 5 == 0) {
                 _stakeholder.landSize += 1;
                 var p_Id = random + ((_stakeholder.level / unlockCropLevel) * unlockCropNum);
-                Meteor.call('addUserPropertyType', [p_Id]);
-                Meteor.call('addUserLandConfiguration', [_stakeholder.landSize]);
+                Meteor.call('addUserPropertyType', p_Id);
+                Meteor.call('addUserLandConfiguration', _stakeholder.landSize);
             }
-            Meteor.call('updateGameData', [_stakeholder.landSize, _stakeholder.level]);
+            Meteor.call('updateGameData', _stakeholder.landSize, _stakeholder.level);
         }
     });
 }

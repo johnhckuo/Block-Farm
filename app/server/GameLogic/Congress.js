@@ -4,21 +4,33 @@ if (Meteor.isServer) {
         'updateGameData': function (_landSize, _level) {
             var userId = Meteor.userId();
             var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
+            console.log(_stakeholder.level);
             _stakeholder.landSize = _landSize;
             _stakeholder.level = _level;
+            console.log(_stakeholder.level);
             Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },
         'updateStakeholderLastLogin': function (_lastLogin) {
             var userId = Meteor.userId();
-            var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
-            _stakeholder.lastLogin = _lastLogin;
-            Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
+            try {
+                var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
+                _stakeholder.lastLogin = _lastLogin;
+                Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
+            }
+            catch (e) {
+                console.log(e);
+            }
         },
         'updateUserStamina': function (sta) {
             var userId = Meteor.userId();
-            var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
-            _stakeholder.stamina = sta;
-            Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
+            try {
+                var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
+                _stakeholder.stamina = sta;
+                Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
+            }
+            catch (e) {
+                console.log(e);
+            }
         },
         'updateGuardId': function (g_Id) {
             var userId = Meteor.userId();
@@ -67,9 +79,6 @@ if (Meteor.isServer) {
             _syndicateData.totalExp += _exp;
             _syndicateData.level = _level;
             Meteor.users.update(userId, { $set: { 'profile.game.syndicateData': _syndicateData } });
-        },
-        'testa' :function(){
-
         }
     });
 }
