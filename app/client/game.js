@@ -1343,19 +1343,54 @@ document.onmousemove = function (e) {
     cursorY = e.pageY;
 }
 
+function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
+
+
 var checkDBLoaded = function (callback) {
     var fetcher = setInterval(function () {
         if (Session.get("crop_loaded") && Session.get("land_loaded") && Session.get("mission_loaded") && Session.get("current_user_loaded") && Session.get("other_user_loaded")) {
-            console.log("Mongo is ready to go :D");
+            console.log("server connection established!");
             clearInterval(fetcher);
             callback("done");
         } else {
-            console.log("Establishing Mongo connection... Hold on!");
+            console.log("establishing server connection... hold on!");
         }
     }, 1000);
 }
 
 var createDBConnection = function () {
+
+    Session.set("crop_loaded", false);
+    Session.set("land_loaded", false);
+    Session.set("mission_loaded", false);
+    Session.set("current_user_loaded", false);
+    Session.set("other_user_loaded", false);
+
+    propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function(){
+        Session.set("crop_loaded", true);
+    });
+    landTypeSub = Meteor.subscribe("landTypeChannel", function(){
+        Session.set("land_loaded", true);
+    });
+    missionSub = Meteor.subscribe("missionChannel", function(){
+        Session.set("mission_loaded", true);
+    });
+
+    userSub = Meteor.subscribe("currentUserChannel", function(){
+        Session.set("current_user_loaded", true);
+    });
+
+    otherUserSub = Meteor.subscribe("otherUserChannel", function(){
+        Session.set("other_user_loaded", true);
+    });
+
+
     propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function () {
         Session.set("crop_loaded", true);
     });
@@ -2095,20 +2130,34 @@ get_user_property = function () {
 
 get_propertyType_setting = async function (_length) {
     display_field = [];
-    for (i = 0; i < _length; i++) {
-        var property_type = await callPromise("callContract", "Property", "getPropertyType", [i]);
-        if (property_type.type == "error"){
-            loading(0);
-            sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
-            return;
-        }
-        var _name = property_type.result.results[0];
-        var _id = property_type.result.results[1];
-        var _rating = property_type.result.results[3];
-        var _averageRating = property_type.result.results[2];
+    var property_type;
+
+    property_type = await callPromise("callContract", "Property", "getPropertyType", []);
+
+    console.log(property_type);
+    property_type.sort(function(crop1, crop2){
+        if (crop1[1] > crop2[1]) return 1;
+        if (crop1[1] < crop2[1]) return -1;
+        return 0;
+    });
+        console.log(property_type);
+
+    if (property_type.length != _length){
+        loading(0);
+        sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
+        return;
+    }
+
+    for (var i = 0 ; i < property_type.length ; i++){
+        var _name = property_type[i][0];
+        var _id = property_type[i][1];
+        var _rating = property_type[i][3];
+        var _averageRating = property_type[i][2];
         var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
         display_field.push(data);
     }
+
+    
 }
 
 set_property_table = function () {

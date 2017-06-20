@@ -37,7 +37,7 @@ if (Meteor.isServer) {
 
 
   var API_Register_backend = function () {
-    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/addrs?token=" + token);
+    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/addrs?token=" + token[0]);
   }
 
   var getEther = function (addr) {
@@ -50,7 +50,7 @@ if (Meteor.isServer) {
     config.headers['Content-Type'] = 'application/json';
     console.log(config);
 
-    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/faucet?token=" + token, config);
+    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/faucet?token=" + token[0], config);
   }
 
 
@@ -81,28 +81,96 @@ var callContract_api = function (contract, method, args) {
       default:
         return "error";
     }
-    req += "/" + method + "?token=" + token;
-    console.log("[updateContract] => Contract:"+contract+" | Method:"+method+" | args:"+args);
+    req += "/" + method + "?token=" + token[0];
+    console.log("[callContract_api] => Contract:"+contract+" | Method:"+method+" | args:"+args);
     updateCall.data.params = args;
+      console.log(req);
+    console.log(updateCall);
     return Meteor.http.call("POST", req, updateCall);
 
 }
 
+
+var callContract_api_callback = function(args, callback){
+      var tokenIndex = args% token.length;
+      var req = prefix+Property+"/getPropertyType?token=" + token[tokenIndex];
+      updateCall.data.params = args;
+      Meteor.http.call("POST", req, updateCall, function(err, res){
+        if (err){
+          console.log("[callContract_api_callback] "+err);
+          return err;
+        }
+        callback(res);
+      });
+}
+
+
+var multipleApiCall = function(callback){
+    var results = [];
+    try{
+
+    }catch(e){
+      console.log("[multipleApiCall] "+e);
+      return e;
+    }
+}
+
+
+function wait(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
 
   /*------------
      Receiver
   -------------*/
 
   Meteor.methods({
-    'callContract':function(contract, method, args){
-        var res;
-        try{
-          res = callContract_api(contract, method, args);
-        }catch(e){
-          console.log("[callContract] "+e);
-          return {type:"error", result:e.reason};
+    'callContract': function(contract, method, args){
+        var finalResult;
+
+        if (contract == "Property" && method == "getPropertyType"){
+            var results = [];
+            try{
+              for (var i = 0 ; i < cropTypeList.length ; i++){
+                wait(10);
+                callContract_api_callback([i], function(res){
+                    results.push(res.data.results);
+                    if (results.length == cropTypeList.length){
+                      finalResult = results;
+                      //console.log(res);
+
+                      //return {type:"success", result:res}; 
+                    }
+                });
+              }
+              return new Promise(resolve => {
+                var interval = setInterval(() => {
+                  if (finalResult != undefined){
+                    clearInterval(interval);
+                    resolve(finalResult);
+                  }
+                }, 1000);
+              });
+            }catch(e){
+              console.log("[multipleApiCall] "+e);
+              return e;
+            }
+
+        }else{
+            try{
+              res = callContract_api(contract, method, args);
+            }catch(e){
+              console.log("[callContract] "+e);
+              return {type:"error", result:e.reason};
+            }
+            return {type:"success", result:res.data}; 
+
         }
-        return {type:"success", result:res.data}; 
+
     },
     'register': function (email, password, character) {
       var addr;
