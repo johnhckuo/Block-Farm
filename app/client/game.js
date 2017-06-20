@@ -82,8 +82,8 @@ var theifId = 0;
 var landInfo = [];
 var stealRate;
 
-var tutorialMode=false;
-var targetCircleDiv=null;
+var tutorialMode = false;
+var targetCircleDiv = null;
 var ratingOpened = false;
 var onchangedIndex = [];
 
@@ -109,12 +109,12 @@ gameIndexCreation = async function () {
     await getLandConfiguration(s_Id);
     await loadCropList(s_Id);
     await getUserStockList(s_Id);
-    await fetchGameInitConfig(s_Id);  //bryant
+    await fetchGameInitConfig(s_Id);
+
 }
 
 getStakeholderId = function () {
-    s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-    if (s_Id == 0) {
+    if (Session.get("id") == undefined) {
         sweetAlert("Oops...", "Please Register First", "error");
         Router.go('/');
         return;
@@ -595,9 +595,6 @@ Template.gameIndex.events({
                 }
             }
 
-            Meteor.call('updatePropertyCount', p_Id, parseInt(stockList[stockId].count));
-            //usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:3000000});
-
             var configId;
             for (var i = 0; i < userLandConfiguration.length; i++) {
                 if (userLandConfiguration[i].crop == id) {
@@ -618,9 +615,13 @@ Template.gameIndex.events({
             //GamePropertyInstance.updateCropList(s_Id, id, 0, 0, 0, 0, 0, 0, 0, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
             $("." + cropClass).remove();
+            Meteor.call('updatePropertyCount', p_Id, parseInt(stockList[stockId].count), function () {
+                //reload propertyTable
+                set_property_table();
+            });
+            //usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:3000000});
 
-            //reload propertyTable
-            set_property_table();
+
         }
         else if (gameMode == "Thief") {
             if (currentUser.sta < staminaList["steal"]) {
@@ -1313,7 +1314,7 @@ Template.operationList.events({
         $(".property_shop").css("display", "inline");
         $(".mission_template").css("display", "none");
         $(".rank_template").css("display", "none");
-        if (!ratingOpened){
+        if (!ratingOpened) {
             set_propertyType_table();
         }
         ratingOpened = true;
@@ -1364,6 +1365,13 @@ var createDBConnection = function () {
     });
     missionSub = Meteor.subscribe("missionChannel", function () {
         Session.set("mission_loaded", true);
+    });
+    userSub = Meteor.subscribe("currentUserChannel", function () {
+        Session.set("current_user_loaded", true);
+    });
+
+    otherUserSub = Meteor.subscribe("otherUserChannel", function () {
+        Session.set("other_user_loaded", true);
     });
 }
 
@@ -1832,7 +1840,7 @@ var updateUserExp = function (exp) {
             var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.totalExp;
             Meteor.call('updateUserExp', currentUser.exp);
             //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
-            var p_Id = Math.floor(Math.random() * 3) + ((level / unlockCropLevel) * unlockCropNum);
+            var p_Id = Math.floor(Math.random() * 3);
             Meteor.call('playerLevelUp', p_Id);
 
             levelUp("userLevel");
@@ -2097,7 +2105,7 @@ get_propertyType_setting = async function (_length) {
     display_field = [];
     for (i = 0; i < _length; i++) {
         var property_type = await callPromise("callContract", "Property", "getPropertyType", [i]);
-        if (property_type.type == "error"){
+        if (property_type.type == "error") {
             loading(0);
             sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
             return;
@@ -2252,7 +2260,7 @@ rend_propertyType_table = function (_length) {
                 id: 'rating' + i
             }).on('change', function () {
                 var id = $(this).attr('id').split("rating")[1];
-                if(jQuery.inArray(id, onchangedIndex) == -1){
+                if (jQuery.inArray(id, onchangedIndex) == -1) {
                     onchangedIndex.push(id);
                 }
                 $('label[for = ' + $(this).attr('id') + ']').html($(this).val());
@@ -2295,7 +2303,7 @@ save_tradable_setting = function () {
 save_rating_setting = async function () {
     loading(1);
     var s_Length = Meteor.users.find().count();
-    var s_Id = Meteor.users.findOne({_id:Session.get("id")}).profile.game.stakeholder.id;
+    var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
     for (i = 0; i < onchangedIndex.length; i++) {
         var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
         var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
@@ -2459,11 +2467,12 @@ mission_submit = async function (_id) {
             }
         }
     }
-    Meteor.call('submitMission', _id);
-    //GameCoreInstance.submitMission(_id,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-    set_property_table();
-    sweetAlert("Congratulations!", "Mission Completed!", "success");
-    set_mission_table();
+    Meteor.call('submitMission', _id, function () {
+        //GameCoreInstance.submitMission(_id,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        set_property_table();
+        sweetAlert("Congratulations!", "Mission Completed!", "success");
+        set_mission_table();
+    });
 }
 
 mission_qualify_check = function (_id) {
@@ -2505,21 +2514,14 @@ mission_qualify_check = function (_id) {
 
 get_rank_data = function () {
     loading(1);
-    // var rankData = Meteor.users.find({}, {sort:{'profile.game.stakeholder.id':-1}});
-    // console.log(rankData);
-    // var rankData = CongressInstance.getStakeholderRank.call({ from: web3.eth.accounts[currentAccount] }, function (err, res) {
-    //     var data = [];
-    //     for (i = 1; i < res[0].length; i++) {
-    //         var _name = web3.toUtf8(res[0][i]);
-    //         var _address = res[1][i];
-    //         var _lv = res[2][i].c[0];
-    //         var obj = { "name": _name, "address": _address, "lv": _lv };
-    //         data.push(obj);
-    //     }
-    //     sorted = selectedSort(data);
-
-    //     set_rank_table(sorted);
-    // });
+    var rawData = Meteor.users.find().fetch();
+    var rankData = [];
+    for (var i = 0; i < rawData.length; i++) {
+        obj = { 'name': rawData[i].profile.game.stakeholder.name, 'address': rawData[i].profile.basic.address, 'lv': rawData[i].profile.game.stakeholder.level };
+        rankData.push(obj);
+    }
+    sorted = selectedSort(rankData);
+    set_rank_table(sorted);
     loading(0);
 
 }
