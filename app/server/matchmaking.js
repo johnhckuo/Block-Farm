@@ -1,85 +1,64 @@
 import { Meteor } from 'meteor/meteor';
 import { Promise } from 'meteor/promise';
 
-initData = function(){
 
-  usingPropertyInstance.getPropertyTypeLength.call({ from: web3.eth.accounts[currentAccount], gas: 2000000 }, function (err, res) {
-      if (err) {
-          console.log(err);
-      }
-      else {
-          propertyTypeLength = res.c[0];
-          for (var i = 0; i < propertyTypeLength; i++) {
-              usingPropertyInstance.getPropertyType.call(i, { from: web3.eth.accounts[currentAccount], gas: 2000000 }, function (err, res) {
-                  if (err) {
-                      console.log(err);
-                  }
-                  else {
-                      pType = { id: res[1].c[0], name: web3.toUtf8(res[0]), avg: res[2].c[0], ratings: res[3] };
-                      propertyType.push(pType);
+var properties = [];
+var propertyType = [];
 
-                  }
-              });
-          }
-      }
-  });
-
-  usingPropertyInstance.getPropertiesLength.call({ from: web3.eth.accounts[currentAccount] }, function (err, res) {
-      if (err) {
-          console.log(err);
-      }
-      else {
-          propertyLength = res.c[0];
-          for (var i = 0; i < propertyLength; i++) {
-              usingPropertyInstance.getProperty.call(i, { from: web3.eth.accounts[currentAccount] }, function (err, res) {
-                  if (err) {
-                      console.log(err);
-                  }
-                  else {
-                      property = { id: res[0].c[0], type: res[1].c[0], name: web3.toUtf8(res[2]), count: res[3].c[0], tradeable: res[4].c[0], owner: res[5].c[0]};
-                      properties.push(property);
-
-                  }
-
-              });
-          }
-
-      }
-  });
-
+wait = function(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
 }
 
-// var callContract = function(contract, method, args){
-//   var req = prefix;
-//   switch (contract){
-//     case "GameCore":
-//       req += gameCore;
-//       break;
-//     case "Congress":
-//       req += congress;
-//       break;
-//     case "usingProperty":
-//       req += usingProperty;
-//       break;
-//     case "GameProperty":
-//       req += gameProperty;
-//       break;
-//     case "Matchmaking":
-//       req += matchmaking;
-//       break;
-//     case "PlayerSetting":
-//       req += playerSetting;
-//       break;
-//     default:
-//       return "error";
-//   }
-//   req += "/"+method+ "?token=" + token;
-//   updateCall.data.params = args;
-//   console.log("request url: "+req);
-//   console.log("request args: "+updateCall);
-//   return Meteor.http.call("POST",req, updateCall);
-//
-// }
+initData = function(){
+
+    /*--------------
+       properties
+    ---------------*/
+    var rawProperties = [];
+
+    var raw = Meteor.users.find({}, {fields:{'profile.game.property':1}}).fetch();
+    
+    for (var i = 0 ; i < raw.length ; i++){
+        rawProperties.push(raw[i].profile.game.property);
+    }
+
+    for (var i = 0 ; i <rawProperties.length ; i++){
+      for (var j = 0 ; j < cropTypeList.length ; j++){
+          if (rawProperties[i].tradeable[j] != 0 || rawProperties[i].count[j] != 0){
+            properties.push({id:rawProperties[i].id[j], name:rawProperties[i].name[j], count:rawProperties[i].count[j], type:rawProperties[i].type[j], tradeable:parseInt(rawProperties[i].tradeable[j]), isTrading:rawProperties[i].isTrading[j], owner:i});
+          }
+      }
+    }
+    console.log("Property Data Loading Complete");
+    console.log(properties)
+
+    /*--------------
+      propertyType
+    ---------------*/
+    try{
+      for (var i = 0 ; i < cropTypeList.length ; i++){
+        wait(10);
+        callContract_api_callback([i], function(res){
+
+            propertyType.push(res.data.results);
+            if (propertyType.length == cropTypeList.length){
+
+              for (var j = 0 ; j < propertyType.length ;j++){
+                  propertyType[j] = {avg:propertyType[j][2], ratings:propertyType[j][3]};
+              }
+              console.log("Property Type Data Loading Complete");
+              findOrigin();
+            }
+        });
+      }
+    }catch(e){
+      console.log("[initData] "+e);
+    }
+}
 
 // for matchmaking
 
@@ -119,18 +98,6 @@ var sort = function(list){
     return list;
 }
 
-var calculateAverage = function(){
-  console.log(propertyType);
-  console.log(properties);
-  for (var i = 0 ; i < propertyType.length ;i++){
-    var temp = 0;
-    for (var j = 0 ; j < propertyType[i].ratings.length; j++){
-      temp += propertyType[i].ratings[j];
-    }
-    propertyType[i].avg = temp / propertyType[i].ratings.length;
-  }
-}
-
 findOrigin = async function(){
     console.log("start");
     //reset
@@ -146,7 +113,6 @@ findOrigin = async function(){
     totalGoThroughList = [];
 
 
-    calculateAverage();
     //var length = Promise.await(callContract("usingProperty", "getPropertiesLength", []));
     var length = properties.length;
 
@@ -156,26 +122,17 @@ findOrigin = async function(){
         var access = properties[i].tradeable;
         var isTrading = properties[i].isTrading;
 
-        /*
-        var access = Promise.await(callContract("usingProperty", "checkTradeable", [i]));
-        var isTrading = Promise.await(callContract("usingProperty", "checkTradingStatus", [i]));
-        */
         if (access == 0 || isTrading){
           continue;
         }
 
         var owner = properties[i].owner;
         var averageRating = propertyType[properties[i].type].avg;
-        var self_Importance = propertyType[properties[i].type].ratings[owner].c[0];
+        var self_Importance = propertyType[properties[i].type].ratings[owner];
 
-        /*
-        var owner = Promise.await(callContract("usingProperty", "getPartialProperty", [i]));
-        var averageRating = Promise.await(callContract("usingProperty", "getPropertyTypeAverageRating", [i]));
-        var self_Importance = Promise.await(callContract("usingProperty", "getPropertyTypeRating_Matchmaking", [i]));
-        */
         var diff = averageRating - self_Importance;
-
-        if (diff < 0){
+        console.log(averageRating+"|"+self_Importance);
+        if (diff < -100){
             continue;
         }
 
@@ -245,7 +202,7 @@ var searchNeighborNodes = function(visitNode){
 
         var diff = returnPriority(visitNode, i);
 
-        if (diff < 0){
+        if (diff < -100){
           //this need to be modified to user config
           continue;
         }
@@ -377,8 +334,6 @@ var verifyNode =  function(){
           visitedTradeable.push(visitedProperty[h].tradeable);
       }
 
-      $(".property").html(visitedProperty_temp);
-      $(".owner").html(visitedOwner);
       console.log("Visited Owner "+visitedOwner);
       console.log("Visited priority "+visitedPriority);
 

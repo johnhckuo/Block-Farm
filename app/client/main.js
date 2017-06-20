@@ -68,7 +68,7 @@ if (Meteor.isClient) {
 
 
   Template.index.rendered = async function () {
-
+    Meteor.call("test");
     if (!this._rendered && !renderChecked) {
       console.log('Template render complete');
       renderChecked = true;
