@@ -74,14 +74,14 @@ if (Meteor.isClient) {
       renderChecked = true;
       var fetcher = setInterval(async function () {
         if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")  && Session.get("other_user_loaded")) {
-          console.log("Connection established!");
-          var initCounter = property_type.find().fetch().length;
+          console.log("server connection established!");
+          var initCounter = property_type.find().count();
           if (initCounter == 0) {
             var res = await Meteor.call('init');
           }
           clearInterval(fetcher);
         } else {
-          console.log("Establishing db connection... Hold on!")
+          console.log("establishing db connection... hold on!")
         }
       }, 1000);
     }
