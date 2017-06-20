@@ -84,8 +84,6 @@ var callContract_api = function (contract, method, args) {
     req += "/" + method + "?token=" + token[0];
     console.log("[callContract_api] => Contract:"+contract+" | Method:"+method+" | args:"+args);
     updateCall.data.params = args;
-      console.log(req);
-    console.log(updateCall);
     return Meteor.http.call("POST", req, updateCall);
 
 }
