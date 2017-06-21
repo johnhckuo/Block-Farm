@@ -65,10 +65,10 @@ if (Meteor.isServer) {
                 _syndicateData.fail += 1;
             Meteor.users.update(userId, { $set: { 'profile.game.syndicateData': _syndicateData } });
         },
-        'updateUserExp': function (_exp) {
+        'updateUserExp': function (_exp, currentExp) {
             var userId = Meteor.userId();
             var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
-            _stakeholder.exp = _exp;
+            _stakeholder.exp = currentExp;
             _stakeholder.totalExp += _exp;
             Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },

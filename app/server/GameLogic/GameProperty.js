@@ -39,8 +39,9 @@ if (Meteor.isServer) {
             var _landConfig = Meteor.users.findOne({ _id: userId }).profile.game.landConfig;
             length = landsize - 1;
             for (var i = ((length * length) - 1); i >= length; i--) {
-                _landConfig.land[i + (i / length)] = _landConfig.land[i];
-                _landConfig.crop[i + (i / length)] = _landConfig.crop[i];
+                var complement = Math.floor((i / length));
+                _landConfig.land[i + complement] = _landConfig.land[i];
+                _landConfig.crop[i + complement] = _landConfig.crop[i];
                 _landConfig.land[i] = -1;
                 _landConfig.crop[i] = -1;
             }
