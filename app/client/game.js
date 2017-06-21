@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { property_type } from '../imports/collections.js';
 import { land_type } from '../imports/collections.js';
 import { mission } from '../imports/collections.js';
+import './string.js';
 
 var landSize = 3;
 var blockSize = 150;
@@ -83,6 +84,14 @@ var stealRate;
 
 var tutorialMode=false;
 var targetCircleDiv=null;
+var targetCircleTemp=null;
+var cntAddLand=0;  //for first time to add land
+var cntAddCrop=0;  //for first time to add plant/crop
+var currentString="";
+var stringPosition="";
+var resizeWidth=2; //for set the size for createTip
+var circleNeed=true;
+var stringNeed=true;
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -454,6 +463,19 @@ Template.gameIndex.events({
             });
             _dep.changed();
 
+            // for detect do user crop land on game area for tutorial using
+            cntAddCrop++;
+            if (tutorialMode && cntAddCrop==1){
+              // step 1.3 for tutorial, point to the croppedObject
+              setCircleTarget($('.croppedObject'),false,"down",2,stringHarvest);
+              HideCircle();
+              HideCircleText();
+              setTimeout(function () {
+                  createCircle();
+              }, 3000);
+
+            }
+
             //userCropType[currentCropId].count++;
             //usingPropertyInstance.updateUserPropertyType(s_Id, currentCropId, {from:web3.eth.accounts[currentAccount], gas:2000000});
 
@@ -487,6 +509,20 @@ Template.gameIndex.events({
                 name: landTypeList[currentLandId].name,
                 img: landTypeList[currentLandId].img,
             });
+
+            cntAddLand++;
+            if (tutorialMode && cntAddLand==1){
+              // step 1.2 for tutorial, point to the crop
+              $('.farm').css("-webkit-animation",""); // no blingbling on land
+              HideCircle();
+              HideCircleText();
+              sweetAlert("Nice! Look to your left ! ", "", "success");
+              setCircleTarget($('.property0'),true,"right",3,stringCrop);
+              setTimeout(function () {
+                  createCircle();
+              }, 2000);
+
+            }
 
         } else {
             sweetAlert("Oops...", "Specify Land first", "error");
@@ -652,6 +688,13 @@ Template.gameIndex.events({
 
             //reload propertyTable
             set_property_table();
+
+            // step 1.4 for tutorial, point to the stock
+            if (tutorialMode){
+              setCircleTarget($('.crop3'),false,"right",6,stringcrop3);
+              $('.crop3').css("-webkit-animation","leftBtnAnimation 1s infinite");
+              createCircle();
+            }
         }
         else if (gameMode == "Thief") {
             if (currentUser.sta < staminaList["steal"]) {
@@ -1032,20 +1075,35 @@ Template.gamingArea.events({
       // $('.advTutorialContainer').css("background","rgba(255, 255, 255, 0.7)");
       // $('.advTutorialContainer').css("z-index","100");
       // $('.landList').css("z-index","101");
-
-      tutorialMode=true;
-      targetCircleDiv=$('.cropLand');
-      $('.cropLand0').css("-webkit-animation","circleLandAnimation 1s infinite");
-      createCircle();
-      // createCircle($('.cropLand0'));
-      // createCircle($('.characterStatus'));
+      //tutorialSession1();
+      tutorialSession2();
     },
 })
+
+function tutorialSession1(){
+  // start point for tutorial
+  tutorialMode=true;
+  // step 1.1 for tutorial, point to the land
+  setCircleTarget($('.cropLand'),true,"right",3,stringDirt);
+  $('.farm').css("-webkit-animation","circleLandAnimation 1s infinite");
+  createCircle();
+}
+function tutorialSession2(){
+  tutorialMode=true;
+  var tempTN=$('.property_shop_table').find('tr:nth-child(2)').find("td:eq(2)");
+}
+
 // for create tutorial highlight circle by the div class
 function createCircle(){
   if (!tutorialMode){
     return;
   }
+  // if(targetCircleTemp!=targetCircleDiv){
+  //   // for reset default value
+  //   resizeWidth=2;
+  //   circleNeed=true;
+  // }
+  // targetCircleTemp=targetCircleDiv;
   var topT=targetCircleDiv[0].getBoundingClientRect().top;
   var leftT = targetCircleDiv[0].getBoundingClientRect().left;
   var heightT=targetCircleDiv.height();
@@ -1053,40 +1111,101 @@ function createCircle(){
   console.log(topT+","+leftT+","+heightT+","+widthT);
       // top: topT-heightT/4.5,
       // left: leftT-widthT/7.5,
-  var cricleStyle={
-    top: topT-(0.25*heightT),
-    left: leftT-((1.5*heightT-widthT)/2),
-    width: heightT*1.5,
-    height: heightT*1.5,
-    position:"absolute",
-    opacity:1,
-    "border":"2px solid rgb(255, 31, 0)",
-    "border-radius":"99em",
-    "z-index":99,
-    "-webkit-animation":"circleCorlorAnimation 1s infinite"
-  };
-  $('.guideCircleStatus').css(cricleStyle);
+      //(targetCircleDiv[0].className.split(" ")[0])!=("croppedObject")
+  if(circleNeed==true){
+    var cricleStyle={
+      top: topT-(0.25*heightT),
+      left: leftT-((1.5*heightT-widthT)/2),
+      width: heightT*1.5,
+      height: heightT*1.5,
+      position:"absolute",
+      opacity:1,
+      "border":"2px solid rgb(255, 31, 0)",
+      "border-radius":"99em",
+      "z-index":99,
+      "-webkit-animation":"circleCorlorAnimation 1s infinite"
+    };
+    $('.guideCircleStatus').css(cricleStyle);
+  }else{
+  // not to draw circle, but draw text.
+  }
   console.log(leftT);
-  createTip(topT,leftT,heightT,widthT);
+  createTip(topT,leftT,heightT,widthT,currentString,resizeWidth);
+  // if(targetCircleTemp!=targetCircleDiv){
+  //   // for reset default value
+  //   resizeWidth=2;
+  //   circleNeed=true;
+  // }
+  // targetCircleTemp=targetCircleDiv;
 }
-function createTip(_cTop,_cLeft,_cHeight,_cWidth){
-  var tipStyle={
-    position:"absolute",
-    opacity:1,
-    top:_cTop+(_cHeight/3),
-    left:_cLeft+(_cWidth*5/4),
-    // width:"100px",
-    // height:"100px",
-    padding:"20px",
-    "border-radius":"15px",
-    "background-color":"rgb(255, 255, 255)",
-    "z-index":120,
-  };
+function createTip(_cTop,_cLeft,_cHeight,_cWidth,_tString,_resizeWidth){
+  if(stringPosition=="right"){
+    var tipStyle={
+      position:"absolute",
+      opacity:1,
+      top:_cTop+(_cHeight/3),
+      left:_cLeft+(_cWidth*5/4),
+      width:_resizeWidth*_cWidth,
+      // height:"100px",
+      "line-height":"24px",
+      "font-size": "20px",
+      padding:"30px",
+      "border-radius":"15px",
+      "background-color":"rgb(255, 255, 255)",
+      "z-index":120,
+      "transition":".3s",
+    };
+  }
+  if(stringPosition=="down"){
+    var tipStyle={
+      position:"absolute",
+      opacity:1,
+      top:_cTop+(_cHeight*5/4),
+      left:_cLeft-(_cWidth*0.5),
+      width:_resizeWidth*_cWidth,
+      // height:"100px",
+      "line-height":"24px",
+      "font-size": "20px",
+      padding:"30px",
+      "border-radius":"15px",
+      "background-color":"rgb(255, 255, 255)",
+      "z-index":120,
+    };
+  }
+  if(stringPosition=="left"){
+    var tipStyle={
+      position:"absolute",
+      opacity:1,
+      top:_cTop+(_cHeight*0.25),
+      left:_cLeft-(_cWidth*_resizeWidth),
+      width:_resizeWidth*_cWidth,
+      // height:"100px",
+      "line-height":"24px",
+      "font-size": "20px",
+      padding:"30px",
+      "border-radius":"15px",
+      "background-color":"rgb(255, 255, 255)",
+      "z-index":120,
+    };
+  }
   $('.guideCircleText').css(tipStyle);
-  $('.guideCircleText').text("123");
+  $('.guideCircleText').text(_tString);
 }
-function tipContent(){
-
+function setCircleTarget(targetDiv, _cN, _sP, _rW, _cS){
+    targetCircleDiv=targetDiv;
+    circleNeed=_cN;
+    stringPosition=_sP;
+    resizeWidth=_rW;
+    currentString=_cS;
+    //targetCircleTemp=targetCircleDiv;
+}
+function HideCircle(){
+  $('.guideCircleStatus').css("opacity","0");
+  $('.guideCircleStatus').css("z-index","-99");
+}
+function HideCircleText(){
+  $('.guideCircleText').css("opacity","0");
+  $('.guideCircleText').css("z-index","-99");
 }
 
 function PanelControl(panelIndex) {
@@ -1115,6 +1234,25 @@ Template.statusList.events({
     },
     'click .crop3': function () {
         PanelControl(3);
+
+        // step 1.5 for tutorial, no button text, add new guidance in stock
+        if(tutorialMode){
+          $('.crop3').css("-webkit-animation","");
+          var tempSN=$('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)");
+          tempSN.css("-webkit-animation","stockNumAnimation 1s infinite");
+          // tempSN.css("border","2px solid rgb(255, 167, 167)");
+          setCircleTarget(tempSN,true,"right",6,stringStockNum);
+          createCircle(tempSN);
+
+          setTimeout(function () {
+            tempSN.css("-webkit-animation","");
+            tempSN.css("border","");
+            HideCircle();
+            setCircleTarget($('.menuButton'),false,"left",9,stringMenuButton);
+            createCircle($('.menuButton'));
+            $('.menuButton').css("-webkit-animation","menuBtnAnimation 1s infinite");
+          }, 3000);
+        }
     },
     'click .removeLand': function (event) {
 
@@ -1352,6 +1490,14 @@ Template.operationList.events({
             $(".menuButton").fadeTo("slow", 0.7);
             $(".menuButton").addClass("open");
         }
+
+        // step 1.6 for tutorial, add new guidance in Mision
+        if(tutorialMode){
+            $('.menuButton').css("-webkit-animation","");
+            setCircleTarget($('.btnMission'),false,"left",3.5,stringMissionBtn);
+            createCircle($('.btnMission'));
+            $('.btnMission').css("-webkit-animation","rightBtnAnimation 1s infinite");
+        }
     },
     'click .shopOpen': function (e) {
         $(".property_shop").css("display", "inline");
@@ -1363,7 +1509,51 @@ Template.operationList.events({
         $(".property_shop").css("display", "none");
         $(".mission_template").css("display", "inline");
         $(".rank_template").css("display", "none");
+
+        // step 1.7 for tutorial, add new guidance in Mission Page
+        if(tutorialMode){
+          $('.btnMission').css("-webkit-animation","");
+          HideCircleText();
+        }
+
         set_mission_table();
+
+        if(tutorialMode){
+          setTimeout(function () {
+            var cTarget1=$('#mission_table').find("td:nth-child(1)");
+            cTarget1.css("-webkit-animation","missionAnimation 1s infinite");
+            setCircleTarget(cTarget1,false,"left",2,stringMissionName);
+            createCircle();
+
+            setTimeout(function () {
+              cTarget1.css("-webkit-animation","");
+              var cTarget2=$('#mission_table').find("td:nth-child(2), td:nth-child(3)");
+              cTarget2.css("-webkit-animation","missionAnimation 1s infinite");
+              setCircleTarget(cTarget2,false,"left",2,stringMissionReq);
+              createCircle();
+
+              setTimeout(function () {
+                cTarget2.css("-webkit-animation","");
+                var cTarget3=$('#mission_table').find("td:nth-child(4)");
+                cTarget3.css("-webkit-animation","missionAnimation 1s infinite");
+                setCircleTarget(cTarget3,false,"left",3,stringMissionSub);
+                createCircle();
+
+                setTimeout(function () {
+                  HideCircle();
+                  HideCircleText();
+                  $('.mission_template').css('display', 'none');
+                  sweetAlert("Congratulations ! ","Go and plant more ! ","success");
+                  tutorialMode=false; // first tutorial session completed
+                }, 4000);
+
+              }, 4000);
+
+            }, 4000);
+
+          }, 2000);
+        }
+
     },
     'click .rankOpen': function () {
         $(".property_shop").css("display", "none");
