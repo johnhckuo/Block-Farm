@@ -110,7 +110,6 @@ gameIndexCreation = async function () {
     await loadCropList(s_Id);
     await getUserStockList(s_Id);
     await fetchGameInitConfig(s_Id);
-
 }
 
 getStakeholderId = function () {
@@ -138,7 +137,6 @@ gameIndexRend = function () {
     Session.set('userCharacter', currentUser.type);
     Session.set('userLevel', currentUser.level);
     Session.set('SyndicateLevel', currentUser.SyndicateLevel);
-
 
     setInterval(cropSummaryUpdate, 1000);
     setInterval(updateUserStamina, 500);
@@ -192,7 +190,6 @@ Template.gameIndex.rendered = function () {
         });
     }
 }
-
 
 Template.shop.rendered = function () {
 
@@ -266,12 +263,15 @@ Template.characterList.helpers({
         return Session.get('userCharacter');
     },
     expTip: function () {
-        return currentUser.Exp + "/" + levelCap(currentUser.level);
+        _character.depend();
+        return currentUser.exp + "/" + levelCap(currentUser.level);
     },
     staTip: function () {
+        _character.depend();
         return currentUser.sta + "/" + staminaCap(currentUser.level);
     },
     expSyndicate: function () {
+        _character.depend();
         return currentUser.SyndicateExp + "/" + SyndicateLevelCap(currentUser.SyndicateLevel);
     },
 });
@@ -525,11 +525,14 @@ Template.gameIndex.events({
                         $(imgs[i]).parent().html("<img src = '" + prefix + cropTypeList[i].img[3] + postfix + "' />" + cropTypeList[i].name);
                     }
                 }
+                $(".cropObject").css("display", "none");
+                plantMode = false;
+
                 $(".animationImg").html("<img src = '" + prefix + cropTypeList[typeIndex].img[3] + postfix + "' />");
 
                 var difference = elapsedTime(cropList[id].start, cropList[id].end);
                 var exp = Math.floor((difference / (1000 * 30)) * 20);
-                updateUserExp(exp);
+
                 $(".scoreObject").html("+" + exp + "XP");
 
                 var temp2 = $(".expPopText").clone().attr("class", "expPopTextTemp").appendTo(".expProgress");
@@ -543,6 +546,7 @@ Template.gameIndex.events({
                         temp2.css({ display: "none" });
                     }, 2000);
                 }, 1000);
+                updateUserExp(exp);
 
             } else {
                 sweetAlert("Oops...", "Patience is a virtue <3", "error");
@@ -1344,12 +1348,12 @@ document.onmousemove = function (e) {
     cursorY = e.pageY;
 }
 
-function wait(ms){
-   var start = new Date().getTime();
-   var end = start;
-   while(end < start + ms) {
-     end = new Date().getTime();
-  }
+function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+        end = new Date().getTime();
+    }
 }
 
 
@@ -1373,21 +1377,21 @@ var createDBConnection = function () {
     Session.set("current_user_loaded", false);
     Session.set("other_user_loaded", false);
 
-    propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function(){
+    propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function () {
         Session.set("crop_loaded", true);
     });
-    landTypeSub = Meteor.subscribe("landTypeChannel", function(){
+    landTypeSub = Meteor.subscribe("landTypeChannel", function () {
         Session.set("land_loaded", true);
     });
-    missionSub = Meteor.subscribe("missionChannel", function(){
+    missionSub = Meteor.subscribe("missionChannel", function () {
         Session.set("mission_loaded", true);
     });
 
-    userSub = Meteor.subscribe("currentUserChannel", function(){
+    userSub = Meteor.subscribe("currentUserChannel", function () {
         Session.set("current_user_loaded", true);
     });
 
-    otherUserSub = Meteor.subscribe("otherUserChannel", function(){
+    otherUserSub = Meteor.subscribe("otherUserChannel", function () {
         Session.set("other_user_loaded", true);
     });
 
@@ -1631,7 +1635,7 @@ var getUserData = function (s_Id) {
         currentUser.sta = staCap;
     }
     // end = end.split("\"")[1];
-
+    _character.changed();
 }
 
 var updateUserData = function (s_Id) {
@@ -1811,8 +1815,13 @@ var initCropLand = function (id) {
         }
         $(".cropObject").clone().attr("class", "croppedObject croppedObject" + index).attr("cropCount", cropList[index].count).attr("stolenFlag", stolenFlag).appendTo(".surfaceObject").css(styles);
     }
-    createCircle();
+    if (currentCropId != undefined) {
 
+
+        $(".cropObject").html("<img src = '" + prefix + cropTypeList[currentCropId].img[0] + postfix + "' />");
+    }
+
+    createCircle();
 }
 
 var levelCap = function (n) {
@@ -1843,6 +1852,7 @@ var updateStaminaBar = function (consumedSta) {
     $(".staProgressBar").css("width", percent + "%");
     $(".staText").text(Math.floor(percent) + "%");
     //$(".staHoverText").text(currentUser.sta+"/"+staCap);
+    _character.changed();
 }
 
 var updateUserStamina = function () {
@@ -1852,19 +1862,18 @@ var updateUserStamina = function () {
     }
     currentUser.sta += 1;
     updateStaminaBar(0);
-
+    _character.changed();
 }
 
 var updateUserExp = function (exp) {
     if (currentUser.level < 46) {
         currentUser.exp += parseInt(exp);
-        currentUser.totalExp += currentUser.exp;
+        currentUser.totalExp += exp;
         var lvlCap = levelCap(currentUser.level);
 
         if (currentUser.exp >= lvlCap) {
 
             currentUser.level += 1;
-            _character.changed();
             Session.set('userLevel', currentUser.level);
             currentUser.exp = currentUser.exp - lvlCap;
 
@@ -1872,64 +1881,40 @@ var updateUserExp = function (exp) {
             currentUser.sta = staminaCap(currentUser.level);
             updateStaminaBar(0);
 
-            var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.totalExp;
-            Meteor.call('updateUserExp', currentUser.exp);
+            Meteor.call('updateUserExp', exp, currentUser.exp);
             //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
             var p_Id = Math.floor(Math.random() * 3);
-            Meteor.call('playerLevelUp', p_Id);
-
-            levelUp("userLevel");
-            getUserData(s_Id);
-            lvlCap = levelCap(currentUser.level);
-            if (currentUser.level % 5 == 0) {
-                Meteor.call('moveUserLandPosition', currentUser.landSize);
-                //GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
-                $(".unlockCropId").html("<h3>Unlock Crop: " + cropTypeList[cropTypeList.length - 1].name + "</h3>");
-            } else {
-                $(".unlockCropId").html('');
-            }
-            rerenderCropLand(s_Id);
-            lvlCap = levelCap(currentUser.level);
-            Session.set("unlockCrop", cropTypeList.length - 1);
-
-            // PlayerSettingInstance.playerLevelUp(s_Id, Math.floor(Math.random()*3), {from:web3.eth.accounts[currentAccount], gas:3000000}, function(){
-            //     levelUp("userLevel");
-            //     getUserData(s_Id);
-            //     rerenderCropLand(s_Id);
-            //     lvlCap = levelCap(currentUser.level);
-            //     if (currentUser.level % 5 == 0){
-            //         $(".unlockCropId").html("<h3>Unlock Crop: "+cropTypeList[cropTypeList.length-1].name+"</h3>");
-            //     }else{
-            //         $(".unlockCropId").html('');
-            //     }
-
-            //     getUserData(s_Id);
-            //     if((currentUser.level % 5) == 0){
-            //         GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
-            //     }
-            //     rerenderCropLand(s_Id);
-            //     lvlCap = levelCap(currentUser.level);
-            //     Session.set("unlockCrop", cropTypeList.length - 1);
-            // });
-
+            Meteor.call('playerLevelUp', p_Id, function () {
+                levelUp("userLevel");
+                getUserData(s_Id);
+                lvlCap = levelCap(currentUser.level);
+                if (currentUser.level % 5 == 0) {
+                    Meteor.call('moveUserLandPosition', currentUser.landSize, function () {
+                        rerenderCropLand(s_Id);
+                    });
+                    //GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
+                    $(".unlockCropId").html("<h3>Unlock Crop: " + cropTypeList[cropTypeList.length - 1].name + "</h3>");
+                } else {
+                    $(".unlockCropId").html('');
+                    rerenderCropLand(s_Id);
+                }
+                lvlCap = levelCap(currentUser.level);
+                Session.set("unlockCrop", cropTypeList.length - 1);
+            });
         } else {
-            var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.totalExp;
-            Meteor.call('updateUserExp', currentUser.exp);
-            //Meteor.users.update(Session.get("id"), { $set: { 'profile.game.stakeholder.exp': currentUser.exp, 'profile.game.stakeholder.totalExp': db_totalExp + currentUser.exp } });
-            //CongressInstance.updateUserExp(s_Id, currentUser.exp, {from:web3.eth.accounts[currentAccount], gas:2000000});
+            Meteor.call('updateUserExp', exp, currentUser.exp);
         }
-
         var percent = Math.floor((currentUser.exp / lvlCap) * 100);
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
-        //$(".expHoverText").text(currentUser.exp+ " / " +lvlCap);
+        _character.changed();
     }
 }
 
 var updateSyndicateExp = function (exp) {
     if (currentUser.SyndicateLevel <= 9) {
         currentUser.SyndicateExp += parseInt(exp);
-        currentUser.SyndicateTotalExp += currentUser.SyndicateExp;
+        currentUser.SyndicateTotalExp += parseInt(exp);
         var lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
 
         if (currentUser.SyndicateExp >= lvlCap) {
@@ -1939,26 +1924,19 @@ var updateSyndicateExp = function (exp) {
 
             currentUser.SyndicateLevel += 1;
             $(".front").find("h3").text("LV. " + currentUser.SyndicateLevel);
-            _character.changed();
+
             Session.set('SyndicateLevel', currentUser.SyndicateLevel);
             currentUser.SyndicateExp = currentUser.SyndicateExp - lvlCap;
             levelUp('Syndicate');
             lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
         }
-        Meteor.call('updateSyndicateExp', currentUser.SyndicateExp, currentUser.SyndicateLevel);
-        //var db_totalExp = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.syndicateData.totalExp;
-        //Meteor.users.update(Session.get("id"), { $set: { 'profile.game.syndicateData.exp': currentUser.SyndicateExp, 'profile.game.syndicateData.totalExp': db_totalExp + currentUser.SyndicateExp, 'profile.game.syndicateData.level': currentUser.SyndicateLevel } });
-        //CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
+        Meteor.call('updateSyndicateExp', exp, currentUser.SyndicateLevel);
 
         var percent = (currentUser.SyndicateExp / lvlCap) * 100;
         $(".SyndicateExpProgressBar").css("width", percent + "%");
-        //$(".SyndicateExpText").text(currentUser.SyndicateExp+"/"+lvlCap);
+        $(".SyndicateExpText").text(percent + "%");
+        _character.changed();
     }
-    //CongressInstance.updateSyndicateExp(s_Id, currentUser.SyndicateExp, currentUser.SyndicateLevel,{from:web3.eth.accounts[currentAccount], gas:2000000});
-
-    var percent = Math.floor((currentUser.SyndicateExp / lvlCap) * 100);
-    $(".SyndicateExpProgressBar").css("width", percent + "%");
-    $(".SyndicateExpText").text(percent + "%");
 }
 
 var levelUp = function (_type) {
@@ -2143,20 +2121,20 @@ get_propertyType_setting = async function (_length) {
     property_type = await callPromise("callContract", "Property", "getPropertyType", []);
 
     console.log(property_type);
-    property_type.sort(function(crop1, crop2){
+    property_type.sort(function (crop1, crop2) {
         if (crop1[1] > crop2[1]) return 1;
         if (crop1[1] < crop2[1]) return -1;
         return 0;
     });
-        console.log(property_type);
+    console.log(property_type);
 
-    if (property_type.length != _length){
+    if (property_type.length != _length) {
         loading(0);
         sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
         return;
     }
 
-    for (var i = 0 ; i < property_type.length ; i++){
+    for (var i = 0; i < property_type.length; i++) {
         var _name = property_type[i][0];
         var _id = property_type[i][1];
         var _rating = property_type[i][3];
@@ -2165,7 +2143,7 @@ get_propertyType_setting = async function (_length) {
         display_field.push(data);
     }
 
-    
+
 }
 
 set_property_table = function () {
@@ -2566,8 +2544,13 @@ get_rank_data = function () {
     var rawData = Meteor.users.find().fetch();
     var rankData = [];
     for (var i = 0; i < rawData.length; i++) {
-        obj = { 'name': rawData[i].profile.game.stakeholder.name, 'address': rawData[i].profile.basic.address, 'lv': rawData[i].profile.game.stakeholder.level };
-        rankData.push(obj);
+        try {
+            obj = { 'name': rawData[i].profile.game.stakeholder.name, 'address': rawData[i].profile.basic.address, 'lv': rawData[i].profile.game.stakeholder.level };
+            rankData.push(obj);
+        }
+        catch (e) {
+            console.log('did not verified yet');
+        }
     }
     sorted = selectedSort(rankData);
     set_rank_table(sorted);
@@ -2594,8 +2577,8 @@ set_rank_table = function (data) {
     tr = $('<tr></tr>');
     tr.append($('<th></th>', { text: 'Rank', style: 'width:5vw' }));
     tr.append($('<th></th>', { text: 'Name', style: 'width:8vw' }));
-    tr.append($('<th></th>', { text: 'Address', style: 'width:20vw' }));
-    tr.append($('<th></th>', { text: 'Lv', style: 'width:5vw' }));
+    tr.append($('<th></th>', { text: 'Address', style: 'width:18vw' }));
+    tr.append($('<th></th>', { text: 'Lv', style: 'width:5vw;' }));
     table.append(tr);
     //header
     //content
@@ -2617,11 +2600,11 @@ set_rank_table = function (data) {
         }
         td = $('<td></td>', { text: (i + 1) });
         tr.append(td);
-        td = $('<td></td>', { text: data[i].name });
+        td = $('<td></td>', { text: data[i].name, style: 'word-wrap:break-word;' });
         tr.append(td);
-        td = $('<td></td>', { text: data[i].address });
+        td = $('<td></td>', { text: data[i].address, style: 'word-wrap:break-word;' });
         tr.append(td);
-        td = $('<td></td>', { text: data[i].lv });
+        td = $('<td></td>', { text: data[i].lv, style: 'word-wrap:break-word;' });
         tr.append(td);
         table.append(tr);
     }

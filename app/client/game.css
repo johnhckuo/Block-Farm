@@ -647,6 +647,7 @@
   text-align: center;
   margin-top:1vh;
   margin-left:2vw;
+  table-layout:fixed;
 }
 
 .rank_table tr{
@@ -658,6 +659,7 @@
   height: 7vh;
   vertical-align: middle;
   padding-right:1vw;
+
 }
 
 .onBoard{
