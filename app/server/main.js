@@ -12,6 +12,7 @@ var cropsPerLvl = 3;
 if (Meteor.isServer) {
 
   Meteor.startup(function () {
+
     Meteor.publish('propertyTypeChannel', function () {
       return property_type.find();
     });
@@ -68,7 +69,7 @@ if (Meteor.isServer) {
   }
 
   
-var callContract_api = function (contract, method, args) {
+callContract_api = function (contract, method, args) {
     var req = prefix;
     switch (contract) {
       case "Property":
@@ -88,7 +89,7 @@ var callContract_api = function (contract, method, args) {
 }
 
 
-var callContract_api_callback = function(args, callback){
+callContract_api_callback = function(args, callback){
       var tokenIndex = args% token.length;
       var req = prefix+Property+"/getPropertyType?token=" + token[tokenIndex];
       updateCall.data.params = args;
@@ -101,19 +102,7 @@ var callContract_api_callback = function(args, callback){
       });
 }
 
-
-var multipleApiCall = function(callback){
-    var results = [];
-    try{
-
-    }catch(e){
-      console.log("[multipleApiCall] "+e);
-      return e;
-    }
-}
-
-
-function wait(ms){
+wait = function(ms){
    var start = new Date().getTime();
    var end = start;
    while(end < start + ms) {
@@ -138,7 +127,7 @@ function wait(ms){
                     results.push(res.data.results);
                     if (results.length == cropTypeList.length){
                       finalResult = results;
-                      //console.log(res);
+                      console.log(finalResult);
 
                       //return {type:"success", result:res}; 
                     }
@@ -236,20 +225,20 @@ function wait(ms){
       return { type: "success", result: "" };
     },
     'init': function () {
-      // console.log("------------------ Data Init ------------------");
-      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      // if (res.data.results[0] != 0){
-      //   console.log("[init] Data has been initialized");
-      //   return;
-      // }
+      console.log("------------------ Data Init ------------------");
+      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      if (res.data.results[0] != 0){
+        console.log("[init] Data has been initialized");
+        return;
+      }
 
-      // try{
-      //     for (var i = 0; i< cropTypeList.length ; i++){
-      //       var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-      //     }
-      // }catch(e){
-      //     console.log("[init] Error initializing data on blockcypher");
-      // }
+      try{
+          for (var i = 0; i< cropTypeList.length ; i++){
+            var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+          }
+      }catch(e){
+          console.log("[init] Error initializing data on blockcypher");
+      }
 
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });
@@ -262,6 +251,10 @@ function wait(ms){
         _missionList[missionItem[i].missionId].missionItem.push(obj);
       }
       mission.upsert({ name: _missionList.name }, { data: _missionList });
+    },
+    'test':function(){
+          initData();
+
     }
   });
 }

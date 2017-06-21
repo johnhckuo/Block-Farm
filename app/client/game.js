@@ -75,7 +75,7 @@ var currentClickedCrop = null;
 var currentClickedLand = null;
 var removeMode = false;
 
-var floatOffset = 1000;
+var floatOffset = 1;
 
 var checkMissionInterval = null;
 var theifId = 0;
@@ -113,7 +113,7 @@ gameIndexCreation = async function () {
 }
 
 getStakeholderId = function () {
-    if (Session.get("id") == undefined) {
+    if (Session.get("id") == null) {
         sweetAlert("Oops...", "Please Register First", "error");
         Router.go('/');
         return;
