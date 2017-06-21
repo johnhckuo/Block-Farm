@@ -3,41 +3,19 @@ import { Accounts } from 'meteor/accounts-base';
 import { property_type } from '../imports/collections.js';
 import { land_type } from '../imports/collections.js';
 import { mission } from '../imports/collections.js';
+import { matches } from '../imports/collections.js';
+
 import './GameLogic/Congress.js';
 import './GameLogic/usingProperty.js';
 import './GameLogic/GameProperty.js';
 
 var cropsPerLvl = 3;
+var currentToken = 1;
 
 if (Meteor.isServer) {
 
-  Meteor.startup(function () {
-
-    Meteor.publish('propertyTypeChannel', function () {
-      return property_type.find();
-    });
-
-    Meteor.publish('landTypeChannel', function () {
-      return land_type.find();
-    });
-
-    Meteor.publish('missionChannel', function () {
-      return mission.find();
-    });
-
-    Meteor.publish("currentUserChannel", function () {
-        return Meteor.users.find({_id:this.userId});
-    });
-
-    Meteor.publish("otherUserChannel", function () {
-        return Meteor.users.find({},{fields: {'profile.game.stakeholder.name': 1, 'profile.basic.address': 1, "profile.game.stakeholder.level":1}});
-    });
-
-  })
-
-
   var API_Register_backend = function () {
-    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/addrs?token=" + token[0]);
+    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/addrs?token=" + token[currentToken]);
   }
 
   var getEther = function (addr) {
@@ -50,7 +28,7 @@ if (Meteor.isServer) {
     config.headers['Content-Type'] = 'application/json';
     console.log(config);
 
-    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/faucet?token=" + token[0], config);
+    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/faucet?token=" + token[currentToken], config);
   }
 
 
@@ -81,7 +59,7 @@ callContract_api = function (contract, method, args) {
       default:
         return "error";
     }
-    req += "/" + method + "?token=" + token[0];
+    req += "/" + method + "?token=" + token[currentToken];
     console.log("[callContract_api] => Contract:"+contract+" | Method:"+method+" | args:"+args);
     updateCall.data.params = args;
     return Meteor.http.call("POST", req, updateCall);
@@ -89,9 +67,9 @@ callContract_api = function (contract, method, args) {
 }
 
 
-callContract_api_callback = function(args, callback){
-      var tokenIndex = args% token.length;
-      var req = prefix+Property+"/getPropertyType?token=" + token[tokenIndex];
+callContract_api_callback = function(method, args, callback){
+      var tokenIndex = args[0]% token.length;
+      var req = prefix+Property+"/"+ method +"?token=" + token[tokenIndex];
       updateCall.data.params = args;
       Meteor.http.call("POST", req, updateCall, function(err, res){
         if (err){
@@ -118,12 +96,12 @@ wait = function(ms){
     'callContract': function(contract, method, args){
         var finalResult;
 
-        if (contract == "Property" && method == "getPropertyType"){
+        if (contract == "Property" && method == "getPropertyTypeByUserId"){
             var results = [];
             try{
-              for (var i = 0 ; i < cropTypeList.length ; i++){
+              for (var i = 0 ; i < cropTypeList.length ; i++){ // skip the first property
                 wait(10);
-                callContract_api_callback([i], function(res){
+                callContract_api_callback(method, [i, args], function(res){
                     results.push(res.data.results);
                     if (results.length == cropTypeList.length){
                       finalResult = results;
@@ -251,6 +229,18 @@ wait = function(ms){
         _missionList[missionItem[i].missionId].missionItem.push(obj);
       }
       mission.upsert({ name: _missionList.name }, { data: _missionList });
+    },
+    'insertMatch':function(match){
+      console.log(matches.find().fetch());
+
+      try{
+        matches.insert({id:matches.find().count(), priorities:match.priorities, owners:match.owners, properties:match.properties, tradeable:match.tradeable});
+      }catch(e){
+        console.log("[insertMatch] "+e);
+        return e;
+      }
+
+      return "success";
     },
     'test':function(){
           initData();

@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 export const property_type = new Mongo.Collection('property_type');
 export const land_type = new Mongo.Collection('land_type');
 export const mission = new Mongo.Collection('mission');
+export const matches = new Mongo.Collection('matches');
 
 
 property_type.allow({

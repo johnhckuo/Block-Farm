@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.2;
 contract Matchmaking{
 
     struct Match{
@@ -45,19 +45,19 @@ contract Matchmaking{
         return matches.length;
     }
 
-    function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result){
-        matches.length++;
+    function gameCoreMatchingInit(uint _visitedCount, string _result){
+        uint _matchId = matches.length;
 
         matches[_matchId].id = _matchId;
         matches[_matchId].visitedCount = _visitedCount;
         matches[_matchId].result = _result;
     }
 
-    function gameCoreMatchingDetail(uint _matchId, int256[] _priority, uint[] _owner, uint[] _property){
+    function gameCoreMatchingDetail(int256[] _priority, uint[] _owner, uint[] _property){
+        uint _matchId = matches.length;
         matches[_matchId].visitedPriorities = _priority;
         matches[_matchId].visitedOwners = _owner;
         matches[_matchId].visitedProperties = _property;
-
 
         for (uint i = 0 ; i < matches[_matchId].visitedOwners.length ; i++){
            matches[_matchId].confirmation.push(1);
@@ -65,6 +65,8 @@ contract Matchmaking{
 
            //property.updateTradingStatus(matches[_matchId].visitedProperties[i], true);
         }
+
+        matches.length++;
 
         /*
         for (uint k = 0 ; k < matches[_matchId].visitedOwners.length-1 ; k++){

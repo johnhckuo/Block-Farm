@@ -4,6 +4,7 @@ import { Session } from 'meteor/session';
 import { property_type } from '../imports/collections.js';
 import { land_type } from '../imports/collections.js';
 import { mission } from '../imports/collections.js';
+import { matches } from '../imports/collections.js';
 import { callPromise } from '../imports/promise.js';
 
 var landSize = 3;
@@ -1355,7 +1356,7 @@ function wait(ms){
 
 var checkDBLoaded = function (callback) {
     var fetcher = setInterval(function () {
-        if (Session.get("crop_loaded") && Session.get("land_loaded") && Session.get("mission_loaded") && Session.get("current_user_loaded") && Session.get("other_user_loaded")) {
+        if (Session.get("crop_loaded") && Session.get("land_loaded") && Session.get("mission_loaded") && Session.get("current_user_loaded") && Session.get("other_user_loaded") && Session.get("matches_loaded")) {
             console.log("server connection established!");
             clearInterval(fetcher);
             callback("done");
@@ -1372,6 +1373,7 @@ var createDBConnection = function () {
     Session.set("mission_loaded", false);
     Session.set("current_user_loaded", false);
     Session.set("other_user_loaded", false);
+    Session.set("matches_loaded", false);
 
     propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function(){
         Session.set("crop_loaded", true);
@@ -1392,22 +1394,37 @@ var createDBConnection = function () {
     });
 
 
-    propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function () {
-        Session.set("crop_loaded", true);
-    });
-    landTypeSub = Meteor.subscribe("landTypeChannel", function () {
-        Session.set("land_loaded", true);
-    });
-    missionSub = Meteor.subscribe("missionChannel", function () {
-        Session.set("mission_loaded", true);
-    });
-    userSub = Meteor.subscribe("currentUserChannel", function () {
-        Session.set("current_user_loaded", true);
+    var matchmakingChecked = false;
+    matchesSub = Meteor.subscribe("matchesChannel", function() {
+        Session.set("matches_loaded", true);
+        matches.find().observeChanges({
+            added: async function(item, fields){ 
+
+                if (!matchmakingChecked){
+                    var temp = await callPromise("callContract", "Matchmaking", "getMatchMakingLength", []);
+                    console.log(temp)
+                    matchmakingLength = temp.result.results[0];
+                    matchmakingChecked = true;
+                }
+                var matchId = fields.id;
+                if (matchId > matchmakingLength-2){
+                    var res = await callPromise("callContract", "Matchmaking", "getMatchMaking", [matchId]);
+                    console.log(res);
+
+                    if (jQuery.inArray(currentUser.s_Id, res.owners) == -1){
+                            var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
+                            if (jQuery.inArray(matchId, data) == -1){
+                                console.log(matchId);
+                            }
+                    }
+                }
+
+                //Meteor.users.update(userId, { $set: { profile: profile } });
+                //Meteor.users.
+            }
+        });
     });
 
-    otherUserSub = Meteor.subscribe("otherUserChannel", function () {
-        Session.set("other_user_loaded", true);
-    });
 }
 
 var initAllBtns = function () {
@@ -2139,8 +2156,8 @@ get_user_property = function () {
 get_propertyType_setting = async function (_length) {
     display_field = [];
     var property_type;
-
-    property_type = await callPromise("callContract", "Property", "getPropertyType", []);
+    var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
+    property_type = await callPromise("callContract", "Property", "getPropertyTypeByUserId", s_Id);
 
     console.log(property_type);
     property_type.sort(function(crop1, crop2){
@@ -2356,7 +2373,7 @@ save_rating_setting = async function () {
     for (i = 0; i < onchangedIndex.length; i++) {
         var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
         var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
-        var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate * floatOffset, "update", s_Length, s_Id]);
+        var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
         /*
         usingPropertyInstance.updatePropertyTypeRating(_id, _rate * floatOffset, "update", { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
             if (err) {
