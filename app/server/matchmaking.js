@@ -1,9 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Promise } from 'meteor/promise';
-
+import { matchesCollection } from '../imports/collections.js';
 
 var properties = [];
 var propertyType = [];
+var diffThreshold = -100;
+
 
 wait = function(ms){
    var start = new Date().getTime();
@@ -14,7 +16,9 @@ wait = function(ms){
 }
 
 initData = function(){
-
+    
+    properties = [];
+    propertyType = [];
     /*--------------
        properties
     ---------------*/
@@ -23,6 +27,10 @@ initData = function(){
     var raw = Meteor.users.find({}, {fields:{'profile.game.property':1}}).fetch();
     
     for (var i = 0 ; i < raw.length ; i++){
+        if (raw[i].profile.game == undefined){
+          console.log(raw[i].profile.game)
+          continue;
+        }
         rawProperties.push(raw[i].profile.game.property);
     }
 
@@ -34,18 +42,17 @@ initData = function(){
       }
     }
     console.log("Property Data Loading Complete");
-    console.log(properties)
-
     /*--------------
       propertyType
     ---------------*/
     try{
       for (var i = 0 ; i < cropTypeList.length ; i++){
         wait(10);
-        callContract_api_callback([i], function(res){
-
+        callContract_api_callback("getPropertyType", [i], function(res){
+          console.log(i+"."+res.data.results);
             propertyType.push(res.data.results);
             if (propertyType.length == cropTypeList.length){
+              console.log(propertyType)
 
               for (var j = 0 ; j < propertyType.length ;j++){
                   propertyType[j] = {avg:propertyType[j][2], ratings:propertyType[j][3]};
@@ -99,7 +106,7 @@ var sort = function(list){
 }
 
 findOrigin = async function(){
-    console.log("start");
+    console.log("----------------------------Matchmaking-----------------------------");
     //reset
     visitedProperty = [];
     visitedCount = 0;  //in order to ignore the rest of the array elem
@@ -131,8 +138,8 @@ findOrigin = async function(){
         var self_Importance = propertyType[properties[i].type].ratings[owner];
 
         var diff = averageRating - self_Importance;
-        console.log(averageRating+"|"+self_Importance);
-        if (diff < -100){
+        console.log("["+i+"] "+averageRating+"|"+self_Importance);
+        if (diff < diffThreshold){
             continue;
         }
 
@@ -153,12 +160,13 @@ findOrigin = async function(){
     visitedCount = 0;
     visitedProperty.push({id : origin, priority : priorityList[0].priority, tradeable:priorityList[0].tradeable})
 
+    console.log(priorityList)
     totalGoThroughList.push(priorityList);
     visitedCounts.push(0);
 
-    success = await findVisitNode();
 
     console.log("Entry Point Found: #"+origin);
+    success = await findVisitNode();
     //return "success";
     return success;
 }
@@ -178,7 +186,7 @@ var searchNeighborNodes = function(visitNode){
     //var length = Promise.await(callContract("usingProperty", "getPropertiesLength", []));
     goThroughList = [];
     console.log("start searching");
-
+    console.log("[System Log] Current Node :"+visitNode);
     /*
             var newOwner = Promise.await(callContract("usingProperty", "getPartialProperty", [i]));
             var currentOwner = Promise.await(callContract("usingProperty", "getPartialProperty", [visitNode]));
@@ -196,16 +204,18 @@ var searchNeighborNodes = function(visitNode){
       var currentType = properties[i].type;
         //if (i == visitNode || Promise.await(callContract("usingProperty", "checkTradeable", [i])) == 0 || Promise.await(callContract("usingProperty", "checkTradingStatus", [i]))){
         if (i == visitNode || properties[i].tradeable == 0 || properties[i].isTrading || newOwner == currentOwner || currentType == newType){
+            console.log("check"+i)
             continue;
         }
 
 
         var diff = returnPriority(visitNode, i);
-
-        if (diff < -100){
+        console.log("[diff]"+diff)
+        if (diff < diffThreshold){
           //this need to be modified to user config
           continue;
         }
+        console.log("[visitnode"+visitNode+"] "+diff);
 
         goThroughList.push({
           id:i,
@@ -213,7 +223,6 @@ var searchNeighborNodes = function(visitNode){
           tradeable:properties[i].tradeable
         });
     }
-    console.log("%c[System Log] Current Node :"+visitNode, "color:#FF44AA");
     console.log(goThroughList)
 
     if (goThroughList.length == 0){
@@ -262,7 +271,7 @@ var findVisitNode = function(){
     if (found){
       break;
     }
-
+    console.log(totalGoThroughList)
     goThroughList= searchNeighborNodes(totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id);
 
     flag = false;
@@ -323,9 +332,9 @@ var registerNode = function(){
 
 var verifyNode =  function(){
   console.log("start searching");
-
+  console.log(visitingIndex)
   if (totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]] != undefined && totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id == origin && visitingIndex != 0){
-      console.log("%c----------------------------Success-----------------------------", "color:#00ffff");
+      console.log("----------------------------Success-----------------------------");
       var visitedProperty_temp = [];
       for (var h = 0 ; h < visitedProperty.length ; h++){
           visitedProperty_temp.push(visitedProperty[h].id);
@@ -351,35 +360,12 @@ var verifyNode =  function(){
 
       for (var i = 0 ; i < visitedProperty.length; i++){
         tempJson.visitedProperties.push(visitedProperty[i].id);
-
-        if (visitedOwner[i].c){
-          tempJson.visitedOwners.push(visitedOwner[i].c[0]);
-
-        }else{
-          tempJson.visitedOwners.push(visitedOwner[i]);
-
-        }
-
-        if (visitedPriority[i].c){
-          tempJson.visitedPriorities.push(visitedPriority[i].c[0]);
-
-        }else{
-          tempJson.visitedPriorities.push(visitedPriority[i]);
-
-        }
-
+        tempJson.visitedOwners.push(visitedOwner[i]);
+        tempJson.visitedPriorities.push(visitedPriority[i]);
         console.log(visitedTradeable[i])
-        if (visitedTradeable[i].c){
-          tempJson.visitedTradeable.push(visitedTradeable[i].c[0]);
-
-        }else{
-          tempJson.visitedTradeable.push(visitedTradeable[i]);
-
-        }
-
-
+        tempJson.visitedTradeable.push(visitedTradeable[i]);
       }
-      console.log("yo---")
+      console.log("Now Update Contract Content");
       matches.push(tempJson);
 
       console.log(tempJson.visitedProperties);
@@ -387,22 +373,28 @@ var verifyNode =  function(){
 
       console.log(tempJson.visitedOwners);
 
-      var res = MatchmakingInstance.gameCoreMatchingInit(visitedOwner.length, "null", {from:web3.eth.accounts[currentAccount], gas:100000});
-
-      var res2 = MatchmakingInstance.gameCoreMatchingDetail(tempJson.visitedPriorities, tempJson.visitedOwners, tempJson.visitedProperties, tempJson.visitedTradeable,  {from:web3.eth.accounts[currentAccount], gas:2000000});
-
-      var length = MatchmakingInstance.getMatchMakingLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
-
-      gameCoreMatchingDetail(length-1, tempJson.visitedPriorities, tempJson.visitedOwners, tempJson.visitedProperties);
 
 
+      //var length = MatchmakingInstance.getMatchMakingLength.call({from:web3.eth.accounts[currentAccount]}).c[0];
+
+      var res = Meteor.call("insertMatch", {priorities:tempJson.visitedPriorities, owners:tempJson.visitedOwners, properties:tempJson.visitedProperties, tradeable:tempJson.visitedTradeable});
+
+
+      console.log("Insert Complete")
+      console.log(matchesCollection.find().fetch());
+
+      //gameCoreMatchingDetail(length-1, tempJson.visitedPriorities, tempJson.visitedOwners, tempJson.visitedProperties);
+
+      var res = Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [visitedOwner.length, "null"]);
+      //var res = MatchmakingInstance.gameCoreMatchingInit(visitedOwner.length, "null", {from:web3.eth.accounts[currentAccount], gas:100000});
+      var res2 = Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [tempJson.visitedPriorities, tempJson.visitedOwners, tempJson.visitedProperties, tempJson.visitedTradeable]);
+      //var res2 = MatchmakingInstance.gameCoreMatchingDetail(tempJson.visitedPriorities, tempJson.visitedOwners, tempJson.visitedProperties, tempJson.visitedTradeable,  {from:web3.eth.accounts[currentAccount], gas:2000000});
+      var length = Meteor.call("callContract", "Matchmaking", "getMatchMakingLength", []);
       return true;
 
-
-
   }else{
-      if (visitingIndex == 1){
-        console.log("%c-------------Commence Node Searching Process---------------", "color:#00ffff");
+      if (visitingIndex == 0){
+        console.log("-------------Commence Node Searching Process---------------");
       }
       return false;
 
@@ -418,13 +410,13 @@ var returnPriority = function(visitNode, i){
 var matchFail = function(errCode){
   switch (errCode){
     case 0:
-      console.log("%c[Error Log] No available neighbor nodes", "color: #ff0000");
+      console.log("[Error Log] No available neighbor nodes");
       break;
     case 1:
-      console.log("%c[Error Log] No unvisited neighbor nodes left", "color: #ff0000");
+      console.log("[Error Log] No unvisited neighbor nodes left");
       break;
     case 2:
-      console.log("%c[Error Log] No origin entry points found, Abort!", "color: #ff0000");
+      console.log("[Error Log] No origin entry points found, Abort!");
       break;
   }
   return 0;

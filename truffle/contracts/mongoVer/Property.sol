@@ -1,8 +1,6 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.2;
 
 contract Property{
-
-    event propertyAdded(bytes32);
 
     struct PropertyType{
         string name;
@@ -19,16 +17,8 @@ contract Property{
         owner = msg.sender;
     }
 
-    /*  ----------------------------------
-        |                                |
-        |       property type            |
-        |                                |
-        ----------------------------------  */
-
     function updatePropertyTypeRating(uint _id, uint rate, string operation, uint s_Length, uint s_Id){
         if (equal(operation,"update")){
-
-            s_Length = s_Length-1; // ignore founder rating
 
             propertyTypeList[_id].rating[s_Id] = rate;
 
@@ -56,21 +46,19 @@ contract Property{
     }
 
     function getPropertyType(uint p_Id) constant returns(string, uint, uint, uint[]){
-        if (propertyTypeList[p_Id].name == 0){
-            throw;
-        }
         return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].rating);
     }
 
+    function getPropertyTypeByUserId(uint p_Id, uint s_Id) constant returns(string, uint, uint, uint){
+        return(propertyTypeList[p_Id].name, propertyTypeList[p_Id].id, propertyTypeList[p_Id].averageRating, propertyTypeList[p_Id].rating[s_Id]);
+    }
+
     function getPropertyTypeId(uint p_Id) constant returns(uint){
-        if (propertyTypeList[p_Id].name == 0){
-            throw;
-        }
         return propertyTypeList[p_Id].id;
     }
 
     function getPropertyTypeLength() constant returns(uint){
-        return propertyTypeList.length;
+        return propertyTypeList.length; 
     }
 
     /// @dev Does a byte-by-byte lexicographical comparison of two strings.

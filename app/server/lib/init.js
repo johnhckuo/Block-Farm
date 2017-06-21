@@ -3,6 +3,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { property_type } from '../../imports/collections.js';
 import { land_type } from '../../imports/collections.js';
 import { mission } from '../../imports/collections.js';
+import { matches } from '../../imports/collections.js';
 
 
 if (Meteor.isServer) {
@@ -20,6 +21,7 @@ if (Meteor.isServer) {
     /*----------------------
         init declaration
     -----------------------*/
+    //, 
     // john powei johng bryant
     token = ["d4659f9b512a434287fea776cd6f0fe6", "99fc27a26a42455cbc529923e3a6f8ad", 
     "6df03f5a22014eab8adb54fb83223ff0", "e22aef855bb045f7904fc4712e7668a9", 
@@ -38,8 +40,8 @@ if (Meteor.isServer) {
     //token = "68a657243ee1461db6376af481cdb479";
     privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
 
-    Property = "ae7430c3a5472ecf6857641d392c6def8a70cb37";
-    Matchmaking = "cecf2d43a689bab41cba2c81526ea1885533cb6d";
+    Property = "d421160d0cdcc6418d431cb5123f297dd616e68d";
+    Matchmaking = "60bbb6a997e5bdfc25e8c200116247a77010e17f";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
@@ -117,6 +119,39 @@ if (Meteor.isServer) {
 
         gameInitData.mission.accountStatus = [];
     }
+
+    /*-----------------------
+        collection pulish
+    -------------------------*/
+
+    Meteor.startup(function () {
+
+        Meteor.publish('propertyTypeChannel', function () {
+        return property_type.find();
+        });
+
+        Meteor.publish('landTypeChannel', function () {
+        return land_type.find();
+        });
+
+        Meteor.publish('missionChannel', function () {
+        return mission.find();
+        });
+
+        Meteor.publish("currentUserChannel", function () {
+            return Meteor.users.find({_id:this.userId});
+        });
+
+        Meteor.publish("otherUserChannel", function () {
+            return Meteor.users.find({},{fields: {'profile.game.stakeholder.name': 1, 'profile.basic.address': 1, "profile.game.stakeholder.level":1}});
+        });
+
+        Meteor.publish("matchesChannel", function(){
+            return matches.find();
+        });
+
+
+    })
 
 
 }
