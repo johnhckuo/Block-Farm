@@ -4,10 +4,8 @@ if (Meteor.isServer) {
         'updateGameData': function (_landSize, _level) {
             var userId = Meteor.userId();
             var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
-            console.log(_stakeholder.level);
             _stakeholder.landSize = _landSize;
             _stakeholder.level = _level;
-            console.log(_stakeholder.level);
             Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },
         'updateStakeholderLastLogin': function (_lastLogin) {

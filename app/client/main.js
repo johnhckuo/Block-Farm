@@ -73,7 +73,7 @@ if (Meteor.isClient) {
       console.log('Template render complete');
       renderChecked = true;
       var fetcher = setInterval(async function () {
-        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")  && Session.get("other_user_loaded")) {
+        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")) {
           console.log("server connection established!");
           var initCounter = property_type.find().count();
           if (initCounter == 0) {

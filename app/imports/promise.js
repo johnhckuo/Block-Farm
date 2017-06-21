@@ -6,3 +6,12 @@ export const callPromise = (method, contract, contractMethod, args) => {
     });
   });
 }
+
+export const dbPromise = (method, args) => {
+  return new Promise((resolve, reject) => {
+    Meteor.call(method, args,  (error, result) => {
+      if (error) reject(error);
+      resolve(result);
+    });
+  });
+}

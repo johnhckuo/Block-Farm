@@ -955,6 +955,10 @@
   text-align: center;
   border-color: rgba(119, 150, 179, 1);
 }
+.shop_tradable_input_isTrading{
+  background-color: rgba(119, 150, 179, 1);
+}
+
 .expProgress{
   position: relative;
   width: 10vw;

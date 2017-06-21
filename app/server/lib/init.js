@@ -82,7 +82,7 @@ if (Meteor.isServer) {
         gameInitData.stakeholder.level = 0;
         gameInitData.stakeholder.stamina = 100;
         gameInitData.stakeholder.lastLogin = 0;
-        gameInitData.stakeholder.guardId = 0;
+        gameInitData.stakeholder.guardId = -1;
         gameInitData.stakeholder.matchesId = [];
         gameInitData.stakeholder.unlockedCropType = [];
 

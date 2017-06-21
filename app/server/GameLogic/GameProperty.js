@@ -50,7 +50,7 @@ if (Meteor.isServer) {
         'addCropList': function (_name, _img, _start, _end, _cropType, _ripe, _count) {
             var userId = Meteor.userId();
             var _cropList = Meteor.users.findOne({ _id: userId }).profile.game.cropList;
-            var _id = _cropList.length;
+            var _id = _cropList.id.length;
             if (!Number.isInteger(_id)) {
                 _id = 0;
             }
