@@ -51,7 +51,7 @@ if (Meteor.isServer) {
         'getStealRate': function (visitNode) {
             var thisGuard_s_Id = Meteor.users.findOne({ 'profile.game.stakeholder.id': visitNode }).profile.game.stakeholder.guardId;
             var thisGuardLvl = 1;
-            if (thisGuard_s_Id != 0) {
+            if (thisGuard_s_Id != -1) {
                 var thisGuard = Meteor.users.findOne({ 'profile.game.stakeholder.id': thisGuard_s_Id });
                 thisGuardLvl = thisGuard.profile.game.syndicateData.level;
             }

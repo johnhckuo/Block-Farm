@@ -142,7 +142,7 @@ gameIndexRend = function () {
     Session.set('switchToType', currentUser.type);
 
     setInterval(cropSummaryUpdate, 1000);
-    setInterval(updateUserStamina, 500);
+    setInterval(updateUserStamina, 10000);
 
     loading(0);
 
@@ -353,6 +353,24 @@ Template.firstTutorial.events({
             $(".tutorialContainer").css("display", "none");
 
         }, 1000);
+    }
+});
+
+Template.questionnaire.events({
+    'click #btn_questionnaire_close': function () {
+        swal({
+            title: "Are you sure?",
+            text: "Please make sure you have done the questionnaire to obtain the lucky draw!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, I've done!",
+            closeOnConfirm: false
+        },
+            function () {
+                $('.questionnaire_main').css('display', 'none');
+                swal("Closed!");
+            });
     }
 });
 
@@ -1720,7 +1738,7 @@ var loading = function (on) {
     $(".cropObject").css("display", "none");
     if (on) {
         $(".loading").css("display", "flex");
-        $(".loading").css("opacity", 0.7);
+        $(".loading").css("opacity", 0.9);
     } else {
         setTimeout(function () {
             $(".loading").css("opacity", 0);
@@ -1923,6 +1941,9 @@ var updateUserExp = function (exp) {
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
         _character.changed();
+        if (currentUser.level == 10) {
+            $('.questionnaire_main').css('display', 'flex');
+        }
     }
 }
 
@@ -2458,7 +2479,7 @@ mission_rending = function () {
                 type: 'button',
                 value: 'Submit',
                 id: 'btn_mission_submit_' + mission_list[i].id,
-                style:'margin: 0 auto; display:block;'
+                style: 'margin: 0 auto; display:block;'
             })
                 .on('click', function () {
                     var _id = index_finder($(this).prev('input').attr('id'), 'mission_id_');
