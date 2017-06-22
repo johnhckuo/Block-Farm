@@ -10,7 +10,6 @@ import './GameLogic/usingProperty.js';
 import './GameLogic/GameProperty.js';
 
 var cropsPerLvl = 3;
-var currentToken = 1;
 
 if (Meteor.isServer) {
 
@@ -242,8 +241,62 @@ wait = function(ms){
 
       return "success";
     },
-    'test':function(){
-          initData();
+    'updateUserMatchId': function(userId, matchId){
+      var matchesId = Meteor.users.findOne({_id:userId}).profile.game.stakeholder.matchesId;
+      matchesId.push(matchId);
+      Meteor.users.update(userId, { $set: { 'profile.game.stakeholder.matchesId': matchesId } });
+    },
+    'getUserName':function(index){
+        var previousName = Meteor.users.findOne({'profile.game.stakeholder.id':index}).emails[0].address.split("@")[0];
+        return previousName;
+    },
+    "getPropertyTypeName":function(p_Id){
+        return cropTypeList[p_Id].name;
+    },
+    "getPropertyTypeImg":function(p_Id){
+        return cropTypeList[p_Id].img[3];
+    },
+    "getMatchmakingLength":function(){
+        return matches.find().count();
+    },
+    'deleteMatchesId':function(s_Id, m_Id){
+        //delete stakeholder match Id
+        console.log(s_Id);
+        var matchesId = Meteor.users.findOne({'profile.game.stakeholder.id':s_Id}).profile.game.stakeholder.matchesId;
+        var userId = Meteor.users.findOne({'profile.game.stakeholder.id':s_Id})._id;
+        console.log(matchesId)
+        matchesId.splice(m_Id, 1);
+          console.log(matchesId)
+
+        Meteor.users.update(userId, { $set: { 'profile.game.stakeholder.matchesId': matchesId } });
+  },
+    'matchmaking':function(){
+        initData();
+    },
+    'confirmation':function(){
+        checkConfirmation_backend();
+    },
+    "db_api": function (contract, method, args) {
+        var req = prefix;
+        switch (contract) {
+          case "Property":
+            req += Property;
+            break;
+          case "Matchmaking":
+            req += Matchmaking;
+            break;
+          default:
+            return "error";
+        }
+        req += "/" + method + "?token=" + token[currentToken];
+        console.log("[callContract_api] => Contract:"+contract+" | Method:"+method+" | args:"+args);
+        updateCall.data.params = args;
+        return Meteor.http.call("POST", req, updateCall);
+
+    },
+    'updateMatchResult':function(result, m_Id){
+
+        matches.update({id:m_Id}, { $set: { result: result } });
 
     }
   });

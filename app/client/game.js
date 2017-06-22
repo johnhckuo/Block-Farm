@@ -23,6 +23,7 @@ var currentLandId;
 var placeMode = false;
 var currentCropLand;
 var audio;
+var removeMatchesTag = false;
 
 var currentCharacter = "farmer";
 
@@ -87,7 +88,7 @@ var tutorialMode = false;
 var targetCircleDiv = null;
 var ratingOpened = false;
 var onchangedIndex = [];
-
+var systemInfoShowed = false;
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -130,7 +131,7 @@ gameIndexRend = function () {
     updateStaminaBar(0);
 
     initCropLand(s_Id);
-    showConfirmation(s_Id);
+    //showConfirmation(s_Id);
 
     Session.set('userName', currentUser.name);
     Session.set('userExp', currentUser.exp);
@@ -917,13 +918,21 @@ Template.gamingArea.events({
         }
 
     },
-    'click .matchesBtn': function (event) {
+    'click .matchesBtn': async function (event) {
         //matchmakingbug
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
-        MainActivity2Instance.updateConfirmation(m_Id, s_Id, 1, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-
+        var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
+        var res = await callPromise("callContract", "Matchmaking","updateConfirmation", [parseInt(m_Id), s_Id, 0]);
         $(event.target).prop("value", "Waiting");
         $(event.target).prop("disabled", true);
+    },
+    'click .hideSystemInfo':function(event){
+        if (systemInfoShowed){
+            $(".systemInfo").css("transform", "translateX(550px)");
+        }else{
+            $(".systemInfo").css("transform", "translateX(0px)");
+        }
+        systemInfoShowed = !systemInfoShowed;
     },
     // 'click .zoom':function(event){
     //     var data = $(".canvas").css("transform");
@@ -1402,29 +1411,64 @@ var createDBConnection = function () {
     matchesSub = Meteor.subscribe("matchesChannel", function() {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
-            added: async function(item, fields){ 
-
+            added: function(item, fields){ 
+                var owners = [];
+                var matchId = fields.id;
                 if (!matchmakingChecked){
-                    var temp = await callPromise("callContract", "Matchmaking", "getMatchMakingLength", []);
-                    console.log(temp)
-                    matchmakingLength = temp.result.results[0];
+                    var temp = matches.find().fetch();
+                    owners = temp[matchId].owners;
+                    matchmakingLength = temp.length;
                     matchmakingChecked = true;
                 }
-                var matchId = fields.id;
-                if (matchId > matchmakingLength-2){
-                    var res = await callPromise("callContract", "Matchmaking", "getMatchMaking", [matchId]);
-                    console.log(res);
-
-                    if (jQuery.inArray(currentUser.s_Id, res.owners) == -1){
+                if (matchId >= matchmakingLength-2){
+                    if (jQuery.inArray(currentUser.s_Id, owners) == -1){
+                            Session.set("id", Meteor.userId()); 
                             var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                            if (jQuery.inArray(matchId, data) == -1){
-                                console.log(matchId);
-                            }
+                            var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
+                            var res;
+                            var minedDetector = setInterval(async function(){
+                                res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
+                                if (res.type == "success"){
+                                    console.log("clear interval");
+                                    clearInterval(minedDetector);
+
+                                    var confirmed = res.result.results[0];
+                                    var match = matches.find().fetch();
+                                    var owners = match[matchId].owners;
+                                    if (jQuery.inArray(s_Id, owners) == -1){
+                                        return;
+                                    }     
+                                    //if (!confirmed){
+                                        if (jQuery.inArray(matchId, data) == -1){
+                                            var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
+                                        }
+                                        showConfirmation(s_Id, matchId);
+                                        systemInfoShowed = true;
+                                    //}
+                                }else{
+                                    console.log("new matchmaking! waiting for txs being mined");
+                                }
+                            },6000)
+
+                            // var minedDetector = setInterval(function(){
+                            //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
+                            //         console.log(res);
+                            //         if (res.result.results[0]){
+                            //             clearInterval(minedDetector);
+                            //         }
+                            //     })
+                            // },3000)
+
+
                     }
                 }
 
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
+            },
+            updated: function(item, fields){
+                console.log("matches updateddddddddddddddddddddddddddddddddd"+fields)
+
             }
         });
     });
@@ -1499,58 +1543,66 @@ var eventListener = function () {
     });
 }
 
-var showConfirmation = function (s_Id) {
-    var length = currentUser.matches.length;
-    if (length > 0) {
-        $(".systemInfo").css("transform", "translateX(0px)");
-    } else {
-        $(".systemInfo").css("transform", "translateX(600px)");
-        return;
+var showConfirmation = async function (s_Id, m_Id) {
+    $(".systemInfo").css("transform", "translateX(0px)");
+
+    if ($(".matches").length >= 2){
+        $('.systemInfo div:nth-child(3)').remove();
     }
-    $(".matches").remove();
-
-    for (var i = 0; i < length; i++) {
-        //matchmakingbug
-        var data = MainActivity2Instance.getMatchMaking.call(currentUser.matches[i], { from: web3.eth.accounts[currentAccount] });
-        var owners = data[1];
-        var properties = data[2];
-        var tradeables = data[3];
-        var index;
-
-        for (var j = 0; j < owners.length; j++) {
-            if (s_Id == owners[j].c[0]) {
-                index = j;
-            }
+    //matchmakingbug
+    var data = await callPromise("callContract", "Matchmaking", "getMatchMaking", [m_Id]);
+    var owners = data.result.results[1];
+    var properties = data.result.results[2];
+    var tradeables = data.result.results[3];
+    var index;
+    for (var j = 0; j < owners.length; j++) {
+        if (s_Id == owners[j]) {
+            index = j;
         }
+    }
 
-        var previousIndex = (index - 1 + owners.length) % owners.length;
+    var previousIndex = (index - 1 + owners.length) % owners.length;
+    var previousName = await callPromise("getUserName", owners[previousIndex]);
+    var receivePropertyName = await callPromise("getPropertyTypeName", properties[previousIndex]);
+    var providePropertyName = await callPromise("getPropertyTypeName", properties[index]);
 
-        var previousName = web3.toUtf8(CongressInstance.getStakeholder.call(parseInt(owners[previousIndex].c[0]), { from: web3.eth.accounts[currentAccount] })[0]);
-        var type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[previousIndex].c[0]), { from: web3.eth.accounts[currentAccount] });
-        var receiveProperty = usingPropertyInstance.getPropertyType.call(type_Id, { from: web3.eth.accounts[currentAccount] });
 
-        type_Id = usingPropertyInstance.getPropertyType_Matchmaking.call(parseInt(properties[index].c[0]), { from: web3.eth.accounts[currentAccount] });
-        var provideProperty = usingPropertyInstance.getPropertyType.call(type_Id, { from: web3.eth.accounts[currentAccount] });
+    var receiveProperty = await callPromise("getPropertyTypeImg", properties[previousIndex]);
+    var provideProperty = await callPromise("getPropertyTypeImg", properties[index]);
 
-        var row = $("<div>").attr("class", "matches match" + i);
-        var fromAddr = $("<div>").text("from " + previousName);
-        var receive = $("<div>").text("for " + web3.toUtf8(receiveProperty[0]) + "X" + tradeables[previousIndex].c[0]);
-        var provide = $("<div>").text("You exchange " + web3.toUtf8(provideProperty[0]) + "X" + tradeables[index].c[0]);
-        var checkBtn = $('<input>').attr({
+    var row = $("<div>").attr("class", "matches match" + m_Id);
+    var fromAddr = $("<div>").text("from " + previousName);
+    var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You exchange " + receivePropertyName + "X" + tradeables[previousIndex]+"</div>");
+    var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You exchange " + providePropertyName + "X" + tradeables[index]+"</div>");
+    var checkBtn;
+    var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
+    var confirmed = res.result.results[0];
+    if (confirmed) {
+        checkBtn = $('<input>').attr({
             type: 'button',
-            class: "btn btn-info matchesBtn matchBtn" + currentUser.matches[i].c[0],
-            value: 'Confirm'
+            class: "btn btn-danger matchesBtn matchBtn" + m_Id,
+            value: 'Waiting',
+            disabled:true
         });
-        row.append(provide).append(receive).append(fromAddr).append(checkBtn);
-
-        $(".systemInfo").append(row);
-
-        var confirmed = MainActivity2Instance.getMatchMakingConfirmed.call(currentUser.matches[i], s_Id, { from: web3.eth.accounts[currentAccount] });
-        if (confirmed) {
-            $(".matchBtn" + currentUser.matches[i].c[0]).prop("value", "Waiting");
-            $(".matchBtn" + currentUser.matches[i].c[0]).prop("disabled", true);
-        }
+    }else{
+        checkBtn = $('<input>').attr({
+            type: 'button',
+            class: "btn btn-danger matchesBtn matchBtn" + m_Id,
+            value: 'Reject'
+        });
     }
+    
+
+    row.append(provide).append(receive).append(fromAddr).append(checkBtn);
+    $(".systemInfo").append(row);
+    
+    var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
+    var confirmed = res.result.results[0];
+    if (confirmed) {
+        $(".matchBtn" + m_Id).prop("value", "Waiting");
+        $(".matchBtn" + m_Id).prop("disabled", true);
+    }
+
 }
 
 var getVisitNode = function () {

@@ -68,7 +68,6 @@ if (Meteor.isClient) {
 
 
   Template.index.rendered = async function () {
-    Meteor.call("test");
     if (!this._rendered && !renderChecked) {
       console.log('Template render complete');
       renderChecked = true;
@@ -248,6 +247,12 @@ if (Meteor.isClient) {
     },
     'click #forgot-back': function (event) {
       $('.flipper').toggleClass('flipperClicked');
+    },
+    'click .matchmaking': function(event){
+      Meteor.call("matchmaking");
+    },
+    'click .confirmation':function(event){
+      Meteor.call("confirmation");
     }
   });
 }
