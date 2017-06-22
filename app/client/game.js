@@ -684,16 +684,17 @@ Template.gameIndex.events({
                                 break;
                             }
                         }
-                        Meteor.call('updatePropertyCount', p_Id, stealCount);
-                        Meteor.call('updateCropCount', visitNode, id, cropCount);
-                        // usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, stealCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-                        // usingPropertyInstance.updateCropCount(visitNode, id, cropCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
-                        $(event.target).parent().attr("cropcount", parseInt(cropCount));
-                        $(event.target).parent().attr("stolenFlag", "t");
+                        Meteor.call('updatePropertyCount', p_Id, stealCount, function () {
+                            Meteor.call('updateCropCount', visitNode, id, cropCount);
+                            // usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, stealCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+                            // usingPropertyInstance.updateCropCount(visitNode, id, cropCount, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+                            $(event.target).parent().attr("cropcount", parseInt(cropCount));
+                            $(event.target).parent().attr("stolenFlag", "t");
 
-                        $("." + cropClass).html("<img src = '" + prefix + cropTypeList[typeIndex].img[4] + postfix + "' />");
-                        //reload propertyTable
-                        set_property_table();
+                            $("." + cropClass).html("<img src = '" + prefix + cropTypeList[typeIndex].img[4] + postfix + "' />");
+                            //reload propertyTable
+                            set_property_table();
+                        });
                     }
                     else {
                         stealResult = false;
@@ -1406,27 +1407,27 @@ var createDBConnection = function () {
     });
 
     var matchmakingChecked = false;
-    matchesSub = Meteor.subscribe("matchesChannel", function() {
+    matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
-            added: async function(item, fields){ 
+            added: async function (item, fields) {
 
-                if (!matchmakingChecked){
+                if (!matchmakingChecked) {
                     var temp = await callPromise("callContract", "Matchmaking", "getMatchMakingLength", []);
                     console.log(temp)
                     matchmakingLength = temp.result.results[0];
                     matchmakingChecked = true;
                 }
                 var matchId = fields.id;
-                if (matchId > matchmakingLength-2){
+                if (matchId > matchmakingLength - 2) {
                     var res = await callPromise("callContract", "Matchmaking", "getMatchMaking", [matchId]);
                     console.log(res);
 
-                    if (jQuery.inArray(currentUser.s_Id, res.owners) == -1){
-                            var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                            if (jQuery.inArray(matchId, data) == -1){
-                                console.log(matchId);
-                            }
+                    if (jQuery.inArray(currentUser.s_Id, res.owners) == -1) {
+                        var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
+                        if (jQuery.inArray(matchId, data) == -1) {
+                            console.log(matchId);
+                        }
                     }
                 }
 
@@ -1945,7 +1946,7 @@ var updateSyndicateExp = function (exp) {
             levelUp('Syndicate');
             lvlCap = SyndicateLevelCap(currentUser.SyndicateLevel);
         }
-        Meteor.call('updateSyndicateExp', exp, currentUser.SyndicateLevel);
+        Meteor.call('updateSyndicateExp', exp, currentUser.SyndicateExp, currentUser.SyndicateLevel);
 
         var percent = (currentUser.SyndicateExp / lvlCap) * 100;
         $(".SyndicateExpProgressBar").css("width", percent + "%");
@@ -2585,8 +2586,8 @@ set_rank_table = function (data) {
     //header
     //content
     var table_length;
-    if (data.length > 2) {
-        table_length = 2;
+    if (data.length > 10) {
+        table_length = 10;
     }
     else {
         table_length = data.length;
