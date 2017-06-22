@@ -6,7 +6,8 @@ cropTypeList = [
         name: "Carrot",
         img: ["carrot_seed", "carrot_grow", "carrot_harvest", "carrot", "carrot_warn"],
         count:4,
-        time:"0.0.0.3"
+        time:"0.0.0.3",
+        rating:[]
 
     },
     {
@@ -14,87 +15,88 @@ cropTypeList = [
         name: "Radish",
         img: ["radish_seed", "radish_grow", "radish_harvest", "radish", "radish_warn"],
         count:4,
-        time:"0.0.0.5"
-
+        time:"0.0.0.5",
+        rating:[]
     },
     {
         id:2,
         name: "Lettuce",
         img: ["lettuce_seed", "lettuce_grow", "lettuce_harvest", "lettuce", "lettuce_warn"],
         count:4,
-        time:"0.0.0.3"
-
+        time:"0.0.0.3",
+        rating:[]
     },
     {
         id:3,
         name: "Cauliflower",
         img: ["cauliflower_seed", "cauliflower_grow", "cauliflower_harvest", "cauliflower", "cauliflower_warn"],
         count:4,
-        time:"0.0.0.10"
-
+        time:"0.0.0.10",
+        rating:[]
     },
     {
         id:4,
         name: "Eggplant",
         img: ["eggplant_seed", "eggplant_grow", "eggplant_harvest", "eggplant", "eggplant_warn"],
         count:4,
-        time:"0.0.0.10"
-
+        time:"0.0.0.10",
+        rating:[]
     },
     {
         id:5,
         name: "Blueberry",
         img: ["blueberry_seed", "blueberry_grow", "blueberry_harvest", "blueberry", "blueberry_warn"],
         count:4,
-        time:"0.0.0.10"
-
+        time:"0.0.0.10",
+        rating:[]
     },
     {
         id:6,
         name: "Chili",
         img: ["chili_seed", "chili_grow", "chili_harvest", "chili", "chili_warn"],
         count:4,
-        time:"0.0.2.0"
-
+        time:"0.0.2.0",
+        rating:[]
     },
     {
         id:7,
         name: "Watermelon",
         img: ["watermelon_seed", "watermelon_grow", "watermelon_harvest", "watermelon", "watermelon_warn"],
         count:4,
-        time:"0.0.2.0"
-
+        time:"0.0.2.0",
+        rating:[]
     },
     {
         id:8,
         name: "Strawberry",
         img: ["strawberry_seed", "strawberry_grow", "strawberry_harvest", "strawberry", "strawberry_warn"],
         count:4,
-        time:"0.0.2.0"
-
+        time:"0.0.2.0",
+        rating:[]
     },
     {
         id:9,
         name: "Loofa",
         img: ["loofa_seed", "loofa_grow", "loofa_harvest", "loofa", "loofa_warn"],
         count:4,
-        time:"0.0.5.0"
-
+        time:"0.0.5.0",
+        rating:[]
     },
     {
         id:10,
         name: "Honeydew melon",
         img: ["hamimelon_seed", "hamimelon_grow", "hamimelon_harvest", "hamimelon", "hamimelon_warn"],
         count:4,
-        time:"0.0.5.0"
-
+        time:"0.0.5.0",
+        rating:[]
     },
     {
         id:11,
         name: "Green pepper",
         img: ["greenPepper_seed", "greenPepper_grow", "greenPepper_harvest", "greenPepper", "greenPepper_warn"],
         count:4,
-        time:"0.0.5.0"
+        time:"0.0.5.0",
+        rating:[]
 
     },
     {
@@ -102,205 +104,224 @@ cropTypeList = [
         name: "Onion",
         img: ["onion_seed", "onion_grow", "onion_harvest", "onion", "onion_warn"],
         count:4,
-        time:"0.0.10.0"
-
+        time:"0.0.10.0",
+        rating:[]
     },
     {
         id:13,
         name: "Scallion",
         img: ["sansingOnion_seed", "sansingOnion_grow", "sansingOnion_harvest", "sansingOnion", "sansingOnion_warn"],
         count:4,
-        time:"0.0.10.0"
-
+        time:"0.0.10.0",
+        rating:[]
     },
     {
         id:14,
         name: "Grape",
         img: ["grape_seed", "grape_grow", "grape_harvest", "grape", "grape_warn"],
         count:4,
-        time:"0.0.10.0"
-
+        time:"0.0.10.0",
+        rating:[]
     },
     {
         id:15,
         name: "Bamboo",
         img: ["bamboo_seed", "bamboo_grow", "bamboo_harvest", "bamboo", "bamboo_warn"],
         count:4,
-        time:"0.0.15.0"
-
+        time:"0.0.15.0",
+        rating:[]
     },
     {
         id:16,
         name: "Apple",
         img: ["apple_seed", "apple_grow", "apple_harvest", "apple", "apple_warn"],
         count:4,
-        time:"0.0.15.0"
-
+        time:"0.0.15.0",
+        rating:[]
     },
     {
         id:17,
         name: "Wheat",
         img: ["wheat_seed", "wheat_grow", "wheat_harvest", "wheat", "wheat_warn"],
         count:4,
-        time:"0.0.15.0"
-
+        time:"0.0.15.0",
+        rating:[]
     },
     {
         id:18,
         name: "Corn",
         img: ["corn_seed", "corn_grow", "corn_harvest", "corn", "corn_warn"],
         count:4,
-        time:"0.0.30.0"
-
+        time:"0.0.30.0",
+        rating:[]
     },
     {
         id:19,
         name: "Pear",
         img: ["pear_seed", "pear_grow", "pear_harvest", "pear", "pear_warn"],
         count:4,
-        time:"0.0.30.0"
-
+        time:"0.0.30.0",
+        rating:[]
     },
     {
         id:20,
         name: "Lemon",
         img: ["lemon_seed", "lemon_grow", "lemon_harvest", "lemon", "lemon_warn"],
         count:4,
-        time:"0.0.30.0"
-
+        time:"0.0.30.0",
+        rating:[]
     },
     {
         id:21,
         name: "Mushroom",
         img: ["mushroom_seed", "mushroom_grow", "mushroom_harvest", "mushroom", "mushroom_warn"],
         count:4,
-        time:"0.1.0.0"
+        time:"0.1.0.0",
+        rating:[]
     },
     {
         id:22,
         name: "Cactus",
         img: ["cactus_seed", "cactus_grow", "cactus_harvest", "cactus", "cactus_warn"],
         count:4,
-        time:"0.1.0.0"
+        time:"0.1.0.0",
+        rating:[]
     },
     {
         id:23,
         name: "Banana",
         img: ["banana_seed", "banana_grow", "banana_harvest", "banana", "banana_warn"],
         count:4,
-        time:"0.1.0.0"
+        time:"0.1.0.0",
+        rating:[]
     },
     {
         id:24,
         name: "Cupcake",
         img: ["cupcake_seed", "cupcake_grow", "cupcake_harvest", "cupcake", "cupcake_warn"],
         count:4,
-        time:"0.2.0.0"
+        time:"0.2.0.0",
+        rating:[]
     },
     {
         id:25,
         name: "Doughnut",
         img: ["doughnut_seed", "doughnut_grow", "doughnut_harvest", "doughnut", "doughnut_warn"],
         count:4,
-        time:"0.2.0.0"
+        time:"0.2.0.0",
+        rating:[]
     },
     {
         id:26,
         name: "Gingerbread Man",
         img: ["gingerbread_man_seed", "gingerbread_man_grow", "gingerbread_man_harvest", "gingerbread_man", "gingerbread_man_warn"],
         count:4,
-        time:"0.2.0.0"
+        time:"0.2.0.0",
+        rating:[]
     },
     {
         id:27,
         name: "Egg",
         img: ["egg_seed", "egg_grow", "egg_harvest", "egg", "egg_warn"],
         count:4,
-        time:"0.4.0.0"
+        time:"0.4.0.0",
+        rating:[]
     },
     {
         id:28,
         name: "Chicken",
         img: ["chicken_seed", "chicken_grow", "chicken_harvest", "chicken", "chicken_warn"],
         count:4,
-        time:"0.4.0.0"
+        time:"0.4.0.0",
+        rating:[]
     },
     {
         id:29,
         name: "Report",
         img: ["report_seed", "report_grow", "report_harvest", "report", "report_warn"],
         count:4,
-        time:"0.4.0.0"
+        time:"0.4.0.0",
+        rating:[]
     },
     {
         id:30,
         name: "Guard Level 1",
         img: ["guard_1", "guard_1", "guard_1", "guard_1", "guard_1"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:31,
         name: "Guard Level 2",
         img: ["guard_2", "guard_2", "guard_2", "guard_2", "guard_2"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:32,
         name: "Guard Level 3",
         img: ["guard_3", "guard_3", "guard_3", "guard_3", "guard_3"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:33,
         name: "Guard Level 4",
         img: ["guard_4", "guard_4", "guard_4", "guard_4", "guard_4"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:34,
         name: "Guard Level 5",
         img: ["guard_5", "guard_5", "guard_5", "guard_5", "guard_5"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:35,
         name: "Guard Level 6",
         img: ["guard_6", "guard_6", "guard_6", "guard_6", "guard_6"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:36,
         name: "Guard Level 7",
         img: ["guard_7", "guard_7", "guard_7", "guard_7", "guard_7"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:37,
         name: "Guard Level 8",
         img: ["guard_8", "guard_8", "guard_8", "guard_8", "guard_8"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:38,
         name: "Guard Level 9",
         img: ["guard_9", "guard_9", "guard_9", "guard_9", "guard_9"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
     {
         id:39,
         name: "Guard Level 10",
         img: ["guard_10", "guard_10", "guard_10", "guard_10", "guard_10"],
         count:1,
-        time:"0.0.0.0"
+        time:"0.0.0.0",
+        rating:[]
     },
 
 

@@ -23,10 +23,10 @@ if (Meteor.isServer) {
     -----------------------*/
     currentToken = 0;
 
-    exhaustedApi = ["6df03f5a22014eab8adb54fb83223ff0"];
+    exhaustedApi = ["e22aef855bb045f7904fc4712e7668a9"];
     //, 
     // john powei johng bryant
-    token = ["e22aef855bb045f7904fc4712e7668a9","99fc27a26a42455cbc529923e3a6f8ad","d4659f9b512a434287fea776cd6f0fe6", 
+    token = ["6df03f5a22014eab8adb54fb83223ff0","99fc27a26a42455cbc529923e3a6f8ad","d4659f9b512a434287fea776cd6f0fe6", 
     "6f01b597b56b46c0820c56a4e3b16a87", "6585fc55331146d798de46d80de359e1", 
     "308a65855adc4e39bd832bada26eec60", "baf43c22e4e14304993ef62f39d10b58",
     "d6c9fae99f244b91b9a91b62ba5aaf77", "68a657243ee1461db6376af481cdb479",
@@ -42,8 +42,8 @@ if (Meteor.isServer) {
     //token = "68a657243ee1461db6376af481cdb479";
     privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
 
-    Property = "0a1c0c42341bb0af2f4cdc460927ea287a5fc2f8";
-    Matchmaking = "cc9be98faefb4a19b1825f74c80d7b3ff2f63074";
+    Property = "7b4118993808bd27a4b218e056f9a2792a5747c7";
+    Matchmaking = "659805869d2a5a5776b9fe7af0296709c4132012";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 

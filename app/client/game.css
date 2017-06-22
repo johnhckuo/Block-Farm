@@ -1760,6 +1760,10 @@ td img{
 
 .matches div{
   margin-right:10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .txImg{
@@ -1823,7 +1827,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   transition: transform 1s;
   transform: translateX(600px);
   z-index:100000;
-  padding:50px;
+  padding:20px;
   overflow: hidden;
 }
 

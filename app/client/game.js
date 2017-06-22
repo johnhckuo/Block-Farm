@@ -944,7 +944,7 @@ Template.gamingArea.events({
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
         var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
         var res = await callPromise("callContract", "Matchmaking","updateConfirmation", [parseInt(m_Id), s_Id, 0]);
-        $(event.target).prop("value", "Waiting");
+        $(event.target).prop("value", "Waiting for others to confirm");
         $(event.target).prop("disabled", true);
     },
     'click .hideSystemInfo':function(event){
@@ -1490,8 +1490,28 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-            updated: function(item, fields){
-                console.log("matches updateddddddddddddddddddddddddddddddddd"+fields)
+            changed: function(item, fields){
+                setTimeout(function(){
+                    var match = matches.find().fetch();
+                    for (var i = match.length-2 ; i < match.length ; i++){
+                        if (match[i].result == true){
+                            $(".matchBtn"+i).attr({
+                                type: 'button',
+                                class: "btn btn-success matchesBtn matchBtn" + i,
+                                value: 'Success',
+                                disabled:true
+                            });
+                        }else if (match[i].result == false){
+                            $(".matchBtn"+i).attr({
+                                type: 'button',
+                                class: "btn btn-danger matchesBtn matchBtn" + i,
+                                value: 'Fail',
+                                disabled:true
+                            });
+                        }
+                    }
+                }, 2000);
+
 
             }
         });
@@ -1578,34 +1598,39 @@ var showConfirmation = async function (s_Id, m_Id) {
     var owners = data.result.results[1];
     var properties = data.result.results[2];
     var tradeables = data.result.results[3];
+    var result = data.result.results[6];
+
     var index;
-    for (var j = 0; j < owners.length; j++) {
+    var length = owners.length-1;
+    for (var j = 0; j < length; j++) {
         if (s_Id == owners[j]) {
             index = j;
         }
     }
+    console.log(owners);
+    var previousIndex = (index - 1 + length) % length;
+    var nextIndex = (index + 1 )% length;
 
-    var previousIndex = (index - 1 + owners.length) % owners.length;
     var previousName = await callPromise("getUserName", owners[previousIndex]);
+    var nextName = await callPromise("getUserName", owners[nextIndex]);
+
     var receivePropertyName = await callPromise("getPropertyTypeName", properties[previousIndex]);
     var providePropertyName = await callPromise("getPropertyTypeName", properties[index]);
-
 
     var receiveProperty = await callPromise("getPropertyTypeImg", properties[previousIndex]);
     var provideProperty = await callPromise("getPropertyTypeImg", properties[index]);
 
     var row = $("<div>").attr("class", "matches match" + m_Id);
-    var fromAddr = $("<div>").text("from " + previousName);
-    var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You exchange " + receivePropertyName + "X" + tradeables[previousIndex]+"</div>");
-    var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You exchange " + providePropertyName + "X" + tradeables[index]+"</div>");
+    var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You receive</div><div> " + receivePropertyName + " X " + tradeables[previousIndex]+" </div><div>from "+ previousName +"</div>");
+    var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You provide</div><div> " + providePropertyName + " X " + tradeables[index]+" </div><div>to "+ nextName +"</div>");
     var checkBtn;
     var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
     var confirmed = res.result.results[0];
     if (confirmed) {
         checkBtn = $('<input>').attr({
             type: 'button',
-            class: "btn btn-danger matchesBtn matchBtn" + m_Id,
-            value: 'Waiting',
+            class: "btn btn-warning matchesBtn matchBtn" + m_Id,
+            value: 'Waiting for others to confirm',
             disabled:true
         });
     }else{
@@ -1615,15 +1640,33 @@ var showConfirmation = async function (s_Id, m_Id) {
             value: 'Reject'
         });
     }
+    console.log(result);
+    if (result != "null"){
+        if (result == "true"){
+            checkBtn = $('<input>').attr({
+                type: 'button',
+                class: "btn btn-success matchesBtn matchBtn" + m_Id,
+                value: 'Success',
+                disabled:true
+            });
+        }else if (result == "false"){
+            checkBtn = $('<input>').attr({
+                type: 'button',
+                class: "btn btn-danger matchesBtn matchBtn" + m_Id,
+                value: 'Fail',
+                disabled:true
+            });
+        }
+    }
     
 
-    row.append(provide).append(receive).append(fromAddr).append(checkBtn);
+    row.append(provide).append(receive).append(checkBtn);
     $(".systemInfo").append(row);
     
     var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
     var confirmed = res.result.results[0];
     if (confirmed) {
-        $(".matchBtn" + m_Id).prop("value", "Waiting");
+        $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
         $(".matchBtn" + m_Id).prop("disabled", true);
     }
 
@@ -2200,6 +2243,12 @@ get_propertyType_setting = async function (_length) {
     property_type = await callPromise("callContract", "Property", "getPropertyTypeByUserId", s_Id);
 
     console.log(property_type);
+    if (property_type.type == "error"){
+        loading(0);
+        sweetAlert("Oops...", "Something went wrong... Please try again", "error");
+        ratingOpened = false;
+        return;
+    }
     property_type.sort(function (crop1, crop2) {
         if (crop1[1] > crop2[1]) return 1;
         if (crop1[1] < crop2[1]) return -1;
