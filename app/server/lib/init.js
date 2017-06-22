@@ -77,7 +77,14 @@ if (Meteor.isServer) {
         var character = Meteor.users.findOne({ _id: userId }).profile.basic.character;
         var username = Meteor.users.findOne({ _id: userId }).emails[0].address;
 
-        gameInitData.stakeholder.id = Meteor.users.find().count()-1;
+        var allUser = Meteor.users.find().fetch();
+        var counter = 0;
+        for(i = 0 ; i < allUser.length; i++){
+            if(allUser[i].emails[0].verified)
+                counter++;
+        }
+
+        gameInitData.stakeholder.id = counter;
         gameInitData.stakeholder.farmerLevel = 0;
         gameInitData.stakeholder.name = username.split("@")[0];
         gameInitData.stakeholder.exp = 0;
@@ -86,7 +93,7 @@ if (Meteor.isServer) {
         gameInitData.stakeholder.level = 0;
         gameInitData.stakeholder.stamina = 100;
         gameInitData.stakeholder.lastLogin = 0;
-        gameInitData.stakeholder.guardId = 0;
+        gameInitData.stakeholder.guardId = -1;
         gameInitData.stakeholder.matchesId = [];
         gameInitData.stakeholder.unlockedCropType = [];
 

@@ -16,7 +16,6 @@ Template.index.created = async function() {
     Session.set("land_loaded", false);
     Session.set("mission_loaded", false);
     Session.set("current_user_loaded", false);
-    Session.set("other_user_loaded", false);
     Session.set("matches_loaded", false);
 
     propertyTypeSub = Meteor.subscribe("propertyTypeChannel", function(){
@@ -31,10 +30,6 @@ Template.index.created = async function() {
 
     userSub = Meteor.subscribe("currentUserChannel", function(){
         Session.set("current_user_loaded", true);
-    });
-
-    otherUserSub = Meteor.subscribe("otherUserChannel", function(){
-        Session.set("other_user_loaded", true);
     });
 
     Meteor.autosubscribe(function() {

@@ -68,13 +68,14 @@ if (Meteor.isClient) {
 
 
   Template.index.rendered = async function () {
+
     if (!this._rendered && !renderChecked) {
       console.log('Template render complete');
       renderChecked = true;
       var fetcher = setInterval(async function () {
-        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")  && Session.get("other_user_loaded")  && Session.get("matches_loaded")) {
+        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")) {
           console.log("server connection established!");
-          var initCounter = property_type.find().count();
+          var initCounter = property_type.find().fetch().length;
           if (initCounter == 0) {
             var res = await Meteor.call('init');
           }
