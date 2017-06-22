@@ -68,7 +68,6 @@ if (Meteor.isClient) {
 
 
   Template.index.rendered = async function () {
-
     if (!this._rendered && !renderChecked) {
       console.log('Template render complete');
       renderChecked = true;

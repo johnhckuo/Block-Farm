@@ -593,20 +593,23 @@
 }
 .mission_content{
   overflow: auto;
-  height: 100%;
+  height: 72vh;
   /*width: 45vw;*/
-  padding-top: 3vh;
+  padding-top: 4vh;
 }
 #mission_table{
-  width: 45vw;
+  width: 40vw;
   height: 70vh;
   text-align: center;
 }
 #mission_table th td{
-  height: 7vh;
+  height: 10vh;
   vertical-align: middle;
 }
 
+#mission_table button:hover{
+  background-color: #31B0D5;
+}
 
 .rank_template{
   position:absolute;
@@ -955,6 +958,10 @@
   text-align: center;
   border-color: rgba(119, 150, 179, 1);
 }
+.shop_tradable_input_isTrading{
+  background-color: rgba(119, 150, 179, 1);
+}
+
 .expProgress{
   position: relative;
   width: 10vw;
@@ -2080,3 +2087,54 @@ input[type="range"]:active::-webkit-slider-thumb{
    50% {background-color: rgb(231, 255, 196);}
    100%{background-color: rgba(255, 255, 255, 0);}
  }
+
+ .questionnaire_main{
+  z-index: 100;
+  position: absolute;
+  width:85vw;
+  height:85vh;
+  background: rgba(255,255,255,0.45);
+  border-radius: 20px;
+  display: none;
+  flex-direction: column;
+}
+
+.questionnaire_title{
+  width:80vw;
+  height:7vh;
+}
+
+.questionnaire_content{
+  width:80vw;
+  height:77vh;
+  margin-left: 2.5vw;
+  margin-bottom: 1vh;
+}
+
+.questionnaire_close{
+  height: 50px;
+  width: 50px;
+  background-color: rgba(244, 102, 102, 1);
+  border-style: none;
+  position: absolute;
+  right: -20px;
+  top:-20px;
+  border-radius: 100%;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 25px;
+  font-weight: 500;
+  color: rgb(221, 221, 221);
+}
+.questionnaire_close:hover{
+  background-color: rgba(191, 47, 47, 1);
+  color: rgb(255, 255, 255);
+  transition: .2s;
+}
+
+.questionnaire_frame{
+  width:100%;
+  height:100%;
+}
+
+

@@ -1629,6 +1629,7 @@ var showConfirmation = async function (s_Id, m_Id) {
 
 }
 
+
 var getVisitNode = async function () {
     return await dbPromise('getVisitNode');
 }
