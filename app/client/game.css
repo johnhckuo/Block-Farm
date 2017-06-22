@@ -593,12 +593,12 @@
 }
 .mission_content{
   overflow: auto;
-  height: 100%;
+  height: 72vh;
   /*width: 45vw;*/
-  padding-top: 3vh;
+  padding-top: 4vh;
 }
 #mission_table{
-  width: 45vw;
+  width: 40vw;
   height: 70vh;
   text-align: center;
 }
@@ -607,6 +607,9 @@
   vertical-align: middle;
 }
 
+#mission_table button:hover{
+  background-color: #31B0D5;
+}
 
 .rank_template{
   position:absolute;

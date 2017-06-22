@@ -59,7 +59,5 @@ if (Meteor.isServer) {
             stealRate = ((80 * (thisGuardLvl / 10) - 40 * (SyndicateLevel / 10)) + 32) / 100;
             return stealRate;
         }
-
-
     });
 }

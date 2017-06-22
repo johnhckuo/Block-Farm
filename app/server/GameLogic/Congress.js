@@ -8,11 +8,11 @@ if (Meteor.isServer) {
             _stakeholder.level = _level;
             Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },
-        'updateStakeholderLastLogin': function (_lastLogin) {
+        'updateStakeholderLastLogin': function () {
             var userId = Meteor.userId();
             try {
                 var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
-                _stakeholder.lastLogin = _lastLogin;
+                _stakeholder.lastLogin = new Date();
                 Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
             }
             catch (e) {

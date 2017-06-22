@@ -34,7 +34,6 @@ var currentTutorialSlide = 0;
 
 var gameMode = "Farmer";
 
-
 const _dep = new Tracker.Dependency;
 const _crop = new Tracker.Dependency;
 
@@ -204,7 +203,7 @@ Template.shop.rendered = function () {
 //////////////////
 
 $(window).on("beforeunload", function () {
-    Meteor.call('updateStakeholderLastLogin', new Date());
+    Meteor.call('updateStakeholderLastLogin');
     Meteor.call('updateUserStamina', currentUser.sta);
     // CongressInstance.updateStakeholderLastLogin(s_Id, new Date(), { from: web3.eth.accounts[currentAccount], gas: 2000000 });
     // CongressInstance.updateUserStamina(s_Id, currentUser.sta, { from: web3.eth.accounts[currentAccount], gas: 2000000 });
@@ -523,14 +522,14 @@ Template.gameIndex.events({
             if (cropList[id].ripe) {
                 var imgs = $(".crop").find("img");
 
-                for (var i = 0; i < imgs.length; i++) {
-                    if ($(imgs[i]).parent().data('pressed')) {
-                        $(imgs[i]).parent().data('pressed', false);
-                        $(imgs[i]).parent().html("<img src = '" + prefix + cropTypeList[i].img[3] + postfix + "' />" + cropTypeList[i].name);
-                    }
-                }
-                $(".cropObject").css("display", "none");
-                plantMode = false;
+                // for (var i = 0; i < imgs.length; i++) {
+                //     if ($(imgs[i]).parent().data('pressed')) {
+                //         $(imgs[i]).parent().data('pressed', false);
+                //         $(imgs[i]).parent().html("<img src = '" + prefix + cropTypeList[i].img[3] + postfix + "' />" + cropTypeList[i].name);
+                //     }
+                // }
+                // $(".cropObject").css("display", "none");
+                // plantMode = false;
 
                 $(".animationImg").html("<img src = '" + prefix + cropTypeList[typeIndex].img[3] + postfix + "' />");
 
@@ -2232,9 +2231,6 @@ set_property_table = function () {
             }));
             tr.append(td);
             table.append(tr);
-            if (user_property[i].isTrading == true) {
-                $('#tradable_input_' + user_property[i].id).prop('disabled', true);
-            }
         }
     }
 
@@ -2461,7 +2457,8 @@ mission_rending = function () {
             td.append($('<input></input>', {
                 type: 'button',
                 value: 'Submit',
-                id: 'btn_mission_submit_' + mission_list[i].id
+                id: 'btn_mission_submit_' + mission_list[i].id,
+                style:'margin: 0 auto; display:block;'
             })
                 .on('click', function () {
                     var _id = index_finder($(this).prev('input').attr('id'), 'mission_id_');

@@ -21,8 +21,13 @@ if (Meteor.isServer) {
             _stakeholder.level += 1;
             if (_stakeholder.level % 5 == 0) {
                 _stakeholder.landSize += 1;
-                var p_Id = random + ((_stakeholder.level / unlockCropLevel) * unlockCropNum);
-                Meteor.call('addUserPropertyType', p_Id);
+                var cropStart = ((_stakeholder.level / unlockCropLevel) * unlockCropNum);
+                var cropEnd = cropStart + unlockCropNum;
+                var p_Id = random + cropInterval;
+                for (var i = cropStart; i < cropEnd; i++) {
+                    if (i != p_Id)
+                        Meteor.call('addUserPropertyType', p_Id);
+                }
                 Meteor.call('addUserLandConfiguration', _stakeholder.landSize);
             }
             Meteor.call('updateGameData', _stakeholder.landSize, _stakeholder.level);
