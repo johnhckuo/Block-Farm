@@ -1,6 +1,52 @@
 .login{
-    width:20vw;
-    height:30vh;
+    width:17vw;
+    height:20vh;
     position: absolute;
-    
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    margin:auto;
+    display: flex;
+    align-items: left;
+    flex-direction: column;
 }
+
+.monitor_input{
+    color: black;     
+}
+
+.monitor_content{
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    flex-direction:column;
+}
+
+.menu{
+    width:50vw;
+    height:5vh;
+    position: absolute;
+    top:5vh;    
+    right:2vw;
+    margin:auto;
+    display: flex;
+    flex-direction: row;
+}
+
+.menu_btn{
+    width:12vw;
+    height:3vh;
+    bottom: 1vh;
+    margin-right: 3vw;
+    color: black;
+}
+
+.contentBoard{
+    width: 80vw;
+    height:80vh;
+    margin-top: 10vh;
+    margin-left: 10vw;
+    position: relative;
+}
+

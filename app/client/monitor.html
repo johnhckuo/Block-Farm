@@ -1,11 +1,20 @@
 <template name="monitor">
 
-      <div class="login">
-          Account:<input type="text" id="account" value="">
-          Password:<input type="password" id="password" value="">
-          <input type="button" id="btn_login" value="login">
-      </div>
-      <div class="monitor_content">
-      </div>
+    <div class="login">
+        Account:<input class="monitor_input form-control" type="text" id="account" value=""> Password:
+        <input class="monitor_input form-control" type="password" id="password" value="">
+        <br>
+        <input type="button" class="hvr-submit" id="btn_login" value="login">
+    </div>
+    <div class="monitor_content">
+        <div class="menu">
+            <input type="button" class="menu_btn" id="allSettingData" value="Get Type" />
+            <input type="button" class="menu_btn" id="allUserData" value="Get User" />
+            <input type="button" class="menu_btn" id="MongoMatch" value="Get Mongo Matches" />
+            <input type="button" class="menu_btn" id="BlockMatch" value="Get Blockhain Matches" />
+        </div>
+        <div class="contentBoard">
+        </div>
+    </div>
 
 </template>
