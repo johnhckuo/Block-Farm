@@ -1760,7 +1760,7 @@ var getVisitNode = async function () {
 }
 
 var fetchAllCropTypes = function () {
-    cropData = property_type.find().fetch();
+    cropData = property_type.find({},{sort:{id:1}}).fetch();
     landData = land_type.find().fetch()[0].data;
 }
 
@@ -1843,7 +1843,7 @@ var getUserData = async function (s_Id) {
 
     var difference = elapsedTime(lastLogin, currentTime);
 
-    currentUser.sta += Math.round(difference.getTime() / 1000);
+    currentUser.sta += Math.round(difference.getTime() / (1000*10));
     var staCap = staminaCap(currentUser.level);
 
     if (currentUser.sta >= staCap) {
@@ -2304,7 +2304,7 @@ var elapsedTime = function (start, end) {
 
 get_user_property = function () {
     user_property = [];
-    var db_property = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.property;
+    var db_property = Meteor.user().profile.game.property;
     for (var i = 0; i < db_property.name.length; i++) {
         user_property.push({
             "id": db_property.id[i],
