@@ -55,7 +55,7 @@ initData = function(){
               console.log(propertyType)
 
               for (var j = 0 ; j < propertyType.length ;j++){
-                  propertyType[j] = {avg:propertyType[j][2], ratings:propertyType[j][3]};
+                  propertyType[j] = {id:propertyType[j][1], avg:propertyType[j][2], ratings:propertyType[j][3]};
               }
               console.log("Property Type Data Loading Complete");
               findOrigin();
@@ -133,9 +133,17 @@ findOrigin = async function(){
           continue;
         }
 
+        var index;
+        for (var j = 0 ; j < propertyType.length ; j++){
+            if (propertyType[j].id == properties[i].type){
+              index = j;
+              break;
+            }
+        }
+
         var owner = properties[i].owner;
-        var averageRating = propertyType[properties[i].type].avg;
-        var self_Importance = propertyType[properties[i].type].ratings[owner];
+        var averageRating = propertyType[index].avg;
+        var self_Importance = propertyType[index].ratings[owner];
 
         var diff = averageRating - self_Importance;
         console.log("["+i+"] "+averageRating+"|"+self_Importance);
@@ -146,7 +154,8 @@ findOrigin = async function(){
         priorityList.push({
           id:i,
           priority:diff,
-          tradeable:properties[i].tradeable
+          tradeable:properties[i].tradeable,
+          type: properties[i].type
         });
     }
     priorityList = sort(priorityList);
@@ -158,7 +167,7 @@ findOrigin = async function(){
     origin = priorityList[0].id;
 
     visitedCount = 0;
-    visitedProperty.push({id : origin, priority : priorityList[0].priority, tradeable:priorityList[0].tradeable})
+    visitedProperty.push({id : origin, priority : priorityList[0].priority, tradeable:priorityList[0].tradeable, type: priorityList[0].type})
 
     console.log(priorityList)
     totalGoThroughList.push(priorityList);
@@ -220,7 +229,8 @@ var searchNeighborNodes = function(visitNode){
         goThroughList.push({
           id:i,
           priority:diff,
-          tradeable:properties[i].tradeable
+          tradeable:properties[i].tradeable,
+          type:properties[i].type
         });
     }
     console.log(goThroughList)
@@ -366,7 +376,7 @@ var verifyNode =  function(){
       }
 
       for (var i = 0 ; i < visitedProperty.length; i++){
-        tempJson.visitedProperties.push(visitedProperty[i].id);
+        tempJson.visitedProperties.push(visitedProperty[i].type);
         tempJson.visitedOwners.push(visitedOwner[i]);
         tempJson.visitedPriorities.push(visitedPriority[i]);
         console.log(visitedTradeable[i])
@@ -418,7 +428,14 @@ var verifyNode =  function(){
 
 var returnPriority = function(visitNode, i){
     var owner = properties[i].owner;
-    return propertyType[properties[visitNode].type].ratings[owner];
+    var index;
+    for (var j = 0 ; j < propertyType.length ; j++){
+        if (propertyType[j].id == properties[visitNode].type){
+          index = j;
+          break;
+        }
+    }
+    return propertyType[index].ratings[owner];
 }
 
 var matchFail = function(errCode){
@@ -467,7 +484,7 @@ checkConfirmation_backend = async function(){
             //var result = await Meteor.call("deleteMatchesId", match.visitedOwners[j], i);
         }
 
-        var totalCount = match.visitedOwners.length;
+        var totalCount = match.visitedOwners.length-1;
         console.log(confirm);
         if (confirm/totalCount <= 0.5){
           console.log("fail");

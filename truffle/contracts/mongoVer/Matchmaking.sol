@@ -65,14 +65,9 @@ contract Matchmaking{
         matches[_matchId].visitedProperties.push(_property);
         matches[_matchId].visitedTradeables.push(_tradeable);
 
-        /*
-        for (uint k = 0 ; k < matches[_matchId].visitedOwners.length-1 ; k++){
-             congress.insertMatchesId(matches[_matchId].visitedOwners[k], _matchId);
-        }
-       
-        for (uint l = 0 ; l < matches[_matchId].visitedProperties.length ; l++){
-             matches[_matchId].visitedTradeable.push(property.checkTradeable(matches[_matchId].visitedProperties[l]));
-        }
-        */
+    }
+
+    function updateMatchResult(uint m_Id, string result){
+        matches[m_Id].result = result;
     }
 }

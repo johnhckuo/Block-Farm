@@ -94,13 +94,13 @@ if (Meteor.isServer) {
   Meteor.methods({
     'callContract': function (contract, method, args) {
       var finalResult;
-
-      if (contract == "Property" && method == "getPropertyType") {
+      console.log(args);
+      if (contract == "Property" && method == "getPropertyTypeByUserId") {
         var results = [];
         try {
           for (var i = 0; i < cropTypeList.length; i++) {
             wait(10);
-            callContract_api_callback([i], function (res) {
+            callContract_api_callback("getPropertyTypeByUserId", [i, args], function (res) {
               results.push(res.data.results);
               if (results.length == cropTypeList.length) {
                 finalResult = results;
@@ -206,19 +206,19 @@ if (Meteor.isServer) {
     },
     'init': function () {
       console.log("------------------ Data Init ------------------");
-      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      // if (res.data.results[0] != 0) {
-      //   console.log("[init] Data has been initialized");
-      //   return;
-      // }
+      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      if (res.data.results[0] != 0) {
+        console.log("[init] Data has been initialized");
+        return;
+      }
 
-      // try {
-      //   for (var i = 0; i < cropTypeList.length; i++) {
-      //     var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-      //   }
-      // } catch (e) {
-      //   console.log("[init] Error initializing data on blockcypher");
-      // }
+      try {
+        for (var i = 0; i < cropTypeList.length; i++) {
+          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+        }
+      } catch (e) {
+        console.log("[init] Error initializing data on blockcypher");
+      }
 
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });
@@ -298,9 +298,14 @@ if (Meteor.isServer) {
 
     },
     'updateMatchResult':function(result, m_Id){
-
-        matches.update({id:m_Id}, { $set: { result: result } });
-
+        try{
+          matches.update({id:m_Id}, { $set: { result: result } });
+          callContract_api("Matchmaking","updateMatchResult", [m_Id, result]);
+        } catch (e) {
+          console.log("[updateMatchResult] " + e);
+          return { type: "error", result: e.reason };
+        }
+        return { type: "success", result: res.data };
     }
   });
 }
