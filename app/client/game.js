@@ -1573,7 +1573,9 @@ var createDBConnection = function () {
             changed: function(item, fields){
                 setTimeout(function(){
                     var match = matches.find().fetch();
+                    console.log("matchmaking "+match);
                     for (var i = match.length-2 ; i < match.length ; i++){
+                        console.log("match "+match[i]);
                         if (match[i].result == true){
                             $(".matchBtn"+i).attr({
                                 type: 'button',
@@ -2346,17 +2348,19 @@ get_propertyType_setting = async function (_length) {
         return;
     }
 
+    var s_Id = Meteor.user().profile.game.stakeholder.id;
     for (var i = 0; i < mongoPropertyType.length; i++) {
 
         var averageRating = 0;
         for (var j = 0 ; j < mongoPropertyType[i].rating.length; j++){
+            mongoPropertyType[i].rating[j] = parseInt(mongoPropertyType[i].rating[j])
             averageRating += mongoPropertyType[i].rating[j];
         }
         averageRating /= mongoPropertyType[i].rating.length;
 
         var _name = mongoPropertyType[i].name;
         var _id = mongoPropertyType[i].id;
-        var _rating = mongoPropertyType[i].rating;
+        var _rating = mongoPropertyType[i].rating[s_Id];
         var _averageRating = averageRating;
         var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
         display_field.push(data);
@@ -2464,6 +2468,7 @@ index_finder = function (_source, _mask) {
 set_propertyType_table = async function () {
     loading(1);
     var res = await callPromise("callContract", "Property", "getPropertyTypeLength", []);
+    console.log(res.result.results[0]);
     get_propertyType_setting(res.result.results[0]);
     rend_propertyType_table(res.result.results[0]);
 }
@@ -2554,13 +2559,18 @@ save_rating_setting = async function () {
     loading(1);
     var s_Length = Meteor.users.find().count();
     var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-    for (i = 0; i < onchangedIndex.length; i++) {
-        var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
-        var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
-        var res = await callPromise("updatePropertyTypeRating", _id, _rate, s_Id);
-        var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
-        
+    try{
+        for (i = 0; i < onchangedIndex.length; i++) {
+            var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
+            var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
+            var res = await callPromise("updatePropertyTypeRating", _id, _rate, s_Id);
+            var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
+            
+        }
+    }catch(e){
+        console.log(e);
     }
+
     onchangedIndex = [];
     loading(0);
     sweetAlert("Congratulations!", "Rating Saved!", "success");

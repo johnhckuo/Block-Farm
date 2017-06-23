@@ -6,7 +6,7 @@ if (Meteor.isServer) {
         'initUserProperty': function () {
             var u_Id = Meteor.userId();
             var _property = Meteor.users.findOne({ _id: u_Id }).profile.game.property;
-            var propertyType = property_type.findOne({});
+            var propertyType = property_type.find().fetch();
             for (var i = 0; i < propertyType.length; i++) {
                 _property.id.push(i);
                 _property.name.push(propertyType[i].name);
@@ -57,10 +57,12 @@ if (Meteor.isServer) {
         },
         'updatePropertyTypeRating': function(p_Id, _rate, s_Id){
             try{
+                
                 var rating = property_type.find({'id':p_Id}, {fields:{rating:1}}).fetch()[0].rating;
+                console.log("========="+ rating[s_Id]+"|"+_rate+"|"+p_Id);
+
                 rating[s_Id] = _rate;
                 property_type.update({'id':p_Id}, { $set: { 'rating': rating } });
-
             }catch(e){
                 console.log(e);
             }
