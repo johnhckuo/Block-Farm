@@ -135,6 +135,11 @@ if (Meteor.isServer) {
       }
 
     },
+    'callMongo':function(method){
+      if (method == "getPropertyType"){
+        return property_type.find().fetch();
+      }
+    },
     'register': function (email, password, character) {
       var addr;
       try {
@@ -195,6 +200,7 @@ if (Meteor.isServer) {
         if (character == "Guard") {
           Meteor.call('updatePropertyCount_Setting', 30, 1, 0);
         }
+
         Meteor.call('pushMissionAccountStatus');
         var res = Promise.await(getEther(res.data.address));
         var res = Promise.await(callContract_api("Property", "updatePropertyTypeRating", [cropTypeList.length, 0, "new", 0, 0]));
@@ -220,8 +226,13 @@ if (Meteor.isServer) {
         console.log("[init] Error initializing data on blockcypher");
       }
 
-      property_type.insert({ data: cropTypeList });
+
+      for (var i = 0 ; i < cropTypeList.length; i++){
+        property_type.insert({ id: cropTypeList[i].id, name:cropTypeList[i].name, img: cropTypeList[i].img, count: cropTypeList[i].count, time:cropTypeList[i].time, rating:cropTypeList[i].rating });
+      }
+
       land_type.insert({ data: landTypeList });
+
       var _missionList = MissionList;
       for (var i = 0; i < _missionList.length; i++) {
         _missionList[i].missionItem = [];
@@ -306,6 +317,14 @@ if (Meteor.isServer) {
           return { type: "error", result: e.reason };
         }
         return { type: "success", result: res.data };
+    },
+    'pushNewPropertyRating':function(){
+        var propertyTypes = property_type.find().fetch();
+        for (var i = 0 ; i < propertyTypes.length ; i++){
+          property_type.update({'id':i}, { $push: { 'rating': 0 } });
+        }
+        var propertyTypes = property_type.find().fetch();
+        console.log("Rating length added");
     }
   });
 }

@@ -4,7 +4,7 @@ import { matchesCollection } from '../imports/collections.js';
 
 var properties = [];
 var propertyType = [];
-var diffThreshold = -100;
+var diffThreshold = 10;
 
 
 wait = function(ms){

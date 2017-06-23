@@ -156,15 +156,28 @@ gameIndexRend = function () {
 //  onCreated  //
 /////////////////
 
-Template.gameIndex.created = function () {
+Template.gameContent.created = function () {
 
 }
+
+
+
+Template.gameIndex.created = function(){
+    if (Meteor.userId()){
+        Session.set("loggedIn", true);
+    }else{
+        Session.set("loggedIn", false);
+    }
+};
+
+
+
 
 //////////////////
 //  onRendered  //
 //////////////////
 
-Template.gameIndex.rendered = function () {
+Template.gameContent.rendered = function () {
     if (!this._rendered) {
         createDBConnection();
         checkDBLoaded(async function (value) {
@@ -216,6 +229,19 @@ $(window).on("beforeunload", function () {
 ///////////////
 //  Helpers  //
 ///////////////
+
+
+Template.gameIndex.helpers({
+    loggedIn:function(){
+        if (Meteor.userId()){
+            Session.set("loggedIn", true);
+        }else{
+            Session.set("loggedIn", false);
+        }
+        return Session.get("loggedIn");
+    }
+});
+
 
 Template.shop.helpers({
 
@@ -320,9 +346,63 @@ Template.statusList.helpers({
     },
 });
 
+
 //////////////
 //  Events  //
 //////////////
+
+Template.gameIndex.events({
+    'click .forget-password': function(){
+      $(".resetPasswordContainer").fadeIn(1000);
+      loading(0);
+    },
+    'click .resetPassword':async function(){
+      var email = $("[name=resetPassword]").val();
+      try{
+        var res = await Accounts.forgotPassword({email: email});
+      }catch(e){
+        sweetAlert("Oops...", e,reason, "error");
+        return;
+      }
+      sweetAlert("Please check your email!", "We've just sent an e-mail to reset your password!", "success");
+    },
+    'click .resend-verification-link': async function( event ) {
+
+      var res = await callPromise('sendVerificationLink');
+      loading(0);
+      if (res.type == "success"){
+        swal({
+          title: "Verification mail sent!",
+          text: "Please go check your email :D",
+          type: "success",
+          showCancelButton: false
+        },
+        function(){
+          Router.go('/');
+        });
+      }else{
+        swal({
+          title: "Oops...",
+          text: res.result,
+          type: "error",
+          showCancelButton: false
+        },
+        function(){
+          Router.go('/');
+        });
+        Session.set("loggedIn", false);
+      }
+
+  },
+  'click .home':function(){
+    Router.go("/");
+  }
+})
+
+
+
+
+
 Template.advTutorial.events({
     // 'click .gameGuideImg':function(event){
     //   // $('.landList');
@@ -409,7 +489,7 @@ Template.shop.events({
 });
 
 
-Template.gameIndex.events({
+Template.gameContent.events({
     'click .cropObject': function (event) {
         if (currentCropId != null && plantMode) {
             var _landId = currentCropLand.split("cropLand")[1];
@@ -1493,7 +1573,9 @@ var createDBConnection = function () {
             changed: function(item, fields){
                 setTimeout(function(){
                     var match = matches.find().fetch();
+                    console.log("matchmaking "+match);
                     for (var i = match.length-2 ; i < match.length ; i++){
+                        console.log("match "+match[i]);
                         if (match[i].result == true){
                             $(".matchBtn"+i).attr({
                                 type: 'button',
@@ -1678,7 +1760,7 @@ var getVisitNode = async function () {
 }
 
 var fetchAllCropTypes = function () {
-    cropData = property_type.find().fetch()[0].data;
+    cropData = property_type.find().fetch();
     landData = land_type.find().fetch()[0].data;
 }
 
@@ -2238,35 +2320,48 @@ get_user_property = function () {
 
 get_propertyType_setting = async function (_length) {
     display_field = [];
-    var property_type;
-    var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-    property_type = await callPromise("callContract", "Property", "getPropertyTypeByUserId", s_Id);
 
-    console.log(property_type);
-    if (property_type.type == "error"){
-        loading(0);
-        sweetAlert("Oops...", "Something went wrong... Please try again", "error");
-        ratingOpened = false;
-        return;
-    }
-    property_type.sort(function (crop1, crop2) {
-        if (crop1[1] > crop2[1]) return 1;
-        if (crop1[1] < crop2[1]) return -1;
-        return 0;
-    });
-    console.log(property_type);
+    var mongoPropertyType = await callPromise("callMongo", "getPropertyType");
+    console.log(mongoPropertyType)
 
-    if (property_type.length != _length) {
+    // var property_type;
+    // var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
+    // property_type = await callPromise("callContract", "Property", "getPropertyTypeByUserId", s_Id);
+
+    // console.log(property_type);
+    // if (property_type.type == "error"){
+    //     loading(0);
+    //     sweetAlert("Oops...", "Something went wrong... Please try again", "error");
+    //     ratingOpened = false;
+    //     return;
+    // }
+    // property_type.sort(function (crop1, crop2) {
+    //     if (crop1[1] > crop2[1]) return 1;
+    //     if (crop1[1] < crop2[1]) return -1;
+    //     return 0;
+    // });
+    // console.log(property_type);
+
+    if (mongoPropertyType.length != _length) {
         loading(0);
         sweetAlert("Oops... Something went wrong!", "Please try again later :(", "error");
         return;
     }
 
-    for (var i = 0; i < property_type.length; i++) {
-        var _name = property_type[i][0];
-        var _id = property_type[i][1];
-        var _rating = property_type[i][3];
-        var _averageRating = property_type[i][2];
+    var s_Id = Meteor.user().profile.game.stakeholder.id;
+    for (var i = 0; i < mongoPropertyType.length; i++) {
+
+        var averageRating = 0;
+        for (var j = 0 ; j < mongoPropertyType[i].rating.length; j++){
+            mongoPropertyType[i].rating[j] = parseInt(mongoPropertyType[i].rating[j])
+            averageRating += mongoPropertyType[i].rating[j];
+        }
+        averageRating /= mongoPropertyType[i].rating.length;
+
+        var _name = mongoPropertyType[i].name;
+        var _id = mongoPropertyType[i].id;
+        var _rating = mongoPropertyType[i].rating[s_Id];
+        var _averageRating = averageRating;
         var data = { "name": _name, "id": _id, "rating": _rating, "averageRating": _averageRating };
         display_field.push(data);
     }
@@ -2373,6 +2468,7 @@ index_finder = function (_source, _mask) {
 set_propertyType_table = async function () {
     loading(1);
     var res = await callPromise("callContract", "Property", "getPropertyTypeLength", []);
+    console.log(res.result.results[0]);
     get_propertyType_setting(res.result.results[0]);
     rend_propertyType_table(res.result.results[0]);
 }
@@ -2463,18 +2559,18 @@ save_rating_setting = async function () {
     loading(1);
     var s_Length = Meteor.users.find().count();
     var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-    for (i = 0; i < onchangedIndex.length; i++) {
-        var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
-        var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
-        var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
-        /*
-        usingPropertyInstance.updatePropertyTypeRating(_id, _rate * floatOffset, "update", { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-        });
-        */
+    try{
+        for (i = 0; i < onchangedIndex.length; i++) {
+            var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
+            var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
+            var res = await callPromise("updatePropertyTypeRating", _id, _rate, s_Id);
+            var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
+            
+        }
+    }catch(e){
+        console.log(e);
     }
+
     onchangedIndex = [];
     loading(0);
     sweetAlert("Congratulations!", "Rating Saved!", "success");

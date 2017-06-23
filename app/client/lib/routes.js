@@ -1,3 +1,5 @@
+import { property_type } from '../../imports/collections.js';
+
 // index
 
 Router.route('/', function () {
@@ -71,6 +73,7 @@ Router.route( '/verify-email/:token', async function(){
     Session.set("loggedIn", true);
     Session.set("address", userObj.profile.address);
 
+    await callPromise("pushNewPropertyRating");
 
     swal({
         title: "Email Verified !",
@@ -118,6 +121,7 @@ async function register(){
         return;
     }
     await callPromise('callContract', 'usingProperty', 'updatePropertyTypeRating', [Typelength, 0, "new"]);
+
     for (i = 0; i < Typelength; i++) {
         await callPromise('callContract', 'usingProperty', 'initUserProperty', [i]);
     }
