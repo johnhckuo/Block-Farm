@@ -15,6 +15,62 @@
   overflow: hidden;
 }
 
+.alertHeader{
+  position: relative;
+  width: 100vw;
+  z-index: 1000001;
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.alertHeader a{
+  margin-left: 30px;
+}
+
+.resetPasswordContainer{
+  position: absolute;
+  top:0px;
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  z-index:10;
+}
+
+.resetPasswordFlexContainer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resetPasswordFlexContainer *{
+  margin-right: 20px;
+}
+
+.resetPasswordFlexContainer input{
+  background: white;
+  color: black;
+}
+
+.home{
+  cursor: pointer;
+  margin-right: 20vw;
+  transition: all .5s;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+}
+
+.home:hover{
+  background: white;
+}
+
 .statusList{
   position: relative;
   height:100%;

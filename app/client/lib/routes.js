@@ -1,3 +1,5 @@
+import { property_type } from '../../imports/collections.js';
+
 // index
 
 Router.route('/', function () {
@@ -44,13 +46,13 @@ Router.route( '/verify-email/:token', async function(){
     registered = true;
     console.log(registered);
     var userObj = await callPromise("getUser");
-    if (!userObj.email[0].verified) {
+    //if (!userObj.email[0].verified) {
         var res = await callPromise("API_Register");
         userObj = await callPromise("getUser");
         userData = { name: userObj.email[0].address, address: userObj.profile.address, character: userObj.profile.character };
               
         //await register();
-    }
+    //}
     try {
         var res = await Accounts.verifyEmail(this.params.token);
     } catch (e) {
@@ -68,6 +70,7 @@ Router.route( '/verify-email/:token', async function(){
     Session.set("loggedIn", true);
     Session.set("address", userObj.profile.address);
 
+    await callPromise("pushNewPropertyRating");
 
     swal({
         title: "Email Verified !",
@@ -115,6 +118,7 @@ async function register(){
         return;
     }
     await callPromise('callContract', 'usingProperty', 'updatePropertyTypeRating', [Typelength, 0, "new"]);
+
     for (i = 0; i < Typelength; i++) {
         await callPromise('callContract', 'usingProperty', 'initUserProperty', [i]);
     }

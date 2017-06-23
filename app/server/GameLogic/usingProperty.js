@@ -6,7 +6,7 @@ if (Meteor.isServer) {
         'initUserProperty': function () {
             var u_Id = Meteor.userId();
             var _property = Meteor.users.findOne({ _id: u_Id }).profile.game.property;
-            var propertyType = property_type.findOne({}).data;
+            var propertyType = property_type.findOne({});
             for (var i = 0; i < propertyType.length; i++) {
                 _property.id.push(i);
                 _property.name.push(propertyType[i].name);
@@ -31,9 +31,7 @@ if (Meteor.isServer) {
             Meteor.users.update(u_Id, { $set: { 'profile.game.property': _property } });
         },
         'updateTradingStatus': function (current_s_Id, p_Id, _isTrading) {
-            console.log("...............")
             var isTrading = Meteor.users.findOne({'profile.game.stakeholder.id':current_s_Id}).profile.game.property.isTrading;
-            console.log("cccccc")
             var u_Id = Meteor.users.findOne({'profile.game.stakeholder.id':current_s_Id})._id;
             isTrading[p_Id] = _isTrading;
             Meteor.users.update(u_Id, { $set: { 'profile.game.property.isTrading': isTrading } });
@@ -56,6 +54,17 @@ if (Meteor.isServer) {
             Meteor.users.update(receive_userId, { $set: { 'profile.game.property.count': reciever_Count } });
             Meteor.users.update(current_userId, { $set: { 'profile.game.property.tradeable': sender_Tradeable } });
             return "success";
+        },
+        'updatePropertyTypeRating': function(p_Id, _rate, s_Id){
+            try{
+                var rating = property_type.find({'id':p_Id}, {fields:{rating:1}}).fetch()[0].rating;
+                rating[s_Id] = _rate;
+                property_type.update({'id':p_Id}, { $set: { 'rating': rating } });
+
+            }catch(e){
+                console.log(e);
+            }
+
         }
     });
 }     
