@@ -58,6 +58,9 @@ if (Meteor.isServer) {
             SyndicateLevel = Meteor.user().profile.game.syndicateData.level;
             stealRate = ((80 * (thisGuardLvl / 10) - 40 * (SyndicateLevel / 10)) + 32) / 100;
             return stealRate;
+        },
+        'getCurrentTime':function(){
+            return (new Date());
         }
     });
 }

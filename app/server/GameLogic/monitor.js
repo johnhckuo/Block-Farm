@@ -13,10 +13,10 @@ if (Meteor.isServer) {
             var _property = property_type.find().fetch();
             var _land = land_type.find().fetch();
             var _mission = mission.find().fetch();
-            var obj = { 
-                'property': _property, 
-                'land': _land, 
-                'mission': _mission 
+            var obj = {
+                'property': _property,
+                'land': _land,
+                'mission': _mission
             };
             return obj;
         },
@@ -27,7 +27,18 @@ if (Meteor.isServer) {
             return matches.find().fetch();
         },
         'getBlockchain': function () {
-
+            var match = [];
+            for (i = 0; i < matches.find().fetch().length; i++) {
+                wait(200);
+                try {
+                    var res = Promise.await(callContract_api("Matchmaking", "getMatchMaking", [i]));
+                    match.push(res);
+                }
+                catch (e) {
+                    console.log(i + " : " + e);
+                }
+            }
+            return match;
         }
     });
 }

@@ -21,6 +21,7 @@ Template.monitor.events({
         $('.contentBoard').html(JSON.stringify(data));
     },
     'click #BlockMatch': async function () {
-
+        var data = await dbPromise('getBlockchain');
+        $('.contentBoard').html(JSON.stringify(data));
     },
 });

@@ -53,7 +53,7 @@ var landList = [];
 var cropData = [];
 var landData = [];
 
-var staminaList = { crop: 5, steal: 20, stealFail: 40 };
+var staminaList = { crop: 3, steal: 20, stealFail: 40 };
 
 var currentUser = {};
 
@@ -1725,7 +1725,7 @@ var getUserStockList = async function (s_Id) {
     }
 }
 
-var getUserData = function (s_Id) {
+var getUserData = async function (s_Id) {
     var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder;
     var syndicateData = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.syndicateData;
     var matches = data.matchesId;
@@ -1757,8 +1757,9 @@ var getUserData = function (s_Id) {
     // TODO : check last login format
     //lastLogin = web3.toUtf8(lastLogin).split(".")[0]+"Z";
     //lastLogin = new Date(lastLogin.split("\"")[1]);
+    var currentTime = await dbPromise('getCurrentTime');
 
-    var difference = elapsedTime(lastLogin, new Date());
+    var difference = elapsedTime(lastLogin, currentTime);
 
     currentUser.sta += Math.round(difference.getTime() / 1000);
     var staCap = staminaCap(currentUser.level);
@@ -2036,7 +2037,7 @@ var updateUserExp = function (exp) {
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
         _character.changed();
-        if (currentUser.level == 10) {
+        if (currentUser.level == 5) {
             $('.questionnaire_main').css('display', 'flex');
         }
     }
@@ -2203,7 +2204,6 @@ var elapsedTime = function (start, end) {
     //var diff_hours = difference.getHours();
     //var diff_mins = difference.getMinutes();
     //var diff_secs = difference.getSeconds();
-    //return difference;
     return difference;
 }
 
