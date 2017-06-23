@@ -32,6 +32,9 @@ Router.route('/game', function () {
   this.render('gameIndex');
 });
 
+Router.route('/monitor', function () {
+  this.render('monitor');
+});
 
 
 
