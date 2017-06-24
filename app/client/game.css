@@ -15,6 +15,62 @@
   overflow: hidden;
 }
 
+.alertHeader{
+  position: relative;
+  width: 100vw;
+  z-index: 1000001;
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.alertHeader a{
+  margin-left: 30px;
+}
+
+.resetPasswordContainer{
+  position: absolute;
+  top:0px;
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  z-index:10;
+}
+
+.resetPasswordFlexContainer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resetPasswordFlexContainer *{
+  margin-right: 20px;
+}
+
+.resetPasswordFlexContainer input{
+  background: white;
+  color: black;
+}
+
+.home{
+  cursor: pointer;
+  margin-right: 20vw;
+  transition: all .5s;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+}
+
+.home:hover{
+  background: white;
+}
+
 .statusList{
   position: relative;
   height:100%;
@@ -593,20 +649,23 @@
 }
 .mission_content{
   overflow: auto;
-  height: 100%;
+  height: 72vh;
   /*width: 45vw;*/
-  padding-top: 3vh;
+  padding-top: 4vh;
 }
 #mission_table{
-  width: 45vw;
+  width: 40vw;
   height: 70vh;
   text-align: center;
 }
 #mission_table th td{
-  height: 7vh;
+  height: 10vh;
   vertical-align: middle;
 }
 
+#mission_table button:hover{
+  background-color: #31B0D5;
+}
 
 .rank_template{
   position:absolute;
@@ -955,6 +1014,10 @@
   text-align: center;
   border-color: rgba(119, 150, 179, 1);
 }
+.shop_tradable_input_isTrading{
+  background-color: rgba(119, 150, 179, 1);
+}
+
 .expProgress{
   position: relative;
   width: 10vw;
@@ -1751,8 +1814,16 @@ td img{
 
 }
 
-.matches *{
+.matches div{
   margin-right:10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.txImg{
+  width:50px;
 }
 
 input[type="range"]{
@@ -1805,7 +1876,6 @@ input[type="range"]:active::-webkit-slider-thumb{
   right:0px;
   top:10px;
   width: 600px;
-  height:150px;
   background: rgba(255, 255, 255, 0.6);
   *transition: opacity 1s;
   *opacity: 0;
@@ -1813,13 +1883,32 @@ input[type="range"]:active::-webkit-slider-thumb{
   transition: transform 1s;
   transform: translateX(600px);
   z-index:100000;
-  padding:50px;
-  overflow: scroll;
+  padding:20px;
+  overflow: hidden;
 }
 
 .systemInfo h2{
 
   font-size: 30px;
+
+}
+
+.expanderContainer{
+  position: absolute;
+  top:0px;
+  left:0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height:100%;
+  z-index: -1;
+}
+
+
+.hideSystemInfo{
+  position: absolute;
+  left:-20px;
 
 }
 
@@ -2133,6 +2222,7 @@ border-top-right-radius: 15px;
    100%{background-color: rgba(255, 255, 255, 0);}
  }
 
+<<<<<<< HEAD
  @-webkit-keyframes leftBtnAnimation{
    0%  {background-color: rgba(255, 255, 255, 0.45);}
    50% {background-color: rgb(246, 249, 129);}
@@ -2161,3 +2251,52 @@ border-top-right-radius: 15px;
    50% {background-color: rgb(251, 218, 212);}
    100%{background-color: rgba(255,255,255,0);}
  }
+
+ .questionnaire_main{
+  z-index: 100;
+  position: absolute;
+  width:85vw;
+  height:85vh;
+  background: rgba(255,255,255,0.45);
+  border-radius: 20px;
+  display: none;
+  flex-direction: column;
+}
+
+.questionnaire_title{
+  width:80vw;
+  height:7vh;
+}
+
+.questionnaire_content{
+  width:80vw;
+  height:77vh;
+  margin-left: 2.5vw;
+  margin-bottom: 1vh;
+}
+
+.questionnaire_close{
+  height: 50px;
+  width: 50px;
+  background-color: rgba(244, 102, 102, 1);
+  border-style: none;
+  position: absolute;
+  right: -20px;
+  top:-20px;
+  border-radius: 100%;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 25px;
+  font-weight: 500;
+  color: rgb(221, 221, 221);
+}
+.questionnaire_close:hover{
+  background-color: rgba(191, 47, 47, 1);
+  color: rgb(255, 255, 255);
+  transition: .2s;
+}
+
+.questionnaire_frame{
+  width:100%;
+  height:100%;
+}

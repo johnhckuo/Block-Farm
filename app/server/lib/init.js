@@ -21,10 +21,12 @@ if (Meteor.isServer) {
     /*----------------------
         init declaration
     -----------------------*/
+    currentToken = 0;
+
+    exhaustedApi = ["e22aef855bb045f7904fc4712e7668a9"];
     //, 
     // john powei johng bryant
-    token = ["d4659f9b512a434287fea776cd6f0fe6", "99fc27a26a42455cbc529923e3a6f8ad", 
-    "6df03f5a22014eab8adb54fb83223ff0", "e22aef855bb045f7904fc4712e7668a9", 
+    token = ["6df03f5a22014eab8adb54fb83223ff0","99fc27a26a42455cbc529923e3a6f8ad","d4659f9b512a434287fea776cd6f0fe6", 
     "6f01b597b56b46c0820c56a4e3b16a87", "6585fc55331146d798de46d80de359e1", 
     "308a65855adc4e39bd832bada26eec60", "baf43c22e4e14304993ef62f39d10b58",
     "d6c9fae99f244b91b9a91b62ba5aaf77", "68a657243ee1461db6376af481cdb479",
@@ -40,8 +42,8 @@ if (Meteor.isServer) {
     //token = "68a657243ee1461db6376af481cdb479";
     privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
 
-    Property = "d421160d0cdcc6418d431cb5123f297dd616e68d";
-    Matchmaking = "60bbb6a997e5bdfc25e8c200116247a77010e17f";
+    Property = "b19463153f13d339fb130ad28237afdc7d778be0";
+    Matchmaking = "f6844f449ab6e19179403e8491d9104dfc9ea8bd";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
@@ -75,7 +77,14 @@ if (Meteor.isServer) {
         var character = Meteor.users.findOne({ _id: userId }).profile.basic.character;
         var username = Meteor.users.findOne({ _id: userId }).emails[0].address;
 
-        gameInitData.stakeholder.id = Meteor.users.find().count()-1;
+        var allUser = Meteor.users.find().fetch();
+        var counter = 0;
+        for(i = 0 ; i < allUser.length; i++){
+            if(allUser[i].emails[0].verified)
+                counter++;
+        }
+
+        gameInitData.stakeholder.id = counter;
         gameInitData.stakeholder.farmerLevel = 0;
         gameInitData.stakeholder.name = username.split("@")[0];
         gameInitData.stakeholder.exp = 0;
@@ -84,7 +93,7 @@ if (Meteor.isServer) {
         gameInitData.stakeholder.level = 0;
         gameInitData.stakeholder.stamina = 100;
         gameInitData.stakeholder.lastLogin = 0;
-        gameInitData.stakeholder.guardId = 0;
+        gameInitData.stakeholder.guardId = -1;
         gameInitData.stakeholder.matchesId = [];
         gameInitData.stakeholder.unlockedCropType = [];
 

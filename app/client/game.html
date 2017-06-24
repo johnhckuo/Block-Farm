@@ -1,18 +1,3 @@
-<template name="gameIndex">
-  <div class="gameContainer">
-    {{> guideCircle}}
-    {{> firstTutorial}}
-    {{> advTutorial}}
-    {{> loading}}
-    {{> statusList}}
-    {{> gamingArea}}
-    {{> shop}}
-    {{> mission}}
-    {{> rank}}
-    {{> operationList}}
-    {{> floatBubble}}
-  </div>
-</template>
 
 <template name="guideCircle">
   <div class="guideCircleStatus">
@@ -44,9 +29,10 @@
 </template>
 
 
+
 <!-- wait for merging -->
 
-<!--
+
 <template name="gameIndex">
   {{#if loggedIn}}
       {{#if currentUser.emails.[0].verified}}
@@ -104,7 +90,7 @@
     {{> floatBubble}}
   </div>
 </template>
--->
+
 
 <template name="floatBubble">
   <div class="floatCropStatus">
@@ -129,10 +115,10 @@
         </div>
         <div class="tutorial_page">
           <h3>1/5</h3>
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialNextBtn">Understood</button>
 
         </div>
-        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+        <button type="button" name="button" class="hvr-rectangle-out tutorialSkipBtn">Skip</button>
       </div>
       <div class="tutorial tutorial2">
         <div class="tutorial_img">
@@ -146,12 +132,12 @@
           After planting the seed, the progress will show how much longer until it ripe!
         </div>
         <div class="tutorial_page">
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialPreviousBtn">Again!</button>
           <h3>2/5</h3>
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialNextBtn">Understood</button>
 
         </div>
-        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+        <button type="button" name="button" class="hvr-rectangle-out tutorialSkipBtn">Skip</button>
 
       </div>
       <div class="tutorial tutorial3">
@@ -165,12 +151,12 @@
           In the stock tag, you will find a tradeable column. You can specify how many crops you wish to have trade with others, and we will perform a matchmaking for every one hour! <br>
         </div>
         <div class="tutorial_page">
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialPreviousBtn">Again!</button>
           <h3>3/5</h3>
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialNextBtn">Understood</button>
 
         </div>
-        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+        <button type="button" name="button" class="hvr-rectangle-out tutorialSkipBtn">Skip</button>
       </div>
       <div class="tutorial tutorial4">
         <div class="tutorial_img">
@@ -182,12 +168,12 @@
           In order to get some certain crops by trading, you can higher the default importance so that you will get a better chance of acquiring it !
         </div>
         <div class="tutorial_page">
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialPreviousBtn">Again!</button>
           <h3>4/5</h3>
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialNextBtn">Understood</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialNextBtn">Understood</button>
 
         </div>
-        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+        <button type="button" name="button" class="hvr-rectangle-out tutorialSkipBtn">Skip</button>
 
       </div>
       <div class="tutorial tutorial5">
@@ -203,12 +189,12 @@
 
         </div>
         <div class="tutorial_page">
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialPreviousBtn">Again!</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialPreviousBtn">Again!</button>
           <h3>5/5</h3>
-          <button type="button" name="button" class = "hvr-rectangle-out tutorialFinishBtn">Start Farming!</button>
+          <button type="button" name="button" class="hvr-rectangle-out tutorialFinishBtn">Start Farming!</button>
 
         </div>
-        <button type="button" name="button" class = "hvr-rectangle-out tutorialSkipBtn">Skip</button>
+        <button type="button" name="button" class="hvr-rectangle-out tutorialSkipBtn">Skip</button>
 
       </div>
     </div>
@@ -224,88 +210,88 @@
 </template>
 
 <template name="loading">
-    <div class="loading">
-      <div class="loadingLogo">
-          <img src="/img/BlockFarm.png" alt="">
-      </div>
-      <img src="/img/game/loading.gif" alt="">
+  <div class="loading">
+    <div class="loadingLogo">
+      <img src="/img/BlockFarm.png" alt="">
     </div>
+    <img src="/img/game/loading.gif" alt="">
+  </div>
 </template>
 
 <template name="crop">
-    <div class={{name}} data-pressed="false">
-        <img src={{img}} alt="">
-        {{content}}
-    </div>
+  <div class={{name}} data-pressed="false">
+    <img src={{img}} alt="">
+    {{content}}
+  </div>
 </template>
 
 <template name="land">
-    <div class={{name}} data-pressed="false">
-        <img class="" src={{img}} alt="">
-        {{content}}
-    </div>
+  <div class={{name}} data-pressed="false">
+    <img class="" src={{img}} alt="">
+    {{content}}
+  </div>
 </template>
 
 <template name="statusList">
-    <div class="statusList">
-        {{> characterList}}
+  <div class="statusList">
+    {{> characterList}}
 
-        <!-- <div class="cropListButton statusListButton"> -->
-        <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:100;">
-          <div class="statusPanelList">
+    <!-- <div class="cropListButton statusListButton"> -->
+    <div class="plantPanel statusPanel statusPanelShow listbutton" style="z-index:100;">
+      <div class="statusPanelList">
 
-              <div class="listHeader">
-                <div class="listHeaderPlantTip">
-                  <h2>Plants</h2>
-                  <div class="tipContainer">
-                    <img id="tipPlantsImg" src="/img/game/question-mark.png" alt="">
-                    <div class="tipTextPlants tipText">You need to add "land" before planting. Add "grass" could remove the land.</div>
-                  </div>
-                </div>
-                <hr>
-              </div>
-              <div class="landList">
-                  {{#each lands}}
-                  {{> land}}
-                  {{/each}}
-                  <div class='cropLand removeLand' data-pressed="false">
-                      <img src="/img/game/background.svg" >
-                      Grass
-                  </div>
-              </div>
-              <div class="devideLine">
-                <hr>
-              </div>
-              <div class="cropListDiv">
-              {{#each crops}}
-                      {{> crop}}
-              {{/each}}
-              <!-- {{> cropSelectingBtns}} -->
-              </div>
+        <div class="listHeader">
+          <div class="listHeaderPlantTip">
+            <h2>Plants</h2>
+            <div class="tipContainer">
+              <img id="tipPlantsImg" src="/img/game/question-mark.png" alt="">
+              <div class="tipTextPlants tipText">You need to add "land" before planting. Add "grass" could remove the land.</div>
+            </div>
           </div>
-
+          <hr>
         </div>
-
-        <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
-          <div class="statusPanelList tradeableList">
-            <div class="listHeader">
-              <h2>Stock</h2>
-              <hr>
-            </div>
-            <div class="tradeable_content">
-
-            </div>
-            <div class="btn_tradeable">
-              <button class="hvr-rectangle-out " id="btn_tradeable_save">Save</button>
-              <button class="hvr-rectangle-out " id="btn_tradeable_cancel">Cancel</button>
-            </div>
-          </div>
-          <div>
+        <div class="landList">
+          {{#each lands}}
+          {{> land}}
+          {{/each}}
+          <div class='cropLand removeLand' data-pressed="false">
+            <img src="/img/game/background.svg" >
+            Grass
           </div>
         </div>
-        {{> cropSelectingBtns}}
+        <div class="devideLine">
+          <hr>
+        </div>
+        <div class="cropListDiv">
+          {{#each crops}}
+          {{> crop}}
+          {{/each}}
+          <!-- {{> cropSelectingBtns}} -->
+        </div>
+      </div>
 
-        <!-- <div class="functionSwitch">
+    </div>
+
+    <div class="tradeablePanel statusPanel listbutton" style="z-index:-1">
+      <div class="statusPanelList tradeableList">
+        <div class="listHeader">
+          <h2>Stock</h2>
+          <hr>
+        </div>
+        <div class="tradeable_content">
+
+        </div>
+        <div class="btn_tradeable">
+          <button class="hvr-rectangle-out " id="btn_tradeable_save">Save</button>
+          <button class="hvr-rectangle-out " id="btn_tradeable_cancel">Cancel</button>
+        </div>
+      </div>
+      <div>
+      </div>
+    </div>
+    {{> cropSelectingBtns}}
+
+    <!-- <div class="functionSwitch">
               <button type="button" name="button" class="btn-primary test">Test</button>
               <button type="button" name="button" class="btn-primary matchmaking">Matching</button>
               <button type="button" name="button" class="btn-primary confirmMatches">Check</button>
@@ -313,9 +299,9 @@
  -->
 
 
-              <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
+    <!-- <button type="button" name="button" class="btn btn-primary test">LVL up</button> -->
 
-              <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
+    <!-- <button type="button" name="button" class="btn btn-primary MissionOpen">
                 <div class="missionIndicator">
                   !
                 </div>
@@ -325,8 +311,8 @@
 
 
 
-        <!-- </div> -->
-    </div>
+    <!-- </div> -->
+  </div>
 </template>
 
 <template name="cropSelectingBtns">
@@ -340,208 +326,207 @@
 <template name="logo">
   <div class="logoAudio">
     <div class="logo">
-        <a href="/">
+      <a href="/">
           <img src="/img/BlockFarm.png" alt="">
         </a>
     </div>
     <div class="musicSwitch">
-        <img src="/img/game/speaker_on.svg" alt="">
+      <img src="/img/game/speaker_on.svg" alt="">
     </div>
   </div>
 </template>
 
 <template name="gameGuide">
   <div class="gameGuideLink">
-      <img class="gameGuideImg" src="/img/game/info.svg" alt="">
+    <img class="gameGuideImg" src="/img/game/info.svg" alt="">
   </div>
 </template>
 
 <template name="characterList">
-    <div class="characterList">
-        <div class="imgContainer">
-          <div class="tipTextSwitch tipText">switch to {{characterTypeName}}</div>
-          <div class="characterImg">
-              <div class="flipDIV front">
-                <img src="/img/game/farmer.svg" alt="">
-                <h3>{{userLevel}}</h3>
-                <!-- <div class="tipTextSwitch tipText">switch to XX</div> -->
-              </div>
-              <div class="flipDIV back">
-                <img src={{characterType}} alt="">
-                <h3>{{userSyndicateLevel}}</h3>
-              </div>
+  <div class="characterList">
+    <div class="imgContainer">
+      <div class="tipTextSwitch tipText">switch to {{characterTypeName}}</div>
+      <div class="characterImg">
+        <div class="flipDIV front">
+          <img src="/img/game/farmer.svg" alt="">
+          <h3>{{userLevel}}</h3>
+          <!-- <div class="tipTextSwitch tipText">switch to XX</div> -->
+        </div>
+        <div class="flipDIV back">
+          <img src={{characterType}} alt="">
+          <h3>{{userSyndicateLevel}}</h3>
+        </div>
 
+      </div>
+    </div>
+
+    <div class="characterStatus">
+      <div class="userName">
+        <h3>{{userName}}</h3>
+      </div>
+      <div class="userBarContainer">
+        <div class="userBar">
+          <div class="userExp">
+            <div class="expProgress tipContainer">
+              <h3>EXP</h3>
+
+              <div class="expProgressBar"></div>
+              <div class="expText"></div>
+              <div class="expPopText"></div>
+              <div class="tipTextExp tipText">{{expTip}}</div>
+            </div>
+          </div>
+          <div class="SyndicateExp tipContainer">
+            <div class="SyndicateExpProgress">
+              <h3>EXP</h3>
+
+              <div class="SyndicateExpProgressBar"></div>
+              <div class="SyndicateExpText"></div>
+              <div class="tipTextSyndicate tipText">{{expSyndicate}}</div>
+            </div>
+          </div>
+          <div class="userSta">
+            <div class="staProgress tipContainer">
+              <h3>STA</h3>
+
+              <div class="staProgressBar"></div>
+              <div class="staText"></div>
+              <div class="tipTextSta tipText">{{staTip}}</div>
+            </div>
           </div>
         </div>
 
-        <div class="characterStatus">
-            <div class="userName">
-              <h3>{{userName}}</h3>
-            </div>
-            <div class="userBarContainer">
-              <div class="userBar">
-                <div class="userExp">
-                  <div class="expProgress tipContainer">
-                      <h3>EXP</h3>
-
-                      <div class="expProgressBar"></div>
-                      <div class="expText"></div>
-                      <div class="expPopText"></div>
-                      <div class="tipTextExp tipText">{{expTip}}</div>
-                  </div>
-                </div>
-                <div class="SyndicateExp tipContainer">
-                    <div class="SyndicateExpProgress">
-                        <h3>EXP</h3>
-
-                        <div class="SyndicateExpProgressBar"></div>
-                        <div class="SyndicateExpText"></div>
-                        <div class="tipTextSyndicate tipText">{{expSyndicate}}</div>
-                    </div>
-                </div>
-                <div class="userSta">
-                  <div class="staProgress tipContainer">
-                      <h3>STA</h3>
-
-                      <div class="staProgressBar"></div>
-                      <div class="staText"></div>
-                      <div class="tipTextSta tipText">{{staTip}}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="switch">
-              <!-- <div class="musicSwitch">
+        <div class="switch">
+          <!-- <div class="musicSwitch">
                   <img src="/img/game/speaker_on.svg" alt="">
               </div> -->
-              <div class="nextSwitch">
-              </div>
-              </div>
-            </div>
-
-
-
+          <div class="nextSwitch">
+          </div>
         </div>
+      </div>
+
 
 
     </div>
 
+
+  </div>
+
 </template>
 
 <template name="gamingArea">
-    <div class = "gamingArea">
-        <div class="levelUp">
-          <div class="levelUpFlex">
-            <h2>Level Up !</h2>
-            <div class="levelUpArrow">
-              <img src="/img/game/levelup_arrow.svg" alt="">
-            </div>
-            <div class="circles">
-              <div class="circle circleL">
-                <img src="/img/game/levelup_circle_1.svg" alt="">
-              </div>
-              <div class="circle circleM">
-                <img src="/img/game/levelup_circle_2.svg" alt="">
-              </div>
-              <div class="circle circleS">
-                <img src="/img/game/levelup_circle_3.svg" alt="">
-              </div>
-              <div class="levelUpText">
-                <h2>{{currentLevel}}</h2>
-              </div>
-            </div>
-            <span class="levelUpReward">
+  <div class="gamingArea">
+    <div class="levelUp">
+      <div class="levelUpFlex">
+        <h2>Level Up !</h2>
+        <div class="levelUpArrow">
+          <img src="/img/game/levelup_arrow.svg" alt="">
+        </div>
+        <div class="circles">
+          <div class="circle circleL">
+            <img src="/img/game/levelup_circle_1.svg" alt="">
+          </div>
+          <div class="circle circleM">
+            <img src="/img/game/levelup_circle_2.svg" alt="">
+          </div>
+          <div class="circle circleS">
+            <img src="/img/game/levelup_circle_3.svg" alt="">
+          </div>
+          <div class="levelUpText">
+            <h2>{{currentLevel}}</h2>
+          </div>
+        </div>
+        <span class="levelUpReward">
               <h3>{{staminaCap}}</h3>
               <h3>{{expCap}}</h3>
               <span class = "unlockCropId"></span>
-            </span>
-          </div>
+        </span>
+      </div>
+    </div>
+
+    <div class="canvas">
+      <div class='animationObject'>
+        <div class="animationImg"></div>
+        <div class="scoreObject"></div>
+      </div>
+
+      <div class="levelUpObject">
+        <div class="levelUpAnimation"></div>
+        <div class="levelUpText"></div>
+      </div>
+
+      <div class='missionObject'>
+        <div class="thiefObject">
         </div>
+      </div>
 
-        <div class="canvas">
-            <div class= 'animationObject'>
-              <div class="animationImg"></div>
-              <div class="scoreObject"></div>
-            </div>
-
-            <div class="levelUpObject">
-                <div class="levelUpAnimation"></div>
-                <div class="levelUpText"></div>
-            </div>
-
-            <div class= 'missionObject'>
-              <div class="thiefObject">
-              </div>
-            </div>
-
-            <div class= 'surfaceObject'>
-              <div class="cropObject">
-              </div>
-            </div>
-            <div class= 'landObject'>
-              <div class="farmObject">
-              </div>
-            </div>
-
-            <div class = "land">
-
-            </div>
-
+      <div class='surfaceObject'>
+        <div class="cropObject">
         </div>
+      </div>
+      <div class='landObject'>
+        <div class="farmObject">
+        </div>
+      </div>
+
+      <div class="land">
+
+      </div>
+
+    </div>
     {{> logo}}
     {{> gameGuide}}
     <div class="systemInfo">
-        <h2>New Transaction !</h2>
+      <h2>New Transaction !</h2>
     </div>
 
     <div class="navigation">
       <div class="navBackground">
 
       </div>
-      <img src="/img/game/arrow.svg" alt="" class = "nav navRight">
-      <img src="/img/game/arrow.svg" alt="" class = "nav navUp">
-      <img src="/img/game/arrow.svg" alt="" class = "nav navLeft">
-      <img src="/img/game/arrow.svg" alt="" class = "nav navDown">
-
+      <img src="/img/game/arrow.svg" alt="" class="nav navRight">
+      <img src="/img/game/arrow.svg" alt="" class="nav navUp">
+      <img src="/img/game/arrow.svg" alt="" class="nav navLeft">
+      <img src="/img/game/arrow.svg" alt="" class="nav navDown">
     </div>
 
-    </div>
+  </div>
 </template>
 
 
 <template name="shop">
-    <div class="property_shop" >
-        <button type="button" id="btn_shop_close" class="btnClose" value="close">X</button>
-        <div class="shop_header">
-            <input type="button" disabled="disabled" id="btn_show_property" value="Ratings" />
-            <!-- <input type="button" id="btn_property_tradeable" value="Tradable" /> -->
-            <!-- <input type="button" id="btn_shop_close" value="close" /> -->
-            <!-- <input type="button" id="btn_shop_add" value="add" /> -->
-        </div>
-        <div class="rating_tolerance">
-          <!-- <input type="range" value="0" max="100" min="0" step="1" id="ratingPercent">
-          <label for="ratingPercent">0</label> -->
-        </div>
-        <div class="shop_content">
-
-        </div>
-        <div class="rating_btn">
-          <button id="btn_property_save" class="hvr-rectangle-out" value="SAVE">SAVE</button>
-          <button id="btn_property_cancel" class="hvr-rectangle-out" value="CANCEL">CANCEL</button>
-        </div>
+  <div class="property_shop">
+    <button type="button" id="btn_shop_close" class="btnClose" value="close">X</button>
+    <div class="shop_header">
+      <input type="button" disabled="disabled" id="btn_show_property" value="Ratings" />
+      <!-- <input type="button" id="btn_property_tradeable" value="Tradable" /> -->
+      <!-- <input type="button" id="btn_shop_close" value="close" /> -->
+      <!-- <input type="button" id="btn_shop_add" value="add" /> -->
     </div>
+    <div class="rating_tolerance">
+      <!-- <input type="range" value="0" max="100" min="0" step="1" id="ratingPercent">
+          <label for="ratingPercent">0</label> -->
+    </div>
+    <div class="shop_content">
+
+    </div>
+    <div class="rating_btn">
+      <button id="btn_property_save" class="hvr-rectangle-out" value="SAVE">SAVE</button>
+      <button id="btn_property_cancel" class="hvr-rectangle-out" value="CANCEL">CANCEL</button>
+    </div>
+  </div>
 </template>
 
 <template name="mission">
-    <div class="mission_template">
+  <div class="mission_template">
 
-    </div>
+  </div>
 </template>
 
 <template name="rank">
-    <div class="rank_template">
+  <div class="rank_template">
 
-    </div>
+  </div>
 </template>
 
 <template name="operationList">
@@ -549,10 +534,21 @@
     <div class="menuBtn">
       <button type="button" class="menuButton"><img src="/img/game/menu.svg" alt=""></button>
     </div>
-    <div class="rightMenuIcon" >
+    <div class="rightMenuIcon">
       <button type="button" class="btnSelect btnMission MissionOpen rightBtn" name="button"><img src="/img/game/envelope.svg" alt=""><h2>Mission</h2></button>
       <button type="button" class="btnSelect btnShop shopOpen rightBtn" name="button"><img src="/img/game/stars.svg" alt=""><h2>Rating</h2></button>
       <button type="button" class="btnSelect btnRank rankOpen rightBtn" name="button"><img src="/img/game/quality.svg" alt=""><h2>Rank</h2></button>
+    </div>
+  </div>
+</template>
+
+<template name="questionnaire">
+  <div class="questionnaire_main">
+    <div class="questionnaire_title">
+      <button type="button" id="btn_questionnaire_close" class="btnClose" value="close">X</button>
+    </div>
+    <div class="questionnaire_content">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfaN1uQEONkP20JVqgnS_QbkQiy943YgPacGZQaOfYyUfd09Q/viewform?embedded=true" class ="questionnaire_frame"></iframe>
     </div>
   </div>
 </template>
