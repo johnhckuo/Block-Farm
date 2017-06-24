@@ -135,9 +135,11 @@ if (Meteor.isServer) {
       }
 
     },
-    'callMongo': function (method) {
+    'callMongo': function (method, args) {
       if (method == "getPropertyType") {
         return property_type.find().fetch();
+      }else if (method == "getThreshold"){
+        return Meteor.users.findOne({"profile.game.stakeholder.id":args[0]}).profile.game.property.threshold;
       }
     },
     'register': function (email, password, character) {
@@ -212,19 +214,19 @@ if (Meteor.isServer) {
     },
     'init': function () {
       console.log("------------------ Data Init ------------------");
-      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      if (res.data.results[0] != 0) {
-        console.log("[init] Data has been initialized");
-        return;
-      }
+      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      // if (res.data.results[0] != 0) {
+      //   console.log("[init] Data has been initialized");
+      //   return;
+      // }
 
-      try {
-        for (var i = 0; i < cropTypeList.length; i++) {
-          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-        }
-      } catch (e) {
-        console.log("[init] Error initializing data on blockcypher");
-      }
+      // try {
+      //   for (var i = 0; i < cropTypeList.length; i++) {
+      //     var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+      //   }
+      // } catch (e) {
+      //   console.log("[init] Error initializing data on blockcypher");
+      // }
 
 
       for (var i = 0; i < cropTypeList.length; i++) {
@@ -325,6 +327,9 @@ if (Meteor.isServer) {
       }
       var propertyTypes = property_type.find().fetch();
       console.log("Rating length added");
+    },
+    'updateRatingTolerance':function(tolerance, s_Id){
+        Meteor.users.update({"profile.game.stakeholder.id":s_Id}, { $set: { 'profile.game.property.threshold': tolerance } });
     }
   });
 }

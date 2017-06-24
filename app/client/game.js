@@ -1499,54 +1499,6 @@ var createDBConnection = function () {
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
-<<<<<<< HEAD
-            added: function(item, fields){ 
-                var matchCounter = 0;
-                var owners = [];
-                var matchId = fields.id;
-                if (!matchmakingChecked){
-                    currentMatches = matches.find().fetch();
-                    owners = currentMatches[matchId].owners;
-                    matchmakingLength = currentMatches.length;
-                    matchmakingChecked = true;
-                }
-                if (matchId >= matchmakingLength-2){
-                    var s_Id = Meteor.user().profile.game.stakeholder.id;
-                    if (jQuery.inArray(s_Id, owners) != -1){
-                            Session.set("id", Meteor.userId()); 
-                            var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                            var res;
-                            var minedDetector = setInterval(async function(){
-                                res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
-                                if (res.type == "success" && res.result != undefined){
-                                    console.log("Mining Listener Closed...");
-                                    clearInterval(minedDetector);
-                                    console.log(res);
-                                    var confirmed = res.result.results[0];
-                                    //if (!confirmed){
-                                        if (jQuery.inArray(matchId, data) == -1){
-                                            var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
-                                        }
-                                        showConfirmation(s_Id, matchId);
-                                        systemInfoShowed = true;
-                                    //}
-                                }else{
-                                    matchCounter++;
-                                    console.log("new matchmaking! waiting for txs being mined");
-                                    if (matchCounter >= 8){
-                                        console.log("contract result missing... re-upload to blockchain...");
-                                        //rewirte into contract
-                                        var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
-                                        for (var w = 0 ; w < fields.owners.length; w++){
-                                            var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-                                        }
-                                        console.log(res)
-                                        console.log("contract re-upload complete");
-                                        matchCounter = 0;
-                                    }
-                                }
-                            },8000)
-=======
             added: function (item, fields) {
                 var owners = [];
                 var matchId = fields.id;
@@ -1585,7 +1537,6 @@ var createDBConnection = function () {
                                 console.log("new matchmaking! waiting for txs being mined");
                             }
                         }, 6000)
->>>>>>> 84dbf27a2fdd2a613b6ce6ae6acb9dd1525389f2
 
                         // var minedDetector = setInterval(function(){
                         //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
@@ -1602,7 +1553,6 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-<<<<<<< HEAD
             changed: function(item, fields){
                 if (currentMatches.length < 2){
                     offset = currentMatches.length
@@ -1625,29 +1575,6 @@ var createDBConnection = function () {
                             value: 'Fail',
                             disabled:true
                         });
-=======
-            changed: function (item, fields) {
-                setTimeout(function () {
-                    var match = matches.find().fetch();
-                    console.log("matchmaking " + match);
-                    for (var i = match.length - 2; i < match.length; i++) {
-                        console.log("match " + match[i]);
-                        if (match[i].result == true) {
-                            $(".matchBtn" + i).attr({
-                                type: 'button',
-                                class: "btn btn-success matchesBtn matchBtn" + i,
-                                value: 'Success',
-                                disabled: true
-                            });
-                        } else if (match[i].result == false) {
-                            $(".matchBtn" + i).attr({
-                                type: 'button',
-                                class: "btn btn-danger matchesBtn matchBtn" + i,
-                                value: 'Fail',
-                                disabled: true
-                            });
-                        }
->>>>>>> 84dbf27a2fdd2a613b6ce6ae6acb9dd1525389f2
                     }
                 }
 
@@ -1817,12 +1744,7 @@ var getVisitNode = async function () {
 }
 
 var fetchAllCropTypes = function () {
-<<<<<<< HEAD
-    cropData = property_type.find({}, {sort: {id: 1}}).fetch();
-    console.log(cropData)
-=======
     cropData = property_type.find({}, { sort: { id: 1 } }).fetch();
->>>>>>> 84dbf27a2fdd2a613b6ce6ae6acb9dd1525389f2
     landData = land_type.find().fetch()[0].data;
 }
 
@@ -2637,7 +2559,7 @@ save_tradable_setting = function () {
         //     }
         // });
     }
-    if (isTrading) {
+    if (hasTrading) {
         sweetAlert("Oops!", "Some tradable numbers in trading process were not changed!", "error");
     }
     else {
@@ -2664,13 +2586,9 @@ save_rating_setting = async function () {
             var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
 
         }
-<<<<<<< HEAD
         var _ratingPercent = parseInt($('#ratingPercent').val(), 10);
-        var res = await callPromise("updateRatingTolerance", _ratingPercent, Meteor.userId());
+        var res = await Meteor.call("updateRatingTolerance", _ratingPercent, Meteor.user().profile.game.stakeholder.id);
     }catch(e){
-=======
-    } catch (e) {
->>>>>>> 84dbf27a2fdd2a613b6ce6ae6acb9dd1525389f2
         console.log(e);
     }
 
