@@ -20,9 +20,9 @@ contract Property{
     function updatePropertyTypeRating(uint _id, uint rate, string operation, uint s_Length, uint s_Id){
         if (equal(operation,"update")){
 
+            uint old_rating = propertyTypeList[_id].rating[s_Id];
+            propertyTypeList[_id].averageRating = (propertyTypeList[_id].averageRating * s_Length - old_rating + rate)/s_Length;
             propertyTypeList[_id].rating[s_Id] = rate;
-
-            propertyTypeList[_id].averageRating = ((propertyTypeList[_id].averageRating * (s_Length-1))+rate)/s_Length;
 
         }else if (equal(operation,"new")){
 

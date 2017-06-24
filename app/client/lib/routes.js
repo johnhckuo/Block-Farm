@@ -49,13 +49,13 @@ Router.route( '/verify-email/:token', async function(){
     registered = true;
     console.log(registered);
     var userObj = await callPromise("getUser");
-    if (!userObj.email[0].verified) {
+    //if (!userObj.email[0].verified) {
         var res = await callPromise("API_Register");
         userObj = await callPromise("getUser");
         userData = { name: userObj.email[0].address, address: userObj.profile.address, character: userObj.profile.character };
               
         //await register();
-    }
+    //}
     try {
         var res = await Accounts.verifyEmail(this.params.token);
     } catch (e) {

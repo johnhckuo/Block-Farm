@@ -46,6 +46,9 @@ contract Matchmaking{
     }
 
     function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result, uint _visitedLength){
+        if (matches.length > _matchId){
+            throw;
+        }
         matches.length++;
 
         matches[_matchId].id = _matchId;

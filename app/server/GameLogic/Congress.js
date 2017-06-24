@@ -30,23 +30,20 @@ if (Meteor.isServer) {
                 console.log(e);
             }
         },
-        'updateGuardId': function (g_Id) {
-            var userId = Meteor.userId();
-            var _stakeholder = Meteor.users.findOne({ _id: userId }).profile.game.stakeholder;
+        'updateGuardId': function (s_Id, g_Id) {
+            var _stakeholder = Meteor.users.findOne({ "profile.game.stakeholder.id": s_Id }).profile.game.stakeholder;
             _stakeholder.guardId = g_Id;
-            Meteor.users.update(userId, { $set: { 'profile.game.stakeholder': _stakeholder } });
+            Meteor.users.update({"profile.game.stakeholder.id": s_Id}, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },
-        'updateGuardMatchId': function (g_Id) {
-            var userId = Meteor.userId();
-            var _syndicateData = Meteor.users.findOne({ _id: userId }).profile.game.syndicateData;
+        'updateGuardMatchId': function (s_Id, g_Id) {
+            var _syndicateData = Meteor.users.findOne({"profile.game.stakeholder.id": s_Id }).profile.game.syndicateData;
             _syndicateData.guardMatchId = g_Id;
-            Meteor.users.update(userId, { $set: { 'profile.game.syndicateData': _syndicateData } });
+            Meteor.users.update({"profile.game.stakeholder.id": s_Id}, { $set: { 'profile.game.syndicateData': _syndicateData } });
         },
-        'updateFarmerId': function (f_Id) {
-            var userId = Meteor.userId();
-            var _syndicateData = Meteor.users.findOne({ _id: userId }).profile.game.syndicateData;
+        'updateFarmerId': function (s_Id, f_Id) {
+            var _syndicateData = Meteor.users.findOne({"profile.game.stakeholder.id": s_Id }).profile.game.syndicateData;
             _syndicateData.guardFarmerId = f_Id;
-            Meteor.users.update(userId, { $set: { 'profile.game.syndicateData': _syndicateData } });
+            Meteor.users.update({"profile.game.stakeholder.id": s_Id}, { $set: { 'profile.game.syndicateData': _syndicateData } });
         },
         'updateSyndicateProgress': function (_progress) {
             var userId = Meteor.userId();

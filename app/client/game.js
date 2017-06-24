@@ -15,6 +15,8 @@ var landSrc = "/img/game/land.svg";
 var prefix = "/img/game/plant/";
 var postfix = ".svg";
 
+var currentMatches = [];
+
 var unlockCropNum = 3;
 var unlockCropLevel = 5;
 
@@ -89,6 +91,7 @@ var targetCircleDiv = null;
 var ratingOpened = false;
 var onchangedIndex = [];
 var systemInfoShowed = false;
+
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -1517,32 +1520,28 @@ var createDBConnection = function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
             added: function(item, fields){ 
+                var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
                 if (!matchmakingChecked){
-                    var temp = matches.find().fetch();
-                    owners = temp[matchId].owners;
-                    matchmakingLength = temp.length;
+                    currentMatches = matches.find().fetch();
+                    owners = currentMatches[matchId].owners;
+                    matchmakingLength = currentMatches.length;
                     matchmakingChecked = true;
                 }
                 if (matchId >= matchmakingLength-2){
-                    if (jQuery.inArray(currentUser.s_Id, owners) == -1){
+                    var s_Id = Meteor.user().profile.game.stakeholder.id;
+                    if (jQuery.inArray(s_Id, owners) != -1){
                             Session.set("id", Meteor.userId()); 
                             var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                            var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
                             var res;
                             var minedDetector = setInterval(async function(){
                                 res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
-                                if (res.type == "success"){
-                                    console.log("clear interval");
+                                if (res.type == "success" && res.result != undefined){
+                                    console.log("Mining Listener Closed...");
                                     clearInterval(minedDetector);
-
+                                    console.log(res);
                                     var confirmed = res.result.results[0];
-                                    var match = matches.find().fetch();
-                                    var owners = match[matchId].owners;
-                                    if (jQuery.inArray(s_Id, owners) == -1){
-                                        return;
-                                    }     
                                     //if (!confirmed){
                                         if (jQuery.inArray(matchId, data) == -1){
                                             var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
@@ -1551,9 +1550,21 @@ var createDBConnection = function () {
                                         systemInfoShowed = true;
                                     //}
                                 }else{
+                                    matchCounter++;
                                     console.log("new matchmaking! waiting for txs being mined");
+                                    if (matchCounter >= 8){
+                                        console.log("contract result missing... re-upload to blockchain...");
+                                        //rewirte into contract
+                                        var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
+                                        for (var w = 0 ; w < fields.owners.length; w++){
+                                            var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+                                        }
+                                        console.log(res)
+                                        console.log("contract re-upload complete");
+                                        matchCounter = 0;
+                                    }
                                 }
-                            },6000)
+                            },8000)
 
                             // var minedDetector = setInterval(function(){
                             //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
@@ -1571,28 +1582,29 @@ var createDBConnection = function () {
                 //Meteor.users.
             },
             changed: function(item, fields){
-                setTimeout(function(){
-                    var match = matches.find().fetch();
-                    console.log("matchmaking "+match);
-                    for (var i = match.length-2 ; i < match.length ; i++){
-                        console.log("match "+match[i]);
-                        if (match[i].result == true){
-                            $(".matchBtn"+i).attr({
-                                type: 'button',
-                                class: "btn btn-success matchesBtn matchBtn" + i,
-                                value: 'Success',
-                                disabled:true
-                            });
-                        }else if (match[i].result == false){
-                            $(".matchBtn"+i).attr({
-                                type: 'button',
-                                class: "btn btn-danger matchesBtn matchBtn" + i,
-                                value: 'Fail',
-                                disabled:true
-                            });
-                        }
+                if (currentMatches.length < 2){
+                    offset = currentMatches.length
+                }else{
+                    offset = 2;
+                }
+                for (var i = currentMatches.length-offset ; i < currentMatches.length ; i++){
+                    console.log("match "+currentMatches[i]);
+                    if (currentMatches[i].result == true){
+                        $(".matchBtn"+i).attr({
+                            type: 'button',
+                            class: "btn btn-success matchesBtn matchBtn" + i,
+                            value: 'Success',
+                            disabled:true
+                        });
+                    }else if (currentMatches[i].result == false){
+                        $(".matchBtn"+i).attr({
+                            type: 'button',
+                            class: "btn btn-danger matchesBtn matchBtn" + i,
+                            value: 'Fail',
+                            disabled:true
+                        });
                     }
-                }, 2000);
+                }
 
 
             }
@@ -1681,7 +1693,7 @@ var showConfirmation = async function (s_Id, m_Id) {
     var properties = data.result.results[2];
     var tradeables = data.result.results[3];
     var result = data.result.results[6];
-
+    console.log(data);
     var index;
     var length = owners.length-1;
     for (var j = 0; j < length; j++) {
@@ -1760,7 +1772,8 @@ var getVisitNode = async function () {
 }
 
 var fetchAllCropTypes = function () {
-    cropData = property_type.find().fetch();
+    cropData = property_type.find({}, {sort: {id: 1}}).fetch();
+    console.log(cropData)
     landData = land_type.find().fetch()[0].data;
 }
 
@@ -2297,14 +2310,13 @@ var elapsedTime = function (start, end) {
 //         $('.land').append("<div class='farm cropLand" + i + "' style='border:1px solid black; border-style:solid;'></div>");
 //     }
 // }
-
 /////////////////////////
 //  Shop Functions  //
 /////////////////////////
 
 get_user_property = function () {
     user_property = [];
-    var db_property = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.property;
+    var db_property = Meteor.user().profile.game.property;
     for (var i = 0; i < db_property.name.length; i++) {
         user_property.push({
             "id": db_property.id[i],
@@ -2321,9 +2333,9 @@ get_user_property = function () {
 get_propertyType_setting = async function (_length) {
     display_field = [];
 
-    var mongoPropertyType = await callPromise("callMongo", "getPropertyType");
-    console.log(mongoPropertyType)
+    var mongoPropertyType = await callPromise("callMongo", "getPropertyType", []);
 
+    currentThreshold = await callPromise("callMongo", "getThreshold", [Meteor.user().profile.game.stakeholder.id]);
     // var property_type;
     // var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
     // property_type = await callPromise("callContract", "Property", "getPropertyTypeByUserId", s_Id);
@@ -2356,7 +2368,7 @@ get_propertyType_setting = async function (_length) {
             mongoPropertyType[i].rating[j] = parseInt(mongoPropertyType[i].rating[j])
             averageRating += mongoPropertyType[i].rating[j];
         }
-        averageRating /= mongoPropertyType[i].rating.length;
+        averageRating = parseInt(averageRating/mongoPropertyType[i].rating.length);
 
         var _name = mongoPropertyType[i].name;
         var _id = mongoPropertyType[i].id;
@@ -2467,10 +2479,10 @@ index_finder = function (_source, _mask) {
 
 set_propertyType_table = async function () {
     loading(1);
-    var res = await callPromise("callContract", "Property", "getPropertyTypeLength", []);
-    console.log(res.result.results[0]);
-    get_propertyType_setting(res.result.results[0]);
-    rend_propertyType_table(res.result.results[0]);
+    var res = await callPromise("getPropertyTypeLength");
+    console.log(res);
+    get_propertyType_setting(res);
+    rend_propertyType_table(res);
 }
 
 rend_propertyType_table = function (_length) {
@@ -2486,9 +2498,11 @@ rend_propertyType_table = function (_length) {
         $('.shop_content').html(
             '<div class="ratingRange">Rating Tolerance<div class="tipTolerance tipContainer"><img src="/img/game/question-mark.png" alt=""><div class="tipToleranceText tipText">The lower represents that you can only accept the equipollently important crop while exchanging. The higher means you may not receive the expected crop, but the higher success rate will occur.</div></div><input type="range" value="0" max="100" min="0" step="1" id="ratingPercent"><label for="ratingPercent">0%</label></div><hr>'
         );
-        $('#ratingPercent').on('change', function () {
-            $('label[for = ratingPercent]').html($(this).val() + "%");
+        console.log(currentThreshold)
+        $('#ratingPercent').val(currentThreshold).on('change', function () {
+            $('label[for = ratingPercent]').html($(this).val());
         });
+
         table = $('<table></table>').attr('id', 'property_table')
             .attr('class', 'property_shop_table');
         //header
@@ -2527,6 +2541,7 @@ rend_propertyType_table = function (_length) {
         }
         //content
         $('.shop_content').append(table);
+        $('label[for = ratingPercent]').text(currentThreshold);
         loading(0);
     }
 }
@@ -2557,7 +2572,14 @@ save_tradable_setting = function () {
 
 save_rating_setting = async function () {
     loading(1);
-    var s_Length = Meteor.users.find().count();
+
+    var s_Length = 0;
+    var allUser = Meteor.users.find().fetch();
+    for(i = 0 ; i < allUser.length; i++){
+        if(allUser[i].emails[0].verified)
+            s_Length++;
+    }
+
     var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
     try{
         for (i = 0; i < onchangedIndex.length; i++) {
@@ -2567,6 +2589,8 @@ save_rating_setting = async function () {
             var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
             
         }
+        var _ratingPercent = parseInt($('#ratingPercent').val(), 10);
+        var res = await callPromise("updateRatingTolerance", _ratingPercent, Meteor.userId());
     }catch(e){
         console.log(e);
     }

@@ -23,10 +23,11 @@ if (Meteor.isServer) {
     -----------------------*/
     currentToken = 0;
 
-    exhaustedApi = ["e22aef855bb045f7904fc4712e7668a9"];
+    currentTokenCall = 0;
     //, 
-    // john powei johng bryant
-    token = ["6df03f5a22014eab8adb54fb83223ff0","99fc27a26a42455cbc529923e3a6f8ad","d4659f9b512a434287fea776cd6f0fe6", 
+    // john powei johng bryant claire
+    token = ["e22aef855bb045f7904fc4712e7668a9", "6df03f5a22014eab8adb54fb83223ff0",
+    "99fc27a26a42455cbc529923e3a6f8ad","d4659f9b512a434287fea776cd6f0fe6", 
     "6f01b597b56b46c0820c56a4e3b16a87", "6585fc55331146d798de46d80de359e1", 
     "308a65855adc4e39bd832bada26eec60", "baf43c22e4e14304993ef62f39d10b58",
     "d6c9fae99f244b91b9a91b62ba5aaf77", "68a657243ee1461db6376af481cdb479",
@@ -42,8 +43,8 @@ if (Meteor.isServer) {
     //token = "68a657243ee1461db6376af481cdb479";
     privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
 
-    Property = "b19463153f13d339fb130ad28237afdc7d778be0";
-    Matchmaking = "f6844f449ab6e19179403e8491d9104dfc9ea8bd";
+    Property = "5d5d27fe2b2be6608ae5268fe97bff157a8bdc69";
+    Matchmaking = "41033221dd613aa6de47bcb25a2f697b642960f4";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
@@ -111,7 +112,8 @@ if (Meteor.isServer) {
         gameInitData.property.count = [];
         gameInitData.property.type = [];
         gameInitData.property.tradeable = [];
-        gameInitData.property.isTrading = [];        
+        gameInitData.property.isTrading = [];       
+        gameInitData.property.threshold = 0;         
 
         gameInitData.cropList.id = [];
         gameInitData.cropList.name = [];

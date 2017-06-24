@@ -43,30 +43,35 @@ if (Meteor.isServer) {
             Meteor.users.update(u_Id, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },
         'updateOwnershipStatus':function(current_s_Id, receive_s_Id, p_Id, tradeCount){
-            var current_userId = Meteor.users.findOne({'profile.game.stakeholder.id':current_s_Id})._id;
-            var receive_userId = Meteor.users.findOne({'profile.game.stakeholder.id':receive_s_Id})._id;
 
-            var reciever_Count = Meteor.users.findOne({_id:receive_userId}).profile.game.property.count;
-            var sender_Tradeable = Meteor.users.findOne({_id:current_userId}).profile.game.property.tradeable;
+            var reciever_Count = Meteor.users.findOne({'profile.game.stakeholder.id':receive_s_Id}).profile.game.property.count;
+            var sender_Tradeable = Meteor.users.findOne({'profile.game.stakeholder.id':current_s_Id}).profile.game.property.tradeable;
+            if(p_Id < 30){
+                reciever_Count[p_Id] += tradeCount;
+                Meteor.users.update({'profile.game.stakeholder.id':receive_s_Id}, { $set: { 'profile.game.property.count': reciever_Count } });
 
-            reciever_Count[p_Id] += tradeCount;
+            }else{
+                Meteor.call("updateGuardId", receive_s_Id, current_s_Id);
+                Meteor.call("updateGuardMatchId", receive_s_Id, current_s_Id);
+                Meteor.call("updateFarmerId", current_s_Id, receive_s_Id);
+            }
             sender_Tradeable[p_Id] = 0;
-            Meteor.users.update(receive_userId, { $set: { 'profile.game.property.count': reciever_Count } });
-            Meteor.users.update(current_userId, { $set: { 'profile.game.property.tradeable': sender_Tradeable } });
+            Meteor.users.update({'profile.game.stakeholder.id':current_s_Id}, { $set: { 'profile.game.property.tradeable': sender_Tradeable } });
             return "success";
         },
         'updatePropertyTypeRating': function(p_Id, _rate, s_Id){
             try{
                 
                 var rating = property_type.find({'id':p_Id}, {fields:{rating:1}}).fetch()[0].rating;
-                console.log("========="+ rating[s_Id]+"|"+_rate+"|"+p_Id);
-
                 rating[s_Id] = _rate;
                 property_type.update({'id':p_Id}, { $set: { 'rating': rating } });
             }catch(e){
                 console.log(e);
             }
 
+        },
+        'getPropertyTypeLength': function(){
+            return property_type.find().fetch().length;
         }
     });
 }     

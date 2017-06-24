@@ -253,6 +253,15 @@ if (Meteor.isClient) {
     },
     'click .confirmation':function(event){
       Meteor.call("confirmation");
+    },
+    'click .startTick':function(event){
+      Meteor.call("startTick");
+    },
+    'click .stopTick':function(event){
+      Meteor.call("stopTick");
+    },
+    'click .pauseTick':function(event){
+      Meteor.call("pauseTick");
     }
   });
 }
