@@ -2,9 +2,8 @@ import { Meteor } from 'meteor/meteor';
 
 if (Meteor.isServer) {
     Meteor.methods({
-        'addUserLandConfiguration': function (landsize) {
-            var userId = Meteor.userId();
-            var _landConfig = Meteor.users.findOne({ _id: userId }).profile.game.landConfig;
+        'addUserLandConfiguration': function (s_Id, landsize) {
+            var _landConfig = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id }).profile.game.landConfig;
             if (landsize == 3) {
                 difference = landsize * landsize;
             }
@@ -21,22 +20,20 @@ if (Meteor.isServer) {
                 _landConfig.crop.push(-1);
                 _id++;
             }
-            Meteor.users.update(userId, { $set: { 'profile.game.landConfig': _landConfig } });
+            Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.landConfig': _landConfig } });
         },
-        'updateUserLandConfiguration': function (t_Id, cropId, landId, operation) {
-            var userId = Meteor.userId();
-            var _landConfig = Meteor.users.findOne({ _id: userId }).profile.game.landConfig;
+        'updateUserLandConfiguration': function (s_Id, t_Id, cropId, landId, operation) {
+            var _landConfig = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id }).profile.game.landConfig;
             if (operation == 'land') {
                 _landConfig.land[t_Id] = landId;
             }
             else {
                 _landConfig.crop[t_Id] = cropId;
             }
-            Meteor.users.update(userId, { $set: { 'profile.game.landConfig': _landConfig } });
+            Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.landConfig': _landConfig } });
         },
-        'moveUserLandPosition': function (landsize) {
-            var userId = Meteor.userId();
-            var _landConfig = Meteor.users.findOne({ _id: userId }).profile.game.landConfig;
+        'moveUserLandPosition': function (s_Id, landsize) {
+            var _landConfig = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id }).profile.game.landConfig;
             length = landsize - 1;
             for (var i = ((length * length) - 1); i >= length; i--) {
                 var complement = Math.floor((i / length));
@@ -45,11 +42,10 @@ if (Meteor.isServer) {
                 _landConfig.land[i] = -1;
                 _landConfig.crop[i] = -1;
             }
-            Meteor.users.update(userId, { $set: { 'profile.game.landConfig': _landConfig } });
+            Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.landConfig': _landConfig } });
         },
-        'addCropList': function (_name, _img, _start, _end, _cropType, _ripe, _count) {
-            var userId = Meteor.userId();
-            var _cropList = Meteor.users.findOne({ _id: userId }).profile.game.cropList;
+        'addCropList': function (s_Id, _name, _img, _start, _end, _cropType, _ripe, _count) {
+            var _cropList = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id }).profile.game.cropList;
             var _id = _cropList.id.length;
             if (!Number.isInteger(_id)) {
                 _id = 0;
@@ -62,11 +58,10 @@ if (Meteor.isServer) {
             _cropList.cropType.push(_cropType);
             _cropList.ripe.push(_ripe);
             _cropList.count.push(_count);
-            Meteor.users.update(userId, { $set: { 'profile.game.cropList': _cropList } });
+            Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.cropList': _cropList } });
         },
-        'updateCropList': function (t_Id, _name, _img, _start, _end, _cropType, _ripe, _count) {
-            var userId = Meteor.userId();
-            var _cropList = Meteor.users.findOne({ _id: userId }).profile.game.cropList;
+        'updateCropList': function (s_Id, t_Id, _name, _img, _start, _end, _cropType, _ripe, _count) {
+            var _cropList = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id }).profile.game.cropList;
             _cropList.name[t_Id] = _name;
             _cropList.img[t_Id] = _img;
             _cropList.start[t_Id] = _start;
@@ -74,14 +69,13 @@ if (Meteor.isServer) {
             _cropList.cropType[t_Id] = _cropType;
             _cropList.ripe[t_Id] = _ripe;
             _cropList.count[t_Id] = _count;
-            Meteor.users.update(userId, { $set: { 'profile.game.cropList': _cropList } });
+            Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.cropList': _cropList } });
         },
-        'updateCropCount': function (u_Id, t_Id, _count) {
-            var targetUser = Meteor.users.findOne({'profile.game.stakeholder.id': u_Id});
-            var userId = targetUser._id;
-            var _cropList =targetUser.profile.game.cropList;
+        'updateCropCount': function (s_Id, t_Id, _count) {
+            var targetUser = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id });
+            var _cropList = targetUser.profile.game.cropList;
             _cropList.count[t_Id] = _count;
-            Meteor.users.update(userId, { $set: { 'profile.game.cropList': _cropList } });
+            Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.cropList': _cropList } });
         }
     });
 }

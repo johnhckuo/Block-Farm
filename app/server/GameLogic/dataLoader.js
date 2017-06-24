@@ -29,8 +29,7 @@ if (Meteor.isServer) {
             }
             return data;
         },
-        'getVisitNode': function () {
-            s_Id = Meteor.user().profile.game.stakeholder.id;
+        'getVisitNode': function (s_Id) {
             visitNode = s_Id;
             visitName = " 's farm";
             s_length = Meteor.users.find().fetch().length;
@@ -50,14 +49,30 @@ if (Meteor.isServer) {
         },
         'getStealRate': function (visitNode) {
             var thisGuard_s_Id = Meteor.users.findOne({ 'profile.game.stakeholder.id': visitNode }).profile.game.stakeholder.guardId;
+            console.log(thisGuard_s_Id);
             var thisGuardLvl = 1;
             if (thisGuard_s_Id != -1) {
                 var thisGuard = Meteor.users.findOne({ 'profile.game.stakeholder.id': thisGuard_s_Id });
                 thisGuardLvl = thisGuard.profile.game.syndicateData.level;
+                console.log(thisGuardLvl);
             }
             SyndicateLevel = Meteor.user().profile.game.syndicateData.level;
             stealRate = ((80 * (thisGuardLvl / 10) - 40 * (SyndicateLevel / 10)) + 32) / 100;
             return stealRate;
+        },
+        'getCurrentTime':function(){
+            return (new Date());
+        },
+        'getMatchedLength' : function(){
+            var mLength = 0;
+            try{
+                mLength = matches.find().fetch().length;
+            }
+            catch(e){
+
+            }
+            return mLength;
         }
+        
     });
 }
