@@ -105,7 +105,7 @@ if (Meteor.isServer) {
         gameInitData.syndicateData.fail = 0;
         gameInitData.syndicateData.progress = 0;
         gameInitData.syndicateData.guardMatchId = -1;
-        gameInitData.syndicateData.guardFarmerId = 0;
+        gameInitData.syndicateData.guardFarmerId = -1;
 
         gameInitData.property.id = [];
         gameInitData.property.name = [];
