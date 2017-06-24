@@ -1731,9 +1731,9 @@ td img{
 }
 
 .thief{
-  -webkit-transition: transform 1s, opacity 1s;
+  -webkit-transition: transform .1s, opacity .1s;
 
-  transition: transform 1s, opacity 1s;
+  transition: transform .1s, opacity .1s;
   cursor: pointer;
 }
 
