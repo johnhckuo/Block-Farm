@@ -3,33 +3,19 @@ import { Accounts } from 'meteor/accounts-base';
 import { property_type } from '../imports/collections.js';
 import { land_type } from '../imports/collections.js';
 import { mission } from '../imports/collections.js';
+import { matches } from '../imports/collections.js';
+
 import './GameLogic/Congress.js';
 import './GameLogic/usingProperty.js';
 import './GameLogic/GameProperty.js';
 
 var cropsPerLvl = 3;
+var currentToken = 15;
 
 if (Meteor.isServer) {
 
-
-  Meteor.startup(function () {
-    Meteor.publish('propertyTypeChannel', function () {
-      return property_type.find();
-    });
-
-    Meteor.publish('landTypeChannel', function () {
-      return land_type.find();
-    });
-
-    Meteor.publish('missionChannel', function () {
-      return mission.find();
-    });
-
-  })
-
-
   var API_Register_backend = function () {
-    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/addrs?token=" + token);
+    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/addrs?token=" + token[currentToken]);
   }
 
   var getEther = function (addr) {
@@ -42,7 +28,7 @@ if (Meteor.isServer) {
     config.headers['Content-Type'] = 'application/json';
     console.log(config);
 
-    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/faucet?token=" + token, config);
+    return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/faucet?token=" + token[currentToken], config);
   }
 
 
@@ -51,9 +37,6 @@ if (Meteor.isServer) {
     Accounts.createUser({
       email: email,
       password: password,
-      // address: address,
-      // private: key,
-      // character: character
       profile: {
         basic: {
           character: character
@@ -63,11 +46,96 @@ if (Meteor.isServer) {
 
   }
 
+
+callContract_api = function (contract, method, args) {
+    var req = prefix;
+    switch (contract) {
+      case "Property":
+        req += Property;
+        break;
+      case "Matchmaking":
+        req += Matchmaking;
+        break;
+      default:
+        return "error";
+    }
+    req += "/" + method + "?token=" + token[currentToken];
+    console.log("[callContract_api] => Contract:"+contract+" | Method:"+method+" | args:"+args);
+    updateCall.data.params = args;
+    return Meteor.http.call("POST", req, updateCall);
+
+}
+
+
+callContract_api_callback = function(method, args, callback){
+      var tokenIndex = args[0]% token.length;
+      var req = prefix+Property+"/"+ method +"?token=" + token[tokenIndex];
+      updateCall.data.params = args;
+      Meteor.http.call("POST", req, updateCall, function(err, res){
+        if (err){
+          console.log("[callContract_api_callback] "+err);
+          return err;
+        }
+        callback(res);
+      });
+}
+
+wait = function(ms){
+   var start = new Date().getTime();
+   var end = start;
+   while(end < start + ms) {
+     end = new Date().getTime();
+  }
+}
+
   /*------------
      Receiver
   -------------*/
 
   Meteor.methods({
+    'callContract': function(contract, method, args){
+        var finalResult;
+
+        if (contract == "Property" && method == "getPropertyTypeByUserId"){
+            var results = [];
+            try{
+              for (var i = 0 ; i < cropTypeList.length ; i++){ // skip the first property
+                wait(10);
+                callContract_api_callback(method, [i, args], function(res){
+                    results.push(res.data.results);
+                    if (results.length == cropTypeList.length){
+                      finalResult = results;
+                      console.log(finalResult);
+
+                      //return {type:"success", result:res};
+                    }
+                });
+              }
+              return new Promise(resolve => {
+                var interval = setInterval(() => {
+                  if (finalResult != undefined){
+                    clearInterval(interval);
+                    resolve(finalResult);
+                  }
+                }, 1000);
+              });
+            }catch(e){
+              console.log("[multipleApiCall] "+e);
+              return e;
+            }
+
+        }else{
+            try{
+              res = callContract_api(contract, method, args);
+            }catch(e){
+              console.log("[callContract] "+e);
+              return {type:"error", result:e.reason};
+            }
+            return {type:"success", result:res.data};
+
+        }
+
+    },
     'register': function (email, password, character) {
       var addr;
       try {
@@ -103,32 +171,6 @@ if (Meteor.isServer) {
 
       }
     },
-    'callContract': function (contract, method, args) {
-      var res;
-
-      let userId = Meteor.userId();
-
-      var key;
-      try {
-        key = Meteor.users.findOne({ _id: userId }).profile.private;
-      } catch (e) {
-        console.log(e);
-        console.log("Switch to Administrator Mode!");
-        key = privateKey;
-      }
-
-
-      try {
-        res = updateContract(contract, method, args, key);
-        //return new Promise(function(resolve, reject) { resolve(res.data.results); });
-
-      } catch (e) {
-        console.log(e);
-        return { type: "error", result: e.reason };
-
-      }
-      return { type: "success", result: res.data };
-    },
     'API_Register': function () {
       try {
         var userId = Meteor.userId();
@@ -153,6 +195,7 @@ if (Meteor.isServer) {
         }
         Meteor.call('pushMissionAccountStatus');
         var res = Promise.await(getEther(res.data.address));
+        var res = Promise.await(callContract_api("Property", "updatePropertyTypeRating", [cropTypeList.length, 0, "new", 0, 0]));
       } catch (e) {
         console.log("[API_Register]" + e);
         return { type: "error", result: e.reason };
@@ -160,6 +203,21 @@ if (Meteor.isServer) {
       return { type: "success", result: "" };
     },
     'init': function () {
+      console.log("------------------ Data Init ------------------");
+      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      if (res.data.results[0] != 0){
+        console.log("[init] Data has been initialized");
+        return;
+      }
+
+      try{
+          for (var i = 0; i< cropTypeList.length ; i++){
+            var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+          }
+      }catch(e){
+          console.log("[init] Error initializing data on blockcypher");
+      }
+
       property_type.insert({ data: cropTypeList });
       land_type.insert({ data: landTypeList });
       var _missionList = MissionList;
@@ -171,6 +229,22 @@ if (Meteor.isServer) {
         _missionList[missionItem[i].missionId].missionItem.push(obj);
       }
       mission.upsert({ name: _missionList.name }, { data: _missionList });
+    },
+    'insertMatch':function(match){
+      console.log(matches.find().fetch());
+
+      try{
+        matches.insert({id:matches.find().count(), priorities:match.priorities, owners:match.owners, properties:match.properties, tradeable:match.tradeable});
+      }catch(e){
+        console.log("[insertMatch] "+e);
+        return e;
+      }
+
+      return "success";
+    },
+    'test':function(){
+          initData();
+
     }
   });
 }

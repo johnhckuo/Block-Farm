@@ -39,8 +39,9 @@ if (Meteor.isServer) {
             var _landConfig = Meteor.users.findOne({ _id: userId }).profile.game.landConfig;
             length = landsize - 1;
             for (var i = ((length * length) - 1); i >= length; i--) {
-                _landConfig.land[i + (i / length)] = _landConfig.land[i];
-                _landConfig.crop[i + (i / length)] = _landConfig.crop[i];
+                var complement = Math.floor((i / length));
+                _landConfig.land[i + complement] = _landConfig.land[i];
+                _landConfig.crop[i + complement] = _landConfig.crop[i];
                 _landConfig.land[i] = -1;
                 _landConfig.crop[i] = -1;
             }
@@ -75,9 +76,10 @@ if (Meteor.isServer) {
             _cropList.count[t_Id] = _count;
             Meteor.users.update(userId, { $set: { 'profile.game.cropList': _cropList } });
         },
-        'updateCropCount': function (t_Id, _count) {
-            var userId = Meteor.userId();
-            var _cropList = Meteor.users.findOne({ _id: userId }).profile.game.cropList;
+        'updateCropCount': function (u_Id, t_Id, _count) {
+            var targetUser = Meteor.users.findOne({'profile.game.stakeholder.id': u_Id});
+            var userId = targetUser._id;
+            var _cropList =targetUser.profile.game.cropList;
             _cropList.count[t_Id] = _count;
             Meteor.users.update(userId, { $set: { 'profile.game.cropList': _cropList } });
         }

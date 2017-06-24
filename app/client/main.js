@@ -30,8 +30,6 @@ var name;
 //                //
 ////////////////////
 
-
-
 var hex2a = function (hexx) {
   var hex = hexx.toString();//force conversion
   var str = '';
@@ -70,20 +68,20 @@ if (Meteor.isClient) {
 
 
   Template.index.rendered = async function () {
-
+    //Meteor.call("test");
     if (!this._rendered && !renderChecked) {
       console.log('Template render complete');
       renderChecked = true;
       var fetcher = setInterval(async function () {
-        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")) {
-          console.log("Mongo is ready to go :D");
-          var initCounter = property_type.find().fetch().length;
+        if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")  && Session.get("other_user_loaded")  && Session.get("matches_loaded")) {
+          console.log("server connection established!");
+          var initCounter = property_type.find().count();
           if (initCounter == 0) {
             var res = await Meteor.call('init');
           }
           clearInterval(fetcher);
         } else {
-          console.log("Establishing Mongo connection... Hold on!")
+          console.log("establishing db connection... hold on!")
         }
       }, 1000);
     }

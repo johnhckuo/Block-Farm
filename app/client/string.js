@@ -9,3 +9,22 @@ stringMissionName="You will get different mission by level.";
 stringMissionReq="Fulfill the requirement, get the EXP, and level up ! "
 stringMissionExp="";
 stringMissionSub="If the condition is satisfied, click the 'SUBMIT' to accomplish the task."
+stringMenuButton2="Click for exploring !"
+stringRatingButton="Click and open the rating session.";
+stringRatingTor="The lower represents that you can only accept the equipollently important crop while exchanging. The higher means you may not receive the expected crop, but the higher success rate will occur.";
+stringRating="It represents how important the crop is to you.";
+stringRatingAvg="Current average rating from all the gamers.";
+stringTradeNum="The quantity of the crop which you want to provide for joining the exchange. If match-making is success, this amount of crop will be trafer to other player and you will get what you want.";
+
+
+styleHidden={
+  "visibility":"hidden",
+  "opacity":"0",
+};
+styleVisible={
+  "visibility":"visible",
+  "opacity":"1",
+};
+styleAnimation={
+  "-webkit-animation":"missionAnimation 1s infinite"
+};

@@ -3,6 +3,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { property_type } from '../../imports/collections.js';
 import { land_type } from '../../imports/collections.js';
 import { mission } from '../../imports/collections.js';
+import { matches } from '../../imports/collections.js';
 
 
 if (Meteor.isServer) {
@@ -20,27 +21,38 @@ if (Meteor.isServer) {
     /*----------------------
         init declaration
     -----------------------*/
-    token = "e22aef855bb045f7904fc4712e7668a9";
-    //token = "68a657243ee1461db6376af481cdb479";
-    privateKey = "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e";
+    //, 
+    // john powei johng bryant
+    token = ["d4659f9b512a434287fea776cd6f0fe6", "99fc27a26a42455cbc529923e3a6f8ad", 
+    "6df03f5a22014eab8adb54fb83223ff0", "e22aef855bb045f7904fc4712e7668a9", 
+    "6f01b597b56b46c0820c56a4e3b16a87", "6585fc55331146d798de46d80de359e1", 
+    "308a65855adc4e39bd832bada26eec60", "baf43c22e4e14304993ef62f39d10b58",
+    "d6c9fae99f244b91b9a91b62ba5aaf77", "68a657243ee1461db6376af481cdb479",
+    "9de8d91e37c04e6cb18fe8293a9c42aa", "bdfbd1877d4242919f011aed5cb2c3bf",
+    "25dfd5e26f654c5d9261c690fc032ac0", "0969a88f675e486db5bc2640ef159346",
+    "7b67ee158fc9484794fb6a6f2bc8f5ab", "76d25b61922d4958b5f1aa86b7c52717",
+    "528fafaf2ba344e5aa67fc16d8ec2b84", "2d43f47becdf4d40a6bbcea9d9af723a",
+    "594944bb76d048cda8b0ea013300c4cc", "d3a2846e250d448289d013c1d07e92a2",
+    "e73d6ae280f84b1081c8685395f12baf", "27541b99309a4dc7820fb39e92249153",
+    "dd0c48b757544042b55b1ded0e0a2633", "05ecfd5fff584d7091d4815cf059e234",
+    "4908fcadf071482d8abdfd113b9bac7c"];
 
-    congress = "2ffc892c4b62844335972e7860521e5a41fea568";
-    usingProperty = "736329caba7eef597a96ac48c75ad0e1eb9a8be9";
-    gameProperty = "e030d8bb75740cf1ae4556b11206a48f4d310f75";
-    playerSetting = "f8fe88aacd6a23cdb96fbb9195439493ab324b17";
-    gameCore = "f94b7ee3ede3b04df0633eaa28c1bba485e6cb13";
-    matchmaking = "cecf2d43a689bab41cba2c81526ea1885533cb6d";
+    //token = "68a657243ee1461db6376af481cdb479";
+    privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
+
+    Property = "d421160d0cdcc6418d431cb5123f297dd616e68d";
+    Matchmaking = "60bbb6a997e5bdfc25e8c200116247a77010e17f";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
     call = {
-        "private": "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e",
+        "private": "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8",
         "gas_limit": 2000000
     };
 
     updateCall = {
         "data": {
-            "private": "51ca1b67efb999415260ef43194ff90ffd72887c607edde8dfd433c58fc08b8e",
+            "private": "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8",
             "gas_limit": 2000000,
         },
         "header": "Content-Type:application/json"
@@ -63,7 +75,7 @@ if (Meteor.isServer) {
         var character = Meteor.users.findOne({ _id: userId }).profile.basic.character;
         var username = Meteor.users.findOne({ _id: userId }).emails[0].address;
 
-        gameInitData.stakeholder.id = Meteor.users.find().count();
+        gameInitData.stakeholder.id = Meteor.users.find().count()-1;
         gameInitData.stakeholder.farmerLevel = 0;
         gameInitData.stakeholder.name = username.split("@")[0];
         gameInitData.stakeholder.exp = 0;
@@ -85,6 +97,7 @@ if (Meteor.isServer) {
         gameInitData.syndicateData.guardMatchId = -1;
         gameInitData.syndicateData.guardFarmerId = 0;
 
+        gameInitData.property.id = [];
         gameInitData.property.name = [];
         gameInitData.property.count = [];
         gameInitData.property.type = [];
@@ -106,6 +119,39 @@ if (Meteor.isServer) {
 
         gameInitData.mission.accountStatus = [];
     }
+
+    /*-----------------------
+        collection pulish
+    -------------------------*/
+
+    Meteor.startup(function () {
+
+        Meteor.publish('propertyTypeChannel', function () {
+        return property_type.find();
+        });
+
+        Meteor.publish('landTypeChannel', function () {
+        return land_type.find();
+        });
+
+        Meteor.publish('missionChannel', function () {
+        return mission.find();
+        });
+
+        Meteor.publish("currentUserChannel", function () {
+            return Meteor.users.find({_id:this.userId});
+        });
+
+        Meteor.publish("otherUserChannel", function () {
+            return Meteor.users.find({},{fields: {'profile.game.stakeholder.name': 1, 'profile.basic.address': 1, "profile.game.stakeholder.level":1}});
+        });
+
+        Meteor.publish("matchesChannel", function(){
+            return matches.find();
+        });
+
+
+    })
 
 
 }

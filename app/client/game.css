@@ -647,6 +647,7 @@
   text-align: center;
   margin-top:1vh;
   margin-left:2vw;
+  table-layout:fixed;
 }
 
 .rank_table tr{
@@ -658,6 +659,7 @@
   height: 7vh;
   vertical-align: middle;
   padding-right:1vw;
+
 }
 
 .onBoard{
@@ -836,7 +838,7 @@
 .tipTradableText{
   /*margin-left: -50px;*/
   left: 150px;
-  right: -80px;
+  right: -150px;
   top:90px;
 }
 #tipTradableImg{
@@ -2045,6 +2047,80 @@ input[type="range"]:active::-webkit-slider-thumb{
   flex-direction: row;
 }
 
+.guideBox{
+  position:absolute;
+  z-index: 15;
+  height:75vh;
+  width:55vw;
+  left: 35vw;
+  background-color:rgba(255,255,255,0.8);
+  display:none;
+  text-align:left;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  font-size: 20px;
+  line-height: 28px;
+  /*padding: 50px;*/
+}
+.guideBoxImg{
+  height: 30%;
+}
+.guideBoxImg img{
+  height: 100%;
+}
+.guideBoxText{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+}
+.guideBoxHeader{
+  display: flex;
+height: 7%;
+justify-content: center;
+align-items: center;
+background-color: rgb(130, 203, 209);
+color: rgb(255, 255, 255);
+border-top-left-radius: 15px;
+border-top-right-radius: 15px;
+}
+.guideBoxContent{
+  display: flex;
+  flex-direction: row;
+  height: 93%;
+  padding: 50px;
+}
+#btnTutorialMM{
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  margin-bottom: 30px;
+}
+#btnTutorialMM:hover{
+  font-size: 22px;
+  transition: .1s;
+}
+.pageBtn{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.nextPageBtn{
+  background-color: rgb(164, 250, 243);
+  margin: 12px 15px 0px 15px;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.nextPageBtn:hover{
+  background-color: rgb(131, 228, 220);
+}
  @-webkit-keyframes circleCorlorAnimation{
    0%  {border-color: red;}
    50% {border-color: rgb(238, 133, 36);}
