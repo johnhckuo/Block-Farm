@@ -303,12 +303,6 @@ var findVisitNode = function(){
         visitedProperty[visitedProperty.length-1] = totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]];
         console.log("[System Log] Now visiting index: " + visitingIndex +", and now switch to prioity #"+(visitedCounts[visitingIndex])+": "+totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id);
         // switch to next alternative origin point
-        if (visitingIndex == 0 && firstRound){
-            visitedProperty.splice(visitedProperty.length-1, 1);
-            totalGoThroughList.splice(totalGoThroughList.length-1, 1);
-            visitedCounts.splice(visitedCounts.length-1, 1);
-        }
-
         if (visitingIndex == 0){
           console.log("[Change Origin] Origin switch from property"+origin+" to property"+ totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id)
           origin = totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id;
