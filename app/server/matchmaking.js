@@ -155,7 +155,7 @@ findOrigin = async function(){
 
         priorityList.push({
           id:i,
-          priority:diff*properties[i].tradeable,
+          priority:diff,
           tradeable:properties[i].tradeable,
           type: properties[i].type
         });
@@ -169,12 +169,11 @@ findOrigin = async function(){
     origin = priorityList[0].id;
 
     visitedCount = 0;
-    visitedProperty.push({id : origin, priority : priorityList[0].priority, tradeable:priorityList[0].tradeable, type: priorityList[0].type})
+    visitedProperty.push({id : origin, priority : priorityList[0].priority, tradeable:priorityList[0].tradeable, type: priorityList[0].type});
 
-    console.log(priorityList)
+    console.log(priorityList);
     totalGoThroughList.push(priorityList);
     visitedCounts.push(0);
-
 
     console.log("Entry Point Found: #"+origin);
     success = await findVisitNode();
@@ -205,13 +204,12 @@ var searchNeighborNodes = function(visitNode){
 
     var k = 0;
     var currentOwner = properties[visitNode].owner;
-    var newType = properties[visitNode].type;
+    var currentType = properties[visitNode].type;
 
     for (var i = 0 ; i < length ; i++){
 
       var newOwner = properties[i].owner;
-      var currentType = properties[i].type;
-        //if (i == visitNode || Promise.await(callContract("usingProperty", "checkTradeable", [i])) == 0 || Promise.await(callContract("usingProperty", "checkTradingStatus", [i]))){
+      var newType = properties[i].type;
         if (i == visitNode || properties[i].tradeable == 0 || properties[i].isTrading || newOwner == currentOwner || currentType == newType){
             console.log("[searchNeighborNodes] => Node #"+i+"Not Qualfied!! Skip!");
             continue;
@@ -225,9 +223,12 @@ var searchNeighborNodes = function(visitNode){
           continue;
         }
 
+
+        var avgImportance = returnAverage(i);
+
         goThroughList.push({
           id:i,
-          priority:diff*properties[i].tradeable,
+          priority:diff + properties[i].tradeable*avgImportance,
           tradeable:properties[i].tradeable,
           type:properties[i].type
         });
@@ -272,7 +273,7 @@ var findVisitNode = function(){
 
   visitingIndex =0;
   var found = false;
-
+  var firstRound = true;
 
   while (!found){
 
@@ -287,7 +288,6 @@ var findVisitNode = function(){
     // no neighbor nodes
     if (goThroughList == 0){
 
-
       // all choices have consumed
       if (totalGoThroughList[visitingIndex].length-1 <= visitedCounts[visitingIndex]){
         // fail if the beginning node also run out of choices
@@ -301,16 +301,25 @@ var findVisitNode = function(){
       }else{
         visitedCounts[visitingIndex]++;
         visitedProperty[visitedProperty.length-1] = totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]];
-        console.log("[System Log] Now visiting index: " + visitingIndex +", and now switch to prioity #"+(visitedCounts[visitingIndex]+1)+": "+totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id);
+        console.log("[System Log] Now visiting index: " + visitingIndex +", and now switch to prioity #"+(visitedCounts[visitingIndex])+": "+totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id);
         // switch to next alternative origin point
+        if (visitingIndex == 0 && firstRound){
+            visitedProperty.splice(visitedProperty.length-1, 1);
+            totalGoThroughList.splice(totalGoThroughList.length-1, 1);
+            visitedCounts.splice(visitedCounts.length-1, 1);
+        }
+
         if (visitingIndex == 0){
           console.log("[Change Origin] Origin switch from property"+origin+" to property"+ totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id)
           origin = totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id;
         }
+        firstRound = false;
         continue;
 
       }
     }
+
+    firstRound = false;
     if (!flag){
       console.log("Node"+totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id+" registered");
       registerNode();
@@ -328,6 +337,10 @@ var findVisitNode = function(){
         visitedProperty[visitedProperty.length-1] = totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]];
 
         flag = false;
+      }else{
+        if (visitingIndex == 0){
+          return "Fail";
+        }
       }
     }
     // register the accessible neighbor node
@@ -351,10 +364,8 @@ var verifyNode =  function(){
     console.log("-------------Commence Node Searching Process---------------");
     return false;
   }
-  var diff = returnPriority(totalGoThroughList[visitingIndex-1][visitedCounts[visitingIndex-1]].id, origin);
-  var threshold = properties[origin].threshold;
-  console.log("final check"+ diff+"||"+threshold)
-  if (totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]] != undefined && totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id == origin && visitingIndex != 0 && diff > threshold){
+
+  if (totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]] != undefined && totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id == origin && visitingIndex != 0){
       console.log("---------------------------- Success -----------------------------");
       var visitedProperty_temp = [];
       for (var h = 0 ; h < visitedProperty.length ; h++){
@@ -378,8 +389,8 @@ var verifyNode =  function(){
 
       if (visitedOwner.length == 1){
           console.log("----------------------------Abnormal result, again-----------------------------");
-          initData();
-          return;
+          //initData();
+          return "Fail";
       }
 
       for (var i = 0 ; i < visitedProperty.length; i++){
@@ -449,6 +460,18 @@ var returnPriority = function(visitNode, i){
     }
     return propertyType[index].ratings[owner];
 }
+
+var returnAverage = function(i){
+    var index;
+    for (var j = 0 ; j < propertyType.length ; j++){
+        if (propertyType[j].id == properties[i].type){
+          index = j;
+          break;
+        }
+    }
+    return propertyType[index].avg;
+}
+
 
 var matchFail = function(errCode){
   switch (errCode){

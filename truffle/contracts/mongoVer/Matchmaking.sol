@@ -33,7 +33,14 @@ contract Matchmaking{
     }
 
     function getMatchMakingConfirmed(uint m_Id, uint s_Id) constant returns(bool){
-        return (matches[m_Id].confirmed[s_Id]);
+        uint s_Index;
+        for (uint i = 0 ; i < matches[m_Id].visitedOwners.length; i++){
+            if (matches[m_Id].visitedOwners[i] == s_Id){
+                s_Index = i;
+                break;
+            }
+        }
+        return (matches[m_Id].confirmed[s_Index]);
     }
 
     function updateConfirmation(uint m_Id, uint s_Id, uint confirmation) onlyOwner{
