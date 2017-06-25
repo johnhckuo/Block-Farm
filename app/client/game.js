@@ -107,6 +107,52 @@ var ratingOpened = false;
 var onchangedIndex = [];
 var systemInfoShowed = false;
 
+var questions = [
+    "Q0: I think the gaming mechanism is meaningful.",
+    "Q1: It is not difficult for me to make new friends.",
+    "Q2: I can make friends through my personal abilities.",
+    "Q3: If something looks too complicated, I will still do my best to try it.",
+    "Q4: When try to learn something new, I will not give up easily.",
+    "Q5: I do not avoid learning new things when they look too difficult for me.",
+    "Q6: I am confident about my ability to play this game.",
+    "Q7: I can determine how to play this game.",
+    "Q8: You think our match-making mechanism meets your expectations and is easy to use.",
+    "Q9: Our match-making mechanism can help you exchange crops you really want.",
+    "Q10: I do not need to spend lots of time using match-making.",
+    "Q11: I do not need to put a lot of efforts while match-making.",
+    "Q12: I do not need to wait for a long time to get what I want.",
+    "Q13: There is no difficulty for me to use match-making.",
+    "Q14: I often could get crops I really want after match-making.",
+    "Q15: Settings before match-making is simple and friendly to me.",
+    "Q16: I am satisfied with the way doing match-making.",
+    "Q18: I think the mechanism of match-making is great enough.",
+    "Q19: My ranking of crops will make an impact on other players' transaction results.",
+    "Q20: Results of transactions will be affected by my ranking of crops.",
+    "Q21: I can control what happens in my game result.",
+    "Q22: The gaming mechanism of Blockfarm is original ad novel.",
+    "Q23: The gaming mechanism of Blockfarm is uncommon and deserve to be mentioned to others.",
+    "Q24: The gaming mechanism of Blockfarm is unique and irreplaceable.",
+    "Q25: Combination of blockchain and farming game is an innovating and expanding idea based on two differentiating domain.",
+    "Q26: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
+    "Q27: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.",
+    "28:( interactions refers to thieving and guarding, crops transaction, etc. )",
+    "Q28: You are satisfied with our system’s quality and will keep playing this game.",
+    "Q29: This game is entertaining to you and you are willing to share this experience to others.",
+    "Q30: The guideline is clear for me to understand.",
+    "Q31: The gaming operation is convenient.",
+    "Q32: You are satisfied with our system stability.",
+    "Q33: There is s few disadvantages in Blockfarm, but they do not affect to game playing.",
+    "Q34: I play Blockfarm frequently.",
+    "Q35: I will continue playing Blockfarm frequently in future.",
+    "Q36: Many people I communicate with play this game.",
+    "Q37:Many people I communicate with regularly play this game.",
+    "Q38: People I communicate with will continue to play this game. ",
+    "Q39: Age:",
+    "Q40: Education:",
+    "Q41: Employment:",
+    "Q42: What do you think we can do to improve our match-making mechanism and Blockfarm?",
+];
+
 ///////////////////////////
 //  prototype functions  //
 ///////////////////////////
@@ -130,6 +176,7 @@ gameIndexCreation = async function () {
     await loadCropList(s_Id);
     await getUserStockList(s_Id);
     await fetchGameInitConfig(s_Id);
+    showQuestionnaire();
 }
 
 getStakeholderId = function () {
@@ -183,19 +230,19 @@ Template.gameContent.created = function () {
 Template.gameIndex.created = function () {
 
     var isChromium = window.chrome,
-    winNav = window.navigator,
-    vendorName = winNav.vendor,
-    isOpera = winNav.userAgent.indexOf("OPR") > -1,
-    isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-    isIOSChrome = winNav.userAgent.match("CriOS");
+        winNav = window.navigator,
+        vendorName = winNav.vendor,
+        isOpera = winNav.userAgent.indexOf("OPR") > -1,
+        isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+        isIOSChrome = winNav.userAgent.match("CriOS");
 
-    if(isIOSChrome){
-    // is Google Chrome on IOS
-    } else if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) {
-    // is Google Chrome
-    } else { 
-    // not Google Chrome 
-    sweetAlert("Oops...", "For your best using experience, please use Google Chrome browser", "error");
+    if (isIOSChrome) {
+        // is Google Chrome on IOS
+    } else if (isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) {
+        // is Google Chrome
+    } else {
+        // not Google Chrome 
+        sweetAlert("Oops...", "For your best using experience, please use Google Chrome browser", "error");
     }
 
     if (Meteor.userId()) {
@@ -2043,6 +2090,7 @@ Template.characterList.events({
                             if ((user_property[i].propertyCount == 0) && (user_property[i].tradeable == 0)) {
                                 Meteor.call('updatePropertyCount_Setting', s_Id, (currentUser.SyndicateLevel + 29), 1, 0);
                                 Meteor.call('updateFarmerId', s_Id, -1);
+                                Meteor.call('updateSyndicateProgress', s_Id, 0);
                                 user_property[i].propertyCount++;
                             }
                             break;
@@ -3106,11 +3154,24 @@ var elapsedTime = function (start, end) {
 //  Shop Functions  //
 /////////////////////////
 
+get_Avg = async function () {
+    var a = await dbPromise('getAvgTradableNumber');
+    return a;
+}
+
 get_user_property = function () {
     user_property = [];
     var db_property = Meteor.user().profile.game.property;
+    var avg = []
+    Meteor.call('getAvgTradableNumber', function (err, res) {
+        for (var k = 0; k < res.length; k++) {
+            $('#tradable_td' + k).find('p').remove();
+            $('#tradable_td' + k).prepend('<p>Avg : ' + res[k] + '</p>');
+        }
+        //avg = res;
+    });
+    //var avg = get_Avg();
     for (var i = 0; i < db_property.name.length; i++) {
-
         user_property.push({
             "id": db_property.id[i],
             "name": db_property.name[i],
@@ -3118,9 +3179,8 @@ get_user_property = function () {
             "propertyCount": db_property.count[i],
             "tradeable": db_property.tradeable[i],
             "img": cropData[db_property.type[i]].img[3],
-            "isTrading": db_property.isTrading[i]
-        })
-
+            "isTrading": db_property.isTrading[i],
+        });
     }
 }
 
@@ -3214,7 +3274,10 @@ set_property_table = function () {
             td = $('<td></td>');
             td.text(user_property[i].propertyCount);
             tr.append(td);
-            td = $('<td></td>');
+            td = $('<td></td>', {
+                id: 'tradable_td' + i
+            });
+            // td.append('Avg : ' + user_property[i].avgTradable);
             tradeable_input = $('<input></input>', {
                 type: 'text',
                 class: 'shop_tradable_input',
@@ -3448,8 +3511,8 @@ save_tradable_setting = function () {
             }
         }
     }
-        sweetAlert("Congratulations!", "Setting Saved!", "success");
-    
+    sweetAlert("Congratulations!", "Setting Saved!", "success");
+    get_user_property();
 }
 
 save_rating_setting = async function () {
@@ -3773,4 +3836,36 @@ var selectedSort = function (data) {
         }
     }
     return data;
+}
+
+var showQuestionnaire = function () {
+    for (var i = 0; i < 20; i++) {
+        $('.questionnaire_content').append($('<div></div>', {
+            id: 'question' + i,
+            class: 'question_q'
+        }));
+        $('#question' + i).html(questions[i]);
+        $('.questionnaire_content').append($('<div></div>', {
+            id: 'answer' + i,
+            class: 'question_a'
+        }));
+                    $('#answer' + i).append('<p>Strongly Disagree</p>');
+        for (var j = 1; j <= 5; j++) {
+            $('#answer' + i).append($('<input></input>', {
+                type: 'radio',
+                name: 'radioAnswer' + i,
+                value: j
+            }));
+        }
+        $('#answer' + i).append('<p>Strongly Agree</p>');
+    }
+    $('.questionnaire_content').append($('<input></input>', {
+        type: 'button',
+        value: 'sss',
+        style: 'width:30px; height:40px'
+    })
+        .on('click', function () {
+            alert($('input[name=radioAnswer' + 0 + ']:checked').val());
+        })
+    );
 }

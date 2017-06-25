@@ -2298,9 +2298,9 @@ border-top-right-radius: 15px;
    0%  {background-color: rgba(255, 255, 255, 0); }
    50% {background-color: rgba(250, 225, 0, 1); border-radius: 100%;}
    100%{background-color: rgba(255, 255, 255, 0);}
- }s
+ }
  .questionnaire_main{
-  z-index: 100;
+  z-index: 150;
   position: absolute;
   width:85vw;
   height:85vh;
@@ -2320,6 +2320,12 @@ border-top-right-radius: 15px;
   height:77vh;
   margin-left: 2.5vw;
   margin-bottom: 1vh;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: rgba(150,255,150,0.95);
+  justify-content:center;
+  align-items:center;
 }
 
 .questionnaire_close{
@@ -2341,6 +2347,21 @@ border-top-right-radius: 15px;
   background-color: rgba(191, 47, 47, 1);
   color: rgb(255, 255, 255);
   transition: .2s;
+}
+
+.question_q{
+  width: 70vw;
+  height: 25vh;
+  font-size:25px;
+}
+
+.question_a{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  font-size:15px;
+  width: 50vw;
+  height: 25vh;
 }
 
 .questionnaire_frame{
