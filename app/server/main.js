@@ -60,7 +60,7 @@ apiLimitDetector = async function(){
         console.log("------------------- API Call Abnormal.. Switch to token #"+currentToken+" -------------------");
         data = Meteor.http.call("GET", "https://api.blockcypher.com/v1/tokens/"+token[currentToken]);
         flag = true;
-      }      
+      }
 
     }
 
@@ -135,7 +135,7 @@ apiLimitDetector = async function(){
                 finalResult = results;
                 console.log(finalResult);
 
-                //return {type:"success", result:res}; 
+                //return {type:"success", result:res};
               }
             });
           }
@@ -166,7 +166,7 @@ apiLimitDetector = async function(){
     },
     'callMongo': function (method, args) {
       if (method == "getPropertyType") {
-        return property_type.find().fetch();
+        return property_type.find({},{sort:{id:1}}).fetch();
       }else if (method == "getThreshold"){
         return Meteor.users.findOne({"profile.game.stakeholder.id":args[0]}).profile.game.property.threshold;
       }
@@ -334,7 +334,7 @@ apiLimitDetector = async function(){
           return "error";
       }
       req += "/" + method + "?token=" + token[currentToken];
-      console.log("[callContract_api] => Contract:" + contract + " | Method:" + method + " | args:" + args);
+      console.log("[db_api] => Contract:" + contract + " | Method:" + method + " | args:" + args);
       updateCall.data.params = args;
       return Meteor.http.call("POST", req, updateCall);
 

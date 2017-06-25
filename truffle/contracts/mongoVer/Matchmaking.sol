@@ -14,6 +14,13 @@ contract Matchmaking{
         string result;
     }
 
+
+    modifier onlyOwner()
+    {
+        if(msg.sender != owner) throw;
+        _;
+    }
+
     Match[] public matches;
     address owner;
 
@@ -26,10 +33,17 @@ contract Matchmaking{
     }
 
     function getMatchMakingConfirmed(uint m_Id, uint s_Id) constant returns(bool){
-        return (matches[m_Id].confirmed[s_Id]);
+        uint s_Index;
+        for (uint i = 0 ; i < matches[m_Id].visitedOwners.length; i++){
+            if (matches[m_Id].visitedOwners[i] == s_Id){
+                s_Index = i;
+                break;
+            }
+        }
+        return (matches[m_Id].confirmed[s_Index]);
     }
 
-    function updateConfirmation(uint m_Id, uint s_Id, uint confirmation){
+    function updateConfirmation(uint m_Id, uint s_Id, uint confirmation) onlyOwner{
         uint s_Index;
         for (uint i = 0 ; i < matches[m_Id].visitedOwners.length; i++){
             if (matches[m_Id].visitedOwners[i] == s_Id){
@@ -45,7 +59,7 @@ contract Matchmaking{
         return matches.length;
     }
 
-    function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result, uint _visitedLength){
+    function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result, uint _visitedLength) onlyOwner{
         if (matches.length > _matchId){
             throw;
         }
@@ -62,7 +76,7 @@ contract Matchmaking{
         }
     }
 
-    function gameCoreMatchingDetail(uint _matchId, int256 _priority, uint _owner, uint _property, uint _tradeable){
+    function gameCoreMatchingDetail(uint _matchId, int256 _priority, uint _owner, uint _property, uint _tradeable) onlyOwner{
         matches[_matchId].visitedPriorities.push(_priority);
         matches[_matchId].visitedOwners.push(_owner);
         matches[_matchId].visitedProperties.push(_property);
@@ -70,7 +84,8 @@ contract Matchmaking{
 
     }
 
-    function updateMatchResult(uint m_Id, string result){
+    function updateMatchResult(uint m_Id, string result) onlyOwner{
         matches[m_Id].result = result;
     }
+
 }

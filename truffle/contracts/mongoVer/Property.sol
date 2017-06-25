@@ -11,13 +11,19 @@ contract Property{
 
     PropertyType[] public propertyTypeList;
 
+    modifier onlyOwner()
+    {
+        if(msg.sender != owner) throw;
+        _;
+    }
+
     address owner;
 
     function Property(){
         owner = msg.sender;
     }
 
-    function updatePropertyTypeRating(uint _id, uint rate, string operation, uint s_Length, uint s_Id){
+    function updatePropertyTypeRating(uint _id, uint rate, string operation, uint s_Length, uint s_Id) onlyOwner{
         if (equal(operation,"update")){
 
             uint old_rating = propertyTypeList[_id].rating[s_Id];
@@ -32,7 +38,7 @@ contract Property{
         }
     }
 
-    function addPropertyType(string _name, uint s_Length){
+    function addPropertyType(string _name, uint s_Length) onlyOwner{
         uint _id = propertyTypeList.length++;
         for (uint j = 0 ; j < s_Length ; j++){
             propertyTypeList[_id].rating.push(0);

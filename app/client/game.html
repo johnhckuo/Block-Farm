@@ -1,11 +1,35 @@
-
 <template name="guideCircle">
   <div class="guideCircleStatus">
   </div>
   <div class="guideCircleText">
 
   </div>
+  <div class="guideBox">
+    <div class="guideBoxHeader">Introduction of Match-Making system</div>
+    <div class="guideBoxContent">
+    <div class="guideBoxImg">
+      <img src="/img/network.svg" alt="">
+    </div>
+    <div class="guideBoxText">
+      <div>
+      Hey ! Let us introduce our fantastic match-making system ! <br><br>
+
+      Traditionally, if you want to swap your thing for other thing,<br>
+      you need to do lots of effort to find the "true person and true thing".<br>
+      Now, the system can automatically match your needs with others needs and do a swap.<br>
+      We expected to achieve the maximum benefit for all gamers.<br><br>
+
+      Next, there are few steps which you could set up to join the exchange.<br><br>
+      </div>
+      <button id="btnTutorialMM" class="hvr-rectangle-out" value="">Got it ! Next</button>
+    </div>
+  </div>
+  </div>
 </template>
+
+
+
+<!-- wait for merging -->
 
 
 <template name="gameIndex">
@@ -63,6 +87,7 @@
     {{> rank}}
     {{> operationList}}
     {{> floatBubble}}
+    {{> guideCircle}}
   </div>
 </template>
 
@@ -85,7 +110,7 @@
           <img src="/img/game/tutorial/land_2.png" alt="">
         </div>
         <div class="tutorial_content">
-          Welcome to block farm! <br> 
+          Welcome to block farm! <br>
           As a professional farmer, the first thing you need to do is to plow a land so that you can spread some seeds on it! :D
         </div>
         <div class="tutorial_page">
@@ -101,9 +126,9 @@
           <img src="/img/game/tutorial/time.png" alt="">
         </div>
         <div class="tutorial_content">
-          Next, you can choose which crop to plant. <br> 
-          In the beginning, you have no other crops to choose from. 
-          But hey! Don't be frustrated ! More crops await you as your level get higher !! <br> 
+          Next, you can choose which crop to plant. <br>
+          In the beginning, you have no other crops to choose from.
+          But hey! Don't be frustrated ! More crops await you as your level get higher !! <br>
           After planting the seed, the progress will show how much longer until it ripe!
         </div>
         <div class="tutorial_page">
@@ -121,8 +146,8 @@
           <img src="/img/game/tutorial/stock_2.png" alt="">
         </div>
         <div class="tutorial_content">
-          After waiting, the crop will disappear from the progress tag, then it's time to harvest your crop by left-clicking the crop. <br> 
-          You can check your stock by selecting the stock tag, it will show the types and number of crop you have. <br>          
+          After waiting, the crop will disappear from the progress tag, then it's time to harvest your crop by left-clicking the crop. <br>
+          You can check your stock by selecting the stock tag, it will show the types and number of crop you have. <br>
           In the stock tag, you will find a tradeable column. You can specify how many crops you wish to have trade with others, and we will perform a matchmaking for every one hour! <br>
         </div>
         <div class="tutorial_page">
@@ -139,7 +164,7 @@
           <img src="/img/game/tutorial/rating_2.png" alt="">
         </div>
         <div class="tutorial_content">
-          If you want to trade other crops that you don't have, just go to the rating tag! <br> 
+          If you want to trade other crops that you don't have, just go to the rating tag! <br>
           In order to get some certain crops by trading, you can higher the default importance so that you will get a better chance of acquiring it !
         </div>
         <div class="tutorial_page">
@@ -157,9 +182,9 @@
           <img src="/img/game/tutorial/time.png" alt="">
         </div>
         <div class="tutorial_content">
-          Remember the character you choose during registration? <br> 
-          You can gain some "extra" income from other farmers ! <br> 
-          By stealing, you might be get caught and get heavy penalty, but receive a lot if success. <br> 
+          Remember the character you choose during registration? <br>
+          You can gain some "extra" income from other farmers ! <br>
+          By stealing, you might be get caught and get heavy penalty, but receive a lot if success. <br>
           By gurading, you can get a rather stable but less income from other farmers as salaries. <br>
 
         </div>
@@ -195,14 +220,14 @@
 
 <template name="crop">
   <div class={{name}} data-pressed="false">
-    <img src={{img}} alt=""> 
+    <img src={{img}} alt="">
     {{content}}
   </div>
 </template>
 
 <template name="land">
   <div class={{name}} data-pressed="false">
-    <img class="" src={{img}} alt=""> 
+    <img class="" src={{img}} alt="">
     {{content}}
   </div>
 </template>
@@ -226,11 +251,11 @@
           <hr>
         </div>
         <div class="landList">
-          {{#each lands}} 
-          {{> land}} 
+          {{#each lands}}
+          {{> land}}
           {{/each}}
           <div class='cropLand removeLand' data-pressed="false">
-            <img src="/img/game/background.svg" > 
+            <img src="/img/game/background.svg" >
             Grass
           </div>
         </div>
@@ -238,8 +263,8 @@
           <hr>
         </div>
         <div class="cropListDiv">
-          {{#each crops}} 
-          {{> crop}} 
+          {{#each crops}}
+          {{> crop}}
           {{/each}}
           <!-- {{> cropSelectingBtns}} -->
         </div>
@@ -449,7 +474,7 @@
       </div>
 
     </div>
-    {{> logo}} 
+    {{> logo}}
     {{> gameGuide}}
     <div class="systemInfo">
       <div class="systemInfoHeader">

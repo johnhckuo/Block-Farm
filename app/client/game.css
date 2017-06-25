@@ -897,7 +897,7 @@
 .tipTradableText{
   /*margin-left: -50px;*/
   left: 150px;
-  right: -80px;
+  right: -150px;
   top:90px;
 }
 #tipTradableImg{
@@ -1258,7 +1258,7 @@ td img{
   display: flex;
   flex-direction: row;
   align-items: center;
-  z-index:5;
+  z-index:102;
 
   /*background: #99CB34;
   background-image: url("/img/game/background.svg");
@@ -1454,7 +1454,7 @@ td img{
   display: flex;
   justify-content: center;
   align-items: center;
-  right: -6vw;
+  right: -2vw;
 }
 .musicSwitch{
   width:45px;
@@ -2012,7 +2012,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   background: rgba(255, 255, 255, 0.9);
   left:0px;
   top:0px;
-  z-index: 101;
+  z-index: 103;
   transition: all 1s;
   display: none;
 }
@@ -2132,7 +2132,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
   padding:20px;
-  z-index:90;
+  z-index:120;
   color:white;
   transition: all 0.1s;
   text-align: center;
@@ -2169,6 +2169,80 @@ input[type="range"]:active::-webkit-slider-thumb{
   flex-direction: row;
 }
 
+.guideBox{
+  position:absolute;
+  z-index: 15;
+  height:75vh;
+  width:55vw;
+  left: 35vw;
+  background-color:rgba(255,255,255,0.8);
+  display:none;
+  text-align:left;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  font-size: 20px;
+  line-height: 28px;
+  /*padding: 50px;*/
+}
+.guideBoxImg{
+  height: 30%;
+}
+.guideBoxImg img{
+  height: 100%;
+}
+.guideBoxText{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+}
+.guideBoxHeader{
+  display: flex;
+height: 7%;
+justify-content: center;
+align-items: center;
+background-color: rgb(130, 203, 209);
+color: rgb(255, 255, 255);
+border-top-left-radius: 15px;
+border-top-right-radius: 15px;
+}
+.guideBoxContent{
+  display: flex;
+  flex-direction: row;
+  height: 93%;
+  padding: 50px;
+}
+#btnTutorialMM{
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  margin-bottom: 30px;
+}
+#btnTutorialMM:hover{
+  font-size: 22px;
+  transition: .1s;
+}
+.pageBtn{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.nextPageBtn{
+  background-color: rgb(164, 250, 243);
+  margin: 12px 15px 0px 15px;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.nextPageBtn:hover{
+  background-color: rgb(131, 228, 220);
+}
  @-webkit-keyframes circleCorlorAnimation{
    0%  {border-color: red;}
    50% {border-color: rgb(238, 133, 36);}
@@ -2181,6 +2255,50 @@ input[type="range"]:active::-webkit-slider-thumb{
    100%{background-color: rgba(255, 255, 255, 0);}
  }
 
+
+ @-webkit-keyframes leftBtnAnimation{
+   0%  {background-color: rgba(255, 255, 255, 0.45);}
+   50% {background-color: rgb(246, 249, 129);}
+   100%{background-color: rgba(255, 255, 255, 0.45);}
+ }
+
+ @-webkit-keyframes stockNumAnimation{
+   0%  {color: black; background-color: rgba(255, 255, 255, 0.45);}
+   50% {color: rgb(255, 0, 0); background-color: rgb(246, 249, 129);}
+   100%{color: black; background-color: rgba(255, 255, 255, 0.45);}
+ }
+
+ @-webkit-keyframes menuBtnAnimation{
+   0%  {height: 50px; width: 50px;}
+   50% {height: 55px; width: 55px;}
+   100%{height: 50px; width: 50px;}
+ }
+
+ @-webkit-keyframes rightBtnAnimation{
+   0%  {background-color: rgba(255,255,255,0.45);}
+   50% {background-color: rgba(255, 255, 255, 0.9);}
+   100%{background-color: rgba(255,255,255,0.45);}
+ }
+ @-webkit-keyframes missionAnimation{
+   0%  {background-color: rgba(255, 255, 255, 0);}
+   50% {background-color: rgb(251, 218, 212);}
+   100%{background-color: rgba(255,255,255,0);}
+ }
+ @-webkit-keyframes imgContainerAnimation{
+   0%  {border-color: #290B01;}
+   50% {border-color: #fb80a2;}
+   100%{border-color: #290B01;}
+ }
+ @-webkit-keyframes characterStatusAnimation{
+   0%  {background-color: rgba(255, 255, 255, 0);}
+   50% {background-color: rgb(252, 237, 131);}
+   100%{background-color: rgba(255,255,255,0);}
+ }
+ @-webkit-keyframes nextHomeAnimation{
+   0%  {background-color: rgba(255, 255, 255, 0); }
+   50% {background-color: rgba(250, 225, 0, 1); border-radius: 100%;}
+   100%{background-color: rgba(255, 255, 255, 0);}
+ }s
  .questionnaire_main{
   z-index: 100;
   position: absolute;
@@ -2229,5 +2347,3 @@ input[type="range"]:active::-webkit-slider-thumb{
   width:100%;
   height:100%;
 }
-
-
