@@ -10,6 +10,7 @@ import './GameLogic/usingProperty.js';
 import './GameLogic/GameProperty.js';
 
 var cropsPerLvl = 3;
+var rateLimit = 200;
 
 if (Meteor.isServer) {
 
@@ -46,7 +47,35 @@ if (Meteor.isServer) {
   }
 
 
+
+apiLimitDetector = async function(){
+    var data = Meteor.http.call("GET", "https://api.blockcypher.com/v1/tokens/"+token[currentToken]);
+    var flag = true;
+    while(data.data.hits == undefined && flag){
+      try{
+        var res = await callContract_api("Property", "getPropertyTypeLength", []);
+        flag = false;
+      }catch(e){
+        currentToken = (currentToken+1)%token.length;
+        console.log("------------------- API Call Abnormal.. Switch to token #"+currentToken+" -------------------");
+        data = Meteor.http.call("GET", "https://api.blockcypher.com/v1/tokens/"+token[currentToken]);
+        flag = true;
+      }      
+
+    }
+
+    if (flag){
+      var hits = data.data.hits["api/hour"];
+      if (hits > rateLimit-10){
+        currentToken = (currentToken+1)%token.length;
+        console.log("------------------- API Call Exhausted.. Switch to token #"+currentToken+" -------------------");
+      }
+    }
+
+}
+
   callContract_api = function (contract, method, args) {
+    currentToken = (currentToken+1)% token.length;
     var req = prefix;
     switch (contract) {
       case "Property":
@@ -59,7 +88,7 @@ if (Meteor.isServer) {
         return "error";
     }
     req += "/" + method + "?token=" + token[currentToken];
-    console.log("[callContract_api] => Contract:" + contract + " | Method:" + method + " | args:" + args);
+    console.log("[callContract_api] using token#"+currentToken +" => Contract:" + contract + " | Method:" + method + " | args:" + args);
     updateCall.data.params = args;
     return Meteor.http.call("POST", req, updateCall);
 
@@ -75,6 +104,7 @@ if (Meteor.isServer) {
         console.log("[callContract_api_callback] " + err);
         return err;
       }
+      console.log("[callContract_api_callback] using token#"+currentToken +" => Method:" + method + " | args:" + args);
       callback(res);
     });
   }
@@ -94,7 +124,6 @@ if (Meteor.isServer) {
   Meteor.methods({
     'callContract': function (contract, method, args) {
       var finalResult;
-      console.log(args);
       if (contract == "Property" && method == "getPropertyTypeByUserId") {
         var results = [];
         try {
@@ -214,19 +243,19 @@ if (Meteor.isServer) {
     },
     'init': function () {
       console.log("------------------ Data Init ------------------");
-      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      // if (res.data.results[0] != 0) {
-      //   console.log("[init] Data has been initialized");
-      //   return;
-      // }
+      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      if (res.data.results[0] != 0) {
+        console.log("[init] Data has been initialized");
+        return;
+      }
 
-      // try {
-      //   for (var i = 0; i < cropTypeList.length; i++) {
-      //     var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-      //   }
-      // } catch (e) {
-      //   console.log("[init] Error initializing data on blockcypher");
-      // }
+      try {
+        for (var i = 0; i < cropTypeList.length; i++) {
+          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+        }
+      } catch (e) {
+        console.log("[init] "+e);
+      }
 
 
       for (var i = 0; i < cropTypeList.length; i++) {

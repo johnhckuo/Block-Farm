@@ -1499,53 +1499,61 @@ var createDBConnection = function () {
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
-            added: function (item, fields) {
+            added: function(item, fields){ 
+                var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
-                if (!matchmakingChecked) {
-                    var temp = matches.find().fetch();
-                    owners = temp[matchId].owners;
-                    matchmakingLength = temp.length;
+                if (!matchmakingChecked){
+                    currentMatches = matches.find().fetch();
+                    owners = currentMatches[matchId].owners;
+                    matchmakingLength = currentMatches.length;
                     matchmakingChecked = true;
                 }
-                if (matchId >= matchmakingLength - 2) {
-                    if (jQuery.inArray(currentUser.s_Id, owners) == -1) {
-                        Session.set("id", Meteor.userId());
-                        var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                        var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-                        var res;
-                        var minedDetector = setInterval(async function () {
-                            res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
-                            if (res.type == "success") {
-                                console.log("clear interval");
-                                clearInterval(minedDetector);
-
-                                var confirmed = res.result.results[0];
-                                var match = matches.find().fetch();
-                                var owners = match[matchId].owners;
-                                if (jQuery.inArray(s_Id, owners) == -1) {
-                                    return;
+                if (matchId >= matchmakingLength-2){
+                    var s_Id = Meteor.user().profile.game.stakeholder.id;
+                    if (jQuery.inArray(s_Id, owners) != -1){
+                            Session.set("id", Meteor.userId()); 
+                            var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
+                            var res;
+                            var minedDetector = setInterval(async function(){
+                                res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
+                                if (res.type == "success" && res.result != undefined){
+                                    console.log("Mining Listener Closed...");
+                                    clearInterval(minedDetector);
+                                    console.log(res);
+                                    var confirmed = res.result.results[0];
+                                    //if (!confirmed){
+                                        if (jQuery.inArray(matchId, data) == -1){
+                                            var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
+                                        }
+                                        showConfirmation(s_Id, matchId);
+                                        systemInfoShowed = true;
+                                    //}
+                                }else{
+                                    matchCounter++;
+                                    console.log("new matchmaking! waiting for txs being mined");
+                                    if (matchCounter >= 8){
+                                        console.log("contract result missing... re-upload to blockchain...");
+                                        //rewirte into contract
+                                        var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
+                                        for (var w = 0 ; w < fields.owners.length; w++){
+                                            var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+                                        }
+                                        console.log(res)
+                                        console.log("contract re-upload complete");
+                                        matchCounter = 0;
+                                    }
                                 }
-                                //if (!confirmed){
-                                if (jQuery.inArray(matchId, data) == -1) {
-                                    var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
-                                }
-                                showConfirmation(s_Id, matchId);
-                                systemInfoShowed = true;
-                                //}
-                            } else {
-                                console.log("new matchmaking! waiting for txs being mined");
-                            }
-                        }, 6000)
+                            },8000)
 
-                        // var minedDetector = setInterval(function(){
-                        //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
-                        //         console.log(res);
-                        //         if (res.result.results[0]){
-                        //             clearInterval(minedDetector);
-                        //         }
-                        //     })
-                        // },3000)
+                            // var minedDetector = setInterval(function(){
+                            //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
+                            //         console.log(res);
+                            //         if (res.result.results[0]){
+                            //             clearInterval(minedDetector);
+                            //         }
+                            //     })
+                            // },3000)
 
                     }
                 }
@@ -1554,6 +1562,7 @@ var createDBConnection = function () {
                 //Meteor.users.
             },
             changed: function(item, fields){
+                currentMatches = matches.find().fetch();
                 if (currentMatches.length < 2){
                     offset = currentMatches.length
                 }else{
