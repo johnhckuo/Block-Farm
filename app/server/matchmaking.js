@@ -431,7 +431,12 @@ var verifyNode =  function(){
         
  
       
-      console.log("------------------------ Contract Update Complete ------------------------ ")
+      console.log("------------------------ Contract Update Complete ------------------------ ")   
+      console.log("------------------------ Now Check Confirmation ------------------------ ")
+
+      checkConfirmation_backend();
+
+      console.log("------------------------ Confirmation checking complete ------------------------ ")
 
       return true;
 
@@ -493,14 +498,11 @@ var matches = [];
 checkConfirmation_backend = async function(){
     var length = await Meteor.call("getMatchmakingLength");
     console.log(length)
-    var checkCount = 0;
-    if (length >= 2){
-      checkCount = 2;
-    }else{
-      checkCount = length;
+    if (length < 2){
+      return;
     }
+    var i = length -2;
     try{
-      for (var i = length-checkCount ; i < length ; i++){
         var res = await callContract_api("Matchmaking", "getMatchMaking", [i]);
         var match = { visitedPriorities: res.data.results[0], visitedOwners: res.data.results[1], visitedProperties: res.data.results[2], visitedTradeable: res.data.results[3], confirmation: res.data.results[4], visitedCount:res.data.results[5], result:res.data.results[6] };
         console.log(match);
@@ -515,7 +517,7 @@ checkConfirmation_backend = async function(){
 
         var totalCount = match.visitedOwners.length-1;
         console.log(confirm);
-        if (confirm/totalCount <= 0.5){
+        if (confirm/totalCount < 0.5){
           console.log("fail");
             match.result = "false";
         }else{
@@ -524,7 +526,6 @@ checkConfirmation_backend = async function(){
             transferOwnership(i,match);
         }
         var result = await Meteor.call("updateMatchResult", match.result, i);
-      }
     }catch(e){
       console.log("[checkConfirmation_backend] "+e);
     }
@@ -540,7 +541,9 @@ transferOwnership = async function(m_Id, match){
 
     console.log(owners);
     console.log(properties)
-    var visitedLength = owners.length-1;
+    console.log(tradeables)
+
+    var visitedLength = owners.length;
     try{
       for (var i = 0 ; i < visitedLength; i++){
           var current_s_Id = owners[i]; 

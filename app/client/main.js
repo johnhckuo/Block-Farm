@@ -69,6 +69,22 @@ if (Meteor.isClient) {
 
   Template.index.rendered = async function () {
     if (!this._rendered && !renderChecked) {
+      var isChromium = window.chrome,
+          winNav = window.navigator,
+          vendorName = winNav.vendor,
+          isOpera = winNav.userAgent.indexOf("OPR") > -1,
+          isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+          isIOSChrome = winNav.userAgent.match("CriOS");
+
+      if(isIOSChrome){
+        // is Google Chrome on IOS
+      } else if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) {
+        // is Google Chrome
+      } else { 
+        // not Google Chrome 
+        sweetAlert("Oops...", "For your best using experience, please use Google Chrome browser", "error");
+      }
+
       console.log('Template render complete');
       renderChecked = true;
       var fetcher = setInterval(async function () {
