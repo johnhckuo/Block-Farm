@@ -60,7 +60,7 @@ apiLimitDetector = async function(){
         console.log("------------------- API Call Abnormal.. Switch to token #"+currentToken+" -------------------");
         data = Meteor.http.call("GET", "https://api.blockcypher.com/v1/tokens/"+token[currentToken]);
         flag = true;
-      }      
+      }
 
     }
 
@@ -135,7 +135,7 @@ apiLimitDetector = async function(){
                 finalResult = results;
                 console.log(finalResult);
 
-                //return {type:"success", result:res}; 
+                //return {type:"success", result:res};
               }
             });
           }
