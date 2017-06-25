@@ -2276,12 +2276,8 @@ var createDBConnection = function () {
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
-<<<<<<< HEAD
-            added: function (item, fields) {
-=======
 
             added: function(item, fields){
->>>>>>> 8e2e600a96b9ecd74eafa17361b86bb66fa7c1bb
                 var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
@@ -2290,37 +2286,6 @@ var createDBConnection = function () {
                     matchmakingLength = currentMatches.length;
                     matchmakingChecked = true;
                 }
-<<<<<<< HEAD
-                if (matchId >= matchmakingLength - 2) {
-                    var s_Id = Meteor.user().profile.game.stakeholder.id;
-                    if (jQuery.inArray(s_Id, owners) != -1) {
-                        Session.set("id", Meteor.userId());
-                        var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                        var res;
-                        var minedDetector = setInterval(async function () {
-                            res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
-                            if (res.type == "success" && res.result != undefined) {
-                                console.log("Mining Listener Closed...");
-                                clearInterval(minedDetector);
-                                console.log(res);
-                                var confirmed = res.result.results[0];
-                                //if (!confirmed){
-                                if (jQuery.inArray(matchId, data) == -1) {
-                                    var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
-                                }
-                                showConfirmation(s_Id, matchId);
-                                systemInfoShowed = true;
-                                //}
-                            } else {
-                                matchCounter++;
-                                console.log("new matchmaking! waiting for txs being mined");
-                                if (matchCounter >= 8) {
-                                    console.log("contract result missing... re-upload to blockchain...");
-                                    //rewirte into contract
-                                    var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
-                                    for (var w = 0; w < fields.owners.length; w++) {
-                                        var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-=======
                 owners = currentMatches[matchId].owners;
                 if (matchId >= matchmakingLength-2){
 
@@ -2358,18 +2323,12 @@ var createDBConnection = function () {
                                         // console.log(res)
                                         // console.log("contract re-upload complete");
                                         matchCounter = 0;
->>>>>>> 8e2e600a96b9ecd74eafa17361b86bb66fa7c1bb
                                     }
                                     console.log(res)
                                     console.log("contract re-upload complete");
                                     matchCounter = 0;
                                 }
-<<<<<<< HEAD
-                            }
-                        }, 8000)
-=======
                             },20000)
->>>>>>> 8e2e600a96b9ecd74eafa17361b86bb66fa7c1bb
 
                         // var minedDetector = setInterval(function(){
                         //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
@@ -2386,15 +2345,9 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-<<<<<<< HEAD
-            changed: function (item, fields) {
-                currentMatches = matches.find().fetch();
-                if (currentMatches.length < 2) {
-=======
             changed: async function(item, fields){
                 currentMatches = await dbPromise('getMatch');
                 if (currentMatches.length < 2){
->>>>>>> 8e2e600a96b9ecd74eafa17361b86bb66fa7c1bb
                     offset = currentMatches.length
                 } else {
                     offset = 2;

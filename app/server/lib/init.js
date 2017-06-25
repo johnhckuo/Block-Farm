@@ -48,13 +48,8 @@ if (Meteor.isServer) {
     //token = "68a657243ee1461db6376af481cdb479";
     privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
 
-<<<<<<< HEAD
     Property = "ffbe45825092a6040faeb3bf6599a3b791e5faaa";
     Matchmaking = "16e5fa4c88edb223a7f8903a83ef4a06cd140346";
-=======
-    Property = "3258272bb044fb16bb839f3203087e6507336f67";
-    Matchmaking = "94da6b2cb63ee4f57258ae102393431925f66a7f";
->>>>>>> 8e2e600a96b9ecd74eafa17361b86bb66fa7c1bb
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
