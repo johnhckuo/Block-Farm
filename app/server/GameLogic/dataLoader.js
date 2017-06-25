@@ -39,10 +39,10 @@ if (Meteor.isServer) {
                 try {
                     visitNode = Math.floor(s_length * Math.random());
                     visitName = Meteor.users.findOne({ 'profile.game.stakeholder.id': visitNode }).profile.game.stakeholder.name + visitName;
-                    obj = {'id': visitNode, 'name':visitName };
+                    obj = { 'id': visitNode, 'name': visitName };
                 }
                 catch (e) {
-                    visitNode = s_Id;                    
+                    visitNode = s_Id;
                 }
             }
             return obj;
@@ -53,26 +53,35 @@ if (Meteor.isServer) {
             var thisGuardLvl = 1;
             if (thisGuard_s_Id != -1) {
                 var thisGuard = Meteor.users.findOne({ 'profile.game.stakeholder.id': thisGuard_s_Id });
-                thisGuardLvl = thisGuard.profile.game.syndicateData.level;
+                GuardMatch = thisGuard.profile.game.guardMatchId;
+                mLength = Meteor.call('getMatchedLength');
+                matchDiff = mLength - GuardMatch;
+                if (matchDiff < 2) {
+                    thisGuardLvl = thisGuard.profile.game.syndicateData.level;
+                }
+                else {
+                    Meteor.call('updateGuardId', visitNode, -1);
+                    thisGuardLvl = 1;
+                }
                 console.log(thisGuardLvl);
             }
             SyndicateLevel = Meteor.user().profile.game.syndicateData.level;
             stealRate = ((80 * (thisGuardLvl / 10) - 40 * (SyndicateLevel / 10)) + 32) / 100;
             return stealRate;
         },
-        'getCurrentTime':function(){
+        'getCurrentTime': function () {
             return (new Date());
         },
-        'getMatchedLength' : function(){
+        'getMatchedLength': function () {
             var mLength = 0;
-            try{
+            try {
                 mLength = matches.find().fetch().length;
             }
-            catch(e){
+            catch (e) {
 
             }
             return mLength;
         }
-        
+
     });
 }
