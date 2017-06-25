@@ -786,7 +786,7 @@ Template.gameContent.events({
                             }
                         }
                         Meteor.call('updatePropertyCount', s_Id, p_Id, stealCount, function () {
-                            Meteor.call('updateCropCount', s_Id, visitNode, id, cropCount);
+                            Meteor.call('updateCropCount', visitNode, id, cropCount);
                             $(event.target).parent().attr("cropcount", parseInt(cropCount));
                             $(event.target).parent().attr("stolenFlag", "t");
 
@@ -1021,15 +1021,44 @@ Template.gamingArea.events({
     'click .matchesBtn': async function (event) {
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
         var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-        var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
-        $(event.target).prop("value", "Waiting for others to confirm");
-        $(event.target).prop("disabled", true);
+        if ($(event.target).hasClass('matchedAcceptBtn')) {
+            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 1]);
+            console.log("confirm");
+        }
+        else {
+            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
+            console.log("reject");
+        }
+        var waitBtn = $('<input>').attr({
+            type: 'button',
+            class: "btn btn-warning matchesBtn matchesBtnWait matchBtn" + m_Id,
+            value: 'Waiting for others to confirm',
+            disabled: true
+        });
+        var btnParent = $(event.target).parent();
+        btnParent.find('.matchesBtn').each(function(){
+            $(this).remove();
+        });
+        
+        btnParent.append(waitBtn);
+        // $(event.target).prop("value", "Waiting for others to confirm");
+        // $(event.target).prop("disabled", true);
     },
-    'click .hideSystemInfo': function (event) {
+    // 'click .hideSystemInfo': function (event) {
+    //     if (systemInfoShowed) {
+    //         $(".systemInfo").css("transform", "translateX(550px)");
+    //     } else {
+    //         $(".systemInfo").css("transform", "translateX(0px)");
+    //     }
+    //     systemInfoShowed = !systemInfoShowed;
+    // },
+    'click .systemInfoHeaderbtn': function () {
         if (systemInfoShowed) {
-            $(".systemInfo").css("transform", "translateX(550px)");
+            $(".systemInfo").css("transform", "translateX(560px)");
+            $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/back.svg')
         } else {
             $(".systemInfo").css("transform", "translateX(0px)");
+            $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg')
         }
         systemInfoShowed = !systemInfoShowed;
     },
@@ -1512,61 +1541,61 @@ var createDBConnection = function () {
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
-            added: function(item, fields){ 
+            added: function (item, fields) {
                 var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
-                if (!matchmakingChecked){
+                if (!matchmakingChecked) {
                     currentMatches = matches.find().fetch();
                     owners = currentMatches[matchId].owners;
                     matchmakingLength = currentMatches.length;
                     matchmakingChecked = true;
                 }
-                if (matchId >= matchmakingLength-2){
+                if (matchId >= matchmakingLength - 2) {
                     var s_Id = Meteor.user().profile.game.stakeholder.id;
-                    if (jQuery.inArray(s_Id, owners) != -1){
-                            Session.set("id", Meteor.userId()); 
-                            var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                            var res;
-                            var minedDetector = setInterval(async function(){
-                                res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
-                                if (res.type == "success" && res.result != undefined){
-                                    console.log("Mining Listener Closed...");
-                                    clearInterval(minedDetector);
-                                    console.log(res);
-                                    var confirmed = res.result.results[0];
-                                    //if (!confirmed){
-                                        if (jQuery.inArray(matchId, data) == -1){
-                                            var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
-                                        }
-                                        showConfirmation(s_Id, matchId);
-                                        systemInfoShowed = true;
-                                    //}
-                                }else{
-                                    matchCounter++;
-                                    console.log("new matchmaking! waiting for txs being mined");
-                                    if (matchCounter >= 8){
-                                        console.log("contract result missing... re-upload to blockchain...");
-                                        //rewirte into contract
-                                        var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
-                                        for (var w = 0 ; w < fields.owners.length; w++){
-                                            var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-                                        }
-                                        console.log(res)
-                                        console.log("contract re-upload complete");
-                                        matchCounter = 0;
-                                    }
+                    if (jQuery.inArray(s_Id, owners) != -1) {
+                        Session.set("id", Meteor.userId());
+                        var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
+                        var res;
+                        var minedDetector = setInterval(async function () {
+                            res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
+                            if (res.type == "success" && res.result != undefined) {
+                                console.log("Mining Listener Closed...");
+                                clearInterval(minedDetector);
+                                console.log(res);
+                                var confirmed = res.result.results[0];
+                                //if (!confirmed){
+                                if (jQuery.inArray(matchId, data) == -1) {
+                                    var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
                                 }
-                            },8000)
+                                showConfirmation(s_Id, matchId);
+                                systemInfoShowed = true;
+                                //}
+                            } else {
+                                matchCounter++;
+                                console.log("new matchmaking! waiting for txs being mined");
+                                if (matchCounter >= 8) {
+                                    console.log("contract result missing... re-upload to blockchain...");
+                                    //rewirte into contract
+                                    var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
+                                    for (var w = 0; w < fields.owners.length; w++) {
+                                        var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+                                    }
+                                    console.log(res)
+                                    console.log("contract re-upload complete");
+                                    matchCounter = 0;
+                                }
+                            }
+                        }, 8000)
 
-                            // var minedDetector = setInterval(function(){
-                            //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
-                            //         console.log(res);
-                            //         if (res.result.results[0]){
-                            //             clearInterval(minedDetector);
-                            //         }
-                            //     })
-                            // },3000)
+                        // var minedDetector = setInterval(function(){
+                        //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
+                        //         console.log(res);
+                        //         if (res.result.results[0]){
+                        //             clearInterval(minedDetector);
+                        //         }
+                        //     })
+                        // },3000)
 
                     }
                 }
@@ -1574,28 +1603,28 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-            changed: function(item, fields){
+            changed: function (item, fields) {
                 currentMatches = matches.find().fetch();
-                if (currentMatches.length < 2){
+                if (currentMatches.length < 2) {
                     offset = currentMatches.length
-                }else{
+                } else {
                     offset = 2;
                 }
-                for (var i = currentMatches.length-offset ; i < currentMatches.length ; i++){
-                    console.log("match "+currentMatches[i]);
-                    if (currentMatches[i].result == true){
-                        $(".matchBtn"+i).attr({
+                for (var i = currentMatches.length - offset; i < currentMatches.length; i++) {
+                    console.log("match " + currentMatches[i]);
+                    if (currentMatches[i].result == true) {
+                        $(".matchBtn" + i).attr({
                             type: 'button',
                             class: "btn btn-success matchesBtn matchBtn" + i,
                             value: 'Success',
-                            disabled:true
+                            disabled: true
                         });
-                    }else if (currentMatches[i].result == false){
-                        $(".matchBtn"+i).attr({
+                    } else if (currentMatches[i].result == false) {
+                        $(".matchBtn" + i).attr({
                             type: 'button',
                             class: "btn btn-danger matchesBtn matchBtn" + i,
                             value: 'Fail',
-                            disabled:true
+                            disabled: true
                         });
                     }
                 }
@@ -1677,11 +1706,10 @@ var eventListener = function () {
 
 var showConfirmation = async function (s_Id, m_Id) {
     $(".systemInfo").css("transform", "translateX(0px)");
-
+    $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg');
     if ($(".matches").length >= 2) {
         $('.systemInfo div:nth-child(3)').remove();
     }
-    //matchmakingbug
     var data = await callPromise("callContract", "Matchmaking", "getMatchMaking", [m_Id]);
     var owners = data.result.results[1];
     var properties = data.result.results[2];
@@ -1712,6 +1740,7 @@ var showConfirmation = async function (s_Id, m_Id) {
     var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You receive</div><div> " + receivePropertyName + " X " + tradeables[previousIndex] + " </div><div>from " + previousName + "</div>");
     var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You provide</div><div> " + providePropertyName + " X " + tradeables[index] + " </div><div>to " + nextName + "</div>");
     var checkBtn;
+    var confirmBtn;
     var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
     var confirmed = res.result.results[0];
     if (confirmed) {
@@ -1722,6 +1751,11 @@ var showConfirmation = async function (s_Id, m_Id) {
             disabled: true
         });
     } else {
+        confirmBtn = $('<input></input>', {
+            type: 'button',
+            class: 'btn btn-primary matchedAcceptBtn matchesBtn matchBtn' + m_Id,
+            value: 'Confirm'
+        });
         checkBtn = $('<input>').attr({
             type: 'button',
             class: "btn btn-danger matchesBtn matchBtn" + m_Id,
@@ -1747,8 +1781,7 @@ var showConfirmation = async function (s_Id, m_Id) {
         }
     }
 
-
-    row.append(provide).append(receive).append(checkBtn);
+    row.append(provide).append(receive).append(confirmBtn).append(checkBtn);
     $(".systemInfo").append(row);
 
     var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
@@ -1757,7 +1790,6 @@ var showConfirmation = async function (s_Id, m_Id) {
         $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
         $(".matchBtn" + m_Id).prop("disabled", true);
     }
-
 }
 
 
@@ -2365,7 +2397,7 @@ get_propertyType_setting = async function (_length) {
             mongoPropertyType[i].rating[j] = parseInt(mongoPropertyType[i].rating[j])
             averageRating += mongoPropertyType[i].rating[j];
         }
-        averageRating = parseInt(averageRating/mongoPropertyType[i].rating.length);
+        averageRating = parseInt(averageRating / mongoPropertyType[i].rating.length);
 
         var _name = mongoPropertyType[i].name;
         var _id = mongoPropertyType[i].id;
@@ -2596,8 +2628,8 @@ save_rating_setting = async function () {
 
     var s_Length = 0;
     var allUser = Meteor.users.find().fetch();
-    for(i = 0 ; i < allUser.length; i++){
-        if(allUser[i].emails[0].verified)
+    for (i = 0; i < allUser.length; i++) {
+        if (allUser[i].emails[0].verified)
             s_Length++;
     }
 
@@ -2612,7 +2644,7 @@ save_rating_setting = async function () {
         }
         var _ratingPercent = parseInt($('#ratingPercent').val(), 10);
         var res = await Meteor.call("updateRatingTolerance", _ratingPercent, Meteor.user().profile.game.stakeholder.id);
-    }catch(e){
+    } catch (e) {
         console.log(e);
     }
 
