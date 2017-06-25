@@ -201,6 +201,7 @@ Template.gameContent.rendered = function () {
             }
             await gameIndexCreation();
             await gameIndexRend();
+
             //eventListener();
             audio = new Audio('/music/background_music.mp3');
             //audio.play();
@@ -587,6 +588,18 @@ Template.gameContent.events({
             }
             updateSyndicateExp(30);
             sweetAlert("Congratulations!", "Mission Completed!", "success");
+
+            currentCharacter = "farmer";
+            Session.set('userName', currentUser.name);
+            showThief = false;
+            $(".missionObject").html("<div class='thiefObject'></div>");
+            $('.SyndicateExp').css('visibility', 'collapse');
+            $('.userExp').css('visibility', 'visible');
+            $('.crop2').css('display', 'block');
+            $('#hitsBoard').remove();
+            gameMode = "Farmer"
+            Session.set('switchToType', currentUser.type);
+            set_property_table();
             rerenderCropLand(s_Id);
         }
     },
@@ -1826,7 +1839,7 @@ var getUserData = async function (s_Id) {
     var currentTime = await dbPromise('getCurrentTime');
 
     var difference = elapsedTime(lastLogin, currentTime);
-    console.log(currentUser.sta);
+
     currentUser.sta += Math.round(difference.getTime() / (1000 * 10));
     var staCap = staminaCap(currentUser.level);
 
@@ -2142,11 +2155,13 @@ var levelUp = function (_type) {
         Session.set('Levelup', currentUser.level);
         Session.set('staminaCap', staminaCap(currentUser.level));
         Session.set('expCap', levelCap(currentUser.level));
+        $('.levelUpReward').css('display', 'flex');
     }
     else {
         Session.set('Levelup', currentUser.SyndicateLevel);
         Session.set('staminaCap', staminaCap(currentUser.level));
         Session.set('expCap', levelCap(currentUser.level));
+        $('.levelUpReward').css('display', 'none');
     }
 
     $(".levelUp").fadeIn().delay(5000).fadeOut();
@@ -2745,7 +2760,7 @@ mission_submit = async function (_id) {
         }
     }
     Meteor.call('submitMission', s_Id, _id, function () {
-        //GameCoreInstance.submitMission(_id,  { from: web3.eth.accounts[currentAccount], gas: 2000000 });
+        initAllBtns();
         set_property_table();
         sweetAlert("Congratulations!", "Mission Completed!", "success");
         set_mission_table();
