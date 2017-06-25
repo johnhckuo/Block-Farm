@@ -334,7 +334,7 @@ apiLimitDetector = async function(){
           return "error";
       }
       req += "/" + method + "?token=" + token[currentToken];
-      console.log("[callContract_api] => Contract:" + contract + " | Method:" + method + " | args:" + args);
+      console.log("[db_api] => Contract:" + contract + " | Method:" + method + " | args:" + args);
       updateCall.data.params = args;
       return Meteor.http.call("POST", req, updateCall);
 
