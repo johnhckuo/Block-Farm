@@ -17,6 +17,15 @@ stringRatingAvg="Current average rating from all the gamers.";
 stringTradeNum="The quantity of the crop which you want to provide for joining the exchange. If match-making is success, this amount of crop will be trafer to other player and you will get what you want.";
 
 
+//tutorial3
+stringCharSwitch="Hey ! Click the farmer avatar for switching to the Thief ! ";
+stringStolenName="In this gaming mode, you could go to other players farm and steal their crops on the land. ";
+stringNextSwitch="Oh, here's one more thing. You could click this icon to visit other player's farm and steal the crop ! You could try it later.";
+stringEXPSTA="Farmer and Thief shares the EXP and the STA. <br /> Each time stealing the crop cost 10 STA. If it's succesful, you will get the crops. If it's failed, cost 20 STA.";
+stringSteal="Go to steal the crop ! Just click the crop which you want ! ";
+stringStock="If it's succesful, stock will show the crop you stole or update the quantity.";
+
+
 styleHidden={
   "visibility":"hidden",
   "opacity":"0",

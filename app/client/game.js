@@ -98,6 +98,7 @@ var circleNeed=true;
 var stringNeed=true;
 var t1PageCnt=0;
 var t2PageCnt=0;
+var t3PageCnt=0;
 var tPageBtn=false;
 
 var ratingOpened = false;
@@ -867,6 +868,11 @@ Template.gameContent.events({
                     return;
                 }
             }
+            // step 3.5
+            if(tutorialMode==3){
+              t3PageCnt++;   // case=5
+              tutorial3();
+            }
         }
         else if (gameMode == "Guard") {
         }
@@ -1172,6 +1178,7 @@ Template.gamingArea.events({
       // $('.landList').css("z-index","101");
       //tutorialSession1();
       tutorialSession2();
+      //tutorialSession3();
     },
 })
 Template.guideCircle.events({
@@ -1196,6 +1203,10 @@ Template.guideCircle.events({
     if(tutorialMode==1){
       t1PageCnt++;  // case=6   case=10   case=11  case=12
       tutorial1();
+    }
+    if(tutorialMode==3){
+      t3PageCnt++; // case=3  case=6  case=7
+      tutorial3();
     }
   },
   'click .prevPageBtn':function(event){
@@ -1272,8 +1283,8 @@ function tutorial1(){
       $('.crop3').css("-webkit-animation","");
       var tempSN=$('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)");
       tempSN.css("-webkit-animation","stockNumAnimation 1s infinite");
-      // tempSN.css("border","2px solid rgb(255, 167, 167)");
-      setCircleTarget(tempSN,true,"right",6,stringStockNum,true);
+
+      setCircleTarget(tempSN,false,"right",6,stringStockNum,true);
       createCircle(tempSN);
       break;
 
@@ -1282,7 +1293,7 @@ function tutorial1(){
       $('.menuButton').attr('disabled', false);  //lock menuButton
 
       $('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)").css("-webkit-animation","");
-      $('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)").css("border","");
+
       HideCircle();
       setCircleTarget($('.menuButton'),false,"left",9,stringMenuButton,false);
       createCircle($('.menuButton'));
@@ -1338,7 +1349,7 @@ function tutorial1(){
 
     case 12:  // step 1.7.4
         // lock release
-        $('.crop3,.menuButton,.plantButton,.crop2,.btnMission,#btn_mission_close,.btnShop,.btnRank').removeAttr('disabled');  //lock crop3
+        $('.crop3,.menuButton,.plantButton,.crop2,.btnMission,#btn_mission_close,.btnShop,.btnRank,.farmLand0,.removeLand').removeAttr('disabled');  //lock crop3
         //lock menuButton
         //lock plantButton
         //lock crop2
@@ -1346,6 +1357,8 @@ function tutorial1(){
         //lock btn_mission_close
         //lock btnShop
         //lock btnRank
+        //lock farmLand0
+        //lock removeLand
         $("input[id^='btn_mission_submit_']").removeAttr('disabled'); //btn_mission_submit_
 
 
@@ -1353,7 +1366,8 @@ function tutorial1(){
         HideCircleText();
         $('.mission_template').css('display', 'none');
         sweetAlert("Congratulations ! ","Go and plant more ! ","success");
-        tutorialMode=false; // first tutorial session completed
+        tutorialMode=0; // first tutorial session completed
+        t1PageCnt=0;
       break;
     default:
 
@@ -1365,7 +1379,7 @@ function tutorialSession2(){
   tutorialMode=2;
   // step 2.1 for tutorial, box description
   t2PageCnt++;   // case=1
-  tutorial2(1);
+  tutorial2();
   // $(".property_shop").css("display", "none");
   // $(".mission_template").css("display", "none");
   // $(".rank_template").css("display", "none");
@@ -1379,12 +1393,12 @@ function tutorial2(){
   switch (t2PageCnt) {
     case 1:  // step 2.1 for tutorial, box description
       // lock
-      $('.farmLand0').attr('disabled', true); // lock farmLand0
-      $('.removeLand').attr('disabled', true); // lock removeLand
-      $('.plantButton').attr('disabled', true); // lock plantButton
-      $('.crop3').attr('disabled', true); // lock crop3
-      $('.crop2').attr('disabled', true); // lock crop2
-      $('.menuButton').attr('disabled', true); // lock menuButton
+      $('.farmLand0').attr('disabled', true); // lock2 farmLand0
+      $('.removeLand').attr('disabled', true); // lock2 removeLand
+      $('.plantButton').attr('disabled', true); // lock2 plantButton
+      $('.crop3').attr('disabled', true); // lock2 crop3
+      $('.crop2').attr('disabled', true); // lock2 crop2
+      $('.menuButton').attr('disabled', true); // lock2 menuButton
       if ($(".menuButton").hasClass("open") === true) {
           $(".rightMenuIcon").fadeOut('normal');
           $(".menuButton").removeClass("open");
@@ -1399,7 +1413,7 @@ function tutorial2(){
 
     case 2:  // step 2.2 for tutorial session2, next button for introduce rating
       //lock
-      $('.menuButton').attr('disabled', false); // lock menuButton
+      $('.menuButton').attr('disabled', false); // lock2 menuButton
 
       $('.guideBox').hide();
 
@@ -1410,9 +1424,9 @@ function tutorial2(){
 
     case 3:  // step 2.3 for tutorial, for click rating button
       // lock
-      $('.btnRank').attr('disabled', true); // lock btnRank
-      $('.btnMission').attr('disabled', true);   // lock btnMission
-      $('.menuButton').attr('disabled', true); // lock menuButton
+      $('.btnRank').attr('disabled', true); // lock2 btnRank
+      $('.btnMission').attr('disabled', true);   // lock2 btnMission
+      $('.menuButton').attr('disabled', true); // lock2 menuButton
 
       $('.menuButton').css("-webkit-animation","");
       setCircleTarget($('.btnShop'),false,"left",3.5,stringRatingButton,false);
@@ -1421,7 +1435,7 @@ function tutorial2(){
       break;
     case 4:  //step 2.4 .1 for tutorial, for rating
       //lock
-      $('.btnShop').attr('disabled', true);  // lock btnShop
+      $('.btnShop').attr('disabled', true);  // lock2 btnShop
 
       $('.btnShop').css("-webkit-animation","");
       HideCircleText();
@@ -1429,11 +1443,11 @@ function tutorial2(){
 
     case 5:  // step 2.5.1 for tutorial, for rating tolerance
       // lock
-      $('#btn_property_save').attr('disabled', true);  // lock btn_property_save
-      $('#btn_property_cancel').attr('disabled', true);  // lock btn_property_cancel
-      $('#btn_shop_close').attr('disabled', true);  // lock btn_shop_close
+      $('#btn_property_save').attr('disabled', true);  // lock2 btn_property_save
+      $('#btn_property_cancel').attr('disabled', true);  // lock2 btn_property_cancel
+      $('#btn_shop_close').attr('disabled', true);  // lock2 btn_shop_close
       //set
-      $('.shop_content').css("overflow","hidden");  // no reset?
+      $('.shop_content').css("overflow","hidden");
       //$('.tipToleranceText').css(styleVisible);
       $('.ratingRange').css(styleAnimation);
       setCircleTarget($('.RatingTH'),false,"down",3,stringRatingTor,true);
@@ -1468,21 +1482,22 @@ function tutorial2(){
       //$('.tipAvgRatingText').css(styleHidden);
       $('.property_shop_table').find("td:nth-child(3), th:nth-child(3)").css("-webkit-animation","");
 
-      sweetAlert("One more thing you need to be careful ! ","","success");
+      sweetAlert("One more thing you need to be careful ! ","","warning");
 
       setCircleTarget($('.crop3'),false,"right",6,stringcrop3,false);
       $('.crop3').css("-webkit-animation","leftBtnAnimation 1s infinite");
       createCircle();
 
       //lock
-      $('.crop3').attr('disabled', false);  // lock crop3
+      $('.crop3').attr('disabled', false);  // lock2 crop3
 
       break;
 
     case 9:  // step 2.6   for trade number
       // lock
-      $('#btn_tradeable_save').attr('disabled', true);   // lock btn_tradeable_save
-      $('#btn_tradeable_cancel').attr('disabled', true);  // lock btn_tradeable_cancel
+      $('#btn_tradeable_save').attr('disabled', true);   // lock2 btn_tradeable_save
+      $('#btn_tradeable_cancel').attr('disabled', true);  // lock2 btn_tradeable_cancel
+      $('.crop3').attr('disabled', true);   // lock2 crop3
 
       $('.crop3').css("-webkit-animation","");
       $('#btn_tradeable_save').css("-webkit-animation","leftBtnAnimation 1s infinite");
@@ -1493,7 +1508,24 @@ function tutorial2(){
       break;
 
     case 10:        //step 2.7  for end
-      // lock
+      // lock2  release
+      $('.menuButton,.menuButton,.plantButton,.crop3,.crop2').removeAttr('disabled');
+      //lock menuButton
+      // lock plantButton
+      // lock crop3
+      // lock crop2
+      $('.farmLand0,.removeLand,.btnRank,.btnMission,.btnShop').removeAttr('disabled');
+      // lock farmLand0
+      // lock removeLand
+      // lock2 btnRank
+      // lock2 btnMission
+      // lock2 btnShop
+      $('#btn_property_save,#btn_property_cancel,#btn_shop_close,#btn_tradeable_save,#btn_tradeable_cancel').removeAttr('disabled');
+      // lock2 btn_property_save
+      // lock2 btn_property_cancel
+      // lock2 btn_shop_close
+      // lock2 btn_tradeable_save
+      // lock2 btn_tradeable_cancel
 
       $('#btn_tradeable_save').css("-webkit-animation","");
       $('.shop_content').css("overflow","auto");
@@ -1503,11 +1535,104 @@ function tutorial2(){
       $('.property_shop').css('display', 'none');
       sweetAlert("Congratulations ! ","Go and play fun ! ","success");
       tutorialMode=0; // second tutorial session2 completed
+      t2PageCnt=0;
       break;
     default:
 
   }
 }
+
+function tutorialSession3(){
+  // start point for tutorial 3
+  tutorialMode=3;
+  // step 3.1 for tutorial, circle color on avator
+  t3PageCnt++;   // case=1
+  tutorial3();
+}
+function tutorial3(){
+  switch (t3PageCnt) {
+    case 1:   // step 3.1   start
+      // lock
+      $('.menuButton').attr('disabled', true);  // lock3 menuButton
+      $('.crop3').attr('disabled', true);  // lock3 crop3
+      $('.crop2').attr('disabled', true);  // lock3 crop2
+      $('.cropLand').attr('disabled', true);  // lock3 landList
+      $('.crop').attr('disabled', true);  // lock3 cropListDiv
+
+
+      $('.imgContainer').css("-webkit-animation","imgContainerAnimation 1s infinite");
+      setCircleTarget($('.characterImg'),false,"right",4,stringCharSwitch,false);
+      createCircle();
+
+      break;
+
+    case 2:   // step 3.2   for tutorial3  click to switch
+      //lock
+      $('.nextHome').attr('disabled', true);  // lock3 nextHome
+      $('#btn_tradeable_save').attr('disabled', true);  // lock3 btn_tradeable_save
+      $('#btn_tradeable_cancel').attr('disabled', true); // lock3 btn_tradeable_cancel
+      $('.imgContainer').attr('disabled', true);   // lock3 imgContainer
+
+
+      $('.imgContainer').css("-webkit-animation","");
+      $('.userName h3').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('.userName h3'),false,"right",2,stringStolenName,true);
+      createCircle();
+
+      break;
+
+    case 3:  // step 3.3   for tutorial3 name to exp and sta
+      $('.userName h3').css("-webkit-animation","");
+      $('.userBarContainer').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('.userName h3'),false,"right",2,stringEXPSTA,true);
+      createCircle();
+      break;
+
+    case 4:  // step 3.4  for tutorial3   sta to steal the crop
+      $('.userBarContainer').css("-webkit-animation","");
+      setCircleTarget($('.userName h3'),false,"right",2,stringSteal,false);
+      createCircle();
+      break;
+
+    case 5:  // step 3.5
+      $('#property_trade_table').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('.crop3'),false,"right",9,stringStock,true);
+      createCircle();
+      break;
+
+    case 6:  // step 3.6
+      $('#property_trade_table').css("-webkit-animation","");
+      $('.nextHome').css("-webkit-animation","nextHomeAnimation 1s infinite");
+      setCircleTarget($('.nextHome'),false,"right",8,stringNextSwitch,true);
+      createCircle();
+      break;
+
+    case 7:  // setp 3.7
+      // lock release
+      $('.menuButton').removeAttr('disabled');  // lock3 menuButton
+      $('.crop3,.crop2,.cropLand,.crop').removeAttr('disabled'); // lock3 crop3
+      // lock3 crop2
+      // lock3 landList
+      // lock3 cropListDiv
+      $('.nextHome,#btn_tradeable_save,#btn_tradeable_cancel,.imgContainer').removeAttr('disabled');
+      // lock3 nextHome
+      // lock3 btn_tradeable_save
+      // lock3 btn_tradeable_cancel
+      // lock3 imgContainer
+
+      $('.nextHome').css("-webkit-animation","");
+      HideCircleText();
+      sweetAlert("Good luck ! ","Wish you could steal what you want.","success");
+
+      t3PageCnt=0;
+      tutorialMode=0;
+      break;
+
+    default:
+
+  }
+}
+
 // for create tutorial highlight circle by the div class
 function createCircle(){
   if (tutorialMode==0){
@@ -1809,6 +1934,12 @@ Template.characterList.events({
                 $('.crop2').css('display', 'none');
                 currentCharacter = "thief";
                 loading(0);
+
+                // step 3.2 for tutorial3  click to switch
+                if(tutorialMode==3){
+                  t3PageCnt++;  // case=2
+                  tutorial3();
+                }
             }
             else if (Session.get('userCharacter') == "Guard") {
                 //matchmakingbug

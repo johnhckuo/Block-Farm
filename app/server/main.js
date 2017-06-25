@@ -212,19 +212,19 @@ if (Meteor.isServer) {
     },
     'init': function () {
       console.log("------------------ Data Init ------------------");
-      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      if (res.data.results[0] != 0) {
-        console.log("[init] Data has been initialized");
-        return;
-      }
-
-      try {
-        for (var i = 0; i < cropTypeList.length; i++) {
-          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-        }
-      } catch (e) {
-        console.log("[init] Error initializing data on blockcypher");
-      }
+      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      // if (res.data.results[0] != 0) {
+      //   console.log("[init] Data has been initialized");
+      //   return;
+      // }
+      //
+      // try {
+      //   for (var i = 0; i < cropTypeList.length; i++) {
+      //     var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+      //   }
+      // } catch (e) {
+      //   console.log("[init] Error initializing data on blockcypher");
+      // }
 
 
       for (var i = 0 ; i < cropTypeList.length; i++){
