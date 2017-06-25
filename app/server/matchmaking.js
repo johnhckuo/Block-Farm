@@ -431,7 +431,12 @@ var verifyNode =  function(){
         
  
       
-      console.log("------------------------ Contract Update Complete ------------------------ ")
+      console.log("------------------------ Contract Update Complete ------------------------ ")   
+      console.log("------------------------ Now Check Confirmation ------------------------ ")
+
+      checkConfirmation_backend();
+
+      console.log("------------------------ Confirmation checking complete ------------------------ ")
 
       return true;
 
@@ -493,6 +498,9 @@ var matches = [];
 checkConfirmation_backend = async function(){
     var length = await Meteor.call("getMatchmakingLength");
     console.log(length)
+    if (length < 2){
+      return;
+    }
     var i = length -2;
     try{
         var res = await callContract_api("Matchmaking", "getMatchMaking", [i]);
