@@ -15,9 +15,8 @@ if (Meteor.isServer) {
             }
             return powerResult * 100;
         },
-        'playerLevelUp': function (random) {
-            var u_Id = Meteor.userId();
-            var _stakeholder = Meteor.users.findOne({ _id: u_Id }).profile.game.stakeholder;
+        'playerLevelUp': function (s_Id, random) {
+            var _stakeholder = Meteor.users.findOne({'profile.game.stakeholder.id':s_Id}).profile.game.stakeholder;
             _stakeholder.level += 1;
             if (_stakeholder.level % 5 == 0) {
                 _stakeholder.landSize += 1;
@@ -26,11 +25,11 @@ if (Meteor.isServer) {
                 var p_Id = random + cropInterval;
                 for (var i = cropStart; i < cropEnd; i++) {
                     if (i != p_Id)
-                        Meteor.call('addUserPropertyType', p_Id);
+                        Meteor.call('addUserPropertyType',s_Id, p_Id);
                 }
-                Meteor.call('addUserLandConfiguration', _stakeholder.landSize);
+                Meteor.call('addUserLandConfiguration',s_Id, _stakeholder.landSize);
             }
-            Meteor.call('updateGameData', _stakeholder.landSize, _stakeholder.level);
+            Meteor.call('updateGameData',s_Id, _stakeholder.landSize, _stakeholder.level);
         }
     });
 }

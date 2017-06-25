@@ -32,3 +32,4 @@ accounts-ui
 http
 insecure
 aldeed:simple-schema
+percolate:synced-cron

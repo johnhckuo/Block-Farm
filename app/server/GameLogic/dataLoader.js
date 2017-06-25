@@ -29,8 +29,7 @@ if (Meteor.isServer) {
             }
             return data;
         },
-        'getVisitNode': function () {
-            s_Id = Meteor.user().profile.game.stakeholder.id;
+        'getVisitNode': function (s_Id) {
             visitNode = s_Id;
             visitName = " 's farm";
             s_length = Meteor.users.find().fetch().length;
@@ -40,27 +39,49 @@ if (Meteor.isServer) {
                 try {
                     visitNode = Math.floor(s_length * Math.random());
                     visitName = Meteor.users.findOne({ 'profile.game.stakeholder.id': visitNode }).profile.game.stakeholder.name + visitName;
-                    obj = {'id': visitNode, 'name':visitName };
+                    obj = { 'id': visitNode, 'name': visitName };
                 }
                 catch (e) {
-                    visitNode = s_Id;                    
+                    visitNode = s_Id;
                 }
             }
             return obj;
         },
         'getStealRate': function (visitNode) {
             var thisGuard_s_Id = Meteor.users.findOne({ 'profile.game.stakeholder.id': visitNode }).profile.game.stakeholder.guardId;
+            console.log(thisGuard_s_Id);
             var thisGuardLvl = 1;
             if (thisGuard_s_Id != -1) {
                 var thisGuard = Meteor.users.findOne({ 'profile.game.stakeholder.id': thisGuard_s_Id });
-                thisGuardLvl = thisGuard.profile.game.syndicateData.level;
+                GuardMatch = thisGuard.profile.game.guardMatchId;
+                mLength = Meteor.call('getMatchedLength');
+                matchDiff = mLength - GuardMatch;
+                if (matchDiff < 2) {
+                    thisGuardLvl = thisGuard.profile.game.syndicateData.level;
+                }
+                else {
+                    Meteor.call('updateGuardId', visitNode, -1);
+                    thisGuardLvl = 1;
+                }
+                console.log(thisGuardLvl);
             }
             SyndicateLevel = Meteor.user().profile.game.syndicateData.level;
             stealRate = ((80 * (thisGuardLvl / 10) - 40 * (SyndicateLevel / 10)) + 32) / 100;
             return stealRate;
         },
-        'getCurrentTime':function(){
+        'getCurrentTime': function () {
             return (new Date());
+        },
+        'getMatchedLength': function () {
+            var mLength = 0;
+            try {
+                mLength = matches.find().fetch().length;
+            }
+            catch (e) {
+
+            }
+            return mLength;
         }
+
     });
 }

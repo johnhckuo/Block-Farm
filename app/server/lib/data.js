@@ -15,7 +15,7 @@ cropTypeList = [
         name: "Radish",
         img: ["radish_seed", "radish_grow", "radish_harvest", "radish", "radish_warn"],
         count:4,
-        time:"0.0.0.5",
+        time:"0.0.0.3",
         rating:[]
     },
     {
