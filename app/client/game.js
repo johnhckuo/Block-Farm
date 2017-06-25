@@ -786,13 +786,14 @@ Template.gameContent.events({
                             }
                         }
                         Meteor.call('updatePropertyCount', s_Id, p_Id, stealCount, function () {
-                            Meteor.call('updateCropCount', s_Id, visitNode, id, cropCount);
+                            Meteor.call('updateCropCount', visitNode, id, cropCount);
                             $(event.target).parent().attr("cropcount", parseInt(cropCount));
                             $(event.target).parent().attr("stolenFlag", "t");
 
                             $("." + cropClass).html("<img src = '" + prefix + cropTypeList[typeIndex].img[4] + postfix + "' />");
                             //reload propertyTable
                             set_property_table();
+
                         });
                     }
                     else {
@@ -1518,10 +1519,10 @@ var createDBConnection = function () {
                 var matchId = fields.id;
                 if (!matchmakingChecked){
                     currentMatches = matches.find().fetch();
-                    owners = currentMatches[matchId].owners;
                     matchmakingLength = currentMatches.length;
                     matchmakingChecked = true;
                 }
+                owners = currentMatches[matchId].owners;
                 if (matchId >= matchmakingLength-2){
                     var s_Id = Meteor.user().profile.game.stakeholder.id;
                     if (jQuery.inArray(s_Id, owners) != -1){
@@ -1530,6 +1531,7 @@ var createDBConnection = function () {
                             var res;
                             var minedDetector = setInterval(async function(){
                                 res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
+                                console.log(res);
                                 if (res.type == "success" && res.result != undefined){
                                     console.log("Mining Listener Closed...");
                                     clearInterval(minedDetector);
@@ -1546,18 +1548,18 @@ var createDBConnection = function () {
                                     matchCounter++;
                                     console.log("new matchmaking! waiting for txs being mined");
                                     if (matchCounter >= 8){
-                                        console.log("contract result missing... re-upload to blockchain...");
-                                        //rewirte into contract
-                                        var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
-                                        for (var w = 0 ; w < fields.owners.length; w++){
-                                            var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-                                        }
-                                        console.log(res)
-                                        console.log("contract re-upload complete");
+                                        // console.log("contract result missing... re-upload to blockchain...");
+                                        // //rewirte into contract
+                                        // var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
+                                        // for (var w = 0 ; w < fields.owners.length; w++){
+                                        //     var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+                                        // }
+                                        // console.log(res)
+                                        // console.log("contract re-upload complete");
                                         matchCounter = 0;
                                     }
                                 }
-                            },8000)
+                            },20000)
 
                             // var minedDetector = setInterval(function(){
                             //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
@@ -1574,8 +1576,8 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-            changed: function(item, fields){
-                currentMatches = matches.find().fetch();
+            changed: async function(item, fields){
+                currentMatches = await dbPromise('getMatch');
                 if (currentMatches.length < 2){
                     offset = currentMatches.length
                 }else{

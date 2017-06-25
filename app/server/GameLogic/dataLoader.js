@@ -81,6 +81,9 @@ if (Meteor.isServer) {
 
             }
             return mLength;
+        },
+        'getMatch':function(){
+            return  matches.find().fetch();
         }
 
     });

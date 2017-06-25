@@ -420,7 +420,7 @@ var verifyNode =  function(){
         console.log(res)
         var m_Id = res.result.results[0];
         var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, visitedOwner.length, "null", tempJson.visitedOwners.length]));
-        for (var i = 0 ; i < visitedOwner.length ; i++){
+        for (var i = 0 ; i < tempJson.visitedOwners.length ; i++){
           var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, tempJson.visitedPriorities[i], tempJson.visitedOwners[i], tempJson.visitedProperties[i], tempJson.visitedTradeable[i]]));
         }
         
