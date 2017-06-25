@@ -166,7 +166,7 @@ apiLimitDetector = async function(){
     },
     'callMongo': function (method, args) {
       if (method == "getPropertyType") {
-        return property_type.find().fetch();
+        return property_type.find({},{sort:{id:1}}).fetch();
       }else if (method == "getThreshold"){
         return Meteor.users.findOne({"profile.game.stakeholder.id":args[0]}).profile.game.property.threshold;
       }

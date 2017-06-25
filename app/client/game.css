@@ -538,7 +538,7 @@
   height: 30px;
   z-index: 99;
   top: 15px;
-  right: 15px;
+  right: 45px;
   flex-direction: row-reverse;
   align-items: center;
   justify-content: center;
@@ -1822,6 +1822,12 @@ td img{
   flex-direction: column;
 }
 
+.matchesBtnWait{
+  width:7vw;
+  height:10vh;
+  white-space: normal;
+}
+
 .txImg{
   width:50px;
 }
@@ -1888,9 +1894,36 @@ input[type="range"]:active::-webkit-slider-thumb{
 }
 
 .systemInfo h2{
-
   font-size: 30px;
+}
 
+.systemInfoHeader{
+  display: flex;
+  flex-direction: column;
+  vertical-align: center;
+}
+
+.systemInfoHeaderSpan{
+  font-size: 30px;  
+}
+
+.systemInfoHeaderbtn{
+  width: 30px;
+  height: 30px;
+  border: 0px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0);
+  transform: translateX(-15px);
+}
+
+.systemInfoHeaderbtn img{
+  width: 120%;
+  height: 120%;
+}
+
+.systemInfoHeaderbtnOpen img{
+  cursor: pointer;
+  background: url('/img/game/next.svg')  no-repeat;
 }
 
 .expanderContainer{

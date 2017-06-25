@@ -1108,15 +1108,44 @@ Template.gamingArea.events({
     'click .matchesBtn': async function (event) {
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
         var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-        var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
-        $(event.target).prop("value", "Waiting for others to confirm");
-        $(event.target).prop("disabled", true);
+        if ($(event.target).hasClass('matchedAcceptBtn')) {
+            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 1]);
+            console.log("confirm");
+        }
+        else {
+            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
+            console.log("reject");
+        }
+        var waitBtn = $('<input>').attr({
+            type: 'button',
+            class: "btn btn-warning matchesBtn matchesBtnWait matchBtn" + m_Id,
+            value: 'Waiting for others to confirm',
+            disabled: true
+        });
+        var btnParent = $(event.target).parent();
+        btnParent.find('.matchesBtn').each(function(){
+            $(this).remove();
+        });
+        
+        btnParent.append(waitBtn);
+        // $(event.target).prop("value", "Waiting for others to confirm");
+        // $(event.target).prop("disabled", true);
     },
-    'click .hideSystemInfo': function (event) {
+    // 'click .hideSystemInfo': function (event) {
+    //     if (systemInfoShowed) {
+    //         $(".systemInfo").css("transform", "translateX(550px)");
+    //     } else {
+    //         $(".systemInfo").css("transform", "translateX(0px)");
+    //     }
+    //     systemInfoShowed = !systemInfoShowed;
+    // },
+    'click .systemInfoHeaderbtn': function () {
         if (systemInfoShowed) {
-            $(".systemInfo").css("transform", "translateX(550px)");
+            $(".systemInfo").css("transform", "translateX(560px)");
+            $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/back.svg')
         } else {
             $(".systemInfo").css("transform", "translateX(0px)");
+            $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg')
         }
         systemInfoShowed = !systemInfoShowed;
     },
@@ -2269,7 +2298,7 @@ var createDBConnection = function () {
                 var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
-                if (!matchmakingChecked){
+                if (!matchmakingChecked) {
                     currentMatches = matches.find().fetch();
                     matchmakingLength = currentMatches.length;
                     matchmakingChecked = true;
@@ -2312,17 +2341,20 @@ var createDBConnection = function () {
                                         // console.log("contract re-upload complete");
                                         matchCounter = 0;
                                     }
+                                    console.log(res)
+                                    console.log("contract re-upload complete");
+                                    matchCounter = 0;
                                 }
                             },20000)
 
-                            // var minedDetector = setInterval(function(){
-                            //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
-                            //         console.log(res);
-                            //         if (res.result.results[0]){
-                            //             clearInterval(minedDetector);
-                            //         }
-                            //     })
-                            // },3000)
+                        // var minedDetector = setInterval(function(){
+                        //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
+                        //         console.log(res);
+                        //         if (res.result.results[0]){
+                        //             clearInterval(minedDetector);
+                        //         }
+                        //     })
+                        // },3000)
 
                     }
                 }
@@ -2334,24 +2366,24 @@ var createDBConnection = function () {
                 currentMatches = await dbPromise('getMatch');
                 if (currentMatches.length < 2){
                     offset = currentMatches.length
-                }else{
+                } else {
                     offset = 2;
                 }
-                for (var i = currentMatches.length-offset ; i < currentMatches.length ; i++){
-                    console.log("match "+currentMatches[i]);
-                    if (currentMatches[i].result == true){
-                        $(".matchBtn"+i).attr({
+                for (var i = currentMatches.length - offset; i < currentMatches.length; i++) {
+                    console.log("match " + currentMatches[i]);
+                    if (currentMatches[i].result == true) {
+                        $(".matchBtn" + i).attr({
                             type: 'button',
                             class: "btn btn-success matchesBtn matchBtn" + i,
                             value: 'Success',
-                            disabled:true
+                            disabled: true
                         });
-                    }else if (currentMatches[i].result == false){
-                        $(".matchBtn"+i).attr({
+                    } else if (currentMatches[i].result == false) {
+                        $(".matchBtn" + i).attr({
                             type: 'button',
                             class: "btn btn-danger matchesBtn matchBtn" + i,
                             value: 'Fail',
-                            disabled:true
+                            disabled: true
                         });
                     }
                 }
@@ -2433,11 +2465,10 @@ var eventListener = function () {
 
 var showConfirmation = async function (s_Id, m_Id) {
     $(".systemInfo").css("transform", "translateX(0px)");
-
+    $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg');
     if ($(".matches").length >= 2) {
         $('.systemInfo div:nth-child(3)').remove();
     }
-    //matchmakingbug
     var data = await callPromise("callContract", "Matchmaking", "getMatchMaking", [m_Id]);
     var owners = data.result.results[1];
     var properties = data.result.results[2];
@@ -2468,6 +2499,7 @@ var showConfirmation = async function (s_Id, m_Id) {
     var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You receive</div><div> " + receivePropertyName + " X " + tradeables[previousIndex] + " </div><div>from " + previousName + "</div>");
     var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You provide</div><div> " + providePropertyName + " X " + tradeables[index] + " </div><div>to " + nextName + "</div>");
     var checkBtn;
+    var confirmBtn;
     var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
     var confirmed = res.result.results[0];
     if (confirmed) {
@@ -2478,6 +2510,11 @@ var showConfirmation = async function (s_Id, m_Id) {
             disabled: true
         });
     } else {
+        confirmBtn = $('<input></input>', {
+            type: 'button',
+            class: 'btn btn-primary matchedAcceptBtn matchesBtn matchBtn' + m_Id,
+            value: 'Confirm'
+        });
         checkBtn = $('<input>').attr({
             type: 'button',
             class: "btn btn-danger matchesBtn matchBtn" + m_Id,
@@ -2503,8 +2540,7 @@ var showConfirmation = async function (s_Id, m_Id) {
         }
     }
 
-
-    row.append(provide).append(receive).append(checkBtn);
+    row.append(provide).append(receive).append(confirmBtn).append(checkBtn);
     $(".systemInfo").append(row);
 
     var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
@@ -2513,7 +2549,6 @@ var showConfirmation = async function (s_Id, m_Id) {
         $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
         $(".matchBtn" + m_Id).prop("disabled", true);
     }
-
 }
 
 
@@ -3123,7 +3158,7 @@ get_propertyType_setting = async function (_length) {
             mongoPropertyType[i].rating[j] = parseInt(mongoPropertyType[i].rating[j])
             averageRating += mongoPropertyType[i].rating[j];
         }
-        averageRating = parseInt(averageRating/mongoPropertyType[i].rating.length);
+        averageRating = parseInt(averageRating / mongoPropertyType[i].rating.length);
 
         var _name = mongoPropertyType[i].name;
         var _id = mongoPropertyType[i].id;
@@ -3430,8 +3465,8 @@ save_rating_setting = async function () {
 
     var s_Length = 0;
     var allUser = Meteor.users.find().fetch();
-    for(i = 0 ; i < allUser.length; i++){
-        if(allUser[i].emails[0].verified)
+    for (i = 0; i < allUser.length; i++) {
+        if (allUser[i].emails[0].verified)
             s_Length++;
     }
 
@@ -3446,7 +3481,7 @@ save_rating_setting = async function () {
         }
         var _ratingPercent = parseInt($('#ratingPercent').val(), 10);
         var res = await Meteor.call("updateRatingTolerance", _ratingPercent, Meteor.user().profile.game.stakeholder.id);
-    }catch(e){
+    } catch (e) {
         console.log(e);
     }
 
