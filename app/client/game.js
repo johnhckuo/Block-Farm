@@ -781,7 +781,6 @@ Template.gameContent.events({
                 //reload propertyTable
                 set_property_table();
             });
-<<<<<<< HEAD
             //usingPropertyInstance.updatePropertyCount_Cropped(propertyIndex, parseInt(stockList[stockId].count), {from:web3.eth.accounts[currentAccount], gas:3000000});
 
             //reload propertyTable
@@ -796,8 +795,6 @@ Template.gameContent.events({
               // $('.crop3').css("-webkit-animation","leftBtnAnimation 1s infinite");
               // createCircle();
             }
-=======
->>>>>>> 5501d77020163f02b0e8e7c661795c485cd1a791
         }
         else if (gameMode == "Thief") {
             if (currentUser.sta < staminaList["steal"]) {
@@ -1181,8 +1178,8 @@ Template.gamingArea.events({
       // $('.advTutorialContainer').css("z-index","100");
       // $('.landList').css("z-index","101");
       //tutorialSession1();
-      tutorialSession2();
-      //tutorialSession3();
+      //tutorialSession2();
+      tutorialSession3();
     },
 })
 Template.guideCircle.events({
@@ -2249,13 +2246,9 @@ var createDBConnection = function () {
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
-<<<<<<< HEAD
 
             added: function(item, fields){
-=======
-            added: function(item, fields){ 
                 var matchCounter = 0;
->>>>>>> 5501d77020163f02b0e8e7c661795c485cd1a791
                 var owners = [];
                 var matchId = fields.id;
                 if (!matchmakingChecked){
@@ -2265,14 +2258,10 @@ var createDBConnection = function () {
                     matchmakingChecked = true;
                 }
                 if (matchId >= matchmakingLength-2){
-<<<<<<< HEAD
-                    if (jQuery.inArray(currentUser.s_Id, owners) == -1){
-                            Session.set("id", Meteor.userId());
-=======
+
                     var s_Id = Meteor.user().profile.game.stakeholder.id;
                     if (jQuery.inArray(s_Id, owners) != -1){
-                            Session.set("id", Meteor.userId()); 
->>>>>>> 5501d77020163f02b0e8e7c661795c485cd1a791
+                            Session.set("id", Meteor.userId());
                             var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
                             var res;
                             var minedDetector = setInterval(async function(){
@@ -2282,14 +2271,7 @@ var createDBConnection = function () {
                                     clearInterval(minedDetector);
                                     console.log(res);
                                     var confirmed = res.result.results[0];
-<<<<<<< HEAD
-                                    var match = matches.find().fetch();
-                                    var owners = match[matchId].owners;
-                                    if (jQuery.inArray(s_Id, owners) == -1){
-                                        return;
-                                    }
-=======
->>>>>>> 5501d77020163f02b0e8e7c661795c485cd1a791
+
                                     //if (!confirmed){
                                         if (jQuery.inArray(matchId, data) == -1){
                                             var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
@@ -3307,7 +3289,7 @@ rend_propertyType_table = function (_length) {
         }
         //content
         $('.shop_content').append(table);
-<<<<<<< HEAD
+
 
         loading(0); // original function, don't delete
 
@@ -3381,10 +3363,10 @@ rend_propertyType_table = function (_length) {
 
 
         }
-=======
+
         $('label[for = ratingPercent]').text(currentThreshold);
         loading(0);
->>>>>>> 5501d77020163f02b0e8e7c661795c485cd1a791
+
     }
 }
 

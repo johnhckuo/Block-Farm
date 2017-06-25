@@ -75,11 +75,8 @@ if (Meteor.isClient) {
         if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")) {
           console.log("server connection established!");
           var initCounter = property_type.find().fetch().length;
-<<<<<<< HEAD
-          if (initCounter == 0) { // need to comment
-=======
+
           if (initCounter == 0) {
->>>>>>> 5501d77020163f02b0e8e7c661795c485cd1a791
             var res = await Meteor.call('init');
           }
           clearInterval(fetcher);

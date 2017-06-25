@@ -60,7 +60,7 @@ apiLimitDetector = async function(){
         console.log("------------------- API Call Abnormal.. Switch to token #"+currentToken+" -------------------");
         data = Meteor.http.call("GET", "https://api.blockcypher.com/v1/tokens/"+token[currentToken]);
         flag = true;
-      }      
+      }
 
     }
 
@@ -243,21 +243,6 @@ apiLimitDetector = async function(){
     },
     'init': function () {
       console.log("------------------ Data Init ------------------");
-<<<<<<< HEAD
-      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      // if (res.data.results[0] != 0) {
-      //   console.log("[init] Data has been initialized");
-      //   return;
-      // }
-      //
-      // try {
-      //   for (var i = 0; i < cropTypeList.length; i++) {
-      //     var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-      //   }
-      // } catch (e) {
-      //   console.log("[init] Error initializing data on blockcypher");
-      // }
-=======
       var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
       if (res.data.results[0] != 0) {
         console.log("[init] Data has been initialized");
@@ -271,7 +256,6 @@ apiLimitDetector = async function(){
       } catch (e) {
         console.log("[init] "+e);
       }
->>>>>>> 5501d77020163f02b0e8e7c661795c485cd1a791
 
 
       for (var i = 0; i < cropTypeList.length; i++) {
