@@ -243,6 +243,8 @@ apiLimitDetector = async function(){
     },
     'init': function () {
       console.log("------------------ Data Init ------------------");
+      var currentIndex = 0;
+
       var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
       if (res.data.results[0] != 0) {
         console.log("[init] Data has been initialized");
@@ -252,9 +254,14 @@ apiLimitDetector = async function(){
       try {
         for (var i = 0; i < cropTypeList.length; i++) {
           var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+          currentIndex++;
         }
       } catch (e) {
         console.log("[init] "+e);
+        console.log("Encounter error! Re-upload property type from "+cropTypeList[currentIndex].name);
+        for (var i = currentIndex; i < cropTypeList.length; i++) {
+          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+        }
       }
 
 
