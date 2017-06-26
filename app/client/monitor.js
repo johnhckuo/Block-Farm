@@ -24,4 +24,8 @@ Template.monitor.events({
         var data = await dbPromise('getBlockchain');
         $('.contentBoard').html(JSON.stringify(data));
     },
+    'click #Answers': async function(){
+        var data = await dbPromise('getAnsewers');
+        $('.contentBoard').html(JSON.stringify(data));
+    }
 });

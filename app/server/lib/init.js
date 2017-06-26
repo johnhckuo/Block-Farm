@@ -102,6 +102,7 @@ if (Meteor.isServer) {
         gameInitData.stakeholder.guardId = -1;
         gameInitData.stakeholder.matchesId = [];
         gameInitData.stakeholder.unlockedCropType = [];
+        gameInitData.stakeholder.answered = false;
 
         gameInitData.syndicateData.exp = 0;
         gameInitData.syndicateData.totalExp = 0;

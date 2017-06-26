@@ -6,6 +6,7 @@ import { mission } from '../../imports/collections.js';
 import { matches } from '../../imports/collections.js';
 import { callPromise } from '../../imports/promise.js';
 import { dbPromise } from '../../imports/promise.js';
+import { questionnaires } from '../../imports/collections.js';
 
 if (Meteor.isServer) {
     Meteor.methods({
@@ -39,6 +40,9 @@ if (Meteor.isServer) {
                 }
             }
             return match;
+        },
+        'getAnsewers': function () {
+            return questionnaires.find().fetch();
         }
     });
 }

@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { matches } from '../../imports/collections.js';
+import { questionnaires } from '../../imports/collections.js';
 
 if (Meteor.isServer) {
     Meteor.methods({
@@ -109,6 +110,5 @@ if (Meteor.isServer) {
             }
             return tradable;
         }
-
     });
 }
