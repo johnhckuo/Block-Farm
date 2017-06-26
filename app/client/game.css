@@ -2304,7 +2304,7 @@ border-top-right-radius: 15px;
   position: absolute;
   width:70vw;
   height:95vh;
-  background: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.9);
   border-radius: 20px;
   display: none;
   flex-direction: column;
@@ -2320,6 +2320,7 @@ border-top-right-radius: 15px;
 .questionControl{
   width: 30vw;
   display: flex;
+  margin-bottom: 3vh;
   flex-direction: row;
   justify-content:space-between;
 }
@@ -2331,8 +2332,8 @@ border-top-right-radius: 15px;
 .questionnaire_content{
   border-radius: 20px;
   width:65vw;
-  height:90vh;
-  margin-bottom: 1vh;
+  height:83vh;
+  margin-bottom: 3vh;
   display: none;
   flex-direction: column;
   overflow: auto;
@@ -2366,7 +2367,7 @@ border-top-right-radius: 15px;
   display:block;
   width: 60vw;
   height: 30vh;
-  font-size:20px;
+  font-size:23px;
   padding-top: 2vh;
 }
 
@@ -2385,6 +2386,10 @@ border-top-right-radius: 15px;
   font-size:15px;
   width: 50vw;
   padding-top: 3vh;
+}
+
+.question_a p{
+  padding-top: 4vh;
 }
 
 .question_hr{
@@ -2482,12 +2487,21 @@ border-top-right-radius: 15px;
 .questionTitle h1{
   font-size: 30px;
   text-align: center;
+  padding-bottom: 3vh;
+    padding-top: 3vh;
 }
 
 .questionTitle h2{
   font-size: 18px;
   text-align: left;
   line-height: 24px;
+}
+
+.questionTitle h3{
+  font-size: 18px;
+  text-align: left;
+  line-height: 24px;
+  font-weight:normal;
 }
 
 .question_textarea{
@@ -2514,15 +2528,15 @@ border-top-right-radius: 15px;
 .questionBtnPrev{
   background: url('/img/game/back.svg') no-repeat;
   background-size: 100% 100%;
-    height:4vh;
-  width: 4vw;
+  height:3vh;
+  width: 3vw;
   border: none;
 }
 
 .questionBtnNext{
   background: url('/img/game/next.svg') no-repeat;
   background-size: 100% 100%;
-    height:4vh;
-  width: 4vw;
+  height:3vh;
+  width: 3vw;
   border: none;
 }

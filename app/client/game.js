@@ -133,9 +133,7 @@ gameIndexCreation = async function () {
     await loadCropList(s_Id);
     await getUserStockList(s_Id);
     await fetchGameInitConfig(s_Id);
-    showQuestionnaire();
 }
-
 getStakeholderId = function () {
     if (Meteor.user() == null) {
         sweetAlert("Oops...", "Please Register First", "error");
@@ -471,6 +469,7 @@ Template.firstTutorial.events({
 
 Template.questionnaire.events({
     'click #btn_questionnaire_close': function () {
+        if(!Meteor.user().profile.game.stakeholder.answered){
         swal({
             title: "Are you sure?",
             text: "Please make sure you have done the questionnaire to obtain the lucky draw!",
@@ -483,6 +482,7 @@ Template.questionnaire.events({
             function () {
                 $('.questionnaire_main').css('display', 'none');
             });
+        }
     },
     'click .option-input': function (e) {
         var _id = index_finder($(e.target).attr('id'), 'radioAnswer');
@@ -2614,6 +2614,9 @@ var getUserStockList = async function (s_Id) {
             isTrading: p_List.isTrading[i]
         });
     }
+    if((currentUser.level >= 5) &&(!Meteor.user().profile.game.stakeholder.answered)){
+        showQuestionnaire();
+    }
 }
 
 var getUserData = async function (s_Id) {
@@ -3808,6 +3811,8 @@ var showQuestionnaire = function () {
         "Government and Public Administration", "Health Care and Social Assistance", "Telecommunications", "Education", "Retired", "Others"
     ];
     var questions = [
+        "h1 BlockFarm Operating Questionnaire",
+        "h2 This questionnaire is designed for an academic research, apply to D3 Accelerator Project of Service Science Research Center in National Chengchi University, R.O.C.. Your privacy information will be under protection and only used for contacting when there is any implementation or reward sending problems.",
         "Q0: I think the gaming mechanism is meaningful.",
         "h1 Simple Questions for User Ability",
         "Q1: It is not difficult for me to make new friends.",
@@ -3818,7 +3823,7 @@ var showQuestionnaire = function () {
         "Q6: I am confident about my ability to play this game.",
         "Q7: I can determine how to play this game.",
         "Next Page",
-        "h2 Second part is some questions about our bartering mechanism.",
+        "h3 ● Second part is some questions about our bartering mechanism.",
         "h1 Questions For Crops' Match-Making Mechanism",
         "h2 Match-making mechanism is the core value of bartering in Blockfarm, it is used for exchanging crops with other players. You just set up an importance of each crop and how many crops you are willing to exchange in the next transaction, then We will try to find the best solution for your crop bartering through match-making mechanism.",
         "Q8: You think our match-making mechanism meets your expectations and is easy to use.",
@@ -3830,40 +3835,40 @@ var showQuestionnaire = function () {
         "Q14: I often could get crops I really want after match-making.",
         "Q15: Settings before match-making is simple and friendly to me.",
         "Q16: I am satisfied with the way doing match-making.",
-        "Q18: I think the mechanism of match-making is great enough.",
+        "Q17: I think the mechanism of match-making is great enough.",
         "h1 Personal Influence in Bartering Transactions",
         "h2 The match-making mechanism is based on player's importance of each crop and the preference of what you are earning for. The computing logic shows as follows:",
-        "Q19: My ranking of crops will make an impact on other players' transaction results.",
-        "Q20: Results of transactions will be affected by my ranking of crops.",
-        "Q21: I can control what happens in my game result.",
+        "Q18: My ranking of crops will make an impact on other players' transaction results.",
+        "Q19: Results of transactions will be affected by my ranking of crops.",
+        "Q20: I can control what happens in my game result.",
         "Next Page",
-        "h2 Third part is about your experience and feelings of BlockFarm.",
+        "h3 ● Third part is about your experience and feelings of BlockFarm.",
         "h1 Questions for Gaming Mechanism",
-        "Q22: The gaming mechanism of Blockfarm is original ad novel.",
-        "Q23: The gaming mechanism of Blockfarm is uncommon and deserve to be mentioned to others.",
-        "Q24: The gaming mechanism of Blockfarm is unique and irreplaceable.",
-        "Q25: Combination of blockchain and farming game is an innovating and expanding idea based on two differentiating domain.",
+        "Q21: The gaming mechanism of Blockfarm is original ad novel.",
+        "Q22: The gaming mechanism of Blockfarm is uncommon and deserve to be mentioned to others.",
+        "Q23: The gaming mechanism of Blockfarm is unique and irreplaceable.",
+        "Q24: Combination of blockchain and farming game is an innovating and expanding idea based on two differentiating domain.",
         "h1 Questions for Your Feelings of BlockFarm",
-        "Q26: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
-        "Q27: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.( interactions refers to thieving and guarding, crops transaction, etc. )",
-        "Q28: You are satisfied with our system’s quality and will keep playing this game.",
-        "Q29: This game is entertaining to you and you are willing to share this experience to others.",
-        "Q30: The guideline is clear for me to understand.",
-        "Q31: The gaming operation is convenient.",
-        "Q32: You are satisfied with our system stability.",
-        "Q33: There is s few disadvantages in Blockfarm, but they do not affect to game playing.",
-        "Q34: I play Blockfarm frequently.",
+        "Q25: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
+        "Q26: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.",
+        "h3 ( interactions refers to thieving and guarding, crops transaction, etc. )",
+        "Q27: You are satisfied with our system’s quality and will keep playing this game.",
+        "Q28: This game is entertaining to you and you are willing to share this experience to others.",
+        "Q29: The guideline is clear for me to understand.",
+        "Q30: The gaming operation is convenient.",
+        "Q31: You are satisfied with our system stability.",
+        "Q32: There is s few disadvantages in Blockfarm, but they do not affect to game playing.",
+        "Q33: I play Blockfarm frequently.",
         "h1 Would you like to keep playing BlockFarm?",
-        "Q35: I will continue playing Blockfarm frequently in future.",
-        "Q36: Many people I communicate with play this game.",
-        "Q37:Many people I communicate with regularly play this game.",
-        "Q38: People I communicate with will continue to play this game. ",
-        "h1 Personal Information ( only for academic research.)",
-        "TQ39: Age:",
-        "TQ40: Education:",
-        "TQ41: Employment:",
-        "h1 We are deeply appreciate to your feedback.",
-        "TQ42: What do you think we can do to improve our match-making mechanism and Blockfarm?",
+        "Q34: I will continue playing Blockfarm frequently in future.",
+        "Q35: Many people I communicate with play this game.",
+        "Q36: Many people I communicate with regularly play this game.",
+        "Q37: People I communicate with will continue to play this game. ",
+        "h1 Personal Information",        
+        "TQ38: Age:",
+        "TQ39: Education:",
+        "TQ40: Employment:",
+        "TQ41: What do you think we can do to improve our match-making mechanism and Blockfarm?",
     ];
     $('.questionnaire_main').css('display', 'flex');
     $('.questionnaire_main').append($('<div></div>', {
@@ -3928,7 +3933,7 @@ var showQuestionnaire = function () {
         else if (questions[i].substring(0, 1) == 'T') {
         }
     }
-    dumpCounter = 51;
+    dumpCounter = 54;
     //age
     $('.questionPage' + pagerCounter).append($('<div></div>', {
         id: 'question' + questionCount,
@@ -4048,11 +4053,10 @@ var showQuestionnaire = function () {
     //employment
     //feedback
     $('.questionPage' + pagerCounter).append($('<div></div>', {
-        id: 'questionTitle' + i,
-        class: 'questionTitle'
+        id: 'question' + questionCount,
+        class: 'question_q'
     }));
-    var showText = questions[dumpCounter].substring(2, questions[dumpCounter].length);
-    $('#questionTitle' + i).html('<h' + questions[dumpCounter].substring(1, 2) + '>' + showText + '<h' + questions[dumpCounter].substring(0, 1) + '/>');
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
     $('.questionPage' + pagerCounter).append($('<div></div>', {
         id: 'answer_cover' + questionCount,
         class: 'question_a_cover'
