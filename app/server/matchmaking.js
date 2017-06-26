@@ -5,7 +5,7 @@ import { matchesCollection } from '../imports/collections.js';
 var properties = [];
 var propertyType = [];
 var originDiffThreshold = 0;
-var floatOffset = 10000;
+var floatOffset = 1;
 
 wait = function(ms){
    var start = new Date().getTime();
@@ -513,13 +513,13 @@ var verifyNode =  function(){
         var res = Promise.await(Meteor.call("callContract", "Matchmaking", "getMatchMakingLength", []));
         console.log(res)
         var m_Id = res.result.results[0];
-        var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, visitedOwner.length, "null", tempJson.visitedOwners.length]));
+        var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, visitedOwner.length, "null"]));
         for (var i = 0 ; i < tempJson.visitedOwners.length ; i++){
           var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, tempJson.visitedPriorities[i], tempJson.visitedOwners[i], tempJson.visitedProperties[i], tempJson.visitedTradeable[i]]));
         }
         
- 
-      
+        var res4 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [m_Id, tempJson.visitedOwners.length]));
+
       console.log("------------------------ Contract Update Complete ------------------------ ")   
       console.log("------------------------ Now Check Confirmation ------------------------ ")
 
@@ -587,10 +587,10 @@ var matches = [];
 checkConfirmation_backend = async function(){
     var length = await Meteor.call("getMatchmakingLength");
     console.log(length)
-    if (length < 2){
+    if (length < 3){
       return;
     }
-    var i = length -2;
+    var i = length -3;
     try{
         var res = await callContract_api("Matchmaking", "getMatchMaking", [i]);
         var match = { visitedPriorities: res.data.results[0], visitedOwners: res.data.results[1], visitedProperties: res.data.results[2], visitedTradeable: res.data.results[3], confirmation: res.data.results[4], visitedCount:res.data.results[5], result:res.data.results[6] };
