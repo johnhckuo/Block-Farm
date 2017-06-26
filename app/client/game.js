@@ -2527,12 +2527,12 @@ var showConfirmation = async function (s_Id, m_Id) {
         }
         else {
             var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
-            console.log(res);
+            console.log("confirmed"+res.result.results[0]);
             var confirmed = res.result.results[0];
-            if (confirmed == 1) {
+            if (confirmed != 0) {
                 checkBtn = $('<input>').attr({
                     type: 'button',
-                    class: "btn btn-warning matchesBtn matchBtn" + m_Id,
+                    class: "btn btn-warning matchesBtnWait matchesBtn matchBtn" + m_Id,
                     value: 'Waiting for others to confirm',
                     disabled: true
                 });
@@ -2555,7 +2555,7 @@ var showConfirmation = async function (s_Id, m_Id) {
 
         var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
         var confirmed = res.result.results[0];
-        if (confirmed == 1) {
+        if (confirmed != 0) {
             $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
             $(".matchBtn" + m_Id).prop("disabled", true);
         }
