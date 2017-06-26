@@ -41,6 +41,8 @@ if (Meteor.isServer) {
 
             var reciever_Count = Meteor.users.findOne({'profile.game.stakeholder.id':receive_s_Id}).profile.game.property.count;
             var sender_Tradeable = Meteor.users.findOne({'profile.game.stakeholder.id':current_s_Id}).profile.game.property.tradeable;
+            console.log("-------------------- updateOwnershipStatus -------------------------");
+            console.log("currentS_Id"+ current_s_Id +" | receive_s_Id" + receive_s_Id+" | p_Id: "+p_Id);
             if(p_Id < 30){
                 reciever_Count[p_Id] += tradeCount;
                 Meteor.users.update({'profile.game.stakeholder.id':receive_s_Id}, { $set: { 'profile.game.property.count': reciever_Count } });

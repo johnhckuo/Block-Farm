@@ -1828,6 +1828,10 @@ td img{
   white-space: normal;
 }
 
+.matchedAcceptBtn{
+  margin-right:15px;
+}
+
 .txImg{
   width:50px;
 }

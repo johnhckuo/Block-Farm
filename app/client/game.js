@@ -81,7 +81,7 @@ var currentClickedCrop = null;
 var currentClickedLand = null;
 var removeMode = false;
 
-var floatOffset = 10000;
+var floatOffset = 1;
 
 var checkMissionInterval = null;
 var theifId = 0;
@@ -1155,11 +1155,11 @@ Template.gamingArea.events({
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
         var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
         if ($(event.target).hasClass('matchedAcceptBtn')) {
-            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 1]);
+            var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 1]);
             console.log("confirm");
         }
         else {
-            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
+            var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
             console.log("reject");
         }
         var waitBtn = $('<input>').attr({
@@ -2334,7 +2334,6 @@ var createDBConnection = function () {
         Session.set("current_user_loaded", true);
     });
 
-    var matchmakingChecked = false;
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
@@ -2343,11 +2342,8 @@ var createDBConnection = function () {
                 var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
-                if (!matchmakingChecked) {
-                    currentMatches = matches.find().fetch();
-                    matchmakingLength = currentMatches.length;
-                    matchmakingChecked = true;
-                }
+                currentMatches = matches.find().fetch();
+                matchmakingLength = currentMatches.length;
                 owners = currentMatches[matchId].owners;
                 if (matchId >= matchmakingLength - 2) {
 
@@ -2407,8 +2403,9 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-            changed: async function (item, fields) {
-                currentMatches = await dbPromise('getMatch');
+            changed: function (item, fields) {
+                wait(1000);
+                currentMatches = dbPromise('getMatch');
                 if (currentMatches.length < 2) {
                     offset = currentMatches.length
                 } else {
@@ -2432,8 +2429,6 @@ var createDBConnection = function () {
                         });
                     }
                 }
-
-
             }
         });
     });
@@ -2521,82 +2516,86 @@ var showConfirmation = async function (s_Id, m_Id) {
     var tradeables = data.result.results[3];
     var result = data.result.results[6];
     console.log(data);
-    var index;
-    var length = owners.length - 1;
+    var index = [];
+    var length = owners.length-1;
     for (var j = 0; j < length; j++) {
         if (s_Id == owners[j]) {
-            index = j;
+            index.push(j);
         }
     }
-    console.log(owners);
-    var previousIndex = (index - 1 + length) % length;
-    var nextIndex = (index + 1) % length;
 
-    var previousName = await callPromise("getUserName", owners[previousIndex]);
-    var nextName = await callPromise("getUserName", owners[nextIndex]);
+    for (var i = 0 ; i < index.length ; i++){
+        console.log(owners);
+        var previousIndex = (index[i] - 1 + length) % length;
+        var nextIndex = (index[i] + 1) % length;
 
-    var receivePropertyName = await callPromise("getPropertyTypeName", properties[previousIndex]);
-    var providePropertyName = await callPromise("getPropertyTypeName", properties[index]);
+        var previousName = await callPromise("getUserName", owners[previousIndex]);
+        var nextName = await callPromise("getUserName", owners[nextIndex]);
 
-    var receiveProperty = await callPromise("getPropertyTypeImg", properties[previousIndex]);
-    var provideProperty = await callPromise("getPropertyTypeImg", properties[index]);
+        var receivePropertyName = await callPromise("getPropertyTypeName", properties[previousIndex]);
+        var providePropertyName = await callPromise("getPropertyTypeName", properties[index[i]]);
 
-    var row = $("<div>").attr("class", "matches match" + m_Id);
-    var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You receive</div><div> " + receivePropertyName + " X " + tradeables[previousIndex] + " </div><div>from " + previousName + "</div>");
-    var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You provide</div><div> " + providePropertyName + " X " + tradeables[index] + " </div><div>to " + nextName + "</div>");
-    var checkBtn;
-    var confirmBtn;
+        var receiveProperty = await callPromise("getPropertyTypeImg", properties[previousIndex]);
+        var provideProperty = await callPromise("getPropertyTypeImg", properties[index[i]]);
 
-    console.log(result);
-    if (result != "null") {
-        if (result == "true") {
-            checkBtn = $('<input>').attr({
-                type: 'button',
-                class: "btn btn-success matchesBtn matchBtn" + m_Id,
-                value: 'Success',
-                disabled: true
-            });
-        } else if (result == "false") {
-            checkBtn = $('<input>').attr({
-                type: 'button',
-                class: "btn btn-danger matchesBtn matchBtn" + m_Id,
-                value: 'Fail',
-                disabled: true
-            });
+        var row = $("<div>").attr("class", "matches match" + m_Id);
+        var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You receive</div><div> " + receivePropertyName + " X " + tradeables[previousIndex] + " </div><div>from " + previousName + "</div>");
+        var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You provide</div><div> " + providePropertyName + " X " + tradeables[index[i]] + " </div><div>to " + nextName + "</div>");
+        var checkBtn;
+        var confirmBtn;
+
+        console.log(result);
+        if (result != "null") {
+            if (result == "true") {
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-success matchesBtn matchBtn" + m_Id,
+                    value: 'Success',
+                    disabled: true
+                });
+            } else if (result == "false") {
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-danger matchesBtn matchBtn" + m_Id,
+                    value: 'Fail',
+                    disabled: true
+                });
+            }
         }
-    }
-    else {
+        else {
+            var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
+            console.log(res);
+            var confirmed = res.result.results[0];
+            if (confirmed == 1) {
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-warning matchesBtn matchBtn" + m_Id,
+                    value: 'Waiting for others to confirm',
+                    disabled: true
+                });
+            } else {
+                confirmBtn = $('<input></input>', {
+                    type: 'button',
+                    class: 'btn btn-primary matchedAcceptBtn matchesBtn matchBtn' + m_Id,
+                    value: 'Accept'
+                });
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-danger matchesBtn matchBtn" + m_Id,
+                    value: 'Reject'
+                });
+            }
+        }
+
+        row.append(provide).append(receive).append(confirmBtn).append(checkBtn);
+        $(".systemInfo").append(row);
+
         var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
         var confirmed = res.result.results[0];
-        if (confirmed) {
-            checkBtn = $('<input>').attr({
-                type: 'button',
-                class: "btn btn-warning matchesBtn matchBtn" + m_Id,
-                value: 'Waiting for others to confirm',
-                disabled: true
-            });
-        } else {
-            confirmBtn = $('<input></input>', {
-                type: 'button',
-                class: 'btn btn-primary matchedAcceptBtn matchesBtn matchBtn' + m_Id,
-                value: 'Confirm'
-            });
-            checkBtn = $('<input>').attr({
-                type: 'button',
-                class: "btn btn-danger matchesBtn matchBtn" + m_Id,
-                value: 'Reject'
-            });
+        if (confirmed == 1) {
+            $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
+            $(".matchBtn" + m_Id).prop("disabled", true);
         }
-    }
-
-    row.append(provide).append(receive).append(confirmBtn).append(checkBtn);
-    $(".systemInfo").append(row);
-
-    var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
-    var confirmed = res.result.results[0];
-    if (confirmed) {
-        $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
-        $(".matchBtn" + m_Id).prop("disabled", true);
     }
 }
 
