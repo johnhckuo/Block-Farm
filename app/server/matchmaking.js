@@ -190,6 +190,91 @@ var checkExist = function(elem, data){
     return true;
 }
 
+var globalRatingSort = function(list){
+  var stakeholderLength = propertyType[0].ratings.length;
+
+  var tempList = [];
+  var tempSortList = [];
+  console.log("start init")
+  //init
+  for (var i = 0 ; i < stakeholderLength ; i++){
+    tempList.push(0);
+  }
+
+  for (var i = 0 ; i < list.length ; i++){
+    var index;
+    for (var j = 0 ; j < propertyType.length; j++){
+      if (list[i].type == propertyType[j].id){
+        index = j;
+        break;
+      }
+    }
+
+    for (var w = 0 ; w < stakeholderLength ; w++){
+      tempList[w] = propertyType[index].ratings[w];
+    }
+    console.log(list[i].type+"==="+tempList)
+    tempSortList.push(findMaxRatingStakeholder(tempList, index));
+
+  }
+  console.log("second stage")
+
+  var currentPriority = list[0].priority;
+  var finalResult = [];
+  var sortList = [];
+  console.log(list);
+  for (var i = 0 ; i < list.length ; i++){
+    sortList.push(list[i]);
+
+    if (list[i].priority != currentPriority || i == list.length-1){
+        //sort
+        for (var j = finalResult.length ; j < i; j++){
+
+            var max_index = j;
+            for (var w=j+1; w<sortList.length; w++){
+                if (tempSortList[w] > tempSortList[max_index]){
+                    max_index = w;
+                }
+            }
+            var temp = sortList[j];
+            sortList[j] = sortList[max_index];
+            sortList[max_index] = temp;
+        }
+
+        //push 
+        for (var k = 0 ; k < sortList.length; k++){
+          finalResult.push(sortList[k]);
+        }
+        sortList = [];
+        currentPriority = list[i].priority;
+    }
+
+  }
+  console.log(tempSortList)
+  console.log(finalResult);
+
+  if (finalResult.length != list.length){
+    console.log("Something is Wrong !!!!!");
+  }else{
+    return finalResult;
+
+  }
+}
+
+var findMaxRatingStakeholder = function(list, index){
+  var tempList = [];
+  console.log("receive List"+list+"index"+index);
+  for (var i = 0 ; i < list.length ; i++){
+    tempList.push(list[i] - propertyType[index].avg);
+  }
+  console.log("sort"+tempList)
+  tempList = tempList.sort(function(a, b){
+    return b-a;
+  });
+  console.log("after sort"+tempList)
+  return tempList[0];
+}
+
 
 var searchNeighborNodes = function(visitNode){
     var length = properties.length;
@@ -228,17 +313,17 @@ var searchNeighborNodes = function(visitNode){
 
         goThroughList.push({
           id:i,
-          priority:diff + properties[i].tradeable*avgImportance,
+          priority:diff,
           tradeable:properties[i].tradeable,
           type:properties[i].type
         });
     }
-    console.log(goThroughList)
 
     if (goThroughList.length == 0){
         return matchFail(0);
     }
     goThroughList = sort(goThroughList);
+    console.log(goThroughList)
 
     var flag = false;
     var visitIndex;
@@ -264,7 +349,7 @@ var searchNeighborNodes = function(visitNode){
     // }
     // console.log("=====");
 
-
+    goThroughList = globalRatingSort(goThroughList);
     return goThroughList;
 }
 
