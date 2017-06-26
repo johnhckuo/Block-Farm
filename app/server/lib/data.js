@@ -348,126 +348,126 @@ MissionList = [
     {
         id : 1,
         name: "Mission0-1",
-        exp: 20,
+        exp: 40,
         lvl_limitation:0,
         status:true
     },
     {
         id : 2,
         name: "Mission0-2",
-        exp: 20,
+        exp: 40,
         lvl_limitation:0,
         status:true
     },
     {
         id : 3,
         name: "Mission0-3",
-        exp: 20,
+        exp: 40,
         lvl_limitation:0,
         status:true
     },
     {
         id : 4,
         name: "Mission1-1",
-        exp: 30,
+        exp: 60,
         lvl_limitation:1,
         status:true
     },
     {
         id : 5,
         name: "Mission1-2",
-        exp: 30,
+        exp: 60,
         lvl_limitation:1,
         status:true
     },
     {
         id : 6,
         name: "Mission1-3",
-        exp: 30,
+        exp: 60,
         lvl_limitation:1,
         status:true
     },
     {
         id : 7,
         name: "Mission2-1",
-        exp: 100,
+        exp: 200,
         lvl_limitation:2,
         status:true
     },
     {
         id : 8,
         name: "Mission2-2",
-        exp: 100,
+        exp: 200,
         lvl_limitation:2,
         status:true
     },
     {
         id : 9,
         name: "Mission2-3",
-        exp: 100,
+        exp: 200,
         lvl_limitation:2,
         status:true
     },
     {
         id : 10,
         name: "Mission3-1",
-        exp: 250,
+        exp: 500,
         lvl_limitation:3,
         status:true
     },
     {
         id : 11,
         name: "Mission3-2",
-        exp: 250,
+        exp: 500,
         lvl_limitation:3,
         status:true
     },
     {
         id : 12,
         name: "Mission3-3",
-        exp: 250,
+        exp: 500,
         lvl_limitation:3,
         status:true
     },
     {
         id : 13,
         name: "Mission4-1",
-        exp: 450,
+        exp: 900,
         lvl_limitation:4,
         status:true
     },
     {
         id : 14,
         name: "Mission4-2",
-        exp: 450,
+        exp: 900,
         lvl_limitation:4,
         status:true
     },
     {
         id : 15,
         name: "Mission4-3",
-        exp: 450,
+        exp: 900,
         lvl_limitation:4,
         status:true
     },
     {
         id : 16,
         name: "Mission5-1",
-        exp: 1000,
+        exp: 2000,
         lvl_limitation:5,
         status:true
     },
     {
         id : 17,
         name: "Mission5-2",
-        exp: 1000,
+        exp: 2000,
         lvl_limitation:5,
         status:true
     },
     {
         id : 18,
         name: "Mission5-3",
-        exp: 1000,
+        exp: 2000,
         lvl_limitation:5,
         status:true
     },
