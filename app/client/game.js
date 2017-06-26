@@ -81,7 +81,7 @@ var currentClickedCrop = null;
 var currentClickedLand = null;
 var removeMode = false;
 
-var floatOffset = 1;
+var floatOffset = 10000;
 
 var checkMissionInterval = null;
 var theifId = 0;
@@ -103,7 +103,6 @@ var t2PageCnt = 0;
 var t3PageCnt = 0;
 var tPageBtn = false;
 
-var ratingOpened = false;
 var onchangedIndex = [];
 var systemInfoShowed = false;
 
@@ -2192,26 +2191,24 @@ Template.operationList.events({
         $(".property_shop").css("display", "inline");
         $(".mission_template").css("display", "none");
         $(".rank_template").css("display", "none");
-        if (!ratingOpened) {
 
-            //step 2.4 for tutorial, for rating
-            if (tutorialMode == 2) {
-                t2PageCnt++;   // case=4
-                tutorial2();
-                // $('.btnShop').css("-webkit-animation","");
-                // HideCircleText();
-            }
-            set_propertyType_table();
-
-            // step 2.4 for tutorial, for rating
-
-            // if(tutorialMode==2){
-            //   $('.tipToleranceText').css("visibility","visible");
-            //   $('.tipToleranceText').css("opacity","1");
-            //   alert(123);
-            // }
+        //step 2.4 for tutorial, for rating
+        if (tutorialMode == 2) {
+            t2PageCnt++;   // case=4
+            tutorial2();
+            // $('.btnShop').css("-webkit-animation","");
+            // HideCircleText();
         }
-        ratingOpened = true;
+        set_propertyType_table();
+
+        // step 2.4 for tutorial, for rating
+
+        // if(tutorialMode==2){
+        //   $('.tipToleranceText').css("visibility","visible");
+        //   $('.tipToleranceText').css("opacity","1");
+        //   alert(123);
+        // }
+        
     },
     'click .MissionOpen': function (event) {
         $(".property_shop").css("display", "none");
@@ -3531,7 +3528,7 @@ save_rating_setting = async function () {
             var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
             var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
             var res = await callPromise("updatePropertyTypeRating", _id, _rate, s_Id);
-            var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
+            var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate * floatOffset, "update", s_Length, s_Id]);
 
         }
         var _ratingPercent = parseInt($('#ratingPercent').val(), 10);

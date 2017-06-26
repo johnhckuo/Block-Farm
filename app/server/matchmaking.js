@@ -5,7 +5,7 @@ import { matchesCollection } from '../imports/collections.js';
 var properties = [];
 var propertyType = [];
 var originDiffThreshold = 0;
-
+var floatOffset = 10000;
 
 wait = function(ms){
    var start = new Date().getTime();
@@ -52,11 +52,15 @@ initData = function(){
           console.log(i+"."+res.data.results);
             propertyType.push(res.data.results);
             if (propertyType.length == cropTypeList.length){
-              console.log(propertyType)
-
+              var s_Length = propertyType[0][3].length;
               for (var j = 0 ; j < propertyType.length ;j++){
-                  propertyType[j] = {id:propertyType[j][1], avg:propertyType[j][2], ratings:propertyType[j][3]};
+                  for (var w = 0 ; w < propertyType[j][3].length ; w++){
+                    propertyType[j][3][w] /= floatOffset;
+                  }
+                  propertyType[j][2] /= floatOffset;
+                  propertyType[j] = {id:propertyType[j][1], avg:propertyType[j][2]/s_Length, ratings:propertyType[j][3]};
               }
+              console.log(propertyType)
               console.log("Property Type Data Loading Complete");
               findOrigin();
             }
@@ -196,10 +200,6 @@ var globalRatingSort = function(list){
   var tempList = [];
   var tempSortList = [];
   console.log("start init")
-  //init
-  for (var i = 0 ; i < stakeholderLength ; i++){
-    tempList.push(0);
-  }
 
   for (var i = 0 ; i < list.length ; i++){
     var index;
@@ -211,7 +211,11 @@ var globalRatingSort = function(list){
     }
 
     for (var w = 0 ; w < stakeholderLength ; w++){
-      tempList[w] = propertyType[index].ratings[w];
+      if (w == properties[list[i].id].owner){
+        console.log("owner "+properties[list[i].id].owner +" himself, skip");
+        continue;
+      }
+      tempList.push(propertyType[index].ratings[w]);
     }
     console.log(list[i].type+"==="+tempList)
     tempSortList.push(findMaxRatingStakeholder(tempList, index));
