@@ -735,7 +735,7 @@ Template.gameContent.events({
                 updateUserExp(exp);
 
             } else {
-                sweetAlert("Oops...", "Patience is a virtue <3", "error");
+                sweetAlert("Oops...", "The crop is not ready for harvest yet! :(", "error");
                 return;
             }
 
@@ -1118,11 +1118,11 @@ Template.gamingArea.events({
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
         var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
         if ($(event.target).hasClass('matchedAcceptBtn')) {
-            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 1]);
+            var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 1]);
             console.log("confirm");
         }
         else {
-            // var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
+            var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
             console.log("reject");
         }
         var waitBtn = $('<input>').attr({
@@ -2297,7 +2297,6 @@ var createDBConnection = function () {
         Session.set("current_user_loaded", true);
     });
 
-    var matchmakingChecked = false;
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
@@ -2306,11 +2305,8 @@ var createDBConnection = function () {
                 var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
-                if (!matchmakingChecked) {
-                    currentMatches = matches.find().fetch();
-                    matchmakingLength = currentMatches.length;
-                    matchmakingChecked = true;
-                }
+                currentMatches = matches.find().fetch();
+                matchmakingLength = currentMatches.length;
                 owners = currentMatches[matchId].owners;
                 if (matchId >= matchmakingLength - 2) {
 
@@ -2370,8 +2366,9 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-            changed: async function (item, fields) {
-                currentMatches = await dbPromise('getMatch');
+            changed: function (item, fields) {
+                wait(1000);
+                currentMatches = dbPromise('getMatch');
                 if (currentMatches.length < 2) {
                     offset = currentMatches.length
                 } else {
@@ -2395,8 +2392,6 @@ var createDBConnection = function () {
                         });
                     }
                 }
-
-
             }
         });
     });
@@ -2485,7 +2480,7 @@ var showConfirmation = async function (s_Id, m_Id) {
     var result = data.result.results[6];
     console.log(data);
     var index;
-    var length = owners.length - 1;
+    var length = owners.length;
     for (var j = 0; j < length; j++) {
         if (s_Id == owners[j]) {
             index = j;
