@@ -8,6 +8,7 @@ import { matches } from '../imports/collections.js';
 import { callPromise } from '../imports/promise.js';
 import './string.js';
 import { dbPromise } from '../imports/promise.js';
+import { questionnaires } from '../imports/collections.js';
 
 
 var landSize = 3;
@@ -107,51 +108,8 @@ var ratingOpened = false;
 var onchangedIndex = [];
 var systemInfoShowed = false;
 
-var questions = [
-    "Q0: I think the gaming mechanism is meaningful.",
-    "Q1: It is not difficult for me to make new friends.",
-    "Q2: I can make friends through my personal abilities.",
-    "Q3: If something looks too complicated, I will still do my best to try it.",
-    "Q4: When try to learn something new, I will not give up easily.",
-    "Q5: I do not avoid learning new things when they look too difficult for me.",
-    "Q6: I am confident about my ability to play this game.",
-    "Q7: I can determine how to play this game.",
-    "Q8: You think our match-making mechanism meets your expectations and is easy to use.",
-    "Q9: Our match-making mechanism can help you exchange crops you really want.",
-    "Q10: I do not need to spend lots of time using match-making.",
-    "Q11: I do not need to put a lot of efforts while match-making.",
-    "Q12: I do not need to wait for a long time to get what I want.",
-    "Q13: There is no difficulty for me to use match-making.",
-    "Q14: I often could get crops I really want after match-making.",
-    "Q15: Settings before match-making is simple and friendly to me.",
-    "Q16: I am satisfied with the way doing match-making.",
-    "Q18: I think the mechanism of match-making is great enough.",
-    "Q19: My ranking of crops will make an impact on other players' transaction results.",
-    "Q20: Results of transactions will be affected by my ranking of crops.",
-    "Q21: I can control what happens in my game result.",
-    "Q22: The gaming mechanism of Blockfarm is original ad novel.",
-    "Q23: The gaming mechanism of Blockfarm is uncommon and deserve to be mentioned to others.",
-    "Q24: The gaming mechanism of Blockfarm is unique and irreplaceable.",
-    "Q25: Combination of blockchain and farming game is an innovating and expanding idea based on two differentiating domain.",
-    "Q26: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
-    "Q27: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.",
-    "28:( interactions refers to thieving and guarding, crops transaction, etc. )",
-    "Q28: You are satisfied with our system’s quality and will keep playing this game.",
-    "Q29: This game is entertaining to you and you are willing to share this experience to others.",
-    "Q30: The guideline is clear for me to understand.",
-    "Q31: The gaming operation is convenient.",
-    "Q32: You are satisfied with our system stability.",
-    "Q33: There is s few disadvantages in Blockfarm, but they do not affect to game playing.",
-    "Q34: I play Blockfarm frequently.",
-    "Q35: I will continue playing Blockfarm frequently in future.",
-    "Q36: Many people I communicate with play this game.",
-    "Q37:Many people I communicate with regularly play this game.",
-    "Q38: People I communicate with will continue to play this game. ",
-    "Q39: Age:",
-    "Q40: Education:",
-    "Q41: Employment:",
-    "Q42: What do you think we can do to improve our match-making mechanism and Blockfarm?",
-];
+var currentPage, pagerCounter;
+
 
 ///////////////////////////
 //  prototype functions  //
@@ -525,8 +483,13 @@ Template.questionnaire.events({
         },
             function () {
                 $('.questionnaire_main').css('display', 'none');
-                swal("Closed!");
             });
+    },
+    'click .option-input': function (e) {
+        var _id = index_finder($(e.target).attr('id'), 'radioAnswer');
+        var parentId = _id.split("_");
+        $('#answer_cover' + parentId[0]).removeClass('mustAnswer');
+
     }
 });
 
@@ -2969,7 +2932,7 @@ var updateUserExp = function (exp) {
         $(".expText").text(percent + "%");
         _character.changed();
         if (currentUser.level == 5) {
-            $('.questionnaire_main').css('display', 'flex');
+            showQuestionnaire();
         }
     }
 }
@@ -3166,7 +3129,7 @@ get_user_property = function () {
     Meteor.call('getAvgTradableNumber', function (err, res) {
         for (var k = 0; k < res.length; k++) {
             $('#tradable_td' + k).find('p').remove();
-            $('#tradable_td' + k).prepend('<p>Avg : ' + res[k] + '</p>');
+            $('#tradable_td' + k).prepend('<p style="padding-bottom:2px;">Avg : ' + res[k] + '</p>');
         }
         //avg = res;
     });
@@ -3837,35 +3800,361 @@ var selectedSort = function (data) {
     }
     return data;
 }
-
+var questionCount = 0;
 var showQuestionnaire = function () {
-    for (var i = 0; i < 20; i++) {
-        $('.questionnaire_content').append($('<div></div>', {
-            id: 'question' + i,
-            class: 'question_q'
-        }));
-        $('#question' + i).html(questions[i]);
-        $('.questionnaire_content').append($('<div></div>', {
-            id: 'answer' + i,
-            class: 'question_a'
-        }));
-                    $('#answer' + i).append('<p>Strongly Disagree</p>');
-        for (var j = 1; j <= 5; j++) {
-            $('#answer' + i).append($('<input></input>', {
-                type: 'radio',
-                name: 'radioAnswer' + i,
-                value: j
+    currentPage = 1;
+    pagerCounter = 1;
+    var ageData = ['below 21', '21-30', '31-40', '41-50', '51-60', 'above 60'];
+    var educationData = ['High School or Equivalent', 'Vocational or Technical School', "Bachelor's Degree", "Master's Degree", "Doctoral Degree", "Professional degree (MD, JD, etc.)", "Others"];
+    var EmploymentData = [
+        "Student", "Information, Software and Technology", "Manufacturing and Electronics", "Arts, Entertainment, or Recreation", "Finance or Insurance",
+        "Government and Public Administration", "Health Care and Social Assistance", "Telecommunications", "Education", "Retired", "Others"
+    ];
+    var questions = [
+        "Q0: I think the gaming mechanism is meaningful.",
+        "h1 Simple Questions for User Ability",
+        "Q1: It is not difficult for me to make new friends.",
+        "Q2: I can make friends through my personal abilities.",
+        "Q3: If something looks too complicated, I will still do my best to try it.",
+        "Q4: When try to learn something new, I will not give up easily.",
+        "Q5: I do not avoid learning new things when they look too difficult for me.",
+        "Q6: I am confident about my ability to play this game.",
+        "Q7: I can determine how to play this game.",
+        "Next Page",
+        "h2 Second part is some questions about our bartering mechanism.",
+        "h1 Questions For Crops' Match-Making Mechanism",
+        "h2 Match-making mechanism is the core value of bartering in Blockfarm, it is used for exchanging crops with other players. You just set up an importance of each crop and how many crops you are willing to exchange in the next transaction, then We will try to find the best solution for your crop bartering through match-making mechanism.",
+        "Q8: You think our match-making mechanism meets your expectations and is easy to use.",
+        "Q9: Our match-making mechanism can help you exchange crops you really want.",
+        "Q10: I do not need to spend lots of time using match-making.",
+        "Q11: I do not need to put a lot of efforts while match-making.",
+        "Q12: I do not need to wait for a long time to get what I want.",
+        "Q13: There is no difficulty for me to use match-making.",
+        "Q14: I often could get crops I really want after match-making.",
+        "Q15: Settings before match-making is simple and friendly to me.",
+        "Q16: I am satisfied with the way doing match-making.",
+        "Q18: I think the mechanism of match-making is great enough.",
+        "h1 Personal Influence in Bartering Transactions",
+        "h2 The match-making mechanism is based on player's importance of each crop and the preference of what you are earning for. The computing logic shows as follows:",
+        "Q19: My ranking of crops will make an impact on other players' transaction results.",
+        "Q20: Results of transactions will be affected by my ranking of crops.",
+        "Q21: I can control what happens in my game result.",
+        "Next Page",
+        "h2 Third part is about your experience and feelings of BlockFarm.",
+        "h1 Questions for Gaming Mechanism",
+        "Q22: The gaming mechanism of Blockfarm is original ad novel.",
+        "Q23: The gaming mechanism of Blockfarm is uncommon and deserve to be mentioned to others.",
+        "Q24: The gaming mechanism of Blockfarm is unique and irreplaceable.",
+        "Q25: Combination of blockchain and farming game is an innovating and expanding idea based on two differentiating domain.",
+        "h1 Questions for Your Feelings of BlockFarm",
+        "Q26: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
+        "Q27: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.( interactions refers to thieving and guarding, crops transaction, etc. )",
+        "Q28: You are satisfied with our system’s quality and will keep playing this game.",
+        "Q29: This game is entertaining to you and you are willing to share this experience to others.",
+        "Q30: The guideline is clear for me to understand.",
+        "Q31: The gaming operation is convenient.",
+        "Q32: You are satisfied with our system stability.",
+        "Q33: There is s few disadvantages in Blockfarm, but they do not affect to game playing.",
+        "Q34: I play Blockfarm frequently.",
+        "h1 Would you like to keep playing BlockFarm?",
+        "Q35: I will continue playing Blockfarm frequently in future.",
+        "Q36: Many people I communicate with play this game.",
+        "Q37:Many people I communicate with regularly play this game.",
+        "Q38: People I communicate with will continue to play this game. ",
+        "h1 Personal Information ( only for academic research.)",
+        "TQ39: Age:",
+        "TQ40: Education:",
+        "TQ41: Employment:",
+        "h1 We are deeply appreciate to your feedback.",
+        "TQ42: What do you think we can do to improve our match-making mechanism and Blockfarm?",
+    ];
+    $('.questionnaire_main').css('display', 'flex');
+    $('.questionnaire_main').append($('<div></div>', {
+        id: 'questionPage' + pagerCounter,
+        class: 'questionnaire_content questionPage' + pagerCounter
+    }));
+    for (var i = 0; i < questions.length; i++) {
+        if (questions[i].substring(0, 1) == 'Q') {
+            $('.questionPage' + pagerCounter).append($('<div></div>', {
+                id: 'question' + questionCount,
+                class: 'question_q'
+            }));
+            $('#question' + questionCount).html(questions[i]);
+            $('.questionPage' + pagerCounter).append($('<div></div>', {
+                id: 'answer_cover' + questionCount,
+                class: 'question_a_cover'
+            }));
+            $('#answer_cover' + questionCount).append($('<div></div>', {
+                id: 'answer' + questionCount,
+                class: 'question_a'
+            }));
+            $('#answer' + questionCount).append('<p>Strongly Disagree</p>');
+            for (var j = 1; j <= 5; j++) {
+                $('#answer' + questionCount).append($('<div></div>', {
+                    id: 'answerRadio' + questionCount + '_' + j,
+                    class: 'answerRadioDiv'
+                }));
+                $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+                    for: 'radioAnswer' + questionCount + '_' + j,
+                    text: j
+                }));
+                $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+                    id: 'radioAnswer' + questionCount + '_' + j,
+                    type: 'radio',
+                    class: 'option-input radio',
+                    style: 'outline: none;',
+                    name: 'radioAnswer' + questionCount,
+                    value: j
+                }));
+            }
+            $('#answer' + questionCount).append('<p>Strongly Agree</p>');
+            $('#answer_cover' + questionCount).append($('<hr>', {
+                class: 'question_hr'
+            }));
+            questionCount++;
+        }
+        else if (questions[i].substring(0, 1) == 'h') {
+            $('.questionPage' + pagerCounter).append($('<div></div>', {
+                id: 'questionTitle' + i,
+                class: 'questionTitle'
+            }));
+            var showText = questions[i].substring(2, questions[i].length);
+            $('#questionTitle' + i).html('<h' + questions[i].substring(1, 2) + '>' + showText + '<h' + questions[i].substring(0, 1) + '/>');
+        }
+        else if (questions[i] == 'Next Page') {
+            pagerCounter++;
+            $('.questionnaire_main').append($('<div></div>', {
+                id: 'questionPage' + pagerCounter,
+                class: 'questionnaire_content questionPage' + pagerCounter
             }));
         }
-        $('#answer' + i).append('<p>Strongly Agree</p>');
+        else if (questions[i].substring(0, 1) == 'T') {
+        }
     }
-    $('.questionnaire_content').append($('<input></input>', {
+    dumpCounter = 51;
+    //age
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'question' + questionCount,
+        class: 'question_q'
+    }));
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    $('#answer_cover' + questionCount).append($('<div></div>', {
+        id: 'answer' + questionCount,
+        class: 'question_a'
+    }));
+    for (var j = 0; j < ageData.length; j++) {
+        $('#answer' + questionCount).append($('<div></div>', {
+            id: 'answerRadio' + questionCount + '_' + j,
+            class: 'answerRadioDiv'
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+            for: 'radioAnswer' + questionCount + '_' + j,
+            text: ageData[j]
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+            id: 'radioAnswer' + questionCount + '_' + j,
+            type: 'radio',
+            class: 'option-input radio',
+            style: 'outline: none;',
+            name: 'radioAnswer' + questionCount,
+            value: j
+        }));
+    }
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    questionCount++;
+    dumpCounter++;
+    //age
+    //education
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'question' + questionCount,
+        class: 'question_q'
+    }));
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    $('#answer_cover' + questionCount).append($('<div></div>', {
+        id: 'answer' + questionCount,
+        class: 'question_a'
+    }));
+    for (var j = 0; j < educationData.length; j++) {
+        $('#answer' + questionCount).append($('<div></div>', {
+            id: 'answerRadio' + questionCount + '_' + j,
+            class: 'answerRadioDiv'
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+            for: 'radioAnswer' + questionCount + '_' + j,
+            text: educationData[j]
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+            id: 'radioAnswer' + questionCount + '_' + j,
+            type: 'radio',
+            class: 'option-input radio',
+            style: 'outline: none;',
+            name: 'radioAnswer' + questionCount,
+            value: j
+        }));
+    }
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    questionCount++;
+    dumpCounter++;
+    //education
+    //employment
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'question' + questionCount,
+        class: 'question_q'
+    }));
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    EmploymentDivCounter = 0;
+    for (var j = 0; j < EmploymentData.length; j++) {
+        if ((j % 6) == 0) {
+            EmploymentDivCounter++;
+            $('#answer_cover' + questionCount).append($('<div></div>', {
+                id: 'answer' + questionCount + '_' + EmploymentDivCounter,
+                class: 'question_a'
+            }));
+        }
+        $('#answer' + questionCount + '_' + EmploymentDivCounter).append($('<div></div>', {
+            id: 'answerRadio' + questionCount + '_' + j,
+            class: 'answerRadioDiv'
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+            for: 'radioAnswer' + questionCount + '_' + j,
+            text: EmploymentData[j]
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+            id: 'radioAnswer' + questionCount + '_' + j,
+            type: 'radio',
+            class: 'option-input radio',
+            name: 'radioAnswer' + questionCount,
+            value: j
+        }));
+    }
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    questionCount++;
+    dumpCounter++;
+    //employment
+    //feedback
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'questionTitle' + i,
+        class: 'questionTitle'
+    }));
+    var showText = questions[dumpCounter].substring(2, questions[dumpCounter].length);
+    $('#questionTitle' + i).html('<h' + questions[dumpCounter].substring(1, 2) + '>' + showText + '<h' + questions[dumpCounter].substring(0, 1) + '/>');
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    $('#answer_cover' + questionCount).append($('<textarea></textarea>', {
+        id: 'answer' + questionCount,
+        type: 'text',
+        class: 'question_textarea',
+        rows: 5,
+        cols: 50,
+        maxlength: 255
+    }));
+    //feedback
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + (questionCount + 1),
+        class: 'question_a_cover questionEnd'
+    }));
+    $('#answer_cover' + (questionCount + 1)).append($('<input></input>', {
         type: 'button',
-        value: 'sss',
-        style: 'width:30px; height:40px'
+        value: 'submit',
+        style: 'color:black;',
+        class: 'hvr-rectangle-out questionBtn'
     })
         .on('click', function () {
-            alert($('input[name=radioAnswer' + 0 + ']:checked').val());
+            submitQuestionnaire();
         })
     );
+
+    $('.questionPage' + currentPage).css('display', 'flex');
+    $('.questionnaire_main').append($('<div></div>', {
+        id: 'questionControl',
+        class: 'questionControl'
+    }));
+    $('.questionControl').append($('<input></input>', {
+        id: 'prevPage',
+        type: 'button',
+        class: 'questionBtn questionBtnPrev',
+        disabled: true
+    })
+        .on('click', function () {
+            pageFlip(-1);
+        })
+    );
+    $('.questionControl').append($('<input></input>', {
+        id: 'nextPage',
+        type: 'button',
+        class: 'questionBtn questionBtnNext'
+    })
+        .on('click', function () {
+            pageFlip(1);
+        })
+    );
+}
+
+var submitQuestionnaire = function () {
+    var answerChecked = true;
+    var data = [];
+    for (var i = 0; i < (questionCount - 1); i++) {
+        var currentRadioValue = parseInt($('input[name=radioAnswer' + i + ']:checked').val());
+        if (!Number.isInteger(currentRadioValue)) {
+            answerChecked = false;
+            $('#answer_cover' + i).addClass('mustAnswer');
+        }
+        else {
+            $('#answer_cover' + i).removeClass('mustAnswer');
+        }
+        data.push(currentRadioValue);
+    }
+    data.push($('.question_textarea').val());
+    console.log(data);
+    if (answerChecked) {
+        Meteor.call('submitQuestionnaire', s_Id, data);
+        Meteor.call('updateAnswerStatus', s_Id);
+        $('.questionnaire_main').css('display', 'none');
+        sweetAlert('Thanks!', 'Success');
+    }
+    else {
+        sweetAlert('Oops', 'All the questions must be selected!', 'error');
+    }
+}
+
+var pageFlip = function (goto) {
+    if (currentPage == 1) {
+        $('#prevPage').attr('disabled', false);
+    }
+    else if (currentPage == pagerCounter) {
+        $('#nextPage').attr('disabled', false);
+    }
+    $('.questionPage' + currentPage).hide();
+    currentPage = currentPage + goto;
+    $('.questionPage' + currentPage).fadeIn().css('display', 'flex');
+
+    if (currentPage == 1) {
+        $('#prevPage').attr('disabled', true);
+    }
+    else if (currentPage == pagerCounter) {
+        $('#nextPage').attr('disabled', true);
+    }
 }
