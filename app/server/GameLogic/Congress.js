@@ -79,7 +79,7 @@ if (Meteor.isServer) {
             var user = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id });
             var email = user.emails[0].address;
             var answers = {};
-            data['email'] = email;
+            answers['email'] = email;
             for(var i =0; i < data.length; i++){
                 answers['Q' + i] = data[i];
             }

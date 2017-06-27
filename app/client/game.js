@@ -2339,7 +2339,7 @@ var createDBConnection = function () {
                                     console.log("contract result missing... re-upload to blockchain...");
                                     //rewirte into contract
                                     var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null"]);
-                                    for (var w = 0 ; w < fields.owners.length; w++){
+                                    for (var w = 0; w < fields.owners.length; w++) {
                                         var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
                                     }
                                     var res3 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [fields.id, fields.owners.length]);
@@ -2922,14 +2922,18 @@ var updateUserExp = function (exp) {
                 lvlCap = levelCap(currentUser.level);
                 if (currentUser.level % 5 == 0) {
                     Meteor.call('moveUserLandPosition', s_Id, currentUser.landSize, async function () {
-                        await rerenderCropLand(s_Id);
+                        if (gameMode == 'Farmer') {
+                            await rerenderCropLand(s_Id);
+                        }
                         $(".unlockCropId").html("<h3>Unlock Crop: " + cropTypeList[cropTypeList.length - 1].name + "</h3>");
                         Session.set("unlockCrop", cropTypeList.length - 1);
                     });
                     //GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
                 } else {
                     $(".unlockCropId").html('');
-                    rerenderCropLand(s_Id);
+                    if (gameMode == 'Farmer') {
+                        rerenderCropLand(s_Id);
+                    }
                 }
                 lvlCap = levelCap(currentUser.level);
             });
@@ -2940,7 +2944,7 @@ var updateUserExp = function (exp) {
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
         _character.changed();
-        if ((currentUser.level == 5)&&(!Meteor.user().profile.game.stakeholder.answered)) {
+        if ((currentUser.level == 5) && (!Meteor.user().profile.game.stakeholder.answered)) {
             showQuestionnaire();
         }
     }
@@ -3626,10 +3630,7 @@ mission_rending = function () {
             })
                 .on('click', function () {
                     var _id = index_finder($(this).prev('input').attr('id'), 'mission_id_');
-                    var mission_qualify = mission_qualify_check(_id);
-                    if (mission_qualify) {
-                        mission_submit(_id);
-                    }
+                    mission_submit(_id);
                 })
             );
         }
@@ -3650,8 +3651,8 @@ mission_rending = function () {
     }
 }
 
-mission_submit = async function (_id) {
-    updateUserExp(parseInt($('#mission_exp_' + _id).val()));
+mission_submit = function (_id) {
+
     var target_mission;
     for (i = 0; i < mission_list.length; i++) {
         if (mission_list[i].id == _id) {
@@ -3663,6 +3664,13 @@ mission_submit = async function (_id) {
         sweetAlert('Oops', 'System error! Please try again', 'error');
         return;
     }
+
+    if (!mission_qualify_check(target_mission.id)) {
+        sweetAlert('Oops', 'Please check your stock', 'error');
+        return;
+    }
+
+    updateUserExp(parseInt($('#mission_exp_' + _id).val()));
 
     for (k = 0; k < target_mission.missionItem.length; k++) {
         for (i = 0; i < user_property.length; i++) {
@@ -3683,6 +3691,7 @@ mission_submit = async function (_id) {
 }
 
 mission_qualify_check = function (_id) {
+    get_user_property();
     var target_mission;
     for (i = 0; i < mission_list.length; i++) {
         if (mission_list[i].id == _id) {
@@ -3816,12 +3825,12 @@ var selectedSort = function (data) {
 }
 var questionCount = 0;
 
-var showQuestionnaire = function(){
-    if($('.questionnaire_content').length == 0){
-createQuestionnaire();
+var showQuestionnaire = function () {
+    if ($('.questionnaire_content').length == 0) {
+        createQuestionnaire();
     }
-    else{
-        $('.questionnaire_main').css('display','flex');
+    else {
+        $('.questionnaire_main').css('display', 'flex');
     }
 }
 
