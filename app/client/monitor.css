@@ -24,14 +24,14 @@
 }
 
 .menu{
-    width:50vw;
+    width:100vw;
     height:5vh;
-    position: absolute;
+    position: relative;
     top:5vh;    
-    right:2vw;
-    margin:auto;
     display: flex;
     flex-direction: row;
+    align-content: center;
+    justify-content: center;
 }
 
 .menu_btn{

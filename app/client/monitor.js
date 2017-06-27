@@ -27,5 +27,17 @@ Template.monitor.events({
     'click #Answers': async function(){
         var data = await dbPromise('getAnsewers');
         $('.contentBoard').html(JSON.stringify(data));
+    },
+    'click .matchmaking': function(event){
+      Meteor.call("matchmaking");
+    },
+    'click .startTick':function(event){
+      Meteor.call("startTick");
+    },
+    'click .stopTick':function(event){
+      Meteor.call("stopTick");
+    },
+    'click .pauseTick':function(event){
+      Meteor.call("pauseTick");
     }
 });

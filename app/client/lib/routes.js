@@ -35,7 +35,19 @@ Router.route('/game', function () {
 });
 
 Router.route('/monitor', function () {
-  this.render('monitor');
+    if (Meteor.user().profile.game.stakeholder.id == 0){
+        this.render('monitor');
+    }else{
+        swal({
+            title: "Error",
+            text: "You are not authorized!",
+            type: "Error",
+            showCancelButton: false
+        },
+            function () {
+                Router.go('/');
+        });
+    }
 });
 
 
