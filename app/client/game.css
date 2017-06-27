@@ -1808,9 +1808,9 @@ td img{
 .matches{
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin-top:10px;
+  justify-content: space-around;
+  /* align-items: center; */
+  margin-top: 20px;
 
 }
 
@@ -1895,6 +1895,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   z-index:100000;
   padding:20px;
   overflow: hidden;
+  padding-left: 50px;
 }
 
 .systemInfo h2{
@@ -1918,6 +1919,8 @@ input[type="range"]:active::-webkit-slider-thumb{
   cursor: pointer;
   background: rgba(255, 255, 255, 0);
   transform: translateX(-15px);
+  position: absolute;
+  left:18px;
 }
 
 .systemInfoHeaderbtn img{

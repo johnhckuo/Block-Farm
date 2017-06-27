@@ -2566,7 +2566,7 @@ var showConfirmation = async function (s_Id, m_Id) {
         var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
         var confirmed = res.result.results[0][s_Index];
         if (confirmed != 0) {
-            $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
+            $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm").addClass("matchesBtnWait");
             $(".matchBtn" + m_Id).prop("disabled", true);
         }
     }

@@ -33,7 +33,7 @@ if (Meteor.isServer) {
                 wait(200);
                 try {
                     var res = Promise.await(callContract_api("Matchmaking", "getMatchMaking", [i]));
-                    match.push(res);
+                    match.push("<div>" + res + "</div><p>");
                 }
                 catch (e) {
                     console.log(i + " : " + e);

@@ -265,21 +265,6 @@ if (Meteor.isClient) {
     'click #forgot-back': function (event) {
       $('.flipper').toggleClass('flipperClicked');
     },
-    'click .matchmaking': function(event){
-      Meteor.call("matchmaking");
-    },
-    'click .confirmation':function(event){
-      Meteor.call("confirmation");
-    },
-    'click .startTick':function(event){
-      Meteor.call("startTick");
-    },
-    'click .stopTick':function(event){
-      Meteor.call("stopTick");
-    },
-    'click .pauseTick':function(event){
-      Meteor.call("pauseTick");
-    }
   });
 }
 
