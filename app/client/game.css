@@ -1809,7 +1809,7 @@ td img{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  /* align-items: center; */
+  align-items: center; 
   margin-top: 20px;
 
 }
@@ -1820,6 +1820,10 @@ td img{
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.matchesBtn{
+  height:50px;
 }
 
 .matchesBtnWait{

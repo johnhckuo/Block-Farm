@@ -233,7 +233,7 @@ if (Meteor.isClient) {
         return;
       }
       var res = await callPromise('sendVerificationLink');
-
+      loading(0);
       if (res.type == "success") {
         sweetAlert("Register Complete :)", "We've sent a verification email to " + email, "success");
         Session.set("loggedIn", true);
@@ -241,7 +241,6 @@ if (Meteor.isClient) {
       } else {
         sweetAlert("Oops...", res.result, "error");
       }
-      loading(0);
       //register();
 
     },

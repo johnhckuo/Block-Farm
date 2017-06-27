@@ -22,7 +22,7 @@ Template.monitor.events({
     },
     'click #BlockMatch': async function () {
         var data = await dbPromise('getBlockchain');
-        $('.contentBoard').html(JSON.stringify(data));
+        $('.contentBoard').html(data);
     },
     'click #Answers': async function(){
         var data = await dbPromise('getAnsewers');

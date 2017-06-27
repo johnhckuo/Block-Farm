@@ -386,20 +386,6 @@ Template.statusList.helpers({
 //////////////
 
 Template.gameIndex.events({
-    'click .forget-password': function () {
-        $(".resetPasswordContainer").fadeIn(1000);
-        loading(0);
-    },
-    'click .resetPassword': async function () {
-        var email = $("[name=resetPassword]").val();
-        try {
-            var res = await Accounts.forgotPassword({ email: email });
-        } catch (e) {
-            sweetAlert("Oops...", e, reason, "error");
-            return;
-        }
-        sweetAlert("Please check your email!", "We've just sent an e-mail to reset your password!", "success");
-    },
     'click .resend-verification-link': async function (event) {
 
         var res = await callPromise('sendVerificationLink');
@@ -3616,7 +3602,7 @@ mission_rending = function () {
             td.append($('<input></input>', {
                 type: 'hidden',
                 id: 'mission_exp_' + mission_list[i].id,
-                value: mission_list[i].exp
+                value: (parseInt(mission_list[i].exp) * 1.3)
             }));
             td.append($('<input></input>', {
                 type: 'hidden',
@@ -3965,7 +3951,7 @@ var createQuestionnaire = function () {
         else if (questions[i].substring(0, 1) == 'T') {
         }
     }
-    dumpCounter = 54;
+    dumpCounter = 53;
     //age
     $('.questionPage' + pagerCounter).append($('<div></div>', {
         id: 'question' + questionCount,
