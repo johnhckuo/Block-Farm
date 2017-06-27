@@ -330,7 +330,7 @@ cropTypeList = [
 landTypeList = [
   {
       id:0,
-      name: "Dirt",
+      name: "Land",
       img: "land",
       count:0,
   }
@@ -1646,7 +1646,7 @@ missionItem = [
     },
     {
         missionId: 43,
-        propertyId :9,
+        propertyId :4,
         quantity: 8
     },
     {
@@ -1656,7 +1656,7 @@ missionItem = [
     },
     {
         missionId: 44,
-        propertyId :10,
+        propertyId :5,
         quantity: 8
     },
     {
@@ -1666,7 +1666,7 @@ missionItem = [
     },
     {
         missionId: 45,
-        propertyId :11,
+        propertyId :3,
         quantity: 8
     },
    // Mission15-
@@ -1826,7 +1826,7 @@ missionItem = [
     },
     {
         missionId: 60,
-        propertyId :19,
+        propertyId :9,
         quantity: 24
     },
     {

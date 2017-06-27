@@ -505,7 +505,7 @@
   height: 78px;
   z-index: 99;
   bottom:10px;
-  right: 10px;
+  right: 0px;
   flex-direction: row-reverse;
   align-items: center;
   justify-content: center;
@@ -530,6 +530,10 @@
 .logo img{
   width: 100%;
   height: 100%;
+}
+.logo img:hover{
+  width: 105%;
+  height: 105%;
 }
 .gameGuideLink{
   display: flex;
@@ -640,6 +644,7 @@
 .mission_header{
   display: flex;
   height: 5vh;
+  font-size: 20px;
   justify-content: center;
   align-items: center;
   background-color: rgb(130, 203, 209);
@@ -651,16 +656,25 @@
   overflow: auto;
   height: 72vh;
   /*width: 45vw;*/
-  padding-top: 4vh;
+  padding-top: 2vh;
 }
 #mission_table{
-  width: 40vw;
-  height: 70vh;
+  width: 43vw;
+  /*height: 70vh;*/
   text-align: center;
 }
+#mission_table tr{
+  height: 8vh;
+}
 #mission_table th td{
-  height: 10vh;
+  /*height: 12vh;*/
   vertical-align: middle;
+}
+#mission_table td{
+    font-size: 1.1rem;
+}
+#mission_table th{
+  font-size: 1.2rem;
 }
 
 #mission_table button:hover{
@@ -687,6 +701,7 @@
 .rank_header{
   display: flex;
   height: 5vh;
+  font-size: 20px;
   justify-content: center;
   align-items: center;
   background-color: rgb(130, 203, 209);
@@ -702,7 +717,7 @@
 }
 .rank_table{
   width: 40vw;
-  height: 70vh;
+  /*height: 70vh;*/
   text-align: center;
   margin-top:1vh;
   margin-left:2vw;
@@ -712,6 +727,7 @@
 .rank_table tr{
   border-bottom: 1px solid #000;
   vertical-align: middle;
+  height: 10vh;
 }
 
 .rank_table th td{
@@ -720,10 +736,12 @@
   padding-right:1vw;
 
 }
-
+.rank_table th{
+  font-size: 1.2rem;
+}
 .onBoard{
-    background-color:#ee686c;
-    color:#ffffff;
+    background-color:#fffb9c;
+    color:#000000;
 }
 
 
@@ -820,6 +838,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: row;
+  font-size: 1.2rem;
 }
 .shop_content hr{
   margin-top: 5px;
@@ -846,13 +865,15 @@
   color: rgb(0, 0, 0);
   padding: 25px;
   border-radius: 15px;
-  line-height: 25px;
+  /*line-height: 28px;*/
+  line-height: 2.2rem;
   text-align:left;
   position: absolute;
   z-index:200;
   opacity: 0;
   transition: opacity 0.5s;
-  font-size: 15px;
+  /*font-size: 22px;*/
+  font-size: 1.3rem;
 }
 .tipContainer:hover .tipText{
   visibility: visible;
@@ -945,6 +966,7 @@
 #property_table td{
   vertical-align: middle;
   height: 12vh;
+  font-size: 1.1rem;
 }
 .property_shop_table img{
   width: 40px;
@@ -982,7 +1004,7 @@
   display: flex;
   justify-content: center;
   width: 75%;
-  font-size: 16px;
+  font-size: 1.1rem;   /*16px;*/
   text-align: center;
   border-spacing: 100px;
   height: inherit;
@@ -997,6 +1019,7 @@
 #property_trade_table th{
   width: 20vw;
   vertical-align:middle;
+  font-size: 1.2rem;
 }
 .btn_tradeable{
   display: flex;
@@ -1032,7 +1055,8 @@
   left: 8vw;
   top:2vh;
   line-height: 15px;
-  font-size: 3px;
+  /*font-size: 3px;*/
+  font-size: 1rem;
   padding: 10px;
 }
 .expProgressBar{
@@ -1087,8 +1111,9 @@
   visibility:collapse;
   position: absolute;
   /*left:5vw;*/
-  margin-bottom: 10px;
-  bottom: 3vh;
+  /*margin-bottom: 10px;*/
+  /*bottom: 3vh;*/
+  top:0.5vh;
 }
 
 .SyndicateExp h3{
@@ -1131,7 +1156,7 @@
   left: 8vw;
   top:2vh;
   line-height: 15px;
-  font-size: 3px;
+  font-size: 1rem;
   padding: 10px;
 }
 .staProgress{
@@ -1291,9 +1316,10 @@ td img{
   left: 5vw;
   top:12vh;
   line-height: 15px;
-  font-size: 3px;
+  font-size: 1rem;
   padding: 5px;
   width: 120px;
+  text-align: center;
 }
 .imgContainer:hover .tipTextSwitch{
   visibility: visible;
@@ -1427,7 +1453,7 @@ td img{
   left: 8vw;
   top:2vh;
   line-height: 15px;
-  font-size: 3px;
+  font-size: 1rem;
   padding: 10px;
 }
 .functionSwitch{
@@ -1457,8 +1483,8 @@ td img{
   right: -2vw;
 }
 .musicSwitch{
-  width:45px;
-  height:45px;
+  width:38px;
+  height:38px;
   border-radius: 100%;
   background: #E5E5E5;
   cursor: pointer;
@@ -1470,9 +1496,9 @@ td img{
 }
 
 .musicSwitch img{
-  width:80%;
-  height: 80%;
-  margin-top: 3px;
+  width:70%;
+  height: 70%;
+  margin-top: 6px;
 }
 .nextSwitch input{
   background:none;
@@ -1913,7 +1939,7 @@ input[type="range"]:active::-webkit-slider-thumb{
 }
 
 .systemInfoHeaderSpan{
-  font-size: 30px;  
+  font-size: 30px;
 }
 
 .systemInfoHeaderbtn{
@@ -2239,6 +2265,18 @@ border-top-right-radius: 15px;
   font-size: 22px;
   transition: .1s;
 }
+.nextPageBtnMM{
+  background-color: rgb(164, 250, 243);
+  margin: 12px 15px 0px 15px;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.nextPageBtnMM:hover{
+  background-color: rgb(1, 171, 157);
+  transition: .2s;
+  color: rgb(255, 255, 255);
+}
 .pageBtn{
   display: flex;
   flex-direction: row;
@@ -2252,7 +2290,9 @@ border-top-right-radius: 15px;
   cursor: pointer;
 }
 .nextPageBtn:hover{
-  background-color: rgb(131, 228, 220);
+  background-color: rgb(1, 171, 157);
+  transition: .2s;
+  color: rgb(255, 255, 255);
 }
  @-webkit-keyframes circleCorlorAnimation{
    0%  {border-color: red;}
@@ -2481,7 +2521,7 @@ border-top-right-radius: 15px;
 
 .mustAnswer{
   background: rgba(135,12,12,0.6);
-  
+
   border-radius: 20px;
 }
 
@@ -2490,6 +2530,81 @@ border-top-right-radius: 15px;
   height:100%;
 }
 
+.infoList{
+  display: none;
+    position: absolute;
+    width: 650px;
+    height: 45px;
+    z-index: 99;
+    bottom: 18px;
+    right: 180px;
+}
+.infoListContent{
+  height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items:  center;
+    justify-content: space-around;
+    background-color: rgba(255, 255, 255, 0.45);
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+.navRightLogo{
+  width: 30px;
+  height: 100%;
+cursor: pointer;
+transition: all .1s;
+transform: rotate(0deg);
+}
+
+.navRightLogo:hover{
+    width: 35px;
+}
+.t1{
+  cursor: pointer;
+}
+.t1:hover{
+  font-size: 21px;
+}
+.t2{
+  cursor: pointer;
+}
+.t2:hover{
+  font-size: 21px;
+}
+.backCover{
+  cursor: pointer;
+}
+.backCover a{
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+}
+.backCover:hover{
+  font-size: 21px;
+}
+.logoForClose{
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.tiplogoInfo{
+  bottom: 80px;
+  right: 120px;
+  width: 265px;
+  line-height: 15px;
+  font-size:18px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.question{
+  cursor: pointer;
+}
+.question:hover{
+  font-size: 21px;
+}
 .questionTitle{
   width: 90%;
   padding-top: 2vh;

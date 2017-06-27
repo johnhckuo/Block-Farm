@@ -1,30 +1,42 @@
 /* CSS declarations go here */
 
-@font-face {
+/*@font-face {
   font-family: Copperplate Gothic Bold;
   src: local("Copperplate Gothic Bold"),
     url(/fonts/CopperplateGothicBoldRegular.ttf);
   font-weight: bold;
-}
+}*/
 
-@font-face {
+/*@font-face {
   font-family: Copperplate Gothic Light;
   src: local("Copperplate Gothic Light"),
     url(/fonts/CopperplateGothicLightRegular.ttf);
   font-weight: bold;
+}*/
+@font-face{
+  font-family: ZapfHumanist601Bold;
+  src: local("Zapf Humanist 601 Bold"),
+    url(/fonts/zapf-humanist-601-bold.ttf);
 }
+@font-face{
+  font-family: ZapfHumanist601;
+  src: local("Zapf Humanist 601"),
+    url(/fonts/Zapf-Humanist-601-BT.ttf);
 
+}
 body{
 
   background-size: 100% 100%;
   background-attachment: fixed;
   overflow-x: hidden;
-  font-family: Copperplate Gothic Light;
-
+  /*font-family: Copperplate Gothic Light;*/
+  font-family: ZapfHumanist601;
 }
 
 body h1, h2, h3{
-  font-family: Copperplate Gothic Bold;
+  /*font-family: Copperplate Gothic Bold;*/
+  font-family: ZapfHumanist601Bold;
+  letter-spacing:2px;
 }
 
 #title.section{
@@ -766,7 +778,8 @@ li .login-content {
 .whyUs_back{
   justify-content: flex-start;
   padding: 30px;
-  font-size: 16px;
+  margin: 10px;
+  font-size: 1.3vw;
   line-height: 150%;
   /*text-align: justify;
   text-justify:inter-ideograph;*/
@@ -775,6 +788,7 @@ li .login-content {
 　　-moz-text-align-last: justify; */
   background: rgba(181, 177, 177, 0.4);
   border-radius: 30px;
+  overflow: auto;
 }
 
 .submitButtons{
