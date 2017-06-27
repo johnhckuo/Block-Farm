@@ -2335,7 +2335,7 @@ var createDBConnection = function () {
                             } else {
                                 matchCounter++;
                                 console.log("new matchmaking! waiting for txs being mined");
-                                if (matchCounter >= 3 && jQuery.inArray(s_Id, owners) == 0) {
+                                if (matchCounter > 3 && jQuery.inArray(s_Id, owners) == 0) {
                                     console.log("contract result missing... re-upload to blockchain...");
                                     //rewirte into contract
                                     var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null"]);
@@ -2488,6 +2488,14 @@ var showConfirmation = async function (s_Id, m_Id) {
         }
     }
 
+    var s_Index;
+    for (var i = 0 ; i < owners.length; i++){
+        if (s_Id == owners[i]){
+            s_Index = i;
+            break;
+        }
+    }
+
     for (var i = 0; i < index.length; i++) {
         console.log(owners);
         var previousIndex = (index[i] - 1 + length) % length;
@@ -2527,9 +2535,10 @@ var showConfirmation = async function (s_Id, m_Id) {
             }
         }
         else {
-            var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
+            var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
             console.log("confirmed" + res.result.results[0]);
-            var confirmed = res.result.results[0];
+
+            var confirmed = res.result.results[0][s_Index];
             if (confirmed != 0) {
                 checkBtn = $('<input>').attr({
                     type: 'button',
@@ -2554,8 +2563,8 @@ var showConfirmation = async function (s_Id, m_Id) {
         row.append(provide).append(receive).append(confirmBtn).append(checkBtn);
         $(".systemInfo").append(row);
 
-        var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
-        var confirmed = res.result.results[0];
+        var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
+        var confirmed = res.result.results[0][s_Index];
         if (confirmed != 0) {
             $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
             $(".matchBtn" + m_Id).prop("disabled", true);
