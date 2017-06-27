@@ -2335,20 +2335,20 @@ var createDBConnection = function () {
                             } else {
                                 matchCounter++;
                                 console.log("new matchmaking! waiting for txs being mined");
-                                if (matchCounter >= 8) {
-                                    // console.log("contract result missing... re-upload to blockchain...");
-                                    // //rewirte into contract
-                                    // var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
-                                    // for (var w = 0 ; w < fields.owners.length; w++){
-                                    //     var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-                                    // }
-                                    // console.log(res)
-                                    // console.log("contract re-upload complete");
+                                if (matchCounter >= 3 && jQuery.inArray(s_Id, owners) == 0) {
+                                    console.log("contract result missing... re-upload to blockchain...");
+                                    //rewirte into contract
+                                    var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null"]);
+                                    for (var w = 0 ; w < fields.owners.length; w++){
+                                        var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+                                    }
+                                    var res3 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [fields.id, fields.owners.length]);
+                                    console.log(res)
+                                    console.log("contract re-upload complete");
                                     matchCounter = 0;
                                 }
                                 console.log(res)
                                 console.log("contract re-upload complete");
-                                matchCounter = 0;
                             }
                         }, 20000)
 
