@@ -8,6 +8,7 @@ import { matches } from '../imports/collections.js';
 import { callPromise } from '../imports/promise.js';
 import './string.js';
 import { dbPromise } from '../imports/promise.js';
+import { questionnaires } from '../imports/collections.js';
 
 
 var landSize = 3;
@@ -87,7 +88,6 @@ var checkMissionInterval = null;
 var theifId = 0;
 var landInfo = [];
 var stealRate;
-
 var tutorialMode=0; //no tutorial
 var targetCircleDiv=null;
 var targetCircleTemp=null;
@@ -109,6 +109,9 @@ var lockThief=true; // for tutorial4
 var ratingOpened = false;
 var onchangedIndex = [];
 var systemInfoShowed = false;
+
+var currentPage, pagerCounter;
+
 
 ///////////////////////////
 //  prototype functions  //
@@ -134,7 +137,6 @@ gameIndexCreation = async function () {
     await getUserStockList(s_Id);
     await fetchGameInitConfig(s_Id);
 }
-
 getStakeholderId = function () {
     if (Meteor.user() == null) {
         sweetAlert("Oops...", "Please Register First", "error");
@@ -186,6 +188,23 @@ Template.gameContent.created = function () {
 
 
 Template.gameIndex.created = function () {
+
+    var isChromium = window.chrome,
+        winNav = window.navigator,
+        vendorName = winNav.vendor,
+        isOpera = winNav.userAgent.indexOf("OPR") > -1,
+        isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+        isIOSChrome = winNav.userAgent.match("CriOS");
+
+    if (isIOSChrome) {
+        // is Google Chrome on IOS
+    } else if (isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) {
+        // is Google Chrome
+    } else {
+        // not Google Chrome
+        sweetAlert("Oops...", "For your best using experience, please use Google Chrome browser", "error");
+    }
+
     if (Meteor.userId()) {
         Session.set("loggedIn", true);
     } else {
@@ -457,19 +476,27 @@ Template.advTutorial.events({
 
 Template.questionnaire.events({
     'click #btn_questionnaire_close': function () {
-        swal({
-            title: "Are you sure?",
-            text: "Please make sure you have done the questionnaire to obtain the lucky draw!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, I've done!",
-            closeOnConfirm: false
-        },
-            function () {
-                $('.questionnaire_main').css('display', 'none');
-                swal("Closed!");
-            });
+        if (!Meteor.user().profile.game.stakeholder.answered) {
+            swal({
+                title: "Are you sure?",
+                text: "Please make sure you have done the questionnaire to obtain the lucky draw!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, I've done!",
+                closeOnConfirm: false
+            },
+                function () {
+                    $('.questionnaire_main').css('display', 'none');
+                    sweetAlert("Closed", "", "success")
+                });
+        }
+    },
+    'click .option-input': function (e) {
+        var _id = index_finder($(e.target).attr('id'), 'radioAnswer');
+        var parentId = _id.split("_");
+        $('#answer_cover' + parentId[0]).removeClass('mustAnswer');
+
     }
 });
 
@@ -560,7 +587,6 @@ Template.gameContent.events({
               t1PageCnt++;
               tutorial1();
 
-
             }
 
             //userCropType[currentCropId].count++;
@@ -598,7 +624,6 @@ Template.gameContent.events({
               // step 1.2 for tutorial, point to the crop
               t1PageCnt++;
               tutorial1();
-
 
             }
 
@@ -726,7 +751,7 @@ Template.gameContent.events({
                 updateUserExp(exp);
 
             } else {
-                sweetAlert("Oops...", "Patience is a virtue <3", "error");
+                sweetAlert("Oops...", "The crop is not ready for harvest yet! :(", "error");
                 return;
             }
 
@@ -804,11 +829,9 @@ Template.gameContent.events({
             set_property_table();
 
             // step 1.4 for tutorial, point to the stock
-            if (tutorialMode==1){
-
+            if (tutorialMode == 1) {
               t1PageCnt++; //case=4
               tutorial1();
-
             }
         }
         else if (gameMode == "Thief") {
@@ -868,13 +891,14 @@ Template.gameContent.events({
                             }
                         }
                         Meteor.call('updatePropertyCount', s_Id, p_Id, stealCount, function () {
-                            Meteor.call('updateCropCount', s_Id, visitNode, id, cropCount);
+                            Meteor.call('updateCropCount', visitNode, id, cropCount);
                             $(event.target).parent().attr("cropcount", parseInt(cropCount));
                             $(event.target).parent().attr("stolenFlag", "t");
 
                             $("." + cropClass).html("<img src = '" + prefix + cropTypeList[typeIndex].img[4] + postfix + "' />");
                             //reload propertyTable
                             set_property_table();
+
                         });
                     }
                     else {
@@ -1108,15 +1132,44 @@ Template.gamingArea.events({
     'click .matchesBtn': async function (event) {
         var m_Id = $(event.target).attr("class").split("matchBtn")[1];
         var s_Id = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.id;
-        var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
-        $(event.target).prop("value", "Waiting for others to confirm");
-        $(event.target).prop("disabled", true);
+        if ($(event.target).hasClass('matchedAcceptBtn')) {
+            var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 1]);
+            console.log("confirm");
+        }
+        else {
+            var res = await callPromise("callContract", "Matchmaking", "updateConfirmation", [parseInt(m_Id), s_Id, 0]);
+            console.log("reject");
+        }
+        var waitBtn = $('<input>').attr({
+            type: 'button',
+            class: "btn btn-warning matchesBtn matchesBtnWait matchBtn" + m_Id,
+            value: 'Waiting for others to confirm',
+            disabled: true
+        });
+        var btnParent = $(event.target).parent();
+        btnParent.find('.matchesBtn').each(function () {
+            $(this).remove();
+        });
+
+        btnParent.append(waitBtn);
+        // $(event.target).prop("value", "Waiting for others to confirm");
+        // $(event.target).prop("disabled", true);
     },
-    'click .hideSystemInfo': function (event) {
+    // 'click .hideSystemInfo': function (event) {
+    //     if (systemInfoShowed) {
+    //         $(".systemInfo").css("transform", "translateX(550px)");
+    //     } else {
+    //         $(".systemInfo").css("transform", "translateX(0px)");
+    //     }
+    //     systemInfoShowed = !systemInfoShowed;
+    // },
+    'click .systemInfoHeaderbtn': function () {
         if (systemInfoShowed) {
-            $(".systemInfo").css("transform", "translateX(550px)");
+            $(".systemInfo").css("transform", "translateX(560px)");
+            $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/back.svg')
         } else {
             $(".systemInfo").css("transform", "translateX(0px)");
+            $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg')
         }
         systemInfoShowed = !systemInfoShowed;
     },
@@ -1215,7 +1268,7 @@ Template.gamingArea.events({
     },
     'click .question':function (event) {
 
-      //showQuestionnaire();  // not to comment
+      showQuestionnaire();  // not to comment
     },
     'click .gameGuideImg':function(event){
       // display original tutorial
@@ -1709,7 +1762,7 @@ function tutorial3(){
       HideCircleText();
       sweetAlert("Good luck ! ","Wish you could steal what you want.","success");
 
-      
+
 
       t3PageCnt=0;
       tutorialMode=0;
@@ -1919,15 +1972,16 @@ function setCircleTarget(targetDiv, _cN, _sP, _rW, _cS, _pBtn){
     resizeWidth=_rW;
     currentString=_cS;
     tPageBtn=_pBtn;
+
     //targetCircleTemp=targetCircleDiv;
 }
-function HideCircle(){
-  $('.guideCircleStatus').css("opacity","0");
-  $('.guideCircleStatus').css("z-index","-99");
+function HideCircle() {
+    $('.guideCircleStatus').css("opacity", "0");
+    $('.guideCircleStatus').css("z-index", "-99");
 }
-function HideCircleText(){
-  $('.guideCircleText').css("opacity","0");
-  $('.guideCircleText').css("z-index","-99");
+function HideCircleText() {
+    $('.guideCircleText').css("opacity", "0");
+    $('.guideCircleText').css("z-index", "-99");
 }
 
 function PanelControl(panelIndex) {
@@ -2080,16 +2134,16 @@ Template.characterList.events({
                 loading(0);
 
                 // step 3.2 for tutorial3  click to switch
-                if(tutorialMode==3){
-                  t3PageCnt++;  // case=2
-                  tutorial3();
+                if (tutorialMode == 3) {
+                    t3PageCnt++;  // case=2
+                    tutorial3();
                 }
             }
             else if (Session.get('userCharacter') == "Guard") {
                 var gaurdMatchID = Meteor.user().profile.game.syndicateData.guardMatchId;
                 var matchLength = await dbPromise('getMatchedLength');
                 var matchDiff = matchLength - gaurdMatchID;
-                if (matchDiff <= 2) {
+                if (matchDiff <= 4) {
                     var guardLand = Meteor.user().profile.game.syndicateData.guardFarmerId;
                     var progress = Meteor.user().profile.game.syndicateData.progress;
                     if (guardLand == -1) {
@@ -2145,6 +2199,7 @@ Template.characterList.events({
                             if ((user_property[i].propertyCount == 0) && (user_property[i].tradeable == 0)) {
                                 Meteor.call('updatePropertyCount_Setting', s_Id, (currentUser.SyndicateLevel + 29), 1, 0);
                                 Meteor.call('updateFarmerId', s_Id, -1);
+                                Meteor.call('updateSyndicateProgress', s_Id, 0);
                                 user_property[i].propertyCount++;
                             }
                             break;
@@ -2223,14 +2278,14 @@ Template.operationList.events({
         }
 
         // step 1.6.2 for tutorial, add new guidance in Mision
-        if(tutorialMode==1){
+        if (tutorialMode == 1) {
             t1PageCnt++;
             tutorial1();
 
         }
 
         // step 2.3 for tutorial, for click rating button
-        if(tutorialMode==2){
+        if (tutorialMode == 2) {
             t2PageCnt++;   // case=3
             tutorial2();
 
@@ -2240,7 +2295,6 @@ Template.operationList.events({
         $(".property_shop").css("display", "inline");
         $(".mission_template").css("display", "none");
         $(".rank_template").css("display", "none");
-
         //step 2.4 for tutorial, for rating
         if(tutorialMode==2){
           t2PageCnt++;   // case=4
@@ -2252,7 +2306,6 @@ Template.operationList.events({
 
         // }
         // ratingOpened = true;
-
     },
     'click .MissionOpen': function (event) {
         $(".property_shop").css("display", "none");
@@ -2263,11 +2316,9 @@ Template.operationList.events({
         if(tutorialMode==1){
           t1PageCnt++;  // case=8
           tutorial1();
-
         }
 
         set_mission_table();
-
 
     },
     'click .rankOpen': function () {
@@ -2333,68 +2384,68 @@ var createDBConnection = function () {
         Session.set("current_user_loaded", true);
     });
 
-    var matchmakingChecked = false;
     matchesSub = Meteor.subscribe("matchesChannel", function () {
         Session.set("matches_loaded", true);
         matches.find().observeChanges({
 
-            added: function(item, fields){
+            added: function (item, fields) {
                 var matchCounter = 0;
                 var owners = [];
                 var matchId = fields.id;
-                if (!matchmakingChecked){
-                    currentMatches = matches.find().fetch();
-                    owners = currentMatches[matchId].owners;
-                    matchmakingLength = currentMatches.length;
-                    matchmakingChecked = true;
-                }
-                if (matchId >= matchmakingLength-2){
+                currentMatches = matches.find().fetch();
+                matchmakingLength = currentMatches.length;
+                owners = currentMatches[matchId].owners;
+                if (matchId >= matchmakingLength - 2) {
 
                     var s_Id = Meteor.user().profile.game.stakeholder.id;
-                    if (jQuery.inArray(s_Id, owners) != -1){
-                            Session.set("id", Meteor.userId());
-                            var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
-                            var res;
-                            var minedDetector = setInterval(async function(){
-                                res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
-                                if (res.type == "success" && res.result != undefined){
-                                    console.log("Mining Listener Closed...");
-                                    clearInterval(minedDetector);
-                                    console.log(res);
-                                    var confirmed = res.result.results[0];
+                    if (jQuery.inArray(s_Id, owners) != -1) {
+                        Session.set("id", Meteor.userId());
+                        var data = Meteor.users.findOne({ _id: Session.get("id") }).profile.game.stakeholder.matchesId;
+                        var res;
+                        var minedDetector = setInterval(async function () {
+                            res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
+                            console.log(res);
+                            if (res.type == "success" && res.result != undefined) {
+                                console.log("Mining Listener Closed...");
+                                clearInterval(minedDetector);
+                                console.log(res);
+                                var confirmed = res.result.results[0];
 
-                                    //if (!confirmed){
-                                        if (jQuery.inArray(matchId, data) == -1){
-                                            var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
-                                        }
-                                        showConfirmation(s_Id, matchId);
-                                        systemInfoShowed = true;
-                                    //}
-                                }else{
-                                    matchCounter++;
-                                    console.log("new matchmaking! waiting for txs being mined");
-                                    if (matchCounter >= 8){
-                                        console.log("contract result missing... re-upload to blockchain...");
-                                        //rewirte into contract
-                                        var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
-                                        for (var w = 0 ; w < fields.owners.length; w++){
-                                            var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-                                        }
-                                        console.log(res)
-                                        console.log("contract re-upload complete");
-                                        matchCounter = 0;
-                                    }
+                                //if (!confirmed){
+                                if (jQuery.inArray(matchId, data) == -1) {
+                                    var res = Meteor.call("updateUserMatchId", Session.get("id"), matchId);
                                 }
-                            },8000)
+                                showConfirmation(s_Id, matchId);
+                                systemInfoShowed = true;
+                                //}
+                            } else {
+                                matchCounter++;
+                                console.log("new matchmaking! waiting for txs being mined");
+                                if (matchCounter > 3 && jQuery.inArray(s_Id, owners) == 0) {
+                                    console.log("contract result missing... re-upload to blockchain...");
+                                    //rewirte into contract
+                                    var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null"]);
+                                    for (var w = 0; w < fields.owners.length; w++) {
+                                        var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+                                    }
+                                    var res3 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [fields.id, fields.owners.length]);
+                                    console.log(res)
+                                    console.log("contract re-upload complete");
+                                    matchCounter = 0;
+                                }
+                                console.log(res)
+                                console.log("contract re-upload complete");
+                            }
+                        }, 20000)
 
-                            // var minedDetector = setInterval(function(){
-                            //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
-                            //         console.log(res);
-                            //         if (res.result.results[0]){
-                            //             clearInterval(minedDetector);
-                            //         }
-                            //     })
-                            // },3000)
+                        // var minedDetector = setInterval(function(){
+                        //     callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]).then(function(res){
+                        //         console.log(res);
+                        //         if (res.result.results[0]){
+                        //             clearInterval(minedDetector);
+                        //         }
+                        //     })
+                        // },3000)
 
                     }
                 }
@@ -2402,33 +2453,32 @@ var createDBConnection = function () {
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
             },
-            changed: function(item, fields){
-                currentMatches = matches.find().fetch();
-                if (currentMatches.length < 2){
+            changed: function (item, fields) {
+                wait(1000);
+                currentMatches = dbPromise('getMatch');
+                if (currentMatches.length < 2) {
                     offset = currentMatches.length
-                }else{
+                } else {
                     offset = 2;
                 }
-                for (var i = currentMatches.length-offset ; i < currentMatches.length ; i++){
-                    console.log("match "+currentMatches[i]);
-                    if (currentMatches[i].result == true){
-                        $(".matchBtn"+i).attr({
+                for (var i = currentMatches.length - offset; i < currentMatches.length; i++) {
+                    console.log("match " + currentMatches[i]);
+                    if (currentMatches[i].result == true) {
+                        $(".matchBtn" + i).attr({
                             type: 'button',
                             class: "btn btn-success matchesBtn matchBtn" + i,
                             value: 'Success',
-                            disabled:true
+                            disabled: true
                         });
-                    }else if (currentMatches[i].result == false){
-                        $(".matchBtn"+i).attr({
+                    } else if (currentMatches[i].result == false) {
+                        $(".matchBtn" + i).attr({
                             type: 'button',
                             class: "btn btn-danger matchesBtn matchBtn" + i,
                             value: 'Fail',
-                            disabled:true
+                            disabled: true
                         });
                     }
                 }
-
-
             }
         });
     });
@@ -2504,88 +2554,108 @@ var eventListener = function () {
 }
 
 var showConfirmation = async function (s_Id, m_Id) {
+    set_property_table();
     $(".systemInfo").css("transform", "translateX(0px)");
-
+    $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg');
     if ($(".matches").length >= 2) {
         $('.systemInfo div:nth-child(3)').remove();
     }
-    //matchmakingbug
     var data = await callPromise("callContract", "Matchmaking", "getMatchMaking", [m_Id]);
     var owners = data.result.results[1];
     var properties = data.result.results[2];
     var tradeables = data.result.results[3];
     var result = data.result.results[6];
     console.log(data);
-    var index;
+    var index = [];
     var length = owners.length - 1;
     for (var j = 0; j < length; j++) {
         if (s_Id == owners[j]) {
-            index = j;
-        }
-    }
-    console.log(owners);
-    var previousIndex = (index - 1 + length) % length;
-    var nextIndex = (index + 1) % length;
-
-    var previousName = await callPromise("getUserName", owners[previousIndex]);
-    var nextName = await callPromise("getUserName", owners[nextIndex]);
-
-    var receivePropertyName = await callPromise("getPropertyTypeName", properties[previousIndex]);
-    var providePropertyName = await callPromise("getPropertyTypeName", properties[index]);
-
-    var receiveProperty = await callPromise("getPropertyTypeImg", properties[previousIndex]);
-    var provideProperty = await callPromise("getPropertyTypeImg", properties[index]);
-
-    var row = $("<div>").attr("class", "matches match" + m_Id);
-    var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You receive</div><div> " + receivePropertyName + " X " + tradeables[previousIndex] + " </div><div>from " + previousName + "</div>");
-    var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You provide</div><div> " + providePropertyName + " X " + tradeables[index] + " </div><div>to " + nextName + "</div>");
-    var checkBtn;
-    var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
-    var confirmed = res.result.results[0];
-    if (confirmed) {
-        checkBtn = $('<input>').attr({
-            type: 'button',
-            class: "btn btn-warning matchesBtn matchBtn" + m_Id,
-            value: 'Waiting for others to confirm',
-            disabled: true
-        });
-    } else {
-        checkBtn = $('<input>').attr({
-            type: 'button',
-            class: "btn btn-danger matchesBtn matchBtn" + m_Id,
-            value: 'Reject'
-        });
-    }
-    console.log(result);
-    if (result != "null") {
-        if (result == "true") {
-            checkBtn = $('<input>').attr({
-                type: 'button',
-                class: "btn btn-success matchesBtn matchBtn" + m_Id,
-                value: 'Success',
-                disabled: true
-            });
-        } else if (result == "false") {
-            checkBtn = $('<input>').attr({
-                type: 'button',
-                class: "btn btn-danger matchesBtn matchBtn" + m_Id,
-                value: 'Fail',
-                disabled: true
-            });
+            index.push(j);
         }
     }
 
-
-    row.append(provide).append(receive).append(checkBtn);
-    $(".systemInfo").append(row);
-
-    var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
-    var confirmed = res.result.results[0];
-    if (confirmed) {
-        $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm");
-        $(".matchBtn" + m_Id).prop("disabled", true);
+    var s_Index;
+    for (var i = 0 ; i < owners.length; i++){
+        if (s_Id == owners[i]){
+            s_Index = i;
+            break;
+        }
     }
 
+    for (var i = 0; i < index.length; i++) {
+        console.log(owners);
+        var previousIndex = (index[i] - 1 + length) % length;
+        var nextIndex = (index[i] + 1) % length;
+
+        var previousName = await callPromise("getUserName", owners[previousIndex]);
+        var nextName = await callPromise("getUserName", owners[nextIndex]);
+
+        var receivePropertyName = await callPromise("getPropertyTypeName", properties[previousIndex]);
+        var providePropertyName = await callPromise("getPropertyTypeName", properties[index[i]]);
+
+        var receiveProperty = await callPromise("getPropertyTypeImg", properties[previousIndex]);
+        var provideProperty = await callPromise("getPropertyTypeImg", properties[index[i]]);
+
+        var row = $("<div>").attr("class", "matches match" + m_Id);
+        var receive = $("<div>").append("<img class='txImg' src = '" + prefix + receiveProperty + postfix + "' /><div>You receive</div><div> " + receivePropertyName + " X " + tradeables[previousIndex] + " </div><div>from " + previousName + "</div>");
+        var provide = $("<div>").append("<img class='txImg' src = '" + prefix + provideProperty + postfix + "' /><div>You provide</div><div> " + providePropertyName + " X " + tradeables[index[i]] + " </div><div>to " + nextName + "</div>");
+        var checkBtn;
+        var confirmBtn;
+
+        console.log(result);
+        if (result != "null") {
+            if (result == "true") {
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-success matchesBtn matchBtn" + m_Id,
+                    value: 'Success',
+                    disabled: true
+                });
+            } else if (result == "false") {
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-danger matchesBtn matchBtn" + m_Id,
+                    value: 'Fail',
+                    disabled: true
+                });
+            }
+        }
+        else {
+            var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
+            console.log("confirmed" + res.result.results[0]);
+
+            var confirmed = res.result.results[0][s_Index];
+            if (confirmed != 0) {
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-warning matchesBtnWait matchesBtn matchBtn" + m_Id,
+                    value: 'Waiting for others to confirm',
+                    disabled: true
+                });
+            } else {
+                confirmBtn = $('<input></input>', {
+                    type: 'button',
+                    class: 'btn btn-primary matchedAcceptBtn matchesBtn matchBtn' + m_Id,
+                    value: 'Accept'
+                });
+                checkBtn = $('<input>').attr({
+                    type: 'button',
+                    class: "btn btn-danger matchesBtn matchBtn" + m_Id,
+                    value: 'Reject'
+                });
+            }
+        }
+
+        row.append(provide).append(receive).append(confirmBtn).append(checkBtn);
+        $(".systemInfo").append(row);
+
+        var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
+        var confirmed = res.result.results[0][s_Index];
+        if (confirmed != 0) {
+            $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm").addClass("matchesBtnWait");
+            $(".matchBtn" + m_Id).prop("disabled", true);
+        }
+    }
 }
 
 
@@ -2638,6 +2708,9 @@ var getUserStockList = async function (s_Id) {
             tradeable: p_List.tradeable[i],
             isTrading: p_List.isTrading[i]
         });
+    }
+    if ((currentUser.level >= 5) && (!Meteor.user().profile.game.stakeholder.answered)) {
+        showQuestionnaire();
     }
 }
 
@@ -2937,14 +3010,18 @@ var updateUserExp = function (exp) {
                 lvlCap = levelCap(currentUser.level);
                 if (currentUser.level % 5 == 0) {
                     Meteor.call('moveUserLandPosition', s_Id, currentUser.landSize, async function () {
-                        await rerenderCropLand(s_Id);
+                        if (gameMode == 'Farmer') {
+                            await rerenderCropLand(s_Id);
+                        }
                         $(".unlockCropId").html("<h3>Unlock Crop: " + cropTypeList[cropTypeList.length - 1].name + "</h3>");
                         Session.set("unlockCrop", cropTypeList.length - 1);
                     });
                     //GamePropertyInstance.moveUserLandPosition(s_Id, currentUser.landSize, {from:web3.eth.accounts[currentAccount], gas:2000000});
                 } else {
                     $(".unlockCropId").html('');
-                    rerenderCropLand(s_Id);
+                    if (gameMode == 'Farmer') {
+                        rerenderCropLand(s_Id);
+                    }
                 }
                 lvlCap = levelCap(currentUser.level);
             });
@@ -2955,8 +3032,8 @@ var updateUserExp = function (exp) {
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
         _character.changed();
-        if (currentUser.level == 5) {
-            $('.questionnaire_main').css('display', 'flex');
+        if ((currentUser.level == 5) && (!Meteor.user().profile.game.stakeholder.answered)) {
+            showQuestionnaire();
         }
         var s = setInterval(function(){
           try{
@@ -2987,6 +3064,11 @@ var updateSyndicateExp = function (exp) {
             if (Session.get('userCharacter') == "Guard") {
                 setGuardProperty();
             }
+
+            //set stamina to full
+            currentUser.sta = staminaCap(currentUser.level);
+            Meteor.call('updateUserStamina', s_Id, currentUser.sta);
+            updateStaminaBar(0);
 
             currentUser.SyndicateLevel += 1;
             $(".front").find("h3").text("LV. " + currentUser.SyndicateLevel);
@@ -3157,11 +3239,24 @@ var elapsedTime = function (start, end) {
 //  Shop Functions  //
 /////////////////////////
 
+get_Avg = async function () {
+    var a = await dbPromise('getAvgTradableNumber');
+    return a;
+}
+
 get_user_property = function () {
     user_property = [];
     var db_property = Meteor.user().profile.game.property;
+    var avg = []
+    Meteor.call('getAvgTradableNumber', function (err, res) {
+        for (var k = 0; k < res.length; k++) {
+            $('#tradable_td' + k).find('p').remove();
+            $('#tradable_td' + k).prepend('<p style="padding-bottom:2px;">Avg : ' + res[k] + '</p>');
+        }
+        //avg = res;
+    });
+    //var avg = get_Avg();
     for (var i = 0; i < db_property.name.length; i++) {
-
         user_property.push({
             "id": db_property.id[i],
             "name": db_property.name[i],
@@ -3169,9 +3264,8 @@ get_user_property = function () {
             "propertyCount": db_property.count[i],
             "tradeable": db_property.tradeable[i],
             "img": cropData[db_property.type[i]].img[3],
-            "isTrading": db_property.isTrading[i]
-        })
-
+            "isTrading": db_property.isTrading[i],
+        });
     }
 }
 
@@ -3213,7 +3307,7 @@ get_propertyType_setting = async function (_length) {
             mongoPropertyType[i].rating[j] = parseInt(mongoPropertyType[i].rating[j])
             averageRating += mongoPropertyType[i].rating[j];
         }
-        averageRating = parseInt(averageRating/mongoPropertyType[i].rating.length);
+        averageRating = parseInt(averageRating / mongoPropertyType[i].rating.length);
 
         var _name = mongoPropertyType[i].name;
         var _id = mongoPropertyType[i].id;
@@ -3265,7 +3359,10 @@ set_property_table = function () {
             td = $('<td></td>');
             td.text(user_property[i].propertyCount);
             tr.append(td);
-            td = $('<td></td>');
+            td = $('<td></td>', {
+                id: 'tradable_td' + i
+            });
+            // td.append('Avg : ' + user_property[i].avgTradable);
             tradeable_input = $('<input></input>', {
                 type: 'text',
                 class: 'shop_tradable_input',
@@ -3417,7 +3514,6 @@ rend_propertyType_table = function (_length) {
 
 save_tradable_setting = function () {
     get_user_property();
-    var hasTrading = false;
     for (i = 0; i < $('.shop_tradable_input').length; i++) {
         var _id = index_finder($('.shop_tradable_input')[i].id, 'tradable_input_');
         var _tradable = $('#tradable_input_' + _id).val();
@@ -3426,7 +3522,6 @@ save_tradable_setting = function () {
             if (user_property[j].id == _id) {
                 if (user_property[j].isTrading) {
                     $('#tradable_input_' + _id).addClass('shop_tradable_input_isTrading');
-                    hasTrading = true;
                 }
                 else {
                     user_property[j].propertyCount = _propertyCount;
@@ -3436,19 +3531,9 @@ save_tradable_setting = function () {
                 break;
             }
         }
-
-        // usingPropertyInstance.updatePropertyCount(_id, _propertyCount, _tradable, { from: web3.eth.accounts[currentAccount], gas: 200000 }, function (err, result) {
-        //     if (err) {
-        //         console.log(err);
-        //     }
-        // });
     }
-    if (hasTrading) {
-        sweetAlert("Oops!", "Some tradable numbers in trading process were not changed!", "error");
-    }
-    else {
-        sweetAlert("Congratulations!", "Setting Saved!", "success");
-    }
+    sweetAlert("Congratulations!", "Setting Saved!", "success");
+    get_user_property();
 }
 
 save_rating_setting = async function () {
@@ -3456,8 +3541,8 @@ save_rating_setting = async function () {
 
     var s_Length = 0;
     var allUser = Meteor.users.find().fetch();
-    for(i = 0 ; i < allUser.length; i++){
-        if(allUser[i].emails[0].verified)
+    for (i = 0; i < allUser.length; i++) {
+        if (allUser[i].emails[0].verified)
             s_Length++;
     }
 
@@ -3467,12 +3552,12 @@ save_rating_setting = async function () {
             var _id = parseInt(display_field[onchangedIndex[i]].id, 10);
             var _rate = parseInt($('#rating' + onchangedIndex[i]).val(), 10);
             var res = await callPromise("updatePropertyTypeRating", _id, _rate, s_Id);
-            var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate, "update", s_Length, s_Id]);
+            var res = await callPromise("callContract", "Property", "updatePropertyTypeRating", [_id, _rate * floatOffset, "update", s_Length, s_Id]);
 
         }
         var _ratingPercent = parseInt($('#ratingPercent').val(), 10);
         var res = await Meteor.call("updateRatingTolerance", _ratingPercent, Meteor.user().profile.game.stakeholder.id);
-    }catch(e){
+    } catch (e) {
         console.log(e);
     }
 
@@ -3571,7 +3656,7 @@ mission_rending = function () {
             td.append($('<input></input>', {
                 type: 'hidden',
                 id: 'mission_exp_' + mission_list[i].id,
-                value: mission_list[i].exp
+                value: (parseInt(mission_list[i].exp) * 1.3)
             }));
             td.append($('<input></input>', {
                 type: 'hidden',
@@ -3585,10 +3670,7 @@ mission_rending = function () {
             })
                 .on('click', function () {
                     var _id = index_finder($(this).prev('input').attr('id'), 'mission_id_');
-                    var mission_qualify = mission_qualify_check(_id);
-                    if (mission_qualify) {
-                        mission_submit(_id);
-                    }
+                    mission_submit(_id);
                 })
             );
         }
@@ -3603,14 +3685,14 @@ mission_rending = function () {
     }
     loading(0);
 
-    if(tutorialMode==1){
-      t1PageCnt++;
-      tutorial1();
+    if (tutorialMode == 1) {
+        t1PageCnt++;
+        tutorial1();
     }
 }
 
-mission_submit = async function (_id) {
-    updateUserExp(parseInt($('#mission_exp_' + _id).val()));
+mission_submit = function (_id) {
+
     var target_mission;
     for (i = 0; i < mission_list.length; i++) {
         if (mission_list[i].id == _id) {
@@ -3622,6 +3704,13 @@ mission_submit = async function (_id) {
         sweetAlert('Oops', 'System error! Please try again', 'error');
         return;
     }
+
+    if (!mission_qualify_check(target_mission.id)) {
+        sweetAlert('Oops', 'Please check your stock', 'error');
+        return;
+    }
+    var rewardExp = parseInt($('#mission_exp_' + _id).val()) * 1.3;
+    updateUserExp(rewardExp);
 
     for (k = 0; k < target_mission.missionItem.length; k++) {
         for (i = 0; i < user_property.length; i++) {
@@ -3642,6 +3731,7 @@ mission_submit = async function (_id) {
 }
 
 mission_qualify_check = function (_id) {
+    get_user_property();
     var target_mission;
     for (i = 0; i < mission_list.length; i++) {
         if (mission_list[i].id == _id) {
@@ -3772,4 +3862,372 @@ var selectedSort = function (data) {
         }
     }
     return data;
+}
+var questionCount = 0;
+
+var showQuestionnaire = function () {
+    if ($('.questionnaire_content').length == 0) {
+        createQuestionnaire();
+    }
+    else {
+        $('.questionnaire_main').css('display', 'flex');
+    }
+}
+
+var createQuestionnaire = function () {
+    currentPage = 1;
+    pagerCounter = 1;
+    var ageData = ['below 21', '21-30', '31-40', '41-50', '51-60', 'above 60'];
+    var educationData = ['High School or Equivalent', 'Vocational or Technical School', "Bachelor's Degree", "Master's Degree", "Doctoral Degree", "Professional degree (MD, JD, etc.)", "Others"];
+    var EmploymentData = [
+        "Student", "Information, Software and Technology", "Manufacturing and Electronics", "Arts, Entertainment, or Recreation", "Finance or Insurance",
+        "Government and Public Administration", "Health Care and Social Assistance", "Telecommunications", "Education", "Retired", "Others"
+    ];
+    var questions = [
+        "h1 BlockFarm Operating Questionnaire",
+        "h2 This questionnaire is designed for an academic research, apply to D3 Accelerator Project of Service Science Research Center in National Chengchi University, R.O.C.. Your privacy information will be under protection and only used for contacting when there is any implementation or reward sending problems.",
+        "Q0: I think the gaming mechanism is meaningful.",
+        "h1 Simple Questions for User Ability",
+        "Q1: It is not difficult for me to make new friends.",
+        "Q2: I can make friends through my personal abilities.",
+        "Q3: If something looks too complicated, I will still do my best to try it.",
+        "Q4: When try to learn something new, I will not give up easily.",
+        "Q5: I do not avoid learning new things when they look too difficult for me.",
+        "Q6: I am confident about my ability to play this game.",
+        "Q7: I can determine how to play this game.",
+        "Next Page",
+        "h3 ● Second part is some questions about our bartering mechanism.",
+        "h1 Questions For Crops' Match-Making Mechanism",
+        "h2 Match-making mechanism is the core value of bartering in Blockfarm, it is used for exchanging crops with other players. You just set up an importance of each crop and how many crops you are willing to exchange in the next transaction, then We will try to find the best solution for your crop bartering through match-making mechanism.",
+        "Q8: You think our match-making mechanism meets your expectations and is easy to use.",
+        "Q9: Our match-making mechanism can help you exchange crops you really want.",
+        "Q10: I do not need to spend lots of time using match-making.",
+        "Q11: I do not need to put a lot of efforts while match-making.",
+        "Q12: I do not need to wait for a long time to get what I want.",
+        "Q13: There is no difficulty for me to use match-making.",
+        "Q14: I often could get crops I really want after match-making.",
+        "Q15: Settings before match-making is simple and friendly to me.",
+        "Q16: I am satisfied with the way doing match-making.",
+        "Q17: I think the mechanism of match-making is great enough.",
+        "h1 Personal Influence in Bartering Transactions",
+        "h2 The match-making mechanism is based on player's importance of each crop and the preference of what you are earning for. The computing logic shows as follows:",
+        "Q18: My ranking of crops will make an impact on other players' transaction results.",
+        "Q19: Results of transactions will be affected by my ranking of crops.",
+        "Q20: I can control what happens in my game result.",
+        "Next Page",
+        "h3 ● Third part is about your experience and feelings of BlockFarm.",
+        "h1 Questions for Gaming Mechanism",
+        "Q21: The gaming mechanism of Blockfarm is original ad novel.",
+        "Q22: The gaming mechanism of Blockfarm is uncommon and deserve to be mentioned to others.",
+        "Q23: The gaming mechanism of Blockfarm is unique and irreplaceable.",
+        "Q24: Combination of blockchain and farming game is an innovating and expanding idea based on two differentiating domain.",
+        "h1 Questions for Your Feelings of BlockFarm",
+        "Q25: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
+        "Q26: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.  ( interactions refers to thieving and guarding, crops transaction, etc. )",
+        "Q27: You are satisfied with our system’s quality and will keep playing this game.",
+        "Q28: This game is entertaining to you and you are willing to share this experience to others.",
+        "Q29: The guideline is clear for me to understand.",
+        "Q30: The gaming operation is convenient.",
+        "Q31: You are satisfied with our system stability.",
+        "Q32: There is s few disadvantages in Blockfarm, but they do not affect to game playing.",
+        "Q33: I play Blockfarm frequently.",
+        "h1 Would you like to keep playing BlockFarm?",
+        "Q34: I will continue playing Blockfarm frequently in future.",
+        "Q35: Many people I communicate with play this game.",
+        "Q36: Many people I communicate with regularly play this game.",
+        "Q37: People I communicate with will continue to play this game. ",
+        "h1 Personal Information",
+        "TQ38: Age:",
+        "TQ39: Education:",
+        "TQ40: Employment:",
+        "TQ41: What do you think we can do to improve our match-making mechanism and Blockfarm?",
+    ];
+    $('.questionnaire_main').css('display', 'flex');
+    $('.questionnaire_main').append($('<div></div>', {
+        id: 'questionPage' + pagerCounter,
+        class: 'questionnaire_content questionPage' + pagerCounter
+    }));
+    for (var i = 0; i < questions.length; i++) {
+        if (questions[i].substring(0, 1) == 'Q') {
+            $('.questionPage' + pagerCounter).append($('<div></div>', {
+                id: 'question' + questionCount,
+                class: 'question_q'
+            }));
+            $('#question' + questionCount).html(questions[i]);
+            $('.questionPage' + pagerCounter).append($('<div></div>', {
+                id: 'answer_cover' + questionCount,
+                class: 'question_a_cover'
+            }));
+            $('#answer_cover' + questionCount).append($('<div></div>', {
+                id: 'answer' + questionCount,
+                class: 'question_a'
+            }));
+            $('#answer' + questionCount).append('<p>Strongly Disagree</p>');
+            for (var j = 1; j <= 5; j++) {
+                $('#answer' + questionCount).append($('<div></div>', {
+                    id: 'answerRadio' + questionCount + '_' + j,
+                    class: 'answerRadioDiv'
+                }));
+                $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+                    for: 'radioAnswer' + questionCount + '_' + j,
+                    text: j
+                }));
+                $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+                    id: 'radioAnswer' + questionCount + '_' + j,
+                    type: 'radio',
+                    class: 'option-input radio',
+                    style: 'outline: none;',
+                    name: 'radioAnswer' + questionCount,
+                    value: j
+                }));
+            }
+            $('#answer' + questionCount).append('<p>Strongly Agree</p>');
+            $('#answer_cover' + questionCount).append($('<hr>', {
+                class: 'question_hr'
+            }));
+            questionCount++;
+        }
+        else if (questions[i].substring(0, 1) == 'h') {
+            $('.questionPage' + pagerCounter).append($('<div></div>', {
+                id: 'questionTitle' + i,
+                class: 'questionTitle'
+            }));
+            var showText = questions[i].substring(2, questions[i].length);
+            $('#questionTitle' + i).html('<h' + questions[i].substring(1, 2) + '>' + showText + '<h' + questions[i].substring(0, 1) + '/>');
+        }
+        else if (questions[i] == 'Next Page') {
+            pagerCounter++;
+            $('.questionnaire_main').append($('<div></div>', {
+                id: 'questionPage' + pagerCounter,
+                class: 'questionnaire_content questionPage' + pagerCounter
+            }));
+        }
+        else if (questions[i].substring(0, 1) == 'T') {
+        }
+    }
+    dumpCounter = 53;
+    //age
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'question' + questionCount,
+        class: 'question_q'
+    }));
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    $('#answer_cover' + questionCount).append($('<div></div>', {
+        id: 'answer' + questionCount,
+        class: 'question_a'
+    }));
+    for (var j = 0; j < ageData.length; j++) {
+        $('#answer' + questionCount).append($('<div></div>', {
+            id: 'answerRadio' + questionCount + '_' + j,
+            class: 'answerRadioDiv'
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+            for: 'radioAnswer' + questionCount + '_' + j,
+            text: ageData[j]
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+            id: 'radioAnswer' + questionCount + '_' + j,
+            type: 'radio',
+            class: 'option-input radio',
+            style: 'outline: none;',
+            name: 'radioAnswer' + questionCount,
+            value: j
+        }));
+    }
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    questionCount++;
+    dumpCounter++;
+    //age
+    //education
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'question' + questionCount,
+        class: 'question_q'
+    }));
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    $('#answer_cover' + questionCount).append($('<div></div>', {
+        id: 'answer' + questionCount,
+        class: 'question_a'
+    }));
+    for (var j = 0; j < educationData.length; j++) {
+        $('#answer' + questionCount).append($('<div></div>', {
+            id: 'answerRadio' + questionCount + '_' + j,
+            class: 'answerRadioDiv'
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+            for: 'radioAnswer' + questionCount + '_' + j,
+            text: educationData[j]
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+            id: 'radioAnswer' + questionCount + '_' + j,
+            type: 'radio',
+            class: 'option-input radio',
+            style: 'outline: none;',
+            name: 'radioAnswer' + questionCount,
+            value: j
+        }));
+    }
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    questionCount++;
+    dumpCounter++;
+    //education
+    //employment
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'question' + questionCount,
+        class: 'question_q'
+    }));
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    EmploymentDivCounter = 0;
+    for (var j = 0; j < EmploymentData.length; j++) {
+        if ((j % 6) == 0) {
+            EmploymentDivCounter++;
+            $('#answer_cover' + questionCount).append($('<div></div>', {
+                id: 'answer' + questionCount + '_' + EmploymentDivCounter,
+                class: 'question_a'
+            }));
+        }
+        $('#answer' + questionCount + '_' + EmploymentDivCounter).append($('<div></div>', {
+            id: 'answerRadio' + questionCount + '_' + j,
+            class: 'answerRadioDiv'
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<label></label>', {
+            for: 'radioAnswer' + questionCount + '_' + j,
+            text: EmploymentData[j]
+        }));
+        $('#answerRadio' + questionCount + '_' + j).append($('<input></input>', {
+            id: 'radioAnswer' + questionCount + '_' + j,
+            type: 'radio',
+            class: 'option-input radio',
+            name: 'radioAnswer' + questionCount,
+            value: j
+        }));
+    }
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    questionCount++;
+    dumpCounter++;
+    //employment
+    //feedback
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'question' + questionCount,
+        class: 'question_q'
+    }));
+    $('#question' + questionCount).html(questions[dumpCounter].substring(1, questions[dumpCounter].length));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + questionCount,
+        class: 'question_a_cover'
+    }));
+    $('#answer_cover' + questionCount).append($('<textarea></textarea>', {
+        id: 'answer' + questionCount,
+        type: 'text',
+        class: 'question_textarea',
+        rows: 5,
+        cols: 50,
+        maxlength: 255
+    }));
+    //feedback
+    $('#answer_cover' + questionCount).append($('<hr>', {
+        class: 'question_hr'
+    }));
+    $('.questionPage' + pagerCounter).append($('<div></div>', {
+        id: 'answer_cover' + (questionCount + 1),
+        class: 'question_a_cover questionEnd'
+    }));
+    $('#answer_cover' + (questionCount + 1)).append($('<input></input>', {
+        type: 'button',
+        value: 'submit',
+        style: 'color:black;',
+        class: 'hvr-rectangle-out questionBtn'
+    })
+        .on('click', function () {
+            submitQuestionnaire();
+        })
+    );
+
+    $('.questionPage' + currentPage).css('display', 'flex');
+    $('.questionnaire_main').append($('<div></div>', {
+        id: 'questionControl',
+        class: 'questionControl'
+    }));
+    $('.questionControl').append($('<input></input>', {
+        id: 'prevPage',
+        type: 'button',
+        class: 'questionBtn questionBtnPrev',
+        disabled: true
+    })
+        .on('click', function () {
+            pageFlip(-1);
+        })
+    );
+    $('.questionControl').append($('<input></input>', {
+        id: 'nextPage',
+        type: 'button',
+        class: 'questionBtn questionBtnNext'
+    })
+        .on('click', function () {
+            pageFlip(1);
+        })
+    );
+}
+
+var submitQuestionnaire = function () {
+    var answerChecked = true;
+    var data = [];
+    for (var i = 0; i < (questionCount - 1); i++) {
+        var currentRadioValue = parseInt($('input[name=radioAnswer' + i + ']:checked').val());
+        if (!Number.isInteger(currentRadioValue)) {
+            answerChecked = false;
+            $('#answer_cover' + i).addClass('mustAnswer');
+        }
+        else {
+            $('#answer_cover' + i).removeClass('mustAnswer');
+        }
+        data.push(currentRadioValue);
+    }
+    data.push($('.question_textarea').val());
+    console.log(data);
+    if (answerChecked) {
+        Meteor.call('submitQuestionnaire', s_Id, data);
+        Meteor.call('updateAnswerStatus', s_Id);
+        $('.questionnaire_main').css('display', 'none');
+        sweetAlert('Thanks!', 'Success');
+    }
+    else {
+        sweetAlert('Oops', 'All the questions must be selected!', 'error');
+    }
+}
+
+var pageFlip = function (goto) {
+    if (currentPage == 1) {
+        $('#prevPage').attr('disabled', false);
+    }
+    else if (currentPage == pagerCounter) {
+        $('#nextPage').attr('disabled', false);
+    }
+    $('.questionPage' + currentPage).hide();
+    currentPage = currentPage + goto;
+    $('.questionPage' + currentPage).fadeIn().css('display', 'flex');
+
+    if (currentPage == 1) {
+        $('#prevPage').attr('disabled', true);
+    }
+    else if (currentPage == pagerCounter) {
+        $('#nextPage').attr('disabled', true);
+    }
 }

@@ -6,6 +6,7 @@ import { mission } from '../../imports/collections.js';
 import { matches } from '../../imports/collections.js';
 import { callPromise } from '../../imports/promise.js';
 import { dbPromise } from '../../imports/promise.js';
+import { questionnaires } from '../../imports/collections.js';
 
 if (Meteor.isServer) {
     Meteor.methods({
@@ -32,13 +33,16 @@ if (Meteor.isServer) {
                 wait(200);
                 try {
                     var res = Promise.await(callContract_api("Matchmaking", "getMatchMaking", [i]));
-                    match.push(res);
+                    match.push("<div>" + res + "</div><p>");
                 }
                 catch (e) {
                     console.log(i + " : " + e);
                 }
             }
             return match;
+        },
+        'getAnsewers': function () {
+            return questionnaires.find().fetch();
         }
     });
 }

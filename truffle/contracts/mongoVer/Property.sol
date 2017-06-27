@@ -27,7 +27,10 @@ contract Property{
         if (equal(operation,"update")){
 
             uint old_rating = propertyTypeList[_id].rating[s_Id];
-            propertyTypeList[_id].averageRating = (propertyTypeList[_id].averageRating * s_Length - old_rating + rate)/s_Length;
+            var total = propertyTypeList[_id].averageRating;
+            total = total - old_rating;
+            total = total + rate;
+            propertyTypeList[_id].averageRating = total;
             propertyTypeList[_id].rating[s_Id] = rate;
 
         }else if (equal(operation,"new")){

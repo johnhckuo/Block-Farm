@@ -88,6 +88,7 @@
     {{> operationList}}
     {{> floatBubble}}
     {{> guideCircle}}
+    {{> questionnaire}}
   </div>
 </template>
 
@@ -505,7 +506,13 @@
     {{> logo}}
     <!-- {{> gameGuide}} -->
     <div class="systemInfo">
-      <h2>New Transaction !</h2>
+      <div class="systemInfoHeader">
+      <span class="systemInfoHeaderSpan">
+      <button id = "systemInfo" class = "systemInfoHeaderbtn" >
+        <img src="/img/game/back.svg"/>
+      </button>
+      New Transaction !</span>
+      </div>
     </div>
 
     <div class="navigation">
@@ -575,8 +582,17 @@
     <div class="questionnaire_title">
       <button type="button" id="btn_questionnaire_close" class="btnClose" value="close">X</button>
     </div>
+  </div>
+</template>
+
+
+<!--<template name="questionnaire">
+  <div class="questionnaire_main">
+    <div class="questionnaire_title">
+      <button type="button" id="btn_questionnaire_close" class="btnClose" value="close">X</button>
+    </div>
     <div class="questionnaire_content">
       <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfaN1uQEONkP20JVqgnS_QbkQiy943YgPacGZQaOfYyUfd09Q/viewform?embedded=true" class ="questionnaire_frame"></iframe>
     </div>
   </div>
-</template>
+</template>-->

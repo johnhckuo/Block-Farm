@@ -166,7 +166,7 @@ apiLimitDetector = async function(){
     },
     'callMongo': function (method, args) {
       if (method == "getPropertyType") {
-        return property_type.find().fetch();
+        return property_type.find({},{sort:{id:1}}).fetch();
       }else if (method == "getThreshold"){
         return Meteor.users.findOne({"profile.game.stakeholder.id":args[0]}).profile.game.property.threshold;
       }
@@ -243,19 +243,40 @@ apiLimitDetector = async function(){
     },
     'init': function () {
       console.log("------------------ Data Init ------------------");
-      // var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
-      // if (res.data.results[0] != 0) {
-      //   console.log("[init] Data has been initialized");
-      //   return;
-      // }
-      //
-      // try {
-      //   for (var i = 0; i < cropTypeList.length; i++) {
-      //     var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
-      //   }
-      // } catch (e) {
-      //   console.log("[init] "+e);
-      // }
+      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      if (res.data.results[0] != 0) {
+        console.log("[init] Data has been initialized");
+        return;
+      }
+
+      try {
+        for (var i = 0; i < cropTypeList.length; i++) {
+          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+        }
+      } catch (e) {
+        console.log("[init] "+e);
+      }
+
+      var currentIndex = 0;
+
+      var res = Promise.await(callContract_api("Property", "getPropertyTypeLength", []));
+      if (res.data.results[0] != 0) {
+        console.log("[init] Data has been initialized");
+        return;
+      }
+
+      try {
+        for (var i = 0; i < cropTypeList.length; i++) {
+          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+          currentIndex++;
+        }
+      } catch (e) {
+        console.log("[init] "+e);
+        console.log("Encounter error! Re-upload property type from "+cropTypeList[currentIndex].name);
+        for (var i = currentIndex; i < cropTypeList.length; i++) {
+          var res = Promise.await(callContract_api("Property", "addPropertyType", [cropTypeList[i].name, Meteor.users.find().count()]));
+        }
+      }
 
 
       for (var i = 0; i < cropTypeList.length; i++) {
@@ -359,6 +380,46 @@ apiLimitDetector = async function(){
     },
     'updateRatingTolerance':function(tolerance, s_Id){
         Meteor.users.update({"profile.game.stakeholder.id":s_Id}, { $set: { 'profile.game.property.threshold': tolerance } });
+    },
+    'reuploadContract':function(contract){
+        currentToken = (currentToken+1)%token.length;
+        var req = prefix;
+        var file;
+        if (contract == "matchmaking"){
+          file = matchmaking_json;
+        }else if (contract == "property"){
+          file = property_json;
+        }
+
+        req += "?token=" + token[currentToken];
+        console.log("[reuploadContract] => Contract:" + contract);
+        return Meteor.http.call("POST", req, file);
+    },
+    "reuploadMongoData":function(collections){
+      var dataSet;
+      var contract, initMethod;
+      if (collections == "matchmaking"){
+        dataSet = matches.find().fetch();
+      }else if (collections == "property"){
+        dataSet = property_type.find().fetch();
+      }
+      for (var i = 0 ; i < dataSet.length ; i++){
+        if (collections == "matchmaking"){
+            // console.log("contract result missing... re-upload to blockchain...");
+            // //rewirte into contract
+            // var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
+            // for (var w = 0 ; w < fields.owners.length; w++){
+            //     var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+            // }
+            // console.log(res)
+            // console.log("contract re-upload complete");
+
+        }else if (collections == "property"){
+          //TODO
+          dataSet = property_type.find().fetch();
+        }
+      }
+
     }
   });
 }

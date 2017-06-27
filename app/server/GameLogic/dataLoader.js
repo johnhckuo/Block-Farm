@@ -1,4 +1,6 @@
 import { Meteor } from 'meteor/meteor';
+import { matches } from '../../imports/collections.js';
+import { questionnaires } from '../../imports/collections.js';
 
 if (Meteor.isServer) {
     Meteor.methods({
@@ -81,7 +83,32 @@ if (Meteor.isServer) {
 
             }
             return mLength;
-        }
+        },
+        'getMatch': function () {
+            return matches.find().fetch();
+        },
+        'getAvgTradableNumber': function () {
+            data = [];
+            var tradable = [];
+            var userCounter = 0;
+            for (var i = 0; i < 40; i++) {
+                tradable.push(0);
+            }
+            var users = Meteor.users.find().fetch();
+            for (var i = 0; i < users.length; i++) {
+                if (users[i].emails[0].verified) {
+                    userCounter++;
+                    for (var j = 0; j < users[i].profile.game.property.tradeable.length; j++) {
+                        tradable[users[i].profile.game.property.id[j]] += parseInt(users[i].profile.game.property.tradeable[j]);
+                    }
+                    data.push(users[i].profile.game.property);
+                }
+            }
 
+            for (var i = 0; i < 40; i++) {
+                tradable[i] = Math.round((tradable[i] / userCounter) * 10) / 10;
+            }
+            return tradable;
+        }
     });
 }

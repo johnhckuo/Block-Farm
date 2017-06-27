@@ -1,4 +1,6 @@
 import { Meteor } from 'meteor/meteor';
+import { questionnaires } from '../../imports/collections.js';
+
 if (Meteor.isServer) {
     Meteor.methods({
         'updateGameData': function (s_Id, _landSize, _level) {
@@ -30,17 +32,17 @@ if (Meteor.isServer) {
         'updateGuardId': function (s_Id, g_Id) {
             var _stakeholder = Meteor.users.findOne({ "profile.game.stakeholder.id": s_Id }).profile.game.stakeholder;
             _stakeholder.guardId = g_Id;
-            Meteor.users.update({"profile.game.stakeholder.id": s_Id}, { $set: { 'profile.game.stakeholder': _stakeholder } });
+            Meteor.users.update({ "profile.game.stakeholder.id": s_Id }, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },
         'updateGuardMatchId': function (s_Id, g_Id) {
-            var _syndicateData = Meteor.users.findOne({"profile.game.stakeholder.id": s_Id }).profile.game.syndicateData;
+            var _syndicateData = Meteor.users.findOne({ "profile.game.stakeholder.id": s_Id }).profile.game.syndicateData;
             _syndicateData.guardMatchId = g_Id;
-            Meteor.users.update({"profile.game.stakeholder.id": s_Id}, { $set: { 'profile.game.syndicateData': _syndicateData } });
+            Meteor.users.update({ "profile.game.stakeholder.id": s_Id }, { $set: { 'profile.game.syndicateData': _syndicateData } });
         },
         'updateFarmerId': function (s_Id, f_Id) {
-            var _syndicateData = Meteor.users.findOne({"profile.game.stakeholder.id": s_Id }).profile.game.syndicateData;
+            var _syndicateData = Meteor.users.findOne({ "profile.game.stakeholder.id": s_Id }).profile.game.syndicateData;
             _syndicateData.guardFarmerId = f_Id;
-            Meteor.users.update({"profile.game.stakeholder.id": s_Id}, { $set: { 'profile.game.syndicateData': _syndicateData } });
+            Meteor.users.update({ "profile.game.stakeholder.id": s_Id }, { $set: { 'profile.game.syndicateData': _syndicateData } });
         },
         'updateSyndicateProgress': function (s_Id, _progress) {
             var _syndicateData = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id }).profile.game.syndicateData;
@@ -67,6 +69,21 @@ if (Meteor.isServer) {
             _syndicateData.totalExp += _exp;
             _syndicateData.level = _level;
             Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.syndicateData': _syndicateData } });
+        },
+        'updateAnswerStatus': function (s_Id) {
+            var _stakeholder = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id }).profile.game.stakeholder;
+            _stakeholder.answered = true;
+            Meteor.users.update({ 'profile.game.stakeholder.id': s_Id }, { $set: { 'profile.game.stakeholder': _stakeholder } });
+        },
+        'submitQuestionnaire': function (s_Id, data) {
+            var user = Meteor.users.findOne({ 'profile.game.stakeholder.id': s_Id });
+            var email = user.emails[0].address;
+            var answers = {};
+            answers['email'] = email;
+            for(var i =0; i < data.length; i++){
+                answers['Q' + i] = data[i];
+            }
+            questionnaires.insert(answers);       
         }
     });
 }

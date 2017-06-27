@@ -6,7 +6,7 @@ contract Matchmaking{
         uint[] visitedOwners;
         uint[] visitedProperties;
         uint[] visitedTradeables;
-        bool[] confirmed;
+        uint[] confirmed;
 
         int256[] visitedPriorities;
         uint[] confirmation;
@@ -32,8 +32,23 @@ contract Matchmaking{
         return (matches[m_Id].visitedPriorities, matches[m_Id].visitedOwners, matches[m_Id].visitedProperties, matches[m_Id].visitedTradeables, matches[m_Id].confirmation, matches[m_Id].visitedCount, matches[m_Id].result);
     }
 
-    function getMatchMakingConfirmed(uint m_Id, uint s_Id) constant returns(bool){
-        return (matches[m_Id].confirmed[s_Id]);
+    function getMatchMakingConfirmed(uint m_Id, uint s_Id) constant returns(uint){
+        uint s_Index;
+        for (uint i = 0 ; i < matches[m_Id].visitedOwners.length; i++){
+            if (matches[m_Id].visitedOwners[i] == s_Id){
+                s_Index = i;
+                break;
+            }
+        }
+        return matches[m_Id].confirmed[s_Index];
+    }
+
+    function getMatchMakingConfirmedArr(uint m_Id) constant returns (uint[]){
+        return matches[m_Id].confirmed;
+    }
+
+    function getMatchMakingConfirmationArr(uint m_Id) constant returns(uint[]){
+        return matches[m_Id].confirmation;
     }
 
     function updateConfirmation(uint m_Id, uint s_Id, uint confirmation) onlyOwner{
@@ -45,28 +60,20 @@ contract Matchmaking{
             }
         }
         matches[m_Id].confirmation[s_Index] = confirmation;
-        matches[m_Id].confirmed[s_Index] = true;
+        matches[m_Id].confirmed[s_Index] = 1;
     }
 
     function getMatchMakingLength() constant returns(uint){
         return matches.length;
     }
 
-    function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result, uint _visitedLength) onlyOwner{
-        if (matches.length > _matchId){
-            throw;
-        }
+    function gameCoreMatchingInit(uint _matchId, uint _visitedCount, string _result) onlyOwner{
         matches.length++;
 
         matches[_matchId].id = _matchId;
         matches[_matchId].visitedCount = _visitedCount;
         matches[_matchId].result = _result;
-        for (uint i = 0 ; i < _visitedLength ; i++){
-           matches[_matchId].confirmation.push(1);
-           matches[_matchId].confirmed.push(false);
 
-           //property.updateTradingStatus(matches[_matchId].visitedProperties[i], true);
-        }
     }
 
     function gameCoreMatchingDetail(uint _matchId, int256 _priority, uint _owner, uint _property, uint _tradeable) onlyOwner{
@@ -75,7 +82,16 @@ contract Matchmaking{
         matches[_matchId].visitedProperties.push(_property);
         matches[_matchId].visitedTradeables.push(_tradeable);
 
+
     }
+
+    function gameCoreMatchingConfirmed(uint _matchId, uint _visitedLength) onlyOwner{
+        for (uint i = 0 ; i < _visitedLength ; i++){
+           matches[_matchId].confirmation.push(1);
+           matches[_matchId].confirmed.push(0);
+        }
+    }
+
 
     function updateMatchResult(uint m_Id, string result) onlyOwner{
         matches[m_Id].result = result;
