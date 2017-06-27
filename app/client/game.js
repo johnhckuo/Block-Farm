@@ -2003,7 +2003,7 @@ Template.characterList.events({
                 var gaurdMatchID = Meteor.user().profile.game.syndicateData.guardMatchId;
                 var matchLength = await dbPromise('getMatchedLength');
                 var matchDiff = matchLength - gaurdMatchID;
-                if (matchDiff <= 2) {
+                if (matchDiff <= 4) {
                     var guardLand = Meteor.user().profile.game.syndicateData.guardFarmerId;
                     var progress = Meteor.user().profile.game.syndicateData.progress;
                     if (guardLand == -1) {
@@ -3669,8 +3669,8 @@ mission_submit = function (_id) {
         sweetAlert('Oops', 'Please check your stock', 'error');
         return;
     }
-
-    updateUserExp(parseInt($('#mission_exp_' + _id).val()));
+    var rewardExp = parseInt($('#mission_exp_' + _id).val()) * 1.3;
+    updateUserExp(rewardExp);
 
     for (k = 0; k < target_mission.missionItem.length; k++) {
         for (i = 0; i < user_property.length; i++) {
@@ -3883,9 +3883,8 @@ var createQuestionnaire = function () {
         "Q24: Combination of blockchain and farming game is an innovating and expanding idea based on two differentiating domain.",
         "h1 Questions for Your Feelings of BlockFarm",
         "Q25: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
-        "Q26: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.",
+        "Q26: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.  ( interactions refers to thieving and guarding, crops transaction, etc. )",
         "Q27: You are satisfied with our system’s quality and will keep playing this game.",
-        "h3 ( interactions refers to thieving and guarding, crops transaction, etc. )",
         "Q28: This game is entertaining to you and you are willing to share this experience to others.",
         "Q29: The guideline is clear for me to understand.",
         "Q30: The gaming operation is convenient.",
