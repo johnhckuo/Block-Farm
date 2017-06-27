@@ -22,10 +22,10 @@ if (Meteor.isServer) {
                 _stakeholder.landSize += 1;
                 var cropStart = ((_stakeholder.level / unlockCropLevel) * unlockCropNum);
                 var cropEnd = cropStart + unlockCropNum;
-                var p_Id = random + cropInterval;
+                var p_Id = random + cropStart;
                 for (var i = cropStart; i < cropEnd; i++) {
                     if (i != p_Id)
-                        Meteor.call('addUserPropertyType',s_Id, p_Id);
+                        Meteor.call('addUserPropertyType',s_Id, i);
                 }
                 Meteor.call('addUserLandConfiguration',s_Id, _stakeholder.landSize);
             }
