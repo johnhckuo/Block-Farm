@@ -3806,7 +3806,6 @@ var selectedSort = function (data) {
     return data;
 }
 var questionCount = 0;
-<<<<<<< HEAD
 
 var showQuestionnaire = function(){
     if($('.questionnaire_content').length == 0){
@@ -3817,16 +3816,6 @@ createQuestionnaire();
     }
 }
 
-=======
-var showQuestionnaire = function () {
-    if ($('.questionnaire_content').length == 0) {
-        createQuestionnaire();
-    }
-    else {
-        $('.questionnaire_content').css('display', 'flex');
-    }
-}
->>>>>>> 550ac055c7a7013b44ba7a8b82243058dbdb4fb6
 var createQuestionnaire = function () {
     currentPage = 1;
     pagerCounter = 1;
