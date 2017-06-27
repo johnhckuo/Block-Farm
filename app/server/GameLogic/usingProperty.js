@@ -37,7 +37,7 @@ if (Meteor.isServer) {
             _stakeholder.unlockedCropType.push(p_Id);
             Meteor.users.update({'profile.game.stakeholder.id': s_Id}, { $set: { 'profile.game.stakeholder': _stakeholder } });
         },
-        'updateOwnershipStatus':function(current_s_Id, receive_s_Id, p_Id, tradeCount){
+        'updateOwnershipStatus':function(current_s_Id, receive_s_Id, p_Id, tradeCount, m_Id){
 
             var reciever_Count = Meteor.users.findOne({'profile.game.stakeholder.id':receive_s_Id}).profile.game.property.count;
             var sender_Tradeable = Meteor.users.findOne({'profile.game.stakeholder.id':current_s_Id}).profile.game.property.tradeable;
@@ -49,7 +49,7 @@ if (Meteor.isServer) {
 
             }else{
                 Meteor.call("updateGuardId", receive_s_Id, current_s_Id);
-                Meteor.call("updateGuardMatchId",current_s_Id , receive_s_Id);
+                Meteor.call("updateGuardMatchId",current_s_Id , m_Id);
                 Meteor.call("updateFarmerId", current_s_Id, receive_s_Id);
             }
             sender_Tradeable[p_Id] = 0;

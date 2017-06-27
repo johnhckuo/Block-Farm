@@ -799,7 +799,9 @@ li .login-content {
 }
 
 .glyphicon{
-  top:0px;
+    position: absolute;
+    left: 20px;
+    top: 10px;
 }
 
 .manage{

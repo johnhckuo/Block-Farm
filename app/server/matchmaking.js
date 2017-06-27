@@ -319,7 +319,7 @@ var searchNeighborNodes = function(visitNode){
 
         var diff = returnPriority(visitNode, i);
         console.log("[searchNeighborNodes] : properties "+visitNode+" to owner of properties"+ i +" => diff:" +diff+" | threshold: "+properties[i].threshold)
-        if (diff < properties[i].threshold){
+        if (diff <= properties[i].threshold){
           console.log("Does not meet the owners threshold, Skip!");
           //this need to be modified to user config
           continue;
@@ -661,7 +661,7 @@ transferOwnership = async function(m_Id, match){
           var receive_s_Id = owners[i+1];
           var p_Id = properties[i];
           var tradeCount = tradeables[i];
-          var res = await Meteor.call("updateOwnershipStatus", current_s_Id, receive_s_Id, p_Id, tradeCount);
+          var res = await Meteor.call("updateOwnershipStatus", current_s_Id, receive_s_Id, p_Id, tradeCount, m_Id);
           var res2 = await Meteor.call("updateTradingStatus", current_s_Id, p_Id, false);
       }
     }catch(e){

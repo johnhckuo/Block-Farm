@@ -824,6 +824,7 @@
   height: 65vh;
   /*background-color:rgba(255,255,255,0.8);*/
   overflow: auto;
+  overflow-x: hidden;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
 }
@@ -2587,7 +2588,6 @@ transform: rotate(0deg);
 }
 .logoForClose{
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
 }
 .tiplogoInfo{
   bottom: 80px;
