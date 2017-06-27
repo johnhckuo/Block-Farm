@@ -498,6 +498,10 @@ var verifyNode =  function(){
       }
       matches.push(tempJson);
 
+      //pop the last element since it may not be the origin property
+      tempJson.visitedProperties[tempJson.visitedProperties.length-1] = tempJson.visitedProperties[0];
+      tempJson.visitedPriorities[tempJson.visitedPriorities.length-1] = tempJson.visitedPriorities[0];
+      tempJson.visitedTradeable[tempJson.visitedTradeable.length-1] = tempJson.visitedTradeable[0];
       console.log("------------------------ Now Insert Data into Mongodb ------------------------");
 
       console.log("[Properties] "+tempJson.visitedProperties);
