@@ -366,6 +366,46 @@ apiLimitDetector = async function(){
     },
     'updateRatingTolerance':function(tolerance, s_Id){
         Meteor.users.update({"profile.game.stakeholder.id":s_Id}, { $set: { 'profile.game.property.threshold': tolerance } });
+    },
+    'reuploadContract':function(contract){
+        currentToken = (currentToken+1)%token.length;
+        var req = prefix;
+        var file;
+        if (contract == "matchmaking"){
+          file = matchmaking_json;
+        }else if (contract == "property"){
+          file = property_json;
+        }
+
+        req += "?token=" + token[currentToken];
+        console.log("[reuploadContract] => Contract:" + contract);
+        return Meteor.http.call("POST", req, file);
+    },
+    "reuploadMongoData":function(collections){
+      var dataSet;
+      var contract, initMethod;
+      if (collections == "matchmaking"){
+        dataSet = matches.find().fetch();
+      }else if (collections == "property"){
+        dataSet = property_type.find().fetch();
+      }
+      for (var i = 0 ; i < dataSet.length ; i++){
+        if (collections == "matchmaking"){
+            // console.log("contract result missing... re-upload to blockchain...");
+            // //rewirte into contract
+            // var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
+            // for (var w = 0 ; w < fields.owners.length; w++){
+            //     var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+            // }
+            // console.log(res)
+            // console.log("contract re-upload complete");
+
+        }else if (collections == "property"){
+          //TODO
+          dataSet = property_type.find().fetch();
+        }
+      }
+
     }
   });
 }

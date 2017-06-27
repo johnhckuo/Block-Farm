@@ -46,21 +46,21 @@ if (Meteor.isServer) {
     "f4edaea443ad4f8fb5c5ab8e9646de99"];
 
     //token = "68a657243ee1461db6376af481cdb479";
-    privateKey = "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8";
+    privateKey = "e37b582771f87c627e6814f4973896352cb3a1916b949e496ee700f6dc47a89e";
 
-    Property = "4bab2e6a7cdcae8ee96e7f10c95f6dfea66ee9d3";
-    Matchmaking = "b02ee74727e8de270f24f90d747bcb3e60d6a786";
+    Property = "7a333503adb57ba62b6075036bbb25c49f702b7a";
+    Matchmaking = "fc56b76683998d6f566bd3250d2ed67c73081025";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
     call = {
-        "private": "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8",
+        "private": "e37b582771f87c627e6814f4973896352cb3a1916b949e496ee700f6dc47a89e",
         "gas_limit": 2000000
     };
 
     updateCall = {
         "data": {
-            "private": "eabe2fb5738329a9f3b955cfd23abf573c5e8f22974a9c6167da26ec787c03a8",
+            "private": "e37b582771f87c627e6814f4973896352cb3a1916b949e496ee700f6dc47a89e",
             "gas_limit": 2000000,
         },
         "header": "Content-Type:application/json"
@@ -68,7 +68,7 @@ if (Meteor.isServer) {
 
 
     faucet = {
-        "address": "2cdd7eef11071781785b130bec04ba04ccf9df6d",
+        "address": "0f8f438328ce7dcf959378aa25e83fc2df4ccb4e",
         "amount": 1000000000000000000
     };
 
