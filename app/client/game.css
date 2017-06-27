@@ -1895,6 +1895,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   z-index:100000;
   padding:20px;
   overflow: hidden;
+  padding-left: 50px;
 }
 
 .systemInfo h2{
@@ -1918,6 +1919,8 @@ input[type="range"]:active::-webkit-slider-thumb{
   cursor: pointer;
   background: rgba(255, 255, 255, 0);
   transform: translateX(-15px);
+  position: absolute;
+  left:25px;
 }
 
 .systemInfoHeaderbtn img{
