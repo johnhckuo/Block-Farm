@@ -12,16 +12,16 @@
     </div>
     <div class="guideBoxText">
       <div>
-      Hey ! Let us introduce our fantastic match-making system ! <br><br>
+      Hey ! Let's introduce our "not that bad" match-making system ! <br><br>
 
       Traditionally, if you want to swap your thing for other thing,<br>
-      you need to do lots of effort to find the "true person and true thing".<br>
-      Now, the system can automatically match your needs with others needs and do a swap.<br>
-      We expected to achieve the maximum benefit for all gamers.<br><br>
+      you need to put lots of effort to find "the right person" and "the right thing".<br>
+      Now, our match-making system can know everyone's needs by the ratings and do a multi-party swap automatically.<br>
+      We expect to achieve maximum benefit for all gamers.<br><br>
 
       Next, there are few steps which you could set up to join the exchange.<br><br>
       </div>
-      <button id="btnTutorialMM" class="hvr-rectangle-out" value="">Got it ! Next</button>
+      <div id="btnTutorialMM" class="nextPageBtnMM" value="">Got it ! Next</div>
     </div>
   </div>
   </div>
@@ -78,7 +78,7 @@
 <template name="gameContent">
   <div class="gameContainer">
 
-    {{> firstTutorial}}
+    <!-- {{> firstTutorial}} -->
     {{> loading}}
     {{> statusList}}
     {{> gamingArea}}
@@ -101,7 +101,7 @@
 </template>
 
 
-<template name="firstTutorial">
+<!-- <template name="firstTutorial">
   <div class="tutorialContainer">
     <div class="firstLoginTutorial">
       <div class="tutorial tutorial1">
@@ -201,7 +201,7 @@
 
 
   </div>
-</template>
+</template> -->
 
 <template name="advTutorial">
   <div class="advTutorialContainer">
@@ -325,22 +325,50 @@
 
 <template name="logo">
   <div class="logoAudio">
-    <div class="logo">
-      <a href="/">
+    <div class="logo tipContainer">
+      <a>
           <img src="/img/BlockFarm.png" alt="">
         </a>
+      <div class="tiplogoInfo tipText">
+        Click for more information.
+      </div>
     </div>
-    <div class="musicSwitch">
+    <!-- <div class="musicSwitch">
       <img src="/img/game/speaker_on.svg" alt="">
+    </div> -->
+
+    <div class="infoList">
+      <div class="infoListContent">
+        <div class="logoForClose">
+          <img src="/img/game/arrow.svg" alt="" class="navRightLogo">
+        </div>
+        <option class="t1">
+          Tutorial
+        </option>
+        <option class="t2">
+          Trading Tutorial
+        </option>
+        <option class="question">
+          Questionnaire
+        </option>
+        <option class="backCover" >
+          <a href="/">Back Home</a>
+        </option>
+
+        <div class="musicSwitch">
+          <img src="/img/game/speaker_on.svg" alt="">
+        </div>
+      </div>
     </div>
+
   </div>
 </template>
 
-<template name="gameGuide">
+<!-- <template name="gameGuide">
   <div class="gameGuideLink">
     <img class="gameGuideImg" src="/img/game/info.svg" alt="">
   </div>
-</template>
+</template> -->
 
 <template name="characterList">
   <div class="characterList">
@@ -475,7 +503,7 @@
 
     </div>
     {{> logo}}
-    {{> gameGuide}}
+    <!-- {{> gameGuide}} -->
     <div class="systemInfo">
       <h2>New Transaction !</h2>
     </div>
