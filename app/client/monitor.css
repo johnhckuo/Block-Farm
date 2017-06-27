@@ -40,6 +40,14 @@
     bottom: 1vh;
     margin-right: 3vw;
     color: black;
+    transition: all 1s;
+}
+
+.menu_btn:hover{
+    color: white;
+    background:black;
+    border:white;
+
 }
 
 .contentBoard{

@@ -49,7 +49,7 @@ if (Meteor.isServer) {
 
             }else{
                 Meteor.call("updateGuardId", receive_s_Id, current_s_Id);
-                Meteor.call("updateGuardMatchId", receive_s_Id, current_s_Id);
+                Meteor.call("updateGuardMatchId",current_s_Id , receive_s_Id);
                 Meteor.call("updateFarmerId", current_s_Id, receive_s_Id);
             }
             sender_Tradeable[p_Id] = 0;

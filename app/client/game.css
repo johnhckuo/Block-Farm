@@ -1920,7 +1920,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   background: rgba(255, 255, 255, 0);
   transform: translateX(-15px);
   position: absolute;
-  left:25px;
+  left:18px;
 }
 
 .systemInfoHeaderbtn img{
