@@ -257,6 +257,10 @@ var globalRatingSort = function(list){
           finalResult.push(sortList[k]);
         }
         sortList = [];
+
+        if (i == list.length-1 && list[i].priority != currentPriority){
+          finalResult.push(list[i]);
+        }
         currentPriority = list[i].priority;
         sortList.push(list[i]);
     }
@@ -457,7 +461,7 @@ var verifyNode =  function(){
     return false;
   }
 
-  if (totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]] != undefined && totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id == origin && visitingIndex != 0){
+  if (totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]] != undefined && properties[totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id].owner == properties[origin].owner && visitingIndex != 0){
       console.log("---------------------------- Success -----------------------------");
       var visitedProperty_temp = [];
       for (var h = 0 ; h < visitedProperty.length ; h++){
@@ -522,9 +526,10 @@ var verifyNode =  function(){
         var res = Promise.await(Meteor.call("callContract", "Matchmaking", "getMatchMakingLength", []));
         console.log(res)
         var m_Id = res.result.results[0];
-        var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, visitedOwner.length, "null"]));
-        for (var i = 0 ; i < tempJson.visitedOwners.length ; i++){
-          var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, tempJson.visitedPriorities[i], tempJson.visitedOwners[i], tempJson.visitedProperties[i], tempJson.visitedTradeable[i]]));
+        var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, tempJson.visitedOwners.length, "null"]));
+        wait(3000);
+        for (var j = 0 ; j < tempJson.visitedOwners.length ; j++){
+          var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, parseInt(tempJson.visitedPriorities[j]), tempJson.visitedOwners[j], tempJson.visitedProperties[j], tempJson.visitedTradeable[j]]));
         }
         
         var res4 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [m_Id, tempJson.visitedOwners.length]));
