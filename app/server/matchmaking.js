@@ -226,9 +226,12 @@ var globalRatingSort = function(list){
   var currentPriority = list[0].priority;
   var finalResult = [];
   var sortList = [];
+  console.log("=========================");
   console.log(list);
   for (var i = 0 ; i < list.length ; i++){
-    sortList.push(list[i]);
+    if (list[i].priority == currentPriority){
+      sortList.push(list[i]);
+    }
 
     if (list[i].priority != currentPriority || i == list.length-1){
         //sort
@@ -240,9 +243,13 @@ var globalRatingSort = function(list){
                     max_index = w;
                 }
             }
-            var temp = sortList[j];
-            sortList[j] = sortList[max_index];
-            sortList[max_index] = temp;
+            var temp = sortList[j-finalResult.length];
+            sortList[j-finalResult.length] = sortList[max_index-finalResult.length];
+            sortList[max_index-finalResult.length] = temp;
+
+            temp = tempSortList[j];
+            tempSortList[j] = tempSortList[max_index];
+            tempSortList[max_index] = temp;
         }
 
         //push 
@@ -251,11 +258,13 @@ var globalRatingSort = function(list){
         }
         sortList = [];
         currentPriority = list[i].priority;
+        sortList.push(list[i]);
     }
 
   }
   console.log(tempSortList)
   console.log(finalResult);
+  console.log("=========================");
 
   if (finalResult.length != list.length){
     console.log("Something is Wrong !!!!!");

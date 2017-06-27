@@ -2930,7 +2930,7 @@ var updateUserExp = function (exp) {
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
         _character.changed();
-        if (currentUser.level == 5) {
+        if ((currentUser.level == 5)&&(!Meteor.user().profile.game.stakeholder.answered)) {
             showQuestionnaire();
         }
     }
@@ -2946,6 +2946,11 @@ var updateSyndicateExp = function (exp) {
             if (Session.get('userCharacter') == "Guard") {
                 setGuardProperty();
             }
+
+            //set stamina to full
+            currentUser.sta = staminaCap(currentUser.level);
+            Meteor.call('updateUserStamina', s_Id, currentUser.sta);
+            updateStaminaBar(0);
 
             currentUser.SyndicateLevel += 1;
             $(".front").find("h3").text("LV. " + currentUser.SyndicateLevel);
@@ -3800,7 +3805,17 @@ var selectedSort = function (data) {
     return data;
 }
 var questionCount = 0;
-var showQuestionnaire = function () {
+
+var showQuestionnaire = function(){
+    if($('.questionnaire_content').length == 0){
+createQuestionnaire();
+    }
+    else{
+        $('.questionnaire_main').css('display','flex');
+    }
+}
+
+var createQuestionnaire = function () {
     currentPage = 1;
     pagerCounter = 1;
     var ageData = ['below 21', '21-30', '31-40', '41-50', '51-60', 'above 60'];
