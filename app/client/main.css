@@ -39,6 +39,10 @@ body h1, h2, h3{
   letter-spacing:2px;
 }
 
+h6{
+  font-size: 18px;
+}
+
 #title.section{
   /*background-color:  #C8E9FF;*/
   background: #D2E48F;
