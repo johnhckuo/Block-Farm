@@ -3616,7 +3616,7 @@ mission_rending = function () {
             td.append($('<input></input>', {
                 type: 'hidden',
                 id: 'mission_exp_' + mission_list[i].id,
-                value: mission_list[i].exp
+                value: (parseInt(mission_list[i].exp) * 1.3)
             }));
             td.append($('<input></input>', {
                 type: 'hidden',
@@ -3965,7 +3965,7 @@ var createQuestionnaire = function () {
         else if (questions[i].substring(0, 1) == 'T') {
         }
     }
-    dumpCounter = 54;
+    dumpCounter = 53;
     //age
     $('.questionPage' + pagerCounter).append($('<div></div>', {
         id: 'question' + questionCount,
