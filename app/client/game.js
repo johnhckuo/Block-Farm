@@ -469,19 +469,20 @@ Template.firstTutorial.events({
 
 Template.questionnaire.events({
     'click #btn_questionnaire_close': function () {
-        if(!Meteor.user().profile.game.stakeholder.answered){
-        swal({
-            title: "Are you sure?",
-            text: "Please make sure you have done the questionnaire to obtain the lucky draw!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, I've done!",
-            closeOnConfirm: false
-        },
-            function () {
-                $('.questionnaire_main').css('display', 'none');
-            });
+        if (!Meteor.user().profile.game.stakeholder.answered) {
+            swal({
+                title: "Are you sure?",
+                text: "Please make sure you have done the questionnaire to obtain the lucky draw!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, I've done!",
+                closeOnConfirm: false
+            },
+                function () {
+                    $('.questionnaire_main').css('display', 'none');
+                    sweetAlert("Closed", "", "success")
+                });
         }
     },
     'click .option-input': function (e) {
@@ -2171,7 +2172,7 @@ Template.operationList.events({
         //   $('.tipToleranceText').css("opacity","1");
         //   alert(123);
         // }
-        
+
     },
     'click .MissionOpen': function (event) {
         $(".property_shop").css("display", "none");
@@ -2480,14 +2481,14 @@ var showConfirmation = async function (s_Id, m_Id) {
     var result = data.result.results[6];
     console.log(data);
     var index = [];
-    var length = owners.length-1;
+    var length = owners.length - 1;
     for (var j = 0; j < length; j++) {
         if (s_Id == owners[j]) {
             index.push(j);
         }
     }
 
-    for (var i = 0 ; i < index.length ; i++){
+    for (var i = 0; i < index.length; i++) {
         console.log(owners);
         var previousIndex = (index[i] - 1 + length) % length;
         var nextIndex = (index[i] + 1) % length;
@@ -2527,7 +2528,7 @@ var showConfirmation = async function (s_Id, m_Id) {
         }
         else {
             var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [m_Id, s_Id]);
-            console.log("confirmed"+res.result.results[0]);
+            console.log("confirmed" + res.result.results[0]);
             var confirmed = res.result.results[0];
             if (confirmed != 0) {
                 checkBtn = $('<input>').attr({
@@ -2613,7 +2614,7 @@ var getUserStockList = async function (s_Id) {
             isTrading: p_List.isTrading[i]
         });
     }
-    if((currentUser.level >= 5) &&(!Meteor.user().profile.game.stakeholder.answered)){
+    if ((currentUser.level >= 5) && (!Meteor.user().profile.game.stakeholder.answered)) {
         showQuestionnaire();
     }
 }
@@ -2930,7 +2931,7 @@ var updateUserExp = function (exp) {
         $(".expProgressBar").css("width", percent + "%");
         $(".expText").text(percent + "%");
         _character.changed();
-        if (currentUser.level == 5) {
+        if ((currentUser.level == 5)&&(!Meteor.user().profile.game.stakeholder.answered)) {
             showQuestionnaire();
         }
     }
@@ -2946,6 +2947,11 @@ var updateSyndicateExp = function (exp) {
             if (Session.get('userCharacter') == "Guard") {
                 setGuardProperty();
             }
+
+            //set stamina to full
+            currentUser.sta = staminaCap(currentUser.level);
+            Meteor.call('updateUserStamina', s_Id, currentUser.sta);
+            updateStaminaBar(0);
 
             currentUser.SyndicateLevel += 1;
             $(".front").find("h3").text("LV. " + currentUser.SyndicateLevel);
@@ -3800,7 +3806,17 @@ var selectedSort = function (data) {
     return data;
 }
 var questionCount = 0;
-var showQuestionnaire = function () {
+
+var showQuestionnaire = function(){
+    if($('.questionnaire_content').length == 0){
+createQuestionnaire();
+    }
+    else{
+        $('.questionnaire_main').css('display','flex');
+    }
+}
+
+var createQuestionnaire = function () {
     currentPage = 1;
     pagerCounter = 1;
     var ageData = ['below 21', '21-30', '31-40', '41-50', '51-60', 'above 60'];
@@ -3850,8 +3866,8 @@ var showQuestionnaire = function () {
         "h1 Questions for Your Feelings of BlockFarm",
         "Q25: Playing Blockfarm makes you feel pleasant that you are expected to play this game.",
         "Q26: You feel enjoyable to have interactions in Blockfarm and would like to recommend this game to your friends.",
-        "h3 ( interactions refers to thieving and guarding, crops transaction, etc. )",
         "Q27: You are satisfied with our system’s quality and will keep playing this game.",
+        "h3 ( interactions refers to thieving and guarding, crops transaction, etc. )",
         "Q28: This game is entertaining to you and you are willing to share this experience to others.",
         "Q29: The guideline is clear for me to understand.",
         "Q30: The gaming operation is convenient.",
@@ -3863,7 +3879,7 @@ var showQuestionnaire = function () {
         "Q35: Many people I communicate with play this game.",
         "Q36: Many people I communicate with regularly play this game.",
         "Q37: People I communicate with will continue to play this game. ",
-        "h1 Personal Information",        
+        "h1 Personal Information",
         "TQ38: Age:",
         "TQ39: Education:",
         "TQ40: Employment:",

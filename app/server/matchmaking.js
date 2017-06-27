@@ -244,8 +244,8 @@ var globalRatingSort = function(list){
                 }
             }
             var temp = sortList[j-finalResult.length];
-            sortList[j-finalResult.length] = sortList[max_index];
-            sortList[max_index] = temp;
+            sortList[j-finalResult.length] = sortList[max_index-finalResult.length];
+            sortList[max_index-finalResult.length] = temp;
 
             temp = tempSortList[j];
             tempSortList[j] = tempSortList[max_index];
