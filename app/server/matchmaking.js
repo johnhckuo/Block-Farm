@@ -427,11 +427,15 @@ var findVisitNode = function(){
       totalGoThroughList.splice(totalGoThroughList.length-1, 1);
       visitedCounts.splice(visitedCounts.length-1, 1);
       visitingIndex--;
+
       if (totalGoThroughList[visitingIndex].length-1 >= (visitedCounts[visitingIndex]+1)){
         visitedCounts[visitingIndex]++;
         console.log("[System Log] Run out of alternative nodes! Switch to previous index #"+ visitingIndex +" node "+totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id);
         visitedProperty[visitedProperty.length-1] = totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]];
-
+        if (visitingIndex == 0){
+            console.log("[Change Origin] Origin switch from property"+origin+" to property"+ totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id)
+            origin = totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id;
+        }
         flag = false;
       }else{
         if (visitingIndex == 0){

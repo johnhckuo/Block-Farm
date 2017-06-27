@@ -1885,7 +1885,7 @@ input[type="range"]:active::-webkit-slider-thumb{
   position:absolute;
   right:0px;
   top:10px;
-  width: 600px;
+  width: 700px;
   background: rgba(255, 255, 255, 0.6);
   *transition: opacity 1s;
   *opacity: 0;
