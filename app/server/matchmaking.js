@@ -23,8 +23,8 @@ initData = function(){
        properties
     ---------------*/
     var rawProperties = [];
-
-    var raw = Meteor.users.find({}, {fields:{'profile.game.property':1}}).fetch();
+    var rawOwners = [];
+    var raw = Meteor.users.find({}, {fields:{'profile.game.property':1, 'profile.game.stakeholder':1}}).fetch();
     
     for (var i = 0 ; i < raw.length ; i++){
         if (raw[i].profile.game == undefined){
@@ -32,12 +32,13 @@ initData = function(){
           continue;
         }
         rawProperties.push(raw[i].profile.game.property);
+        rawOwners.push(raw[i].profile.game.stakeholder.id);
     }
 
     for (var i = 0 ; i <rawProperties.length ; i++){
       for (var j = 0 ; j < cropTypeList.length ; j++){
-          if (rawProperties[i].tradeable[j] != 0){
-            properties.push({id:rawProperties[i].type[j], name:rawProperties[i].name[j], count:rawProperties[i].count[j], type:rawProperties[i].type[j], tradeable:parseInt(rawProperties[i].tradeable[j]), isTrading:rawProperties[i].isTrading[j], owner:i, threshold:rawProperties[i].threshold});
+          if (rawProperties[i].tradeable[j] != 0 && !rawProperties[i].isTrading[j]){
+            properties.push({id:rawProperties[i].type[j], name:rawProperties[i].name[j], count:rawProperties[i].count[j], type:rawProperties[i].type[j], tradeable:parseInt(rawProperties[i].tradeable[j]), isTrading:rawProperties[i].isTrading[j], owner:rawOwners[i], threshold:rawProperties[i].threshold});
           }
       }
     }
@@ -58,7 +59,7 @@ initData = function(){
                     propertyType[j][3][w] /= floatOffset;
                   }
                   propertyType[j][2] /= floatOffset;
-                  propertyType[j] = {id:propertyType[j][1], avg:propertyType[j][2]/s_Length, ratings:propertyType[j][3]};
+                  propertyType[j] = {id:propertyType[j][1], avg:parseInt(propertyType[j][2]/s_Length), ratings:propertyType[j][3]};
               }
               console.log(propertyType)
               console.log("Property Type Data Loading Complete");
@@ -228,12 +229,17 @@ var globalRatingSort = function(list){
   var sortList = [];
   console.log("=========================");
   console.log(list);
+  var currentCount = 0;
   for (var i = 0 ; i < list.length ; i++){
+    if (currentCount == 1){
+      break;
+    }
     if (list[i].priority == currentPriority){
       sortList.push(list[i]);
     }
 
     if (list[i].priority != currentPriority || i == list.length-1){
+        currentCount++;
         //sort
         for (var j = finalResult.length ; j < i; j++){
 
@@ -270,12 +276,12 @@ var globalRatingSort = function(list){
   console.log(finalResult);
   console.log("=========================");
 
-  if (finalResult.length != list.length){
-    console.log("Something is Wrong !!!!!");
-  }else{
+  // if (finalResult.length != list.length){
+  //   console.log("Something is Wrong !!!!!");
+  // }else{
     return finalResult;
 
-  }
+  // }
 }
 
 var findMaxRatingStakeholder = function(list, index){
@@ -367,6 +373,9 @@ var searchNeighborNodes = function(visitNode){
     // console.log("=====");
 
     goThroughList = globalRatingSort(goThroughList);
+    if (goThroughList.length > 3){
+      goThroughList = goThroughList.slice(0, 3);
+    }
     return goThroughList;
 }
 

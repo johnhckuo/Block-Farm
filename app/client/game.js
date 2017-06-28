@@ -88,23 +88,23 @@ var checkMissionInterval = null;
 var theifId = 0;
 var landInfo = [];
 var stealRate;
-var tutorialMode = 0; //no tutorial
-var targetCircleDiv = null;
-var targetCircleTemp = null;
-var cntAddLand = 0;  //for first time to add land
-var cntAddCrop = 0;  //for first time to add plant/crop
-var currentString = "";
-var stringPosition = "";
-var resizeWidth = 2; //for set the size for createTip
-var circleNeed = true;
-var stringNeed = true;
-var t1PageCnt = 0;
-var t2PageCnt = 0;
-var t3PageCnt = 0;
-var t4PageCnt = 0;
-var tPageBtn = false;
-var lockLand = true;  // for tutorial3
-var lockThief = true; // for tutorial4
+var tutorialMode=0; //no tutorial
+var targetCircleDiv=null;
+var targetCircleTemp=null;
+var cntAddLand=0;  //for first time to add land
+var cntAddCrop=0;  //for first time to add plant/crop
+var currentString="";
+var stringPosition="";
+var resizeWidth=2; //for set the size for createTip
+var circleNeed=true;
+var stringNeed=true;
+var t1PageCnt=0;
+var t2PageCnt=0;
+var t3PageCnt=0;
+var t4PageCnt=0;
+var tPageBtn=false;
+var lockLand=true;  // for tutorial3
+var lockThief=true; // for tutorial4
 
 var ratingOpened = false;
 var onchangedIndex = [];
@@ -245,7 +245,7 @@ Template.gameContent.rendered = function () {
 
             //eventListener();
             audio = new Audio('/music/background_music.mp3');
-            //audio.play();
+            audio.play();
         });
         $(window).resize(function (evt) {
             initCropLand();
@@ -568,10 +568,10 @@ Template.gameContent.events({
             _dep.changed();
             // for detect do user crop land on game area for tutorial using
             cntAddCrop++;
-            if (tutorialMode == 1 && cntAddCrop == 1) {
-                // step 1.3 for tutorial, point to the croppedObject
-                t1PageCnt++;
-                tutorial1();
+            if (tutorialMode==1 && cntAddCrop==1){
+              // step 1.3 for tutorial, point to the croppedObject
+              t1PageCnt++;
+              tutorial1();
 
             }
 
@@ -606,10 +606,10 @@ Template.gameContent.events({
             });
 
             cntAddLand++;
-            if (tutorialMode == 1 && cntAddLand == 1) {
-                // step 1.2 for tutorial, point to the crop
-                t1PageCnt++;
-                tutorial1();
+            if (tutorialMode==1 && cntAddLand==1){
+              // step 1.2 for tutorial, point to the crop
+              t1PageCnt++;
+              tutorial1();
 
             }
 
@@ -620,65 +620,65 @@ Template.gameContent.events({
     },
     'click .thief': function (event) {
         // for tutorial4
-        if (tutorialMode == 4 && lockThief == true) {
-            sweetAlert("Please follow the guidance. Thanks", "", "warning")
-        } else {
+        if(tutorialMode==4&&lockThief==true){
+          sweetAlert("Please follow the guidance. Thanks","","warning")
+        }else {
 
 
 
-            $(event.target).parent().css({ opacity: 0, transform: "translateY(50px)" });
-            landInfo[$(event.target).parent().attr('bindindex')].showed = 0;
-            // for tutorial4
-            if (tutorialMode != 4) {
-                updateSyndicateExp(2);
+        $(event.target).parent().css({ opacity: 0, transform: "translateY(50px)" });
+        landInfo[$(event.target).parent().attr('bindindex')].showed = 0;
+        // for tutorial4
+        if(tutorialMode!=4){
+          updateSyndicateExp(2);
+        }
+        currentUser.SyndicateProgress -= 1;
+        $('#hitsBoard').text(currentUser.SyndicateProgress + ' hits left.');
+        Meteor.call('updateSyndicateProgress', s_Id, currentUser.SyndicateProgress);
+        setTimeout(function () {
+            $(event.target).parent().remove();
+        }, 1000);
+        if (currentUser.SyndicateProgress <= 0) {
+            clearInterval(checkMissionInterval);
+            var leftThieives = $('.thief').length;
+            for (i = 0; i < leftThieives; i++) {
+                $('.thief:eq(' + i + ')').css({ opacity: 0, transform: "translateY(50px)" });
+                $('.thief:eq(' + i + ')').remove();
             }
-            currentUser.SyndicateProgress -= 1;
-            $('#hitsBoard').text(currentUser.SyndicateProgress + ' hits left.');
-            Meteor.call('updateSyndicateProgress', s_Id, currentUser.SyndicateProgress);
-            setTimeout(function () {
-                $(event.target).parent().remove();
-            }, 1000);
-            if (currentUser.SyndicateProgress <= 0) {
-                clearInterval(checkMissionInterval);
-                var leftThieives = $('.thief').length;
-                for (i = 0; i < leftThieives; i++) {
-                    $('.thief:eq(' + i + ')').css({ opacity: 0, transform: "translateY(50px)" });
-                    $('.thief:eq(' + i + ')').remove();
+            Meteor.call('updateFarmerId', s_Id, -1);
+            for (var s = 0; s < user_property.length; s++) {
+                if ((user_property[s].propertyType == (currentUser.SyndicateLevel + 29)) && ((user_property[s].propertyCount == 0) && (user_property[s].tradeable == 0))) {
+                    Meteor.call('updatePropertyCount_Setting', s_Id, (currentUser.SyndicateLevel + 29), 1, 0);
                 }
-                Meteor.call('updateFarmerId', s_Id, -1);
-                for (var s = 0; s < user_property.length; s++) {
-                    if ((user_property[s].propertyType == (currentUser.SyndicateLevel + 29)) && ((user_property[s].propertyCount == 0) && (user_property[s].tradeable == 0))) {
-                        Meteor.call('updatePropertyCount_Setting', s_Id, (currentUser.SyndicateLevel + 29), 1, 0);
-                    }
-                }
+            }
 
-                // for tutorial4
-                if (tutorialMode != 4) {
-                    updateSyndicateExp(30);
-                }
-                sweetAlert("Congratulations!", "Mission Completed!", "success");
-                // for tutorial4
-                if (tutorialMode == 4) {
-                    // step 4.4
-                    t4PageCnt++;
-                    tutorial4();
-                }
-                // for tutorial4
+            // for tutorial4
+            if(tutorialMode!=4){
+              updateSyndicateExp(30);
+            }
+            sweetAlert("Congratulations!", "Mission Completed!", "success");
+            // for tutorial4
+            if(tutorialMode==4){
+              // step 4.4
+              t4PageCnt++;
+              tutorial4();
+            }
+            // for tutorial4
 
-                currentCharacter = "farmer";
-                Session.set('userName', currentUser.name);
-                showThief = false;
-                $(".missionObject").html("<div class='thiefObject'></div>");
-                $('.SyndicateExp').css('visibility', 'collapse');
-                $('.userExp').css('visibility', 'visible');
-                $('.crop2').css('display', 'block');
-                $('#hitsBoard').remove();
-                gameMode = "Farmer"
-                Session.set('switchToType', currentUser.type);
-                set_property_table();
-                rerenderCropLand(s_Id);
+            currentCharacter = "farmer";
+            Session.set('userName', currentUser.name);
+            showThief = false;
+            $(".missionObject").html("<div class='thiefObject'></div>");
+            $('.SyndicateExp').css('visibility', 'collapse');
+            $('.userExp').css('visibility', 'visible');
+            $('.crop2').css('display', 'block');
+            $('#hitsBoard').remove();
+            gameMode = "Farmer"
+            Session.set('switchToType', currentUser.type);
+            set_property_table();
+            rerenderCropLand(s_Id);
 
-            }// for tutorialMode==4&&lockThief=true  tutorial4
+          }// for tutorialMode==4&&lockThief=true  tutorial4
         }
     },
     'click .croppedObject': function (event) {
@@ -816,17 +816,17 @@ Template.gameContent.events({
 
             // step 1.4 for tutorial, point to the stock
             if (tutorialMode == 1) {
-                t1PageCnt++; //case=4
-                tutorial1();
+              t1PageCnt++; //case=4
+              tutorial1();
             }
         }
         else if (gameMode == "Thief") {
             if (currentUser.sta < staminaList["steal"]) {
                 sweetAlert("Oops...", "Not enough stamina", "error");
                 return;
-            } else if (tutorialMode == 3 && lockLand == true) {
-                sweetAlert("Oops...", "Please follow the guidance.", "error");
-                return;
+            }else if(tutorialMode==3&&lockLand==true){
+              sweetAlert("Oops...", "Please follow the guidance.", "error");
+              return;
             }
             else {
                 var stolenFlag, stealCount, judgement, stealResult;
@@ -900,9 +900,9 @@ Template.gameContent.events({
                 }
             }
             // step 3.5
-            if (tutorialMode == 3 && lockLand == false) {
-                t3PageCnt++;   // case=5
-                tutorial3();
+            if(tutorialMode==3&&lockLand==false){
+              t3PageCnt++;   // case=5
+              tutorial3();
             }
         }
         else if (gameMode == "Guard") {
@@ -1223,7 +1223,7 @@ Template.gamingArea.events({
             $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
         }
     },
-    'click .logo': function (event) {
+    'click .logo':function(event){
         if ($(".logo").hasClass("open") === true) {
             $(".infoList").fadeOut('normal');
             $(".logo").removeClass("open");
@@ -1233,736 +1233,742 @@ Template.gamingArea.events({
             $(".logo").addClass("open");
         }
     },
-    'click .navRightLogo': function (event) {
-        if ($(".logo").hasClass("open") === true) {
-            $(".infoList").fadeOut('normal');
-            $(".logo").removeClass("open");
-        } else {
-            $(".infoList").fadeIn('normal');
-            $(".logo").fadeTo("slow", 0.7);
-            $(".logo").addClass("open");
-        }
+    'click .navRightLogo':function(event){
+      if ($(".logo").hasClass("open") === true) {
+          $(".infoList").fadeOut('normal');
+          $(".logo").removeClass("open");
+      } else {
+          $(".infoList").fadeIn('normal');
+          $(".logo").fadeTo("slow", 0.7);
+          $(".logo").addClass("open");
+      }
     },
-    'click .t1': function (event) {
+    'click .t1':function(event){
 
-        tutorialSession1();   // plant crop
+      tutorialSession1();   // plant crop
 
     },
-    'click .t2': function (event) {
+    'click .t2':function(event) {
 
-        tutorialSession2();
+      tutorialSession2();
     },
-    'click .question': function (event) {
+    'click .question':function (event) {
 
-        showQuestionnaire();  // not to comment
+      showQuestionnaire();  // not to comment
     },
-    'click .gameGuideImg': function (event) {
-        // display original tutorial
-        // $(".tutorialContainer").css("opacity", "1");
-        // $(".tutorialContainer").css("display", "inline");
-        // $(".tutorialContainer").css("transform", "translateX("+ (0) +"vw)");
+    'click .gameGuideImg':function(event){
+      // display original tutorial
+      // $(".tutorialContainer").css("opacity", "1");
+      // $(".tutorialContainer").css("display", "inline");
+      // $(".tutorialContainer").css("transform", "translateX("+ (0) +"vw)");
 
-        // display cover color tutorial
-        // $('.advTutorialContainer').css("display","inline");
-        // $('.advTutorialContainer').css("background","rgba(255, 255, 255, 0.7)");
-        // $('.advTutorialContainer').css("z-index","100");
-        // $('.landList').css("z-index","101");
-        //tutorialSession1();   // plant crop
-        //tutorialSession2();   // rating   match-making
-        //tutorialSession3();   // thief
-        //tutorialSession4();     // guard
+      // display cover color tutorial
+      // $('.advTutorialContainer').css("display","inline");
+      // $('.advTutorialContainer').css("background","rgba(255, 255, 255, 0.7)");
+      // $('.advTutorialContainer').css("z-index","100");
+      // $('.landList').css("z-index","101");
+      //tutorialSession1();   // plant crop
+      //tutorialSession2();   // rating   match-making
+      //tutorialSession3();   // thief
+      //tutorialSession4();     // guard
     },
 })
 Template.guideCircle.events({
-    'click #btnTutorialMM': function (event) {
-        // step 2.2 for tutorial session2, next button for introduce rating
-        if (tutorialMode == 2) {
-            t2PageCnt++;  // case=2
-            tutorial2();
+  'click #btnTutorialMM':function(event){
+    // step 2.2 for tutorial session2, next button for introduce rating
+    if(tutorialMode==2){
+      t2PageCnt++;  // case=2
+      tutorial2();
 
-        }
-    },
-    'click .nextPageBtn': function (event) {
-        if (tutorialMode == 2) {
-            t2PageCnt++;  // case=6   case=7   case=8   case=10
-            tutorial2();
-
-        }
-        if (tutorialMode == 1) {
-            t1PageCnt++;  // case=6   case=10   case=11  case=12
-            tutorial1();
-        }
-        if (tutorialMode == 3) {
-            t3PageCnt++; // case=3  case=6  case=7
-            tutorial3();
-        }
-        if (tutorialMode == 4) {
-            t4PageCnt++;  // case=3
-            tutorial4();
-        }
-    },
-    'click .prevPageBtn': function (event) {
-        if (tutorial2 == 2) {
-            t2PageCnt--;
-
-        }
     }
+  },
+  'click .nextPageBtn':function(event){
+    if(tutorialMode==2){
+      t2PageCnt++;  // case=6   case=7   case=8   case=10
+      tutorial2();
+
+    }
+    if(tutorialMode==1){
+      t1PageCnt++;  // case=6   case=10   case=11  case=12
+      tutorial1();
+    }
+    if(tutorialMode==3){
+      t3PageCnt++; // case=3  case=6  case=7
+      tutorial3();
+    }
+    if(tutorialMode==4){
+      t4PageCnt++;  // case=3
+      tutorial4();
+    }
+  },
+  'click .prevPageBtn':function(event){
+      if(tutorial2==2){
+        t2PageCnt--;
+
+      }
+  }
 
 })
-function tutorialSession1() {
-    // start point for tutorial 1
-    tutorialMode = 1; //tutorialSession1
-    // step 1.1 for tutorial, point to the land
-    t1PageCnt++;
-    tutorial1();
+function tutorialSession1(){
+  // start point for tutorial 1
+  tutorialMode=1; //tutorialSession1
+  // step 1.1 for tutorial, point to the land
+  t1PageCnt++;
+  tutorial1();
 
 }
-function tutorial1() {
-    switch (t1PageCnt) {
-        case 1:  // step 1.1 for tutorial, point to the land
-            // lock to prevent
-            //PanelControl(2);
+function tutorial1(){
+  switch (t1PageCnt) {
+    case 1:  // step 1.1 for tutorial, point to the land
+      // lock to prevent
+      if(panelCounter==3){
+      	PanelControl(2);
+      }
 
-            $('.crop3').attr('disabled', true);   // lock crop3
-            $('.menuButton').attr('disabled', true);  //notyet  lock menuButton
-            $('.plantButton').attr('disabled', true); //lock plantButton
-            $('.t1').attr('disabled', true); // lock t1
-            $('.t2').attr('disabled', true); // lock t2
-            $('.backCover').attr('disabled', true); // lock backCover
+      $('.crop3').attr('disabled', true);   // lock crop3
+      $('.menuButton').attr('disabled', true);  //notyet  lock menuButton
+      $('.plantButton').attr('disabled', true); //lock plantButton
+      $('.t1').attr('disabled', true); // lock t1
+      $('.t2').attr('disabled', true); // lock t2
+      $('.backCover').attr('disabled', true); // lock backCover
+      $('.question').attr('disabled', true); // lock question
 
-            if ($(".menuButton").hasClass("open") === true) {
-                $(".rightMenuIcon").fadeOut('normal');
-                $(".menuButton").removeClass("open");
+
+      if ($(".menuButton").hasClass("open") === true) {
+      	$(".rightMenuIcon").fadeOut('normal');
+        $(".menuButton").removeClass("open");
+      }
+
+      $(".property_shop").css("display", "none");
+      $(".mission_template").css("display", "none");
+      $(".rank_template").css("display", "none");
+
+      setCircleTarget($('.farmLand0'),true,"right",3,stringLand,false);
+      $('.farm').css("-webkit-animation","circleLandAnimation 1s infinite");
+      createCircle();
+      break;
+
+    case 2: // step 1.2 for tutorial, point to the crop
+      // no lock
+      $('.plantButton').attr('disabled', false); //lock plantButton
+      $('.farmLand0').attr('disabled', true);  // lock farmLand0
+      $('.removeLand').attr('disabled', true);  // lock removeLand
+
+      $('.farm').css("-webkit-animation",""); // no blingbling on land
+      HideCircle();
+      HideCircleText();
+      //sweetAlert("Nice! Look to your left ! ", "", "success");
+      setCircleTarget($('.property0'),true,"right",3,stringCrop,false);
+      createCircle();
+      break;
+
+    case 3:  // step 1.3 for tutorial, point to the croppedObject
+
+      setCircleTarget($('.croppedObject'),false,"down",2,stringHarvest,false);
+      HideCircle();
+      HideCircleText();
+      setTimeout(function () {
+          createCircle();
+      }, 3000);
+      break;
+
+    case 4:  // step 1.4 for tutorial, point to the stock
+      // lock
+      $('.crop3').attr('disabled',false);  //lock crop3
+      $('.plantButton').attr('disabled',true); // lock plantButton
+
+      setCircleTarget($('.crop3'),false,"right",6,stringcrop3,false);
+      $('.crop3').css("-webkit-animation","leftBtnAnimation 1s infinite");
+      createCircle();
+      break;
+
+    case 5:   // step 1.5 for tutorial, no button text, add new guidance in stock
+      // lock
+      $('.crop3').attr('disabled',true);  //lock crop3
+      $('.crop2').attr('disabled',true);  //lock crop2
+
+      $('.crop3').css("-webkit-animation","");
+      var tempSN=$('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)");
+      tempSN.css("-webkit-animation","stockNumAnimation 1s infinite");
+
+      setCircleTarget(tempSN,false,"right",4,stringStockNum,true);
+      createCircle(tempSN);
+      break;
+
+    case 6: // step 1.6 for tutorial, shift to right menu
+      // lock
+      $('.menuButton').attr('disabled', false);  //lock menuButton
+
+      $('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)").css("-webkit-animation","");
+
+      HideCircle();
+      setCircleTarget($('.menuButton'),false,"left",9,stringMenuButton,false);
+      createCircle($('.menuButton'));
+      $('.menuButton').css("-webkit-animation","menuBtnAnimation 1s infinite");
+      break;
+
+    case 7:  // step 1.6.2 , add new guidance in Mision
+      // lock
+      $('.btnShop').attr('disabled', true); // lock btnShop
+      $('.btnRank').attr('disabled', true); // lock btnRank
+      $('.menuButton').attr('disabled', true); // lock menuButton
+
+      $('.menuButton').css("-webkit-animation","");
+      setCircleTarget($('.btnMission'),false,"left",3.5,stringMissionBtn,false);
+      createCircle($('.btnMission'));
+      $('.btnMission').css("-webkit-animation","rightBtnAnimation 1s infinite");
+      break;
+
+    case 8:   // step 1.6.3
+      // lock
+      $('.btnMission').attr('disabled', true);   // lock btnMission
+
+      $('.btnMission').css("-webkit-animation","");
+      HideCircleText();
+      break;
+
+    case 9:  // step 1.7.1
+      //lock
+      $('#btn_mission_close').attr('disabled', true);  // lock btn_mission_close
+      $("input[id^='btn_mission_submit_']").attr('disabled', true); // btn_mission_submit_
+
+      var cTarget1=$('#mission_table').find("td:nth-child(1)");
+      cTarget1.css("-webkit-animation","missionAnimation 1s infinite");
+      setCircleTarget(cTarget1,false,"left",2,stringMissionName,true);
+      createCircle();
+      break;
+
+    case 10:  // step 1.7.2
+      $('#mission_table').find("td:nth-child(1)").css("-webkit-animation","");
+      var cTarget2=$('#mission_table').find("td:nth-child(2), td:nth-child(3)");
+      cTarget2.css("-webkit-animation","missionAnimation 1s infinite");
+      setCircleTarget(cTarget2,false,"left",2,stringMissionReq,true);
+      createCircle();
+      break;
+
+    case 11:  // step 1.7.3
+        $('#mission_table').find("td:nth-child(2), td:nth-child(3)").css("-webkit-animation","");
+        var cTarget3=$('#mission_table').find("td:nth-child(4)");
+        cTarget3.css("-webkit-animation","missionAnimation 1s infinite");
+        setCircleTarget(cTarget3,false,"left",3,stringMissionSub,true);
+        createCircle();
+      break;
+
+    case 12:  // step 1.7.4
+        // lock release
+        $('.crop3,.menuButton,.plantButton,.crop2,.btnMission,#btn_mission_close,.btnShop,.btnRank,.farmLand0,.removeLand').removeAttr('disabled');  //lock crop3
+        //lock menuButton
+        //lock plantButton
+        //lock crop2
+        //lock btnMission
+        //lock btn_mission_close
+        //lock btnShop
+        //lock btnRank
+        //lock farmLand0
+        //lock removeLand
+        $("input[id^='btn_mission_submit_']").removeAttr('disabled'); //btn_mission_submit_
+	$('.question').removeAttr('disabled'); // lock question
+
+        HideCircle();
+        HideCircleText();
+        $('.mission_template').css('display', 'none');
+
+        tutorialMode=0; // first tutorial session completed
+        t1PageCnt=0;
+
+
+        var character = Meteor.user().profile.basic.character;
+
+        swal({
+            title: "Let's see "+character+" tutorial !",
+            text: "",
+            type: "success",
+            showCancelButton: false
+        },
+        function(){
+
+            if(character=="Thief"){
+                tutorialSession3();   // thief
+            }
+            else if(character=="Guard"){
+                tutorialSession4();     // guard
             }
 
-            $(".property_shop").css("display", "none");
-            $(".mission_template").css("display", "none");
-            $(".rank_template").css("display", "none");
-
-            setCircleTarget($('.farmLand0'), true, "right", 3, stringLand, false);
-            $('.farm').css("-webkit-animation", "circleLandAnimation 1s infinite");
-            createCircle();
-            break;
-
-        case 2: // step 1.2 for tutorial, point to the crop
-            // no lock
-            $('.plantButton').attr('disabled', false); //lock plantButton
-            $('.farmLand0').attr('disabled', true);  // lock farmLand0
-            $('.removeLand').attr('disabled', true);  // lock removeLand
-
-            $('.farm').css("-webkit-animation", ""); // no blingbling on land
-            HideCircle();
-            HideCircleText();
-            //sweetAlert("Nice! Look to your left ! ", "", "success");
-            setCircleTarget($('.property0'), true, "right", 3, stringCrop, false);
-            createCircle();
-            break;
-
-        case 3:  // step 1.3 for tutorial, point to the croppedObject
-
-            setCircleTarget($('.croppedObject'), false, "down", 2, stringHarvest, false);
-            HideCircle();
-            HideCircleText();
-            setTimeout(function () {
-                createCircle();
-            }, 3000);
-            break;
-
-        case 4:  // step 1.4 for tutorial, point to the stock
-            // lock
-            $('.crop3').attr('disabled', false);  //lock crop3
-            $('.plantButton').attr('disabled', true); // lock plantButton
-
-            setCircleTarget($('.crop3'), false, "right", 6, stringcrop3, false);
-            $('.crop3').css("-webkit-animation", "leftBtnAnimation 1s infinite");
-            createCircle();
-            break;
-
-        case 5:   // step 1.5 for tutorial, no button text, add new guidance in stock
-            // lock
-            $('.crop3').attr('disabled', true);  //lock crop3
-            $('.crop2').attr('disabled', true);  //lock crop2
-
-            $('.crop3').css("-webkit-animation", "");
-            var tempSN = $('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)");
-            tempSN.css("-webkit-animation", "stockNumAnimation 1s infinite");
-
-            setCircleTarget(tempSN, false, "right", 4, stringStockNum, true);
-            createCircle(tempSN);
-            break;
-
-        case 6: // step 1.6 for tutorial, shift to right menu
-            // lock
-            $('.menuButton').attr('disabled', false);  //lock menuButton
-
-            $('.property_shop_table').find('tr:nth-child(2)').find("td:eq(1)").css("-webkit-animation", "");
-
-            HideCircle();
-            setCircleTarget($('.menuButton'), false, "left", 9, stringMenuButton, false);
-            createCircle($('.menuButton'));
-            $('.menuButton').css("-webkit-animation", "menuBtnAnimation 1s infinite");
-            break;
-
-        case 7:  // step 1.6.2 , add new guidance in Mision
-            // lock
-            $('.btnShop').attr('disabled', true); // lock btnShop
-            $('.btnRank').attr('disabled', true); // lock btnRank
-            $('.menuButton').attr('disabled', true); // lock menuButton
-
-            $('.menuButton').css("-webkit-animation", "");
-            setCircleTarget($('.btnMission'), false, "left", 3.5, stringMissionBtn, false);
-            createCircle($('.btnMission'));
-            $('.btnMission').css("-webkit-animation", "rightBtnAnimation 1s infinite");
-            break;
-
-        case 8:   // step 1.6.3
-            // lock
-            $('.btnMission').attr('disabled', true);   // lock btnMission
-
-            $('.btnMission').css("-webkit-animation", "");
-            HideCircleText();
-            break;
-
-        case 9:  // step 1.7.1
-            //lock
-            $('#btn_mission_close').attr('disabled', true);  // lock btn_mission_close
-            $("input[id^='btn_mission_submit_']").attr('disabled', true); // btn_mission_submit_
-
-            var cTarget1 = $('#mission_table').find("td:nth-child(1)");
-            cTarget1.css("-webkit-animation", "missionAnimation 1s infinite");
-            setCircleTarget(cTarget1, false, "left", 2, stringMissionName, true);
-            createCircle();
-            break;
-
-        case 10:  // step 1.7.2
-            $('#mission_table').find("td:nth-child(1)").css("-webkit-animation", "");
-            var cTarget2 = $('#mission_table').find("td:nth-child(2), td:nth-child(3)");
-            cTarget2.css("-webkit-animation", "missionAnimation 1s infinite");
-            setCircleTarget(cTarget2, false, "left", 2, stringMissionReq, true);
-            createCircle();
-            break;
-
-        case 11:  // step 1.7.3
-            $('#mission_table').find("td:nth-child(2), td:nth-child(3)").css("-webkit-animation", "");
-            var cTarget3 = $('#mission_table').find("td:nth-child(4)");
-            cTarget3.css("-webkit-animation", "missionAnimation 1s infinite");
-            setCircleTarget(cTarget3, false, "left", 3, stringMissionSub, true);
-            createCircle();
-            break;
-
-        case 12:  // step 1.7.4
-            // lock release
-            $('.crop3,.menuButton,.plantButton,.crop2,.btnMission,#btn_mission_close,.btnShop,.btnRank,.farmLand0,.removeLand').removeAttr('disabled');  //lock crop3
-            //lock menuButton
-            //lock plantButton
-            //lock crop2
-            //lock btnMission
-            //lock btn_mission_close
-            //lock btnShop
-            //lock btnRank
-            //lock farmLand0
-            //lock removeLand
-            $("input[id^='btn_mission_submit_']").removeAttr('disabled'); //btn_mission_submit_
+        });
 
 
-            HideCircle();
-            HideCircleText();
-            $('.mission_template').css('display', 'none');
+      break;
+    default:
 
-            tutorialMode = 0; // first tutorial session completed
-            t1PageCnt = 0;
-
-
-            var character = Meteor.user().profile.basic.character;
-
-            swal({
-                title: "Let's see " + character + " tutorial !",
-                text: "",
-                type: "success",
-                showCancelButton: false
-            },
-                function () {
-
-                    if (character == "Thief") {
-                        tutorialSession3();   // thief
-                    }
-                    else if (character == "Guard") {
-                        tutorialSession4();     // guard
-                    }
-
-                });
-
-
-            break;
-        default:
-
-    }
+  }
 }
-function tutorialSession2() {
+function tutorialSession2(){
 
-    // start point for tutorial 2
-    tutorialMode = 2;
-    // step 2.1 for tutorial, box description
-    t2PageCnt++;   // case=1
-    tutorial2();
+  // start point for tutorial 2
+  tutorialMode=2;
+  // step 2.1 for tutorial, box description
+  t2PageCnt++;   // case=1
+  tutorial2();
 
 }
-function tutorial2() {
+function tutorial2(){
 
-    switch (t2PageCnt) {
-        case 1:  // step 2.1 for tutorial, box description
-            // lock
-            $('.farmLand0').attr('disabled', true); // lock2 farmLand0
-            $('.removeLand').attr('disabled', true); // lock2 removeLand
-            $('.plantButton').attr('disabled', true); // lock2 plantButton
-            $('.crop3').attr('disabled', true); // lock2 crop3
-            $('.crop2').attr('disabled', true); // lock2 crop2
-            $('.menuButton').attr('disabled', true); // lock2 menuButton
-            if ($(".menuButton").hasClass("open") === true) {
-                $(".rightMenuIcon").fadeOut('normal');
-                $(".menuButton").removeClass("open");
-            }
-            $('.t1').attr('disabled', true); // lock t1
-            $('.t2').attr('disabled', true); // lock t2
-            $('.backCover').attr('disabled', true); // lock backCover
+  switch (t2PageCnt) {
+    case 1:  // step 2.1 for tutorial, box description
+      // lock
+      $('.farmLand0').attr('disabled', true); // lock2 farmLand0
+      $('.removeLand').attr('disabled', true); // lock2 removeLand
+      $('.plantButton').attr('disabled', true); // lock2 plantButton
+      $('.crop3').attr('disabled', true); // lock2 crop3
+      $('.crop2').attr('disabled', true); // lock2 crop2
+      $('.menuButton').attr('disabled', true); // lock2 menuButton
+      if ($(".menuButton").hasClass("open") === true) {
+          $(".rightMenuIcon").fadeOut('normal');
+          $(".menuButton").removeClass("open");
+      }
+      $('.t1').attr('disabled', true); // lock t1
+      $('.t2').attr('disabled', true); // lock t2
+      $('.backCover').attr('disabled', true); // lock backCover
+      $('.question').attr('disabled', true);  // lock question
 
-            $(".property_shop").css("display", "none");
-            $(".mission_template").css("display", "none");
-            $(".rank_template").css("display", "none");
+      $(".property_shop").css("display", "none");
+      $(".mission_template").css("display", "none");
+      $(".rank_template").css("display", "none");
 
-            $('.guideBox').fadeIn();
-            break;
+      $('.guideBox').fadeIn();
+      break;
 
-        case 2:  // step 2.2 for tutorial session2, next button for introduce rating
-            //lock
-            $('.menuButton').attr('disabled', false); // lock2 menuButton
+    case 2:  // step 2.2 for tutorial session2, next button for introduce rating
+      //lock
+      $('.menuButton').attr('disabled', false); // lock2 menuButton
 
-            $('.guideBox').hide();
+      $('.guideBox').hide();
 
-            setCircleTarget($('.menuButton'), false, "left", 8, stringMenuButton2, false);
-            createCircle($('.menuButton'));
-            $('.menuButton').css("-webkit-animation", "menuBtnAnimation 1s infinite");
-            break;
+      setCircleTarget($('.menuButton'),false,"left",8,stringMenuButton2,false);
+      createCircle($('.menuButton'));
+      $('.menuButton').css("-webkit-animation","menuBtnAnimation 1s infinite");
+      break;
 
-        case 3:  // step 2.3 for tutorial, for click rating button
-            // lock
-            $('.btnRank').attr('disabled', true); // lock2 btnRank
-            $('.btnMission').attr('disabled', true);   // lock2 btnMission
-            $('.menuButton').attr('disabled', true); // lock2 menuButton
+    case 3:  // step 2.3 for tutorial, for click rating button
+      // lock
+      $('.btnRank').attr('disabled', true); // lock2 btnRank
+      $('.btnMission').attr('disabled', true);   // lock2 btnMission
+      $('.menuButton').attr('disabled', true); // lock2 menuButton
 
-            $('.menuButton').css("-webkit-animation", "");
-            setCircleTarget($('.btnShop'), false, "left", 3.5, stringRatingButton, false);
-            createCircle($('.btnShop'));
-            $('.btnShop').css("-webkit-animation", "rightBtnAnimation 1s infinite");
-            break;
-        case 4:  //step 2.4 .1 for tutorial, for rating
-            //lock
-            $('.btnShop').attr('disabled', true);  // lock2 btnShop
+      $('.menuButton').css("-webkit-animation","");
+      setCircleTarget($('.btnShop'),false,"left",3.5,stringRatingButton,false);
+      createCircle($('.btnShop'));
+      $('.btnShop').css("-webkit-animation","rightBtnAnimation 1s infinite");
+      break;
+    case 4:  //step 2.4 .1 for tutorial, for rating
+      //lock
+      $('.btnShop').attr('disabled', true);  // lock2 btnShop
 
-            $('.btnShop').css("-webkit-animation", "");
-            HideCircleText();
-            break;
+      $('.btnShop').css("-webkit-animation","");
+      HideCircleText();
+      break;
 
-        case 5:  // step 2.5.1 for tutorial, for rating tolerance
-            // lock
-            $('#btn_property_save').attr('disabled', true);  // lock2 btn_property_save
-            $('#btn_property_cancel').attr('disabled', true);  // lock2 btn_property_cancel
-            $('#btn_shop_close').attr('disabled', true);  // lock2 btn_shop_close
-            //set
-            $('.shop_content').css("overflow", "hidden");
-            //$('.tipToleranceText').css(styleVisible);
-            $('.ratingRange').css(styleAnimation);
-            setCircleTarget($('.RatingTH'), false, "down", 3, stringRatingTor, true);
-            createCircle();
-            break;
+    case 5:  // step 2.5.1 for tutorial, for rating tolerance
+      // lock
+      $('#btn_property_save').attr('disabled', true);  // lock2 btn_property_save
+      $('#btn_property_cancel').attr('disabled', true);  // lock2 btn_property_cancel
+      $('#btn_shop_close').attr('disabled', true);  // lock2 btn_shop_close
+      //set
+      $('.shop_content').css("overflow","hidden");
+      //$('.tipToleranceText').css(styleVisible);
+      $('.ratingRange').css(styleAnimation);
+      setCircleTarget($('.RatingTH'),false,"down",3,stringRatingTor,true);
+      createCircle();
+      break;
 
-        case 6:  // step 2.5.2 for tutorial, for rating
-            //reset
-            //$('.tipToleranceText').css(styleHidden);
-            $('.ratingRange').css("-webkit-animation", "");
-            //set
-            //$('.tipRatingText').css(styleVisible);
-            var tempPST2 = $('#property_table').find("td:nth-child(2), th:nth-child(2)");
-            tempPST2.css(styleAnimation);
-            setCircleTarget(tempPST2, false, "left", 2, stringRating, true);
-            createCircle();
-            break;
+    case 6:  // step 2.5.2 for tutorial, for rating
+      //reset
+      //$('.tipToleranceText').css(styleHidden);
+      $('.ratingRange').css("-webkit-animation","");
+      //set
+      //$('.tipRatingText').css(styleVisible);
+      var tempPST2=$('#property_table').find("td:nth-child(2), th:nth-child(2)");
+      tempPST2.css(styleAnimation);
+      setCircleTarget(tempPST2,false,"left",2,stringRating,true);
+      createCircle();
+      break;
 
-        case 7:  // step 2.5.3 for tutorial, for avg rating
-            //reset
-            //$('.tipRatingText').css(styleHidden);
-            $('#property_table').find("td:nth-child(2), th:nth-child(2)").css("-webkit-animation", "");
-            //set
-            //$('.tipAvgRatingText').css(styleVisible);
-            var tempPST3 = $('#property_table').find("td:nth-child(3), th:nth-child(3)");
-            tempPST3.css(styleAnimation);
-            setCircleTarget(tempPST3, false, "left", 2.5, stringRatingAvg, true);
-            createCircle();
-            break;
+    case 7:  // step 2.5.3 for tutorial, for avg rating
+      //reset
+      //$('.tipRatingText').css(styleHidden);
+      $('#property_table').find("td:nth-child(2), th:nth-child(2)").css("-webkit-animation","");
+      //set
+      //$('.tipAvgRatingText').css(styleVisible);
+      var tempPST3=$('#property_table').find("td:nth-child(3), th:nth-child(3)");
+      tempPST3.css(styleAnimation);
+      setCircleTarget(tempPST3,false,"left",2.5,stringRatingAvg,true);
+      createCircle();
+      break;
 
-        case 8:  // step 2.5.4 transfer rating to crop3 button;
-            //$('.tipAvgRatingText').css(styleHidden);
-            $('#property_table').find("td:nth-child(3), th:nth-child(3)").css("-webkit-animation", "");
+    case 8:  // step 2.5.4 transfer rating to crop3 button;
+      //$('.tipAvgRatingText').css(styleHidden);
+      $('#property_table').find("td:nth-child(3), th:nth-child(3)").css("-webkit-animation","");
 
-            sweetAlert("One last thing you need to be careful ! ", "", "warning");
+      sweetAlert("One last thing you need to be careful ! ","","warning");
 
-            setCircleTarget($('.crop3'), false, "right", 6, stringcrop3, false);
-            $('.crop3').css("-webkit-animation", "leftBtnAnimation 1s infinite");
-            createCircle();
+      setCircleTarget($('.crop3'),false,"right",6,stringcrop3,false);
+      $('.crop3').css("-webkit-animation","leftBtnAnimation 1s infinite");
+      createCircle();
 
-            //lock
-            $('.crop3').attr('disabled', false);  // lock2 crop3
+      //lock
+      $('.crop3').attr('disabled', false);  // lock2 crop3
 
-            break;
+      break;
 
-        case 9:  // step 2.6   for trade number
-            // lock
-            $('#btn_tradeable_save').attr('disabled', true);   // lock2 btn_tradeable_save
-            $('#btn_tradeable_cancel').attr('disabled', true);  // lock2 btn_tradeable_cancel
-            $('.crop3').attr('disabled', true);   // lock2 crop3
+    case 9:  // step 2.6   for trade number
+      // lock
+      $('#btn_tradeable_save').attr('disabled', true);   // lock2 btn_tradeable_save
+      $('#btn_tradeable_cancel').attr('disabled', true);  // lock2 btn_tradeable_cancel
+      $('.crop3').attr('disabled', true);   // lock2 crop3
 
-            $('.crop3').css("-webkit-animation", "");
-            $('#btn_tradeable_save').css("-webkit-animation", "leftBtnAnimation 1s infinite");
-            var tempTN = $('#property_trade_table').find('tr:nth-child(2)').find("td:eq(2)");
-            tempTN.css("-webkit-animation", "leftBtnAnimation 1s infinite");
-            setCircleTarget(tempTN, "false", "right", 6, stringTradeNum, true);
-            createCircle();
-            break;
+      $('.crop3').css("-webkit-animation","");
+      $('#btn_tradeable_save').css("-webkit-animation","leftBtnAnimation 1s infinite");
+      var tempTN=$('#property_trade_table').find('tr:nth-child(2)').find("td:eq(2)");
+      tempTN.css("-webkit-animation","leftBtnAnimation 1s infinite");
+      setCircleTarget(tempTN,"false","right",6,stringTradeNum,true);
+      createCircle();
+      break;
 
-        case 10:        //step 2.7  for end
-            // lock2  release
-            $('.menuButton,.menuButton,.plantButton,.crop3,.crop2').removeAttr('disabled');
-            //lock menuButton
-            // lock plantButton
-            // lock crop3
-            // lock crop2
-            $('.farmLand0,.removeLand,.btnRank,.btnMission,.btnShop').removeAttr('disabled');
-            // lock farmLand0
-            // lock removeLand
-            // lock2 btnRank
-            // lock2 btnMission
-            // lock2 btnShop
-            $('#btn_property_save,#btn_property_cancel,#btn_shop_close,#btn_tradeable_save,#btn_tradeable_cancel').removeAttr('disabled');
-            // lock2 btn_property_save
-            // lock2 btn_property_cancel
-            // lock2 btn_shop_close
-            // lock2 btn_tradeable_save
-            // lock2 btn_tradeable_cancel
-            $('.t1').removeAttr('disabled'); // lock t1
-            $('.t2').removeAttr('disabled'); // lock t2
-            $('.backCover').removeAttr('disabled'); // lock backCover
+    case 10:        //step 2.7  for end
+      // lock2  release
+      $('.menuButton,.menuButton,.plantButton,.crop3,.crop2').removeAttr('disabled');
+      //lock menuButton
+      // lock plantButton
+      // lock crop3
+      // lock crop2
+      $('.farmLand0,.removeLand,.btnRank,.btnMission,.btnShop').removeAttr('disabled');
+      // lock farmLand0
+      // lock removeLand
+      // lock2 btnRank
+      // lock2 btnMission
+      // lock2 btnShop
+      $('#btn_property_save,#btn_property_cancel,#btn_shop_close,#btn_tradeable_save,#btn_tradeable_cancel').removeAttr('disabled');
+      // lock2 btn_property_save
+      // lock2 btn_property_cancel
+      // lock2 btn_shop_close
+      // lock2 btn_tradeable_save
+      // lock2 btn_tradeable_cancel
+      $('.t1').removeAttr('disabled'); // lock t1
+      $('.t2').removeAttr('disabled'); // lock t2
+      $('.backCover').removeAttr('disabled'); // lock backCover
+      $('.question').removeAttr('disabled'); // lock question
 
-            $('#btn_tradeable_save').css("-webkit-animation", "");
-            $('.shop_content').css("overflow", "auto");
-            $('#property_trade_table').find('tr:nth-child(2)').find("td:eq(2)").css("-webkit-animation", "");
-            HideCircle();
-            HideCircleText();
-            $('.property_shop').css('display', 'none');
-            sweetAlert("Congratulations ! ", "Go and play fun ! ", "success");
-            tutorialMode = 0; // second tutorial session2 completed
-            t2PageCnt = 0;
-            break;
-        default:
+      $('#btn_tradeable_save').css("-webkit-animation","");
+      $('.shop_content').css("overflow","auto");
+      $('#property_trade_table').find('tr:nth-child(2)').find("td:eq(2)").css("-webkit-animation","");
+      HideCircle();
+      HideCircleText();
+      $('.property_shop').css('display', 'none');
+      sweetAlert("Congratulations ! ","Go and play fun ! ","success");
+      tutorialMode=0; // second tutorial session2 completed
+      t2PageCnt=0;
+      break;
+    default:
 
-    }
+  }
 }
 
-function tutorialSession3() {
-    // start point for tutorial 3
-    tutorialMode = 3;
-    // step 3.1 for tutorial, circle color on avator
-    t3PageCnt++;   // case=1
-    tutorial3();
+function tutorialSession3(){
+  // start point for tutorial 3
+  tutorialMode=3;
+  // step 3.1 for tutorial, circle color on avator
+  t3PageCnt++;   // case=1
+  tutorial3();
 }
-function tutorial3() {
-    switch (t3PageCnt) {
-        case 1:   // step 3.1   start
-            // lock
-            $('.menuButton').attr('disabled', true);  // lock3 menuButton
-            $('.crop3').attr('disabled', true);  // lock3 crop3
-            $('.crop2').attr('disabled', true);  // lock3 crop2
-            $('.cropLand').attr('disabled', true);  // lock3 landList
-            $('.crop').attr('disabled', true);  // lock3 cropListDiv
+function tutorial3(){
+  switch (t3PageCnt) {
+    case 1:   // step 3.1   start
+      // lock
+      $('.menuButton').attr('disabled', true);  // lock3 menuButton
+      $('.crop3').attr('disabled', true);  // lock3 crop3
+      $('.crop2').attr('disabled', true);  // lock3 crop2
+      $('.cropLand').attr('disabled', true);  // lock3 landList
+      $('.crop').attr('disabled', true);  // lock3 cropListDiv
 
 
-            $('.imgContainer').css("-webkit-animation", "imgContainerAnimation 1s infinite");
-            setCircleTarget($('.characterImg'), false, "right", 4, stringCharSwitchThief, false);
-            createCircle();
+      $('.imgContainer').css("-webkit-animation","imgContainerAnimation 1s infinite");
+      setCircleTarget($('.characterImg'),false,"right",4,stringCharSwitchThief,false);
+      createCircle();
 
-            break;
+      break;
 
-        case 2:   // step 3.2   for tutorial3  click to switch
-            //lock
-            $('.nextHome').attr('disabled', true);  // lock3 nextHome
-            $('#btn_tradeable_save').attr('disabled', true);  // lock3 btn_tradeable_save
-            $('#btn_tradeable_cancel').attr('disabled', true); // lock3 btn_tradeable_cancel
-            $('.imgContainer').attr('disabled', true);   // lock3 imgContainer
-
-
-            $('.imgContainer').css("-webkit-animation", "");
-            $('.userName h3').css("-webkit-animation", "characterStatusAnimation 1s infinite");
-            setCircleTarget($('.userName h3'), false, "right", 3, stringStolenName, true);
-            createCircle();
-
-            break;
-
-        case 3:  // step 3.3   for tutorial3 name to exp and sta
-            $('.userName h3').css("-webkit-animation", "");
-            $('.userBarContainer').css("-webkit-animation", "characterStatusAnimation 1s infinite");
-            setCircleTarget($('.userName h3'), false, "right", 2, stringThiefEXPSTA, true);
-            createCircle();
-            break;
-
-        case 4:  // step 3.4  for tutorial3   sta to steal the crop
-            $('.userBarContainer').css("-webkit-animation", "");
-            setCircleTarget($('.userName h3'), false, "right", 2, stringSteal, false);
-            createCircle();
-            lockLand = false;
-            break;
-
-        case 5:  // step 3.5
-            $('#property_trade_table').css("-webkit-animation", "characterStatusAnimation 1s infinite");
-            setCircleTarget($('.crop3'), false, "right", 9, stringStock, true);
-            createCircle();
-            break;
-
-        case 6:  // step 3.6
-            $('#property_trade_table').css("-webkit-animation", "");
-            $('.nextHome').css("-webkit-animation", "nextHomeAnimation 1s infinite");
-            setCircleTarget($('.nextHome'), false, "right", 8, stringNextSwitch, true);
-            createCircle();
-            break;
-
-        case 7:  // setp 3.7
-            // lock release
-            $('.menuButton').removeAttr('disabled');  // lock3 menuButton
-            $('.crop3,.crop2,.cropLand,.crop').removeAttr('disabled'); // lock3 crop3
-            // lock3 crop2
-            // lock3 landList
-            // lock3 cropListDiv
-            $('.nextHome,#btn_tradeable_save,#btn_tradeable_cancel,.imgContainer').removeAttr('disabled');
-            // lock3 nextHome
-            // lock3 btn_tradeable_save
-            // lock3 btn_tradeable_cancel
-            // lock3 imgContainer
-            $('.t1').removeAttr('disabled'); // lock t1
-            $('.t2').removeAttr('disabled'); // lock t2
-            $('.backCover').removeAttr('disabled'); // lock backCover
-
-            $('.nextHome').css("-webkit-animation", "");
-            HideCircleText();
-            sweetAlert("Good luck ! ", "Wish you could steal what you want.", "success");
+    case 2:   // step 3.2   for tutorial3  click to switch
+      //lock
+      $('.nextHome').attr('disabled', true);  // lock3 nextHome
+      $('#btn_tradeable_save').attr('disabled', true);  // lock3 btn_tradeable_save
+      $('#btn_tradeable_cancel').attr('disabled', true); // lock3 btn_tradeable_cancel
+      $('.imgContainer').attr('disabled', true);   // lock3 imgContainer
 
 
+      $('.imgContainer').css("-webkit-animation","");
+      $('.userName h3').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('.userName h3'),false,"right",3,stringStolenName,true);
+      createCircle();
 
-            t3PageCnt = 0;
-            tutorialMode = 0;
-            lockLand = true;
-            break;
+      break;
 
-        default:
+    case 3:  // step 3.3   for tutorial3 name to exp and sta
+      $('.userName h3').css("-webkit-animation","");
+      $('.userBarContainer').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('.userName h3'),false,"right",2,stringThiefEXPSTA,true);
+      createCircle();
+      break;
 
-    }
+    case 4:  // step 3.4  for tutorial3   sta to steal the crop
+      $('.userBarContainer').css("-webkit-animation","");
+      setCircleTarget($('.userName h3'),false,"right",2,stringSteal,false);
+      createCircle();
+      lockLand=false;
+      break;
+
+    case 5:  // step 3.5
+      $('#property_trade_table').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('.crop3'),false,"right",9,stringStock,true);
+      createCircle();
+      break;
+
+    case 6:  // step 3.6
+      $('#property_trade_table').css("-webkit-animation","");
+      $('.nextHome').css("-webkit-animation","nextHomeAnimation 1s infinite");
+      setCircleTarget($('.nextHome'),false,"right",8,stringNextSwitch,true);
+      createCircle();
+      break;
+
+    case 7:  // setp 3.7
+      // lock release
+      $('.menuButton').removeAttr('disabled');  // lock3 menuButton
+      $('.crop3,.crop2,.cropLand,.crop').removeAttr('disabled'); // lock3 crop3
+      // lock3 crop2
+      // lock3 landList
+      // lock3 cropListDiv
+      $('.nextHome,#btn_tradeable_save,#btn_tradeable_cancel,.imgContainer').removeAttr('disabled');
+      // lock3 nextHome
+      // lock3 btn_tradeable_save
+      // lock3 btn_tradeable_cancel
+      // lock3 imgContainer
+      $('.t1').removeAttr('disabled'); // lock t1
+      $('.t2').removeAttr('disabled'); // lock t2
+      $('.backCover').removeAttr('disabled'); // lock backCover
+
+      $('.nextHome').css("-webkit-animation","");
+      HideCircleText();
+      sweetAlert("Good luck ! ","Wish you could steal what you want.","success");
+
+
+
+      t3PageCnt=0;
+      tutorialMode=0;
+      lockLand=true;
+      break;
+
+    default:
+
+  }
 }
-function tutorialSession4() {
+function tutorialSession4(){
     // start point for tutorial 4
-    tutorialMode = 4;
+    tutorialMode=4;
     // step 4.1 for tutorial, circle color on avator
 
-    Meteor.call('updateFarmerId', s_Id, 0);  // add test data otherwise need to wait match-making
+    Meteor.call('updateFarmerId',s_Id,0);  // add test data otherwise need to wait match-making
     t4PageCnt++;   // case=1
     tutorial4();
 
     // Meteor.call('updateFarmerId',s_Id,-1); // reset test data o
     // updateSyndicateProgress(s_Id,0);
 }
-function tutorial4() {
-    switch (t4PageCnt) {
-        case 1:   // step 4.1   start
-            // lock
-            $('.menuButton').attr('disabled', true);  // lock4 menuButton
-            $('.crop3').attr('disabled', true);  // lock4 crop3
-            $('.crop2').attr('disabled', true);  // lock4 crop2
-            $('.cropLand').attr('disabled', true);  // lock4 landList
-            $('.crop').attr('disabled', true);  // lock4 cropListDiv
+function tutorial4(){
+  switch (t4PageCnt) {
+    case 1:   // step 4.1   start
+      // lock
+      $('.menuButton').attr('disabled', true);  // lock4 menuButton
+      $('.crop3').attr('disabled', true);  // lock4 crop3
+      $('.crop2').attr('disabled', true);  // lock4 crop2
+      $('.cropLand').attr('disabled', true);  // lock4 landList
+      $('.crop').attr('disabled', true);  // lock4 cropListDiv
 
 
-            $('.imgContainer').css("-webkit-animation", "imgContainerAnimation 1s infinite");
-            setCircleTarget($('.characterImg'), false, "right", 4, stringCharSwitchGuard, false);
-            createCircle();
+      $('.imgContainer').css("-webkit-animation","imgContainerAnimation 1s infinite");
+      setCircleTarget($('.characterImg'),false,"right",4,stringCharSwitchGuard,false);
+      createCircle();
 
-            break;
+      break;
 
-        case 2:  // step 4.2   for tutorial4  click to switch
-            //lock
-            $('#btn_tradeable_save').attr('disabled', true);  // lock4 btn_tradeable_save
-            $('#btn_tradeable_cancel').attr('disabled', true); // lock4 btn_tradeable_cancel
-            $('.characterImg').attr('disabled', true);   // lock4 imgContainer
+    case 2:  // step 4.2   for tutorial4  click to switch
+      //lock
+      $('#btn_tradeable_save').attr('disabled', true);  // lock4 btn_tradeable_save
+      $('#btn_tradeable_cancel').attr('disabled', true); // lock4 btn_tradeable_cancel
+      $('.characterImg').attr('disabled', true);   // lock4 imgContainer
 
 
-            $('.imgContainer').css("-webkit-animation", "");
-            $('.characterList').css("-webkit-animation", "characterStatusAnimation 1s infinite");
-            setCircleTarget($('#hitsBoard'), false, "down", 3, stringGuardEXPSTA, true);
-            createCircle();
+      $('.imgContainer').css("-webkit-animation","");
+      $('.characterList').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('#hitsBoard'),false,"down",3,stringGuardEXPSTA,true);
+      createCircle();
 
-            break;
+      break;
 
-        case 3:  // step 4.3   for tutorial4  click next button to
-            $('.characterList').css("-webkit-animation", "");
-            setCircleTarget($('#hitsBoard'), false, "down", 3, stringGuardClick, false);
-            createCircle();
-            lockThief = false;
-            break;
+    case 3:  // step 4.3   for tutorial4  click next button to
+      $('.characterList').css("-webkit-animation","");
+      setCircleTarget($('#hitsBoard'),false,"down",3,stringGuardClick,false);
+      createCircle();
+      lockThief=false;
+      break;
 
-        case 4:  // step 4.4
-            $('#property_trade_table').css("-webkit-animation", "characterStatusAnimation 1s infinite");
-            setCircleTarget($('.crop3'), false, "right", 8, stringGuardLevel, true);
-            createCircle();
-            break;
+    case 4:  // step 4.4
+      $('#property_trade_table').css("-webkit-animation","characterStatusAnimation 1s infinite");
+      setCircleTarget($('.crop3'),false,"right",8,stringGuardLevel,true);
+      createCircle();
+      break;
 
-        case 5:  // step 4.5
-            // lock
-            $('.menuButton,.crop3,.crop2,.cropLand,.crop').removeAttr('disabled');
-            // lock4 menuButton
-            // lock4 crop3
-            // lock4 crop2
-            // lock4 landList
-            // lock4 cropListDiv
-            $('#btn_tradeable_save,#btn_tradeable_cancel,.characterImg').removeAttr('disabled');
-            // lock4 btn_tradeable_save
-            // lock4 btn_tradeable_cancel
-            // lock4 imgContainer
-            $('.t1').removeAttr('disabled'); // lock t1
-            $('.t2').removeAttr('disabled'); // lock t2
-            $('.backCover').removeAttr('disabled'); // lock backCover
+    case 5:  // step 4.5
+      // lock
+      $('.menuButton,.crop3,.crop2,.cropLand,.crop').removeAttr('disabled');
+      // lock4 menuButton
+      // lock4 crop3
+      // lock4 crop2
+      // lock4 landList
+      // lock4 cropListDiv
+      $('#btn_tradeable_save,#btn_tradeable_cancel,.characterImg').removeAttr('disabled');
+      // lock4 btn_tradeable_save
+      // lock4 btn_tradeable_cancel
+      // lock4 imgContainer
+      $('.t1').removeAttr('disabled'); // lock t1
+      $('.t2').removeAttr('disabled'); // lock t2
+      $('.backCover').removeAttr('disabled'); // lock backCover
 
-            $('#property_trade_table').css("-webkit-animation", "");
-            HideCircleText();
-            sweetAlert("Excellent ! ", "Go to catch more !", "success");
-            tutorialMode = 0;
-            lockThief = true;
-            Meteor.call('updateFarmerId', s_Id, -1); // reset test data o
-            Meteor.call('updateSyndicateProgress', s_Id, 0);
-            //updateSyndicateProgress(s_Id,0);
-            break;
+      $('#property_trade_table').css("-webkit-animation","");
+      HideCircleText();
+      sweetAlert("Excellent ! ","Go to catch more !","success");
+      tutorialMode=0;
+      lockThief=true;
+      Meteor.call('updateFarmerId',s_Id,-1); // reset test data o
+      Meteor.call('updateSyndicateProgress', s_Id, 0);
+      //updateSyndicateProgress(s_Id,0);
+      break;
 
-        default:
+    default:
 
-    }
+  }
 }
 // for create tutorial highlight circle by the div class
-function createCircle() {
-    if (tutorialMode == 0) {
-        return;
-    }
-    // if(targetCircleTemp!=targetCircleDiv){
-    //   // for reset default value
-    //   resizeWidth=2;
-    //   circleNeed=true;
-    // }
-    // targetCircleTemp=targetCircleDiv;
-    var topT = targetCircleDiv[0].getBoundingClientRect().top;
-    var leftT = targetCircleDiv[0].getBoundingClientRect().left;
-    var heightT = targetCircleDiv.height();
-    var widthT = targetCircleDiv.width();
-    console.log(topT + "," + leftT + "," + heightT + "," + widthT);
-    // top: topT-heightT/4.5,
-    // left: leftT-widthT/7.5,
-    //(targetCircleDiv[0].className.split(" ")[0])!=("croppedObject")
-    if (circleNeed == true) {
-        var cricleStyle = {
-            top: topT - (0.25 * heightT),
-            left: leftT - ((1.5 * heightT - widthT) / 2),
-            width: heightT * 1.5,
-            height: heightT * 1.5,
-            position: "absolute",
-            opacity: 1,
-            "border": "2px solid rgb(255, 31, 0)",
-            "border-radius": "99em",
-            "z-index": 99,
-            "-webkit-animation": "circleCorlorAnimation 1s infinite"
-        };
-        $('.guideCircleStatus').css(cricleStyle);
-    } else {
-        // not to draw circle, but draw text.
-    }
-    console.log(leftT);
-    createTip(topT, leftT, heightT, widthT, currentString, resizeWidth);
-    // if(targetCircleTemp!=targetCircleDiv){
-    //   // for reset default value
-    //   resizeWidth=2;
-    //   circleNeed=true;
-    // }
-    // targetCircleTemp=targetCircleDiv;
+function createCircle(){
+  if (tutorialMode==0){
+    return;
+  }
+  // if(targetCircleTemp!=targetCircleDiv){
+  //   // for reset default value
+  //   resizeWidth=2;
+  //   circleNeed=true;
+  // }
+  // targetCircleTemp=targetCircleDiv;
+  var topT=targetCircleDiv[0].getBoundingClientRect().top;
+  var leftT = targetCircleDiv[0].getBoundingClientRect().left;
+  var heightT=targetCircleDiv.height();
+  var widthT=targetCircleDiv.width();
+  console.log(topT+","+leftT+","+heightT+","+widthT);
+      // top: topT-heightT/4.5,
+      // left: leftT-widthT/7.5,
+      //(targetCircleDiv[0].className.split(" ")[0])!=("croppedObject")
+  if(circleNeed==true){
+    var cricleStyle={
+      top: topT-(0.25*heightT),
+      left: leftT-((1.5*heightT-widthT)/2),
+      width: heightT*1.5,
+      height: heightT*1.5,
+      position:"absolute",
+      opacity:1,
+      "border":"2px solid rgb(255, 31, 0)",
+      "border-radius":"99em",
+      "z-index":99,
+      "-webkit-animation":"circleCorlorAnimation 1s infinite"
+    };
+    $('.guideCircleStatus').css(cricleStyle);
+  }else{
+  // not to draw circle, but draw text.
+  }
+  console.log(leftT);
+  createTip(topT,leftT,heightT,widthT,currentString,resizeWidth);
+  // if(targetCircleTemp!=targetCircleDiv){
+  //   // for reset default value
+  //   resizeWidth=2;
+  //   circleNeed=true;
+  // }
+  // targetCircleTemp=targetCircleDiv;
 }
-function createTip(_cTop, _cLeft, _cHeight, _cWidth, _tString, _resizeWidth) {
-    if (stringPosition == "right") {
-        var tipStyle = {
-            position: "absolute",
-            opacity: 1,
-            top: _cTop + (_cHeight / 3),
-            left: _cLeft + (_cWidth * 5 / 4),
-            // width:_resizeWidth*_cWidth,
-            "max-width": _resizeWidth * _cWidth,
-            // height:"100px",
-            "line-height": "24px",
-            "font-size": "20px",
-            padding: "30px",
-            "border-radius": "15px",
-            "background-color": "rgb(255, 255, 255)",
-            "z-index": 100002,
-            "transition": ".3s",
-        };
-    }
-    if (stringPosition == "down") {
-        var tipStyle = {
-            position: "absolute",
-            opacity: 1,
-            top: _cTop + (_cHeight * 5 / 4),
-            left: _cLeft - (_cWidth * 0.5),
-            // width:_resizeWidth*_cWidth,
-            "max-width": _resizeWidth * _cWidth,
-            // height:"100px",
-            "line-height": "24px",
-            "font-size": "20px",
-            padding: "30px",
-            "border-radius": "15px",
-            "background-color": "rgb(255, 255, 255)",
-            "z-index": 120,
-        };
-    }
-    if (stringPosition == "left") {
-        var tipStyle = {
-            position: "absolute",
-            opacity: 1,
-            top: _cTop + (_cHeight * 0.25),
-            left: _cLeft - (_cWidth * _resizeWidth),
-            width: _resizeWidth * _cWidth,
-            // "max-width": "400px",
-            // height:"100px",
-            "line-height": "24px",
-            "font-size": "20px",
-            padding: "30px",
-            "border-radius": "15px",
-            "background-color": "rgb(255, 255, 255)",
-            "z-index": 120,
-        };
-    }
-    $('.guideCircleText').css(tipStyle);
-    if (tPageBtn == true) {
-        $('.guideCircleText').html("<div><div>" + _tString + "</div><div class='pageBtn'><div class='nextPageBtn'>Next</div><div></div>");
-    } else {
-        $('.guideCircleText').text(_tString);
-    }
+function createTip(_cTop,_cLeft,_cHeight,_cWidth,_tString,_resizeWidth){
+  if(stringPosition=="right"){
+    var tipStyle={
+      position:"absolute",
+      opacity:1,
+      top:_cTop+(_cHeight/3),
+      left:_cLeft+(_cWidth*5/4),
+      // width:_resizeWidth*_cWidth,
+      "max-width":_resizeWidth*_cWidth,
+      // height:"100px",
+      "line-height":"24px",
+      "font-size": "20px",
+      padding:"30px",
+      "border-radius":"15px",
+      "background-color":"rgb(255, 255, 255)",
+      "z-index":120,
+      "transition":".3s",
+    };
+  }
+  if(stringPosition=="down"){
+    var tipStyle={
+      position:"absolute",
+      opacity:1,
+      top:_cTop+(_cHeight*5/4),
+      left:_cLeft-(_cWidth*0.5),
+      // width:_resizeWidth*_cWidth,
+      "max-width":_resizeWidth*_cWidth,
+      // height:"100px",
+      "line-height":"24px",
+      "font-size": "20px",
+      padding:"30px",
+      "border-radius":"15px",
+      "background-color":"rgb(255, 255, 255)",
+      "z-index":120,
+    };
+  }
+  if(stringPosition=="left"){
+    var tipStyle={
+      position:"absolute",
+      opacity:1,
+      top:_cTop+(_cHeight*0.25),
+      left:_cLeft-(_cWidth*_resizeWidth),
+      width:_resizeWidth*_cWidth,
+      // "max-width": "400px",
+      // height:"100px",
+      "line-height":"24px",
+      "font-size": "20px",
+      padding:"30px",
+      "border-radius":"15px",
+      "background-color":"rgb(255, 255, 255)",
+      "z-index":120,
+    };
+  }
+  $('.guideCircleText').css(tipStyle);
+  if(tPageBtn==true){
+    $('.guideCircleText').html("<div><div>"+_tString+"</div><div class='pageBtn'><div class='nextPageBtn'>Next</div><div></div>");
+  }else {
+    $('.guideCircleText').text(_tString);
+  }
 
 }
-function setCircleTarget(targetDiv, _cN, _sP, _rW, _cS, _pBtn) {
-    targetCircleDiv = targetDiv;
-    circleNeed = _cN;
-    stringPosition = _sP;
-    resizeWidth = _rW;
-    currentString = _cS;
-    tPageBtn = _pBtn;
+function setCircleTarget(targetDiv, _cN, _sP, _rW, _cS, _pBtn){
+    targetCircleDiv=targetDiv;
+    circleNeed=_cN;
+    stringPosition=_sP;
+    resizeWidth=_rW;
+    currentString=_cS;
+    tPageBtn=_pBtn;
 
     //targetCircleTemp=targetCircleDiv;
 }
@@ -2003,17 +2009,17 @@ Template.statusList.events({
         PanelControl(3);
 
         // step 1.5 for tutorial, no button text, add new guidance in stock
-        if (tutorialMode == 1) {
-            t1PageCnt++;  // case=5
-            tutorial1();
+        if(tutorialMode==1){
+          t1PageCnt++;  // case=5
+          tutorial1();
 
         }
 
 
-        if (tutorialMode == 2) {
-            // step 2.6
-            t2PageCnt++;
-            tutorial2();
+        if(tutorialMode==2){
+          // step 2.6
+          t2PageCnt++;
+          tutorial2();
 
         }
     },
@@ -2177,9 +2183,9 @@ Template.characterList.events({
                         currentCharacter = "guard";
 
                         // step 4.2 for tutorial4  click to switch
-                        if (tutorialMode == 4) {
-                            t4PageCnt++;  // case=2
-                            tutorial4();
+                        if(tutorialMode==4){
+                          t4PageCnt++;  // case=2
+                          tutorial4();
                         }
                     }
                 }
@@ -2287,13 +2293,13 @@ Template.operationList.events({
         $(".mission_template").css("display", "none");
         $(".rank_template").css("display", "none");
         //step 2.4 for tutorial, for rating
-        if (tutorialMode == 2) {
-            t2PageCnt++;   // case=4
-            tutorial2();
+        if(tutorialMode==2){
+          t2PageCnt++;   // case=4
+          tutorial2();
         }
         // if (!ratingOpened) {
 
-        set_propertyType_table();
+            set_propertyType_table();
 
         // }
         // ratingOpened = true;
@@ -2304,9 +2310,9 @@ Template.operationList.events({
         $(".rank_template").css("display", "none");
 
         // step 1.6.3 for tutorial, add new guidance in Mission Page
-        if (tutorialMode == 1) {
-            t1PageCnt++;  // case=8
-            tutorial1();
+        if(tutorialMode==1){
+          t1PageCnt++;  // case=8
+          tutorial1();
         }
 
         set_mission_table();
@@ -2566,8 +2572,8 @@ var showConfirmation = async function (s_Id, m_Id) {
     }
 
     var s_Index;
-    for (var i = 0; i < owners.length; i++) {
-        if (s_Id == owners[i]) {
+    for (var i = 0 ; i < owners.length; i++){
+        if (s_Id == owners[i]){
             s_Index = i;
             break;
         }
@@ -2982,8 +2988,9 @@ var updateUserExp = function (exp) {
         var lvlCap = levelCap(currentUser.level);
 
         if (currentUser.exp >= lvlCap) {
-            if (currentUser.totalExp > 100 && currentUser.totalExp < 135) {
-                tutorialSession2()   // for tutorial
+	    
+	    if (currentUser.totalExp >100 && currentUser.totalExp < 135){
+              tutorialSession2()   // for tutorial
             }
             currentUser.level += 1;
             Session.set('userLevel', currentUser.level);
@@ -3028,18 +3035,19 @@ var updateUserExp = function (exp) {
         if ((currentUser.level == 5) && (!Meteor.user().profile.game.stakeholder.answered)) {
             showQuestionnaire();
         }
-        var s = setInterval(function () {
-            try {
+        var s = setInterval(function(){
+          try{
 
-                if (currentUser.totalExp == 0) {
-                    tutorialSession1()   // for tutorial
-                }
-                clearInterval(s);
+            if (currentUser.totalExp == 0){
+              tutorialSession1()   // for tutorial
             }
-            catch (e) {
-                console.log('not rended');
-            }
-        }, 500)
+            clearInterval(s);
+          }
+          catch(e)
+          {
+            console.log('not rended');
+          }
+        },500)
     }
 
 }
@@ -3490,9 +3498,9 @@ rend_propertyType_table = function (_length) {
         loading(0); // original function, don't delete
 
         // step 2.5 for tutorial, for rating
-        if (tutorialMode == 2) {
-            t2PageCnt++;   // step 2.5.1  case=5
-            tutorial2();
+        if(tutorialMode==2){
+          t2PageCnt++;   // step 2.5.1  case=5
+          tutorial2();
         }
 
 
@@ -3639,7 +3647,7 @@ mission_rending = function () {
             }
             tr.append(td);
             td = $('<td></td>', {
-                text: mission_list[i].exp
+                text: (parseInt(mission_list[i].exp) * 1.3)
             });
             tr.append(td);
             td = $('<td></td>');
@@ -3833,7 +3841,7 @@ set_rank_table = function (data) {
         }
     }
 
-    $('.rank_template').append(table);
+    $('.rank_template_content').append(table);
 }
 
 var selectedSort = function (data) {

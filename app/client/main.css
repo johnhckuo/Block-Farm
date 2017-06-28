@@ -469,7 +469,7 @@ li .login-content {
 .videoContainter{
   position: relative;
   width :70%;
-  height: 70%;
+  height: 80%;
   bottom:10vh;
   top:2vh;
   border:1px black solid;
@@ -802,10 +802,14 @@ li .login-content {
   align-items: center;
 }
 
-.glyphicon{
+.home{
     position: absolute;
     left: 20px;
     top: 10px;
+}
+
+.glyphicon_register{
+    top: 0px;
 }
 
 .manage{
