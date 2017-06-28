@@ -3776,7 +3776,7 @@ get_rank_data = async function () {
 
 set_rank_table = function (data) {
     $('.rank_template').html('');
-
+    
     $('.rank_template').append($('<button></button>', {
         type: 'button',
         id: 'btn_rank_close',
@@ -3786,7 +3786,9 @@ set_rank_table = function (data) {
     ).append($('<div></div>', {
         class: 'rank_header'
     }).text('Rank'));
-
+    $('.rank_template').append($('<div></div>',{
+        class:'rank_template_content'
+    }));
     var table, tr, td;
     table = $('<table></table>', { id: 'rank_table', class: 'rank_table' });
     //header
