@@ -45,22 +45,23 @@ if (Meteor.isServer) {
     "c2050b81644d47acb1b8e2cd9c16ad98", "43646b3e837a461b811744606f66b0f1",
     "f4edaea443ad4f8fb5c5ab8e9646de99"];
 
-    //token = "68a657243ee1461db6376af481cdb479";
-    privateKey = "e37b582771f87c627e6814f4973896352cb3a1916b949e496ee700f6dc47a89e";
+    privateKey = "< your private key here >";
 
-    Property = "7a333503adb57ba62b6075036bbb25c49f702b7a";
-    Matchmaking = "fc56b76683998d6f566bd3250d2ed67c73081025";
+    Property = "43e6ad1cb9b345b54f855bde645157e626ff89c4";
+    Matchmaking = "cbd560f1e581f4463c5488fdc8d94f0b93072115";
 
     prefix = "https://api.blockcypher.com/v1/beth/test/contracts/";
 
+    address = "7ab3332e5ba672497050127102ef56ace0208253";
+
     call = {
-        "private": "e37b582771f87c627e6814f4973896352cb3a1916b949e496ee700f6dc47a89e",
+        "private": "< your private key here >",
         "gas_limit": 2000000
     };
 
     updateCall = {
         "data": {
-            "private": "e37b582771f87c627e6814f4973896352cb3a1916b949e496ee700f6dc47a89e",
+            "private": "< your private key here >",
             "gas_limit": 2000000,
         },
         "header": "Content-Type:application/json"
@@ -68,7 +69,7 @@ if (Meteor.isServer) {
 
 
     faucet = {
-        "address": "0f8f438328ce7dcf959378aa25e83fc2df4ccb4e",
+        "address": "7ab3332e5ba672497050127102ef56ace0208253",
         "amount": 1000000000000000000
     };
 

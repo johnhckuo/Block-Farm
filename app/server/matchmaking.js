@@ -6,6 +6,9 @@ var properties = [];
 var propertyType = [];
 var originDiffThreshold = 0;
 var floatOffset = 1;
+var searchThreshold = 10;
+var timeout = 6000;
+var matchmaking_start;
 
 wait = function(ms){
    var start = new Date().getTime();
@@ -19,6 +22,19 @@ initData = function(){
     console.log("----------------------------Commence Data Fetching-----------------------------");
     properties = [];
     propertyType = [];
+
+    //reset
+    visitedProperty = [];
+    visitedCount = 0;  //in order to ignore the rest of the array elem
+    actualVisitIndex = [];
+    origin = null;
+    visitedOwner = [];
+    visitedPriority = [];
+    visitedTradeable = [];
+
+    visitedCounts = [];
+    totalGoThroughList = [];
+    matchmaking_start = 0;
     /*--------------
        properties
     ---------------*/
@@ -28,7 +44,6 @@ initData = function(){
     
     for (var i = 0 ; i < raw.length ; i++){
         if (raw[i].profile.game == undefined){
-          console.log(raw[i].profile.game)
           continue;
         }
         rawProperties.push(raw[i].profile.game.property);
@@ -42,13 +57,13 @@ initData = function(){
           }
       }
     }
-    console.log("Property Data Loading Complete");
+    console.log("Property Data Loading Complete, Total Length = "+properties.length);
     /*--------------
       propertyType
     ---------------*/
     try{
       for (var i = 0 ; i < cropTypeList.length ; i++){
-        wait(10);
+        wait(300);
         callContract_api_callback("getPropertyType", [i], function(res){
           console.log(i+"."+res.data.results);
             propertyType.push(res.data.results);
@@ -63,6 +78,7 @@ initData = function(){
               }
               console.log(propertyType)
               console.log("Property Type Data Loading Complete");
+              wait(5000);
               findOrigin();
             }
         });
@@ -112,20 +128,8 @@ var sort = function(list){
     return list;
 }
 
-findOrigin = async function(){
+findOrigin = function(){
     console.log("----------------------------Matchmaking-----------------------------");
-    //reset
-    visitedProperty = [];
-    visitedCount = 0;  //in order to ignore the rest of the array elem
-    actualVisitIndex = [];
-    origin = null;
-    visitedOwner = [];
-    visitedPriority = [];
-    visitedTradeable = [];
-
-    visitedCounts = [];
-    totalGoThroughList = [];
-
 
     //var length = Promise.await(callContract("usingProperty", "getPropertiesLength", []));
     var length = properties.length;
@@ -152,7 +156,15 @@ findOrigin = async function(){
         var averageRating = propertyType[index].avg;
         var self_Importance = propertyType[index].ratings[owner];
 
-        var diff = averageRating - self_Importance;
+
+        var maxTypeRating = 0;
+        for (var j = 0 ; j < propertyType.length ; j++){
+            if (maxTypeRating < propertyType[j].ratings[owner]){
+              maxTypeRating = propertyType[j].ratings[owner];
+            }
+        }
+
+        var diff = averageRating - self_Importance + maxTypeRating;
         console.log("["+i+"] "+averageRating+"|"+self_Importance);
         if (diff < originDiffThreshold){
             continue;
@@ -177,11 +189,19 @@ findOrigin = async function(){
     visitedProperty.push({id : origin, priority : priorityList[0].priority, tradeable:priorityList[0].tradeable, type: priorityList[0].type});
 
     console.log(priorityList);
+    if (priorityList.length > 3){
+      priorityList = priorityList.slice(0, 3);
+    }
     totalGoThroughList.push(priorityList);
     visitedCounts.push(0);
 
     console.log("Entry Point Found: #"+origin);
-    success = await findVisitNode();
+
+    matchmaking_start = new Date().getTime();
+
+    console.log("------------------------ Start Counting Down: Starting Time => "+matchmaking_start+" ------------------------");
+    
+    success = findVisitNode();
     //return "success";
     return success;
 }
@@ -198,12 +218,12 @@ var checkExist = function(elem, data){
 var globalRatingSort = function(list){
   var stakeholderLength = propertyType[0].ratings.length;
 
-  var tempList = [];
   var tempSortList = [];
   console.log("start init")
-
   for (var i = 0 ; i < list.length ; i++){
     var index;
+    var tempList = [];
+
     for (var j = 0 ; j < propertyType.length; j++){
       if (list[i].type == propertyType[j].id){
         index = j;
@@ -213,24 +233,34 @@ var globalRatingSort = function(list){
 
     for (var w = 0 ; w < stakeholderLength ; w++){
       if (w == properties[list[i].id].owner){
-        console.log("owner "+properties[list[i].id].owner +" himself, skip");
+        //console.log("owner "+properties[list[i].id].owner +" himself, skip");
         continue;
       }
       tempList.push(propertyType[index].ratings[w]);
     }
-    console.log(list[i].type+"==="+tempList)
-    tempSortList.push(findMaxRatingStakeholder(tempList, index));
+    var tempSort = [];
+    //console.log("receive List"+tempList+"index"+index);
+    for (var k = 0 ; k < tempList.length ; k++){
+      tempSort.push(tempList[k] - propertyType[index].avg);
+    }
+    console.log("before sort"+tempSort)
+    tempSort = tempSort.sort(function(a, b){
+      return b-a;
+    });
+    console.log("after sort"+tempSort)
+    tempSortList.push(tempSort[0]);
 
   }
   console.log("second stage")
-
+  wait(1);
   var currentPriority = list[0].priority;
   var finalResult = [];
   var sortList = [];
   console.log("=========================");
-  console.log(list);
   var currentCount = 0;
   for (var i = 0 ; i < list.length ; i++){
+
+    // for efficiency, we only consider the highest priority owners
     if (currentCount == 1){
       break;
     }
@@ -284,33 +314,11 @@ var globalRatingSort = function(list){
   // }
 }
 
-var findMaxRatingStakeholder = function(list, index){
-  var tempList = [];
-  console.log("receive List"+list+"index"+index);
-  for (var i = 0 ; i < list.length ; i++){
-    tempList.push(list[i] - propertyType[index].avg);
-  }
-  console.log("sort"+tempList)
-  tempList = tempList.sort(function(a, b){
-    return b-a;
-  });
-  console.log("after sort"+tempList)
-  return tempList[0];
-}
-
-
 var searchNeighborNodes = function(visitNode){
     var length = properties.length;
     goThroughList = [];
     console.log("[System Log] Current Node :"+visitNode);
-    /*
-            var newOwner = Promise.await(callContract("usingProperty", "getPartialProperty", [i]));
-            var currentOwner = Promise.await(callContract("usingProperty", "getPartialProperty", [visitNode]));
-            var currentType = Promise.await(callContract("usingProperty", "getPropertyType_Matchmaking", [i]));
-            var newType = Promise.await(callContract("usingProperty", "getPropertyType_Matchmaking", [visitNode]));
-    */
 
-    var k = 0;
     var currentOwner = properties[visitNode].owner;
     var currentType = properties[visitNode].type;
 
@@ -319,15 +327,24 @@ var searchNeighborNodes = function(visitNode){
       var newOwner = properties[i].owner;
       var newType = properties[i].type;
         if (i == visitNode || properties[i].tradeable == 0 || properties[i].isTrading || newOwner == currentOwner || currentType == newType){
-            console.log("[searchNeighborNodes] => Node #"+i+"Not Qualfied!! Skip!");
+            //console.log("[searchNeighborNodes] => Node #"+i+"Not Qualfied!! Skip!");
             continue;
         }
 
-        var diff = returnPriority(visitNode, i);
-        console.log("[searchNeighborNodes] : properties "+visitNode+" to owner of properties"+ i +" => diff:" +diff+" | threshold: "+properties[i].threshold)
+
+        var owner = properties[i].owner;
+        var index;
+        for (var j = 0 ; j < propertyType.length ; j++){
+            if (propertyType[j].id == properties[visitNode].type){
+              index = j;
+              break;
+            }
+        }
+        var diff = propertyType[index].ratings[owner];
+
+        //console.log("[searchNeighborNodes] : properties "+visitNode+" to owner of properties"+ propertyType[index].id +" => diff:" +diff+" | threshold: "+properties[i].threshold)
         if (diff <= properties[i].threshold){
-          console.log("Does not meet the owners threshold, Skip!");
-          //this need to be modified to user config
+          //console.log("Does not meet the owners threshold, Skip!");
           continue;
         }
 
@@ -346,7 +363,6 @@ var searchNeighborNodes = function(visitNode){
         return matchFail(0);
     }
     goThroughList = sort(goThroughList);
-    console.log(goThroughList)
 
     var flag = false;
     var visitIndex;
@@ -373,9 +389,21 @@ var searchNeighborNodes = function(visitNode){
     // console.log("=====");
 
     goThroughList = globalRatingSort(goThroughList);
+
+    //accelerate origin discovery
+    for (var i = 0 ; i < goThroughList.length ; i++){
+      if (properties[goThroughList[i].id].owner == properties[origin].owner && i!=0){
+        console.log("//////////////////////////// Found possible route ! Accelerate ////////////////////////////");
+        var temp = goThroughList[i];
+        goThroughList[i] = goThroughList[0];
+        goThroughList[0] = temp;
+      }
+    }
+
     if (goThroughList.length > 3){
       goThroughList = goThroughList.slice(0, 3);
     }
+
     return goThroughList;
 }
 
@@ -392,7 +420,12 @@ var findVisitNode = function(){
     if (found){
       break;
     }
-    console.log("[findVisitNode] => totalGoThroughList: " + totalGoThroughList)
+    for (var j = 0 ; j < totalGoThroughList.length ; j++){
+      for (var i = 0; i < totalGoThroughList[j].length; i++){
+        console.log("[findVisitNode] => totalGoThroughList: " + totalGoThroughList[j][i].id + " visitedCount:" + visitedCounts[j]);
+      }
+      console.log("-------------------------------------------------")
+    }
     goThroughList= searchNeighborNodes(totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id);
 
     flag = false;
@@ -422,6 +455,12 @@ var findVisitNode = function(){
         continue;
 
       }
+    }else{
+        for (var j = 0 ; j < goThroughList.length ; j++){
+          for (var i = 0 ; i < goThroughList[j].length ; i++){
+            console.log("[findVisitNode] goThroughList => "+goThroughList[j][i].id);
+          }
+        }
     }
 
     firstRound = false;
@@ -431,7 +470,7 @@ var findVisitNode = function(){
     }
 
     while (flag){
-      console.log("Node"+totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id+" removed");
+      console.log("VisitingIndex:"+visitingIndex+" ,Node"+totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id+" removed");
       visitedProperty.splice(visitedProperty.length-1, 1);
       totalGoThroughList.splice(totalGoThroughList.length-1, 1);
       visitedCounts.splice(visitedCounts.length-1, 1);
@@ -474,8 +513,56 @@ var verifyNode =  function(){
     return false;
   }
 
+  var matchmaking_end = new Date().getTime();
+  var timeDiff = matchmaking_end - matchmaking_start;
+  console.log("------------------------ Time Elapsed => "+((timeDiff/1000)*5)+" seconds ------------------------");
+  
+  if (timeDiff > timeout){
+    console.log("[Error Log] Timeout! Execute time exceed "+((timeout/1000)*5)+" seconds... Abort!");
+    matchmaking_start = 0;
+    return true;
+  }
+
+  // if (totalGoThroughList.length >= searchThreshold){
+  //   var originOwner = properties[origin].owner;
+  //   var originWishList = 0, maxRating = 0;
+  //   for (var i = 0 ; i < propertyType.length; i++){
+  //     if (maxRating < propertyType[i].ratings[originOwner]){
+  //       maxRating = propertyType[i].ratings[originOwner];
+  //       originWishList = i;
+  //     }
+  //   }
+
+  //   //push account
+  //   totalGoThroughList.push({
+  //         id:i,
+  //         priority:100,
+  //         tradeable:properties[i].tradeable,
+  //         type: properties[i].type
+  //   });
+  //   visitedCounts.push(0);
+  //   visitingIndex++;
+  //   visitedProperty.push(totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]]);
+
+  //   //now push origin account
+
+
+  //   totalGoThroughList.push({
+  //         id:i,
+  //         priority:diff,
+  //         tradeable:properties[i].tradeable,
+  //         type: properties[i].type
+  //   });
+  //   visitedCounts.push(0);
+  //   visitingIndex++;
+  //   visitedProperty.push(totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]]);
+  // }
+
   if (totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]] != undefined && properties[totalGoThroughList[visitingIndex][visitedCounts[visitingIndex]].id].owner == properties[origin].owner && visitingIndex != 0){
       console.log("---------------------------- Success -----------------------------");
+      
+      matchmaking_start = 0;
+
       var visitedProperty_temp = [];
       for (var h = 0 ; h < visitedProperty.length ; h++){
           visitedProperty_temp.push(visitedProperty[h].id);
@@ -521,9 +608,19 @@ var verifyNode =  function(){
       console.log("[Priorities] "+tempJson.visitedPriorities);
       console.log("[Owners] "+tempJson.visitedOwners);
       console.log("[Tradeables] "+tempJson.visitedTradeable);
+      try{
+        var res = Meteor.call("insertMatch", {priorities:tempJson.visitedPriorities, owners:tempJson.visitedOwners, properties:tempJson.visitedProperties, tradeable:tempJson.visitedTradeable, result:tempJson.result});
+      }catch(e){
+        console.log("[verifyNode] => Something is wrong while inserting into mongo, log:"+e);
+      }
 
-      var res = Meteor.call("insertMatch", {priorities:tempJson.visitedPriorities, owners:tempJson.visitedOwners, properties:tempJson.visitedProperties, tradeable:tempJson.visitedTradeable});
-
+      try{
+        for (var i = 0 ; i < tempJson.visitedOwners.length ; i++){
+            Meteor.call("updateTradingStatus", tempJson.visitedOwners[i], tempJson.visitedProperties[i],  true);
+        }
+      }catch(e){
+        console.log("[verifyNode] => Something is wrong while updating trading status, log:"+e);
+      }
       console.log("------------------------ Mongodb Insert Complete ------------------------ ")
       console.log("------------------------ Now Update Smart Contract ------------------------");
 
@@ -536,20 +633,39 @@ var verifyNode =  function(){
       // for (var i = 0 ; i < visitedOwner.length ; i++){
       //   var res = callContract_api("Matchmaking", "gameCoreMatchingDetail", [m_Id, tempJson.visitedPriorities[i], tempJson.visitedOwners[i], tempJson.visitedProperties[i], tempJson.visitedTradeable[i]]);
       // }
-      for (var i = 0 ; i < tempJson.visitedOwners.length ; i++){
-          Meteor.call("updateTradingStatus", tempJson.visitedOwners[i], tempJson.visitedProperties[i],  true);
-      }
 
-        var res = Promise.await(Meteor.call("callContract", "Matchmaking", "getMatchMakingLength", []));
-        console.log(res)
-        var m_Id = res.result.results[0];
+      var res;
+      try{
+        res = Promise.await(Meteor.call("callContract", "Matchmaking", "getMatchMakingLength", []));
+      }catch(e){
+        console.log("[updating matchmaking error] "+e);
+        res = Promise.await(Meteor.call("callContract", "Matchmaking", "getMatchMakingLength", []));
+
+      }
+      var m_Id = res.result.results[0];
+      try{
         var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, tempJson.visitedOwners.length, "null"]));
-        wait(3000);
-        for (var j = 0 ; j < tempJson.visitedOwners.length ; j++){
+      }catch(e){
+        console.log("[updating matchmaking error] "+e);
+        var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, tempJson.visitedOwners.length, "null"]));
+      }
+      wait(3000);
+
+      for (var j = 0 ; j < tempJson.visitedOwners.length ; j++){
+        try{
+          var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, parseInt(tempJson.visitedPriorities[j]), tempJson.visitedOwners[j], tempJson.visitedProperties[j], tempJson.visitedTradeable[j]]));
+        }catch(e){
+          console.log("[updating matchmaking error] "+e);
           var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, parseInt(tempJson.visitedPriorities[j]), tempJson.visitedOwners[j], tempJson.visitedProperties[j], tempJson.visitedTradeable[j]]));
         }
-        
+      }
+      
+      try{
         var res4 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [m_Id, tempJson.visitedOwners.length]));
+      }catch(e){
+        console.log("[updating matchmaking error] "+e);
+        var res4 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [m_Id, tempJson.visitedOwners.length]));
+      }
 
       console.log("------------------------ Contract Update Complete ------------------------ ")   
       console.log("------------------------ Now Check Confirmation ------------------------ ")
@@ -617,7 +733,6 @@ var matches = [];
 
 checkConfirmation_backend = async function(){
     var length = await Meteor.call("getMatchmakingLength");
-    console.log(length)
     if (length < 3){
       return;
     }
@@ -625,8 +740,7 @@ checkConfirmation_backend = async function(){
     try{
         var res = await callContract_api("Matchmaking", "getMatchMaking", [i]);
         var match = { visitedPriorities: res.data.results[0], visitedOwners: res.data.results[1], visitedProperties: res.data.results[2], visitedTradeable: res.data.results[3], confirmation: res.data.results[4], visitedCount:res.data.results[5], result:res.data.results[6] };
-        console.log(match);
-        console.log(match.visitedOwners)
+
         var confirm = 0;
         for (var j = 0 ; j < match.confirmation.length-1; j++){
             if (match.confirmation[j] == 1){
@@ -636,7 +750,6 @@ checkConfirmation_backend = async function(){
         }
 
         var totalCount = match.visitedOwners.length-1;
-        console.log(confirm);
         if (confirm/totalCount < 0.5){
           console.log("fail");
             match.result = "false";
@@ -645,6 +758,8 @@ checkConfirmation_backend = async function(){
             match.result = "true";
             transferOwnership(i,match);
         }
+        console.log("[checkConfirmation] the result of match#"+i+" is "+match.result);
+
         var result = await Meteor.call("updateMatchResult", match.result, i);
     }catch(e){
       console.log("[checkConfirmation_backend] "+e);
@@ -659,9 +774,7 @@ transferOwnership = async function(m_Id, match){
     var properties = match.visitedProperties;
     var tradeables = match.visitedTradeable;
 
-    console.log(owners);
-    console.log(properties)
-    console.log(tradeables)
+    console.log("[transferOwnership] Now start transfering property ownership!!!")
 
     var visitedLength = owners.length;
     try{
@@ -671,35 +784,13 @@ transferOwnership = async function(m_Id, match){
           var p_Id = properties[i];
           var tradeCount = tradeables[i];
           var res = await Meteor.call("updateOwnershipStatus", current_s_Id, receive_s_Id, p_Id, tradeCount, m_Id);
+          console.log("[transferOwnership] owner#"+current_s_Id+" transfer property#"+p_Id+" x"+tradeCount+" to owner#"+receive_s_Id);
           var res2 = await Meteor.call("updateTradingStatus", current_s_Id, p_Id, false);
+          console.log("[transferOwnership] lock property#"+ p_Id +" from owner#"+current_s_Id);
+
       }
     }catch(e){
-      console.log(e);
+      console.log("[transferOwnership] "+e);
     }
-
-    /*
-
-        var propertyType = currentPID % length;
-        var receivedPID = s_Id*length + propertyType;
-
-        var res1 = await usingPropertyInstance.updateOwnershipStatus(receivedPID, currentPID, {from:web3.eth.accounts[currentAccount], gas:2000000}, function(err, res){
-          if (err){
-            console.log(err);
-          }
-        })
-
-        //cancel isTrading status
-        var res2 = await usingPropertyInstance.updateTradingStatus(currentPID, false, {from:web3.eth.accounts[currentAccount], gas:2000000}, function(err, res){
-          if (err){
-            console.log(err);
-          }
-
-        })
-    //     var res = await usingPropertyInstance.updateOwnershipStatus(receivedPID, currentPID, {from:web3.eth.accounts[currentAccount], gas:2000000});
-    //
-    //     var res2 = await usingPropertyInstance.updateTradingStatus(currentPID, false, {from:web3.eth.accounts[currentAccount], gas:2000000});
-    // }
-  }
-  */
 
 }

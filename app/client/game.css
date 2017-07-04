@@ -1941,6 +1941,12 @@ input[type="range"]:active::-webkit-slider-thumb{
   font-size: 30px;
 }
 
+.systemInfoContentHeight{
+  height: 236px;
+  overflow: auto;
+}
+
+
 .systemInfoHeader{
   display: flex;
   flex-direction: column;

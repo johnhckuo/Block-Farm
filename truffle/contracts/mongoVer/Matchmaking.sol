@@ -40,7 +40,7 @@ contract Matchmaking{
                 break;
             }
         }
-        return matches[m_Id].confirmed[s_Index];
+        return (matches[m_Id].confirmed[s_Index]);
     }
 
     function getMatchMakingConfirmedArr(uint m_Id) constant returns (uint[]){

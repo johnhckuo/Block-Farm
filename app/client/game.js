@@ -1,4 +1,4 @@
-// JavaScript source code
+﻿// JavaScript source code
 import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
 import { property_type } from '../imports/collections.js';
@@ -246,6 +246,8 @@ Template.gameContent.rendered = function () {
             //eventListener();
             audio = new Audio('/music/background_music.mp3');
             audio.play();
+            audio.volume = 0.3;
+
         });
         $(window).resize(function (evt) {
             initCropLand();
@@ -1220,6 +1222,7 @@ Template.gamingArea.events({
             $(".musicSwitch").find("img").attr("src", "/img/game/speaker_off.svg");
         } else {
             audio.play();
+            audio.volume = 0.3;
             $(".musicSwitch").find("img").attr("src", "/img/game/speaker_on.svg");
         }
     },
@@ -2140,7 +2143,7 @@ Template.characterList.events({
                 var gaurdMatchID = Meteor.user().profile.game.syndicateData.guardMatchId;
                 var matchLength = await dbPromise('getMatchedLength');
                 var matchDiff = matchLength - gaurdMatchID;
-                if (matchDiff <= 4) {
+                if (matchDiff <= 20) {
                     var guardLand = Meteor.user().profile.game.syndicateData.guardFarmerId;
                     var progress = Meteor.user().profile.game.syndicateData.progress;
                     if (guardLand == -1) {
@@ -2392,7 +2395,7 @@ var createDBConnection = function () {
                 currentMatches = matches.find().fetch();
                 matchmakingLength = currentMatches.length;
                 owners = currentMatches[matchId].owners;
-                if (matchId >= matchmakingLength - 2) {
+                //if (matchId >= matchmakingLength - 2) {
 
                     var s_Id = Meteor.user().profile.game.stakeholder.id;
                     if (jQuery.inArray(s_Id, owners) != -1) {
@@ -2416,22 +2419,22 @@ var createDBConnection = function () {
                                 systemInfoShowed = true;
                                 //}
                             } else {
-                                matchCounter++;
+                                //matchCounter++;
                                 console.log("new matchmaking! waiting for txs being mined");
-                                if (matchCounter > 3 && jQuery.inArray(s_Id, owners) == 0) {
-                                    console.log("contract result missing... re-upload to blockchain...");
-                                    //rewirte into contract
-                                    var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null"]);
-                                    for (var w = 0; w < fields.owners.length; w++) {
-                                        var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-                                    }
-                                    var res3 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [fields.id, fields.owners.length]);
-                                    console.log(res)
-                                    console.log("contract re-upload complete");
-                                    matchCounter = 0;
-                                }
-                                console.log(res)
-                                console.log("contract re-upload complete");
+                                // if (matchCounter > 3 && jQuery.inArray(s_Id, owners) == 0) {
+                                //     console.log("contract result missing... re-upload to blockchain...");
+                                //     //rewirte into contract
+                                //     var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null"]);
+                                //     for (var w = 0; w < fields.owners.length; w++) {
+                                //         var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
+                                //     }
+                                //     var res3 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [fields.id, fields.owners.length]);
+                                //     console.log(res)
+                                //     console.log("contract re-upload complete");
+                                //     matchCounter = 0;
+                                // }
+                                //console.log(res)
+                                //console.log("contract re-upload complete");
                             }
                         }, 20000)
 
@@ -2445,7 +2448,7 @@ var createDBConnection = function () {
                         // },3000)
 
                     }
-                }
+                //}
 
                 //Meteor.users.update(userId, { $set: { profile: profile } });
                 //Meteor.users.
@@ -2554,9 +2557,17 @@ var showConfirmation = async function (s_Id, m_Id) {
     set_property_table();
     $(".systemInfo").css("transform", "translateX(0px)");
     $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg');
-    if ($(".matches").length >= 2) {
-        $('.systemInfo div:nth-child(3)').remove();
+
+    $('.systemInfoHeaderbtn').find('img').attr('src', '/img/game/next.svg');
+
+    //if ($(".matches").length>=3){
+    if (currentUser.matches.length >= 3 || $(".matches").length>=3){
+      $('.systemInfoContent').addClass("systemInfoContentHeight");
+    }else{
+      $('.systemInfoContent').removeClass("systemInfoContentHeight");
     }
+
+
     var data = await callPromise("callContract", "Matchmaking", "getMatchMaking", [m_Id]);
     var owners = data.result.results[1];
     var properties = data.result.results[2];
@@ -2599,7 +2610,6 @@ var showConfirmation = async function (s_Id, m_Id) {
         var checkBtn;
         var confirmBtn;
 
-        console.log(result);
         if (result != "null") {
             if (result == "true") {
                 checkBtn = $('<input>').attr({
@@ -2644,7 +2654,35 @@ var showConfirmation = async function (s_Id, m_Id) {
         }
 
         row.append(provide).append(receive).append(confirmBtn).append(checkBtn);
-        $(".systemInfo").append(row);
+
+        // var appendFlag = false;  
+        // var element;    
+        // var tempContainter = m_Id;  
+        // $(".matches").each(function( index ) {
+        //     var className = $( this ).attr("class").split('match')[2];
+        //     if (tempContainter > parseInt(className)){
+        //         tempContainter = parseInt(className);
+        //         element = $(this);
+        //         //console.log(m_Id+ " append before "+className);
+        //         //$(this).before(row);
+        //         appendFlag = true;
+        //     }
+        // });
+        
+        // if (appendFlag){
+        //     element.before(row);
+        // }else{
+        //     $(".systemInfoContent").append(row);
+        // }
+        if (result != "null") {
+            $(".systemInfoContent").append(row);
+        }else{
+            $(".systemInfoContent").prepend(row);
+        }
+
+        setTimeout(function(){
+            divSort();
+        }, 2000);
 
         var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
         var confirmed = res.result.results[0][s_Index];
@@ -2653,6 +2691,23 @@ var showConfirmation = async function (s_Id, m_Id) {
             $(".matchBtn" + m_Id).prop("disabled", true);
         }
     }
+}
+
+var divSort = function(){
+    var elem = $('.systemInfoContent').find('.matches').sort(function(a, b) {
+        return parseInt(a.className.split('match')[2]) < parseInt(b.className.split('match')[2]);
+    });
+
+    var allElem = elem.get();
+    (function append() {
+
+        var $this = $(allElem.shift());
+        $('.systemInfoContent').append($this.fadeOut('slow')).find($this).fadeIn('slow', function () {
+            if (allElem.length > 0) window.setTimeout(append);
+        });
+    })();
+
+    //$('.systemInfoContent').append(elem);
 }
 
 

@@ -14,6 +14,14 @@ var rateLimit = 200;
 
 if (Meteor.isServer) {
 
+  var wait = function(ms){
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+    }
+  }
+
   var API_Register_backend = function () {
     return Meteor.http.call("POST", "https://api.blockcypher.com/v1/beth/test/addrs?token=" + token[currentToken]);
   }
@@ -234,11 +242,18 @@ apiLimitDetector = async function(){
 
         Meteor.call('pushMissionAccountStatus', gameInitData.stakeholder.id);
         var res = Promise.await(getEther(res.data.address));
-        var res = Promise.await(callContract_api("Property", "updatePropertyTypeRating", [cropTypeList.length, 0, "new", 0, 0]));
       } catch (e) {
         console.log("[API_Register]" + e);
         return { type: "error", result: e.reason };
       }
+      
+      try{
+        var res = Promise.await(callContract_api("Property", "updatePropertyTypeRating", [cropTypeList.length, 0, "new", 0, 0]));
+      }catch(e){
+        console.log("[API_Register] => push property rating failed... Retry..." + e);
+        var res = Promise.await(callContract_api("Property", "updatePropertyTypeRating", [cropTypeList.length, 0, "new", 0, 0]));
+      }
+
       return { type: "success", result: "" };
     },
     'init': function () {
@@ -296,10 +311,9 @@ apiLimitDetector = async function(){
       mission.upsert({ name: _missionList.name }, { data: _missionList });
     },
     'insertMatch': function (match) {
-      console.log(matches.find().fetch());
 
       try {
-        matches.insert({ id: matches.find().count(), priorities: match.priorities, owners: match.owners, properties: match.properties, tradeable: match.tradeable });
+        matches.insert({ id: matches.find().count(), priorities: match.priorities, owners: match.owners, properties: match.properties, tradeable: match.tradeable, result:match.result });
       } catch (e) {
         console.log("[insertMatch] " + e);
         return e;
@@ -395,30 +409,48 @@ apiLimitDetector = async function(){
         console.log("[reuploadContract] => Contract:" + contract);
         return Meteor.http.call("POST", req, file);
     },
-    "reuploadMongoData":function(collections){
+    "reuploadMongoData":function(start, end){
       var dataSet;
-      var contract, initMethod;
-      if (collections == "matchmaking"){
-        dataSet = matches.find().fetch();
-      }else if (collections == "property"){
-        dataSet = property_type.find().fetch();
-      }
-      for (var i = 0 ; i < dataSet.length ; i++){
-        if (collections == "matchmaking"){
-            // console.log("contract result missing... re-upload to blockchain...");
-            // //rewirte into contract
-            // var res = await callPromise("callContract", "Matchmaking", "gameCoreMatchingInit", [fields.id, fields.owners.length, "null", fields.owners.length]);
-            // for (var w = 0 ; w < fields.owners.length; w++){
-            //     var res2 = await callPromise("callContract", "Matchmaking", "gameCoreMatchingDetail", [fields.id, fields.priorities[w], fields.owners[w], fields.properties[w], fields.tradeable[w]]);
-            // }
-            // console.log(res)
-            // console.log("contract re-upload complete");
+      dataSet = matches.find({},{sort:{id:1}}).fetch();
 
-        }else if (collections == "property"){
-          //TODO
-          dataSet = property_type.find().fetch();
+
+        var res;
+      	
+        for (var i = start ; i < end ; i++){
+              wait(8000);
+              currentIndex = i;
+              m_Id = i;
+              //rewirte into contract
+	      try{
+              res = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, dataSet[i].owners.length, dataSet[i].result]));
+        }catch(e){
+              console.log("[reuploadMongoData] "+e);
+              res = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingInit", [m_Id, dataSet[i].owners.length, dataSet[i].result]));
+	      }
+
+	      for (var w = 0 ; w < dataSet[i].owners.length; w++){
+            try{
+                var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, dataSet[i].priorities[w], dataSet[i].owners[w], dataSet[i].properties[w], dataSet[i].tradeable[w]]));
+
+            }catch(e){
+                console.log("[reuploadMongoData] "+e);
+
+                var res2 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingDetail", [m_Id, dataSet[i].priorities[w], dataSet[i].owners[w], dataSet[i].properties[w], dataSet[i].tradeable[w]]));
+            }
         }
-      }
+        try{
+            var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [m_Id, dataSet[i].owners.length]));
+
+        }catch(e){
+            console.log("[reuploadMongoData] "+e);
+            var res3 = Promise.await(Meteor.call("callContract", "Matchmaking", "gameCoreMatchingConfirmed", [m_Id, dataSet[i].owners.length]));
+
+        }
+
+              console.log(res)
+              console.log("contract re-upload complete");
+        }
+
 
     }
   });

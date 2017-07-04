@@ -30,6 +30,5 @@ multiply:iron-router-progress
 accounts-password
 accounts-ui
 http
-insecure
 aldeed:simple-schema
 percolate:synced-cron
