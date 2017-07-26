@@ -45,6 +45,7 @@ if (Meteor.isServer) {
     "c2050b81644d47acb1b8e2cd9c16ad98", "43646b3e837a461b811744606f66b0f1",
     "f4edaea443ad4f8fb5c5ab8e9646de99"];
 
+    //token = "68a657243ee1461db6376af481cdb479";
     privateKey = "< your private key here >";
 
     Property = "43e6ad1cb9b345b54f855bde645157e626ff89c4";

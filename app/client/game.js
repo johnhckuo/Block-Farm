@@ -1874,7 +1874,7 @@ function createCircle(){
   var leftT = targetCircleDiv[0].getBoundingClientRect().left;
   var heightT=targetCircleDiv.height();
   var widthT=targetCircleDiv.width();
-  console.log(topT+","+leftT+","+heightT+","+widthT);
+  //console.log(topT+","+leftT+","+heightT+","+widthT);
       // top: topT-heightT/4.5,
       // left: leftT-widthT/7.5,
       //(targetCircleDiv[0].className.split(" ")[0])!=("croppedObject")
@@ -1895,7 +1895,7 @@ function createCircle(){
   }else{
   // not to draw circle, but draw text.
   }
-  console.log(leftT);
+  //console.log(leftT);
   createTip(topT,leftT,heightT,widthT,currentString,resizeWidth);
   // if(targetCircleTemp!=targetCircleDiv){
   //   // for reset default value
@@ -2404,11 +2404,11 @@ var createDBConnection = function () {
                         var res;
                         var minedDetector = setInterval(async function () {
                             res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmed", [matchId, s_Id]);
-                            console.log(res);
+                            //console.log(res);
                             if (res.type == "success" && res.result != undefined) {
                                 console.log("Mining Listener Closed...");
                                 clearInterval(minedDetector);
-                                console.log(res);
+                                //console.log(res);
                                 var confirmed = res.result.results[0];
 
                                 //if (!confirmed){
@@ -2462,7 +2462,7 @@ var createDBConnection = function () {
                     offset = 2;
                 }
                 for (var i = currentMatches.length - offset; i < currentMatches.length; i++) {
-                    console.log("match " + currentMatches[i]);
+                    //console.log("match " + currentMatches[i]);
                     if (currentMatches[i].result == true) {
                         $(".matchBtn" + i).attr({
                             type: 'button',
@@ -2573,7 +2573,7 @@ var showConfirmation = async function (s_Id, m_Id) {
     var properties = data.result.results[2];
     var tradeables = data.result.results[3];
     var result = data.result.results[6];
-    console.log(data);
+    //console.log(data);
     var index = [];
     var length = owners.length - 1;
     for (var j = 0; j < length; j++) {
@@ -2591,7 +2591,7 @@ var showConfirmation = async function (s_Id, m_Id) {
     }
 
     for (var i = 0; i < index.length; i++) {
-        console.log(owners);
+        //console.log(owners);
         var previousIndex = (index[i] - 1 + length) % length;
         var nextIndex = (index[i] + 1) % length;
 
@@ -2629,7 +2629,7 @@ var showConfirmation = async function (s_Id, m_Id) {
         }
         else {
             var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
-            console.log("confirmed" + res.result.results[0]);
+            //console.log("confirmed" + res.result.results[0]);
 
             var confirmed = res.result.results[0][s_Index];
             if (confirmed != 0) {
@@ -2682,14 +2682,14 @@ var showConfirmation = async function (s_Id, m_Id) {
 
         setTimeout(function(){
             divSort();
-        }, 2000);
+        }, 1000);
 
-        var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
-        var confirmed = res.result.results[0][s_Index];
-        if (confirmed != 0) {
-            $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm").addClass("matchesBtnWait");
-            $(".matchBtn" + m_Id).prop("disabled", true);
-        }
+        // var res = await callPromise("callContract", "Matchmaking", "getMatchMakingConfirmedArr", [m_Id]);
+        // var confirmed = res.result.results[0][s_Index];
+        // if (confirmed != 0) {
+        //     $(".matchBtn" + m_Id).prop("value", "Waiting for others to confirm").addClass("matchesBtnWait");
+        //     $(".matchBtn" + m_Id).prop("disabled", true);
+        // }
     }
 }
 
@@ -3487,7 +3487,7 @@ index_finder = function (_source, _mask) {
 set_propertyType_table = async function () {
     loading(1);
     var res = await callPromise("getPropertyTypeLength");
-    console.log(res);
+    //console.log(res);
     get_propertyType_setting(res);
     rend_propertyType_table(res);
 }
@@ -3505,7 +3505,7 @@ rend_propertyType_table = function (_length) {
         $('.shop_content').html(
             '<div class="ratingRange">Minimum Acceptable Rating<div class="tipTolerance tipContainer"><img src="/img/game/question-mark.png" alt=""><div class="tipToleranceText tipText">Your min. acceptable rating works like a filter! If you do not want to receive some certain crops from other farmers, you can higher your min. acceptable rating so that you will not receive crops which rating is below it!</div></div><input type="range" value="0" max="100" min="0" step="1" id="ratingPercent"><label for="ratingPercent">0%</label></div><hr>'
         );
-        console.log(currentThreshold)
+        //console.log(currentThreshold)
         $('#ratingPercent').val(currentThreshold).on('change', function () {
             $('label[for = ratingPercent]').html($(this).val());
         });
@@ -3985,8 +3985,8 @@ var createQuestionnaire = function () {
         "Q30: The gaming operation is convenient.",
         "Q31: You are satisfied with our system stability.",
         "Q32: There is s few disadvantages in Blockfarm, but they do not affect to game playing.",
-        "Q33: I play Blockfarm frequently.",
         "h1 Would you like to keep playing BlockFarm?",
+        "Q33: I play Blockfarm frequently.",
         "Q34: I will continue playing Blockfarm frequently in future.",
         "Q35: Many people I communicate with play this game.",
         "Q36: Many people I communicate with regularly play this game.",

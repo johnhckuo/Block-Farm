@@ -9,6 +9,7 @@ var floatOffset = 1;
 var searchThreshold = 10;
 var timeout = 6000;
 var matchmaking_start;
+var nodeThreshold = 10;
 
 wait = function(ms){
    var start = new Date().getTime();
@@ -172,7 +173,7 @@ findOrigin = function(){
 
         priorityList.push({
           id:i,
-          priority:diff,
+          priority:diff*properties[i].tradeable,
           tradeable:properties[i].tradeable,
           type: properties[i].type
         });
@@ -189,9 +190,28 @@ findOrigin = function(){
     visitedProperty.push({id : origin, priority : priorityList[0].priority, tradeable:priorityList[0].tradeable, type: priorityList[0].type});
 
     console.log(priorityList);
-    if (priorityList.length > 3){
-      priorityList = priorityList.slice(0, 3);
+    if (priorityList.length > nodeThreshold){
+      priorityList = priorityList.slice(0, nodeThreshold);
     }
+
+    //randomize to avoid infinite matchmaking
+    // var sameCount = 0;
+    // var tempVar = priorityList[0].priority;
+    // for (var x = 0 ; x < priorityList.length; x++){
+    //   if (priorityList[x].priority == tempVar){
+    //     sameCount++;
+    //   }
+    // }
+
+
+    // if (sameCount == priorityList.length){
+    //   console.log("Found multiple same value !!! Starting randomize entry point!!")
+    //   var randomIndex = Math.floor(Math.random()*3);
+    //   var temp = priorityList[0];
+    //   priorityList[0] = priorityList[randomIndex];
+    //   priorityList[randomIndex] = temp;
+    // }
+
     totalGoThroughList.push(priorityList);
     visitedCounts.push(0);
 
@@ -261,7 +281,7 @@ var globalRatingSort = function(list){
   for (var i = 0 ; i < list.length ; i++){
 
     // for efficiency, we only consider the highest priority owners
-    if (currentCount == 1){
+    if (currentCount == 3){
       break;
     }
     if (list[i].priority == currentPriority){
@@ -400,8 +420,8 @@ var searchNeighborNodes = function(visitNode){
       }
     }
 
-    if (goThroughList.length > 3){
-      goThroughList = goThroughList.slice(0, 3);
+    if (goThroughList.length > nodeThreshold){
+      goThroughList = goThroughList.slice(0, nodeThreshold);
     }
 
     return goThroughList;
