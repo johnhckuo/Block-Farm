@@ -1,4 +1,13 @@
-# Block Farm   [![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/Block-Farm/Support)
+<p align=center>
+<img src="https://github.com/johnhckuo/Block-Farm/blob/master/app/public/img/BlockFarm.png?raw=true">
+</p>
+<p align=center>
+<a target="_blank" href="https://opensource.org/licenses/MIT" title="License: MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg"></a>
+<a target="_blank" href="http://makeapullrequest.com" title="PRs Welcome"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
+<a target="_blank" href="https://gitter.im/Block-Farm/Support" title="Gitter chat"><img src="https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg"></a>
+</p> 
+
+# Block Farm   
 
 A farming DApp built upon Ethereum platform.
 
