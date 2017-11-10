@@ -62,4 +62,4 @@ Please read [CONTRIBUTING.md](https://gist.github.com/johnhckuo/a08fc77a28d2addd
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
