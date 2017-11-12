@@ -1,5 +1,5 @@
 <p align=center>
-<img src="https://github.com/johnhckuo/Block-Farm/blob/master/app/public/img/BlockFarm.png?raw=true">
+<img src="https://i.imgur.com/vDXmtSV.png">
 </p>
 <p align=center>
 <a target="_blank" href="https://opensource.org/licenses/MIT" title="License: MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg"></a>
