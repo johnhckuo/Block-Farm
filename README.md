@@ -54,7 +54,7 @@ Then type the following command to start buliding our app
 ```
 meteor
 ```
-Congratulations! Now you can using our project by typing `localhost:3000` in your web browser!
+Congratulations! Now just type `localhost:3000` in your web browser and you are good to go!
 
 ## Contributing
 
