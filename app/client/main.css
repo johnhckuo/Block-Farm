@@ -1,4 +1,4 @@
-﻿/* CSS declarations go here */
+/* CSS declarations go here */
 
 /*@font-face {
   font-family: Copperplate Gothic Bold;
@@ -44,13 +44,7 @@ h6{
 }
 
 #title.section{
-  /*background-color:  #C8E9FF;*/
   background: #D2E48F;
-  background-image: url(/img/cover.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 50% 80%;
-  background-attachment: center center fixed;
 }
 .cover_img{
   height: 35vh;
@@ -193,14 +187,19 @@ h6{
   background: #D2E48F;
 }
 
-/*.titleImage{
-  position: absolute;
-  top:22vh;
-  right:5vw;
-  width:45vw;
-  height: 63vh;
-  -webkit-filter:drop-shadow(10px 10px 10px rgba(51, 51, 51, 0.3));
-}*/
+.coverImage{
+  position: fixed;
+  display: none;
+  top:0px;
+  right:0px;
+  width:100vw;
+  height: 100vh;
+}
+
+.coverImage img{
+  width:100%;
+  height:100%;
+}
 
 .titleBar{
   position: absolute;
@@ -238,10 +237,11 @@ h3{
 }
 .titleContainer{
   position: absolute;
+  top:0px;
+  left:0px;
   z-index: 3;
   /*margin-left: 80px;*/
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.6);
   color:white;
   padding: 100px 20px 100px 20px;
   width:100vw;
@@ -445,13 +445,10 @@ li .login-content {
 }
 
 #intro{
+  position: absolute;
+  top:100vh;
   padding:100px;
-  background: rgba(246, 221, 252, 0.66);
-  background-image: url(/img/network.svg);
-  background-repeat: no-repeat;
-  background-position: 20% 50%;
-  background-size: 70vh;
-  background-attachment: fixed;
+  background: rgba(246, 221, 252, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -564,19 +561,19 @@ li .login-content {
 }
 
 .whyUs_section{
+  position: absolute;
+  top:200vh;
   display: flex;
   color: #404040;
   height:100vh;
   /*background: rgba(233, 233, 233, 0.7);*/
-  background: rgba(149, 198, 168, 0.4);
-
+  background: rgb(232, 232, 232);
   flex-direction: column;
   align-items: center;
   padding: 100px;
   background-image: url(/img/network.svg);
   background-repeat: no-repeat;
   background-position: 20% 50%;
-
   background-size: 70vh;
   background-attachment: fixed;
 }
@@ -603,21 +600,20 @@ li .login-content {
 }
 .whyUs{
   /*margin-bottom: 30vh;*/
-  height: 60vh;
+  height: 50vh;
   width: 25vw;
   padding: 10px;
 }
 
 #tutorial{
+  position: absolute;
+  top:300vh;
   display:flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   color:white;
-  background: #E8E8E8;
-  background-position: 20% 50%;
-  background-size: 70vh;
-  background-attachment: fixed;
+  background: rgba(0, 0, 0, 0.5);
 }
 #tutorial > div{
   height:600px;
@@ -640,7 +636,10 @@ li .login-content {
 }
 
 #footer{
+  position: absolute;
+  top:400vh;
   padding-top: 5vh;
+  background: #E8E8E8;
 }
 #footer> .copyRight{
   display:flex;
@@ -730,6 +729,15 @@ li .login-content {
   width: 100%;
   height: 100%;
 }
+
+#stakeholderInfo label{
+  color:rgb(220, 220, 220);
+}
+
+#stakeholderInfo h1{
+  color:rgb(220, 220, 220);
+}
+
 /* hide back of pane during swap */
 .front, .back {
 	backface-visibility: hidden;
@@ -776,8 +784,12 @@ li .login-content {
   line-height: 150%;
   /*text-align: justify;
   text-justify:inter-word;*/
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(200, 200, 200, 0.4);
   border-radius: 30px;
+}
+
+.whyUs_front h3{
+  text-align: center;
 }
 .whyUs_back{
   justify-content: flex-start;

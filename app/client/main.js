@@ -70,6 +70,7 @@ if (Meteor.isClient) {
 
   Template.index.rendered = async function () {
     if (!this._rendered && !renderChecked) {
+      $('.coverImage').fadeIn("slow");
       var isChromium = window.chrome,
           winNav = window.navigator,
           vendorName = winNav.vendor,
@@ -81,12 +82,12 @@ if (Meteor.isClient) {
         // is Google Chrome on IOS
       } else if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) {
         // is Google Chrome
-      } else { 
-        // not Google Chrome 
-        sweetAlert("Oops...", "For your best using experience, please use Google Chrome browser", "error");
+      } else {
+        // not Google Chrome
+        sweetAlert("Oops...", "For your best using experience, please use Google Chrome browser", "warning");
       }
 
-      console.log('Template render complete');
+      // console.log('Template render complete');
       renderChecked = true;
       var fetcher = setInterval(async function () {
         if (Session.get("crop_loaded") && Session.get("land_loaded") & Session.get("mission_loaded")  && Session.get("current_user_loaded")) {
@@ -132,7 +133,7 @@ if (Meteor.isClient) {
         || document.documentElement.clientHeight
         || document.body.clientHeight;
       scrollDuration = 1000;
-      $(window).scrollTo(height, scrollDuration);
+      $("html, body").animate({ scrollTop: $('#intro').offset().top }, 1000);
     },
     'click .chooseCharacters': function (event, instance) {
       document.getElementById("guard").setAttribute("class", "btn btn-default chooseCharacters");
@@ -185,6 +186,10 @@ if (Meteor.isClient) {
       let email = $('[name=forget-password-email]').val();
       // var res = Meteor.users.findOne({: email}});
       // console.log(res);
+      if (!validateEmail(email)) {
+        sweetAlert("Oops...", "Please enter a valid email !", "error");
+        return;
+      }
       try {
         var res = await Accounts.forgotPassword({ email: email });
       } catch (e) {
@@ -251,7 +256,7 @@ if (Meteor.isClient) {
         || document.documentElement.clientHeight
         || document.body.clientHeight;
       scrollDuration = 1000;
-      $(window).scrollTo(height * 3, scrollDuration);
+      $("html, body").animate({ scrollTop: $('#tutorial').offset().top }, 1000);
     },
     'click #login-trigger': function (event) {
       $('#login-container').slideToggle('fast');
