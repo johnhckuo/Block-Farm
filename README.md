@@ -9,7 +9,7 @@
 
 # Block Farm   
 
-A farming DApp built upon Ethereum platform.
+A farming game built upon Ethereum platform.
 
 ## Getting Started
 
