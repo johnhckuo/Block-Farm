@@ -70,7 +70,6 @@ if (Meteor.isClient) {
 
   Template.index.rendered = async function () {
     if (!this._rendered && !renderChecked) {
-      $('.coverImage').fadeIn("slow");
       var isChromium = window.chrome,
           winNav = window.navigator,
           vendorName = winNav.vendor,
@@ -86,7 +85,29 @@ if (Meteor.isClient) {
         // not Google Chrome
         sweetAlert("Oops...", "For your best using experience, please use Google Chrome browser", "warning");
       }
-
+      $('.coverImage').fadeIn(1500);
+      console.log(window.innerHeight);
+      var filterVal = 'blur(0px)';
+      $(window).scroll(function (event) {
+          var scroll = $(window).scrollTop();
+          if (scroll > window.innerHeight){
+            filterVal = 'blur(5px)';
+            $(".coverImage")
+              .css('filter',filterVal)
+              .css('webkitFilter',filterVal)
+              .css('mozFilter',filterVal)
+              .css('oFilter',filterVal)
+              .css('msFilter',filterVal);
+          }else{
+            filterVal = 'blur(0px)';
+            $(".coverImage")
+              .css('filter',filterVal)
+              .css('webkitFilter',filterVal)
+              .css('mozFilter',filterVal)
+              .css('oFilter',filterVal)
+              .css('msFilter',filterVal);
+          }
+      });
       // console.log('Template render complete');
       renderChecked = true;
       var fetcher = setInterval(async function () {
