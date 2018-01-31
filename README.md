@@ -11,6 +11,8 @@
 
 A farming game built upon Ethereum platform.
 
+![image](https://github.com/johnhckuo/Block-Farm/blob/master/cover.gif)
+
 ## Getting Started
 
 ### Prerequisites
